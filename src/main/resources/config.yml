@@ -1,0 +1,731 @@
+# Fish Rework Configuration
+# Plugin: Fish Rework v1.0.0
+
+# Fishing XP Values
+fishing:
+  xp:
+    cod: 10
+    salmon: 15
+    tropical_fish: 25
+    pufferfish: 30
+    junk: 5         # Trash items (leather, lily pad, etc.)
+    treasure: 50    # Enchanted books, bows, etc.
+    lava_catch: 30  # XP granted per successful lava fishing catch
+  mob_experience_orbs:
+    enabled: true
+    multiplier: 0.4    # Converts 40% of fishing XP into vanilla XP orbs
+    min: 1             # Minimum orb XP dropped by a sea creature with fishing XP
+    max: 180           # Raised to preserve the 10x bump on high-XP creatures
+
+# Leveling Formula
+# Experience Required = base_xp * (level ^ exponent)
+leveling:
+  base_xp: 100
+  exponent: 1.5
+  max_level: 50
+
+# Stat Bonus Scaling (per level)
+# Values are percentages (e.g., 0.4 means +0.4% per level)
+bonuses:
+  double_catch_chance_per_level: 0.4  # At lvl 50 = 20%
+  treasure_chance_increase_per_level: 0.3 # At lvl 50 = +15%
+  xp_multiplier_per_level: 0.02       # At lvl 50 = +1.0x (total 2.0x)
+  rare_creature_chance_per_level: 0.0  # Not scaled by level, boosted by equipment only
+
+messages:
+  level_up: "&b&lLEVEL UP! &7You are now Fishing Level &e%level%&7!"
+  action_bar: "&b+ %xp% XP &7(%current%/%needed%)"
+
+# Global settings
+general:
+  xp_multiplier: 1.2   # Multiplies all normal earned XP (40% lower than 2.0 baseline)
+
+# Fishing tip notifications (shown only to players who recently fished)
+fishing_tips:
+  enabled: true
+  check_interval_seconds: 30
+  active_window_seconds: 600
+  min_delay_seconds: 180
+  max_delay_seconds: 420
+  wiki_url: "https://your-wiki-url-here"
+  tips:
+    - "Use /fish or /fishing to open your fishing progression GUI."
+    - "Use /fish help to list all available commands."
+    - "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}"
+    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: {wiki}"
+    - "Use /fish bag to store catches and keep your inventory clean."
+    - "Use /fish autosell to auto-sell common fish while you grind."
+    - "Use /fish notifications to toggle these tip notifications."
+
+# Mob Spawn Weights
+# ─────────────────────────────────────────────────────────────
+# GLOBAL mobs: These weights apply everywhere as the base rate.
+# Biome-specific adjustments (for both passive and hostile mobs)
+# are defined in BiomeFishingProfiles in code — NOT here.
+#
+# DO NOT add biome-only mobs here (e.g. creaking, tropical_fish).
+# Their weights are controlled per-biome by BiomeFishingProfiles.
+# Adding them here with chance: 0 would shadow the biome weights.
+# ─────────────────────────────────────────────────────────────
+mobs:
+  # Global base fish (overridden per-biome by BiomeFishingProfiles)
+  cod:
+    chance: 30.0
+  salmon:
+    chance: 25.0
+  squid:
+    chance: 18.0
+  pufferfish:
+    chance: 12.0
+  # Global hostile mobs (fallback when no biome profile exists)
+  drowned:
+    chance: 14.4
+  guardian:
+    chance: 5.0
+  elder_guardian:
+    chance: 1.4
+  # Treasure chests (global, not biome-specific)
+  treasure_common:
+    chance: 2.5
+  treasure_uncommon:
+    chance: 1.2
+  treasure_rare:
+    chance: 0.5
+  treasure_epic:
+    chance: 0.25
+  treasure_legendary:
+    chance: 0.1
+
+# Artifact Configuration
+# Artifacts are rare collectibles found in treasure chests
+artifacts:
+  chance: 3.0  # % chance to find an artifact in a treasure chest (per chest rarity)
+
+# Enchantment Configuration
+enchantments:
+  sea_creature_chance_max_level: 6  # Max level for Sea Creature Chance & Lure/LoTS enchants
+  table_max_level: 3                # Max level obtainable directly from enchanting table for fishing enchants
+  lure_cap: 3                       # Vanilla lure levels that still work normally (above = custom timing)
+  ticks_per_lure_level: 100         # Ticks subtracted from wait time per lure level above cap
+  lure_lots_level_boost: 3          # Bonus levels added to Lure/LoTS in enchanting table
+  sea_creature_chance_per_level: 5.0  # % rare creature bonus per Sea Creature Chance enchant level
+  lure_fishing_speed_per_level: 5   # Fishing speed bonus per Lure enchant level
+  luck_of_sea_treasure_per_level: 2.0  # % treasure chance bonus per Luck of the Sea level
+  default_min_wait_ticks: 100       # Base minimum fishing wait time (before Lure)
+  default_max_wait_ticks: 600       # Base maximum fishing wait time (before Lure)
+
+# Combat Configuration
+combat:
+  vex_despawn_seconds: 8            # How long vexes from fished evokers survive
+  damage_indicator_enabled: true    # Show floating damage numbers on fished mobs
+  damage_indicator_view_range: 32   # Block range at which damage numbers are visible
+  damage_indicator_duration_ticks: 30  # How long damage numbers stay visible (30 = 1.5s)
+  damage_indicator_offset_range: 0.5   # Random X/Z offset range for damage numbers
+  damage_indicator_y_offset: 0.5       # Vertical offset above mob eye height
+  default_flat_defense: 1.0         # Baseline SC Defense when player has no upgrades
+  default_flat_attack: 1.0          # Baseline SC Attack when player has no upgrades
+  bobber_damage_radius: 10.0        # Block radius around player to search for fished mobs on reel-in
+  gehenna_aoe:
+    enabled: true                   # If true, Gehenna splashes nearby mobs on hit
+    radius: 4.0                     # Block radius around the struck mob
+    damage_multiplier: 0.25         # 25% of the triggering hit damage
+  abilities:
+    ember_volley:
+      range: 24.0
+      shots: 3
+      shot_interval_ticks: 6
+      projectile_speed: 0.85
+      spread: 0.12
+      projectile_damage: 6.0
+      fire_ticks: 40
+    heat_mark:
+      range: 18.0
+      duration_ticks: 80
+      bonus_damage: 5.0
+      burn_ticks: 60
+    magma_burst:
+      radius: 5.2
+      damage: 8.0
+      fire_ticks: 60
+      knockback: 0.65
+    lava_surge:
+      range: 16.0
+      lunge_strength: 1.05
+      lunge_y: 0.4
+      impact_delay_ticks: 10
+      impact_radius: 3.2
+      impact_damage: 10.0
+      impact_fire_ticks: 80
+    hoglin_flamethrower:
+      range: 8.0
+      arc_degrees: 100.0
+      pulse_damage: 3.3
+      fire_ticks: 90
+      pulses: 10
+      pulse_interval_ticks: 2
+      max_hits_per_cast: 4
+    brute_tusk_sweep:
+      range: 4.8
+      arc_degrees: 110.0
+      damage: 12.0
+      knockback: 0.95
+    warped_enderman_gaze:
+      range: 16.0
+      width: 2.7
+      height: 3.0
+      damage: 20.4
+      dark_cone_damage: 3.1875
+      darkness_ticks: 60
+      weakness_ticks: 80
+    warped_enderman_snare:
+      range: 18.0
+      radius: 4.2
+      damage: 10.2
+      pull_strength: 0.95
+      slowness_ticks: 80
+      charge_ticks: 20
+    riftbound_gaze:
+      range: 16.0
+      width: 3.2
+      height: 3.8
+      damage: 28.0
+      dark_cone_damage: 6.375
+      pulse_travel_ticks: 28
+      tentacles: 4
+      tentacle_duration_ticks: 34
+      tentacle_speed: 0.58
+      tentacle_turn_strength: 0.22
+      tentacle_hit_radius: 1.1
+      darkness_ticks: 60
+      weakness_ticks: 80
+    riftbound_snare:
+      range: 18.0
+      radius: 4.2
+      damage: 18.2
+      pull_strength: 0.95
+      slowness_ticks: 80
+      charge_ticks: 20
+    soul_rupture:
+      radius: 5.2
+      damage: 9.0
+      weakness_ticks: 90
+      wither_ticks: 50
+    soul_geysers:
+      field_radius: 7.5
+      pulses: 4
+      columns_per_pulse: 6
+      pulse_interval_ticks: 8
+      column_height: 3.2
+      hit_radius: 0.9
+      hit_damage: 7.0
+      blind_ticks: 60
+    valley_dirge:
+      radius: 6.4
+      pulses: 3
+      pulse_interval_ticks: 10
+      damage_per_pulse: 4.5
+      darkness_ticks: 50
+      pull_strength: 0.55
+    magma_eye_lasers:
+      range: 28.0
+      volleys: 5
+      volley_interval_ticks: 4
+      projectile_speed: 1.65
+      spread: 0.035
+    magma_arm_rockets:
+      range: 32.0
+      rockets: 2
+      rocket_interval_ticks: 8
+      max_steps: 70
+      speed: 0.58
+      turn_strength: 0.24
+      hit_radius: 1.7
+      hit_damage: 14.0
+      hit_fire_ticks: 90
+    blood_tongue:
+      range: 52.0
+      max_steps: 60
+      speed: 0.50
+      turn_strength: 0.1
+      hit_radius: 1.2
+      hit_damage: 25.0
+      yank_strength: 0.75
+      wither_ticks: 60
+    blood_explosion:
+      range: 46.0
+      radius: 6.4
+      phase1_ticks: 30
+      phase2_ticks: 30
+      phase3_ticks: 24
+      final_damage: 35.0
+      knockback: 1.0
+    wailing_twin_laser:
+      range: 42.0
+      pulses: 4
+      pulse_interval_ticks: 5
+      beam_step: 0.7
+      beam_radius: 1.3
+      pulse_damage: 10.0
+      fire_ticks: 60
+    wailing_twin_toxic_spit:
+      range: 38.0
+      shots: 3
+      shot_interval_ticks: 7
+      projectile_speed: 1.05
+      spread: 0.075
+      projectile_damage: 8.0
+      poison_ticks: 70
+      poison_amplifier: 1
+    poseidon_wave:
+      range: 14.0
+      width: 3.8
+      height: 2.4
+      damage: 28.0
+      knockback: 0.65               # Reduced from the original wave shove
+      vertical_knockback: 0.14      # Lower launch so Poseidon feels less punishing
+      slowness_ticks: 60
+    poseidon_storm_wave:
+      range: 24.0
+      strikes: 6
+      strike_spread: 5.0
+      strike_damage: 9.0
+
+items:
+  hephaesteantrident:
+    burstdamage: 14.0               # Extra damage dealt 1 tick after trident impact
+    firetickdamage: 2.0             # Guaranteed burn pulse damage after visual burn duration
+    visualfireticks: 20             # How long visual fire is shown on impact target
+
+# ═══════════════════════════════════════════════════════
+#  Lava Fishing Configuration
+# ═══════════════════════════════════════════════════════
+lava_fishing:
+  base_cast_ticks: 400              # Base upper bound for cast timer randomization
+  lure_tick_reduction: 10           # Per-lure-tier reduction applied to lower random bound
+  fishing_speed_divisor: 100.0      # Multiplier = divisor / (divisor + fishing_speed)
+  min_bite_ticks: 100               # Minimum ticks before a bite occurs
+  max_bite_ticks: 400               # Maximum ticks before a bite occurs
+  reel_window_ticks: 70             # Ticks the player has to reel in after a bite
+  nibble_sound_volume: 0.8          # Volume of the nibble sound
+  bite_particle_count: 15           # Number of particles on bite
+  approach_radius: 2.6              # Radius for random particle start positions around the bobber
+  approach_duration_ticks: 22       # Ticks for the particle trail to travel to the bobber
+  approach_particles_per_tick: 2    # Particles spawned each tick for the moving trail
+  approach_particle: FLAME          # Particle used for the moving trail (e.g. FLAME, LAVA, ASH)
+  approach_bite_distance: 0.45      # Bite triggers when the trail point is this close to the bobber
+  float_bob_amplitude: 0.03         # Vertical bobbing height while floating on lava
+  float_bob_speed: 0.28             # Vertical bobbing speed while floating on lava
+
+# ═══════════════════════════════════════════════════════
+#  Heat System Configuration
+# ═══════════════════════════════════════════════════════
+heat:
+  gain_per_catch: 3.0               # Heat gained per lava catch
+  gain_per_hostile: 5.0             # Extra heat when a hostile mob spawns
+  gain_per_legendary: 10.0          # Extra heat for legendary catches
+  decay_per_tick: 1.0               # Heat lost per decay tick
+  decay_interval_seconds: 10        # Seconds between passive heat decay
+  meltdown_damage: 12.0             # Hearts of damage on meltdown (6 hearts = 12 HP)
+  meltdown_durability_loss: 200     # Durability lost on meltdown
+  meltdown_reset_heat: 50.0         # Heat resets to this value after meltdown
+  # Tier thresholds
+  warm_threshold: 25.0
+  hot_threshold: 50.0
+  scorching_threshold: 75.0
+  infernal_threshold: 90.0
+  # Tier SCC bonuses (%)
+  warm_scc_bonus: 10.0
+  hot_scc_bonus: 25.0
+  scorching_scc_bonus: 50.0
+  infernal_scc_bonus: 100.0
+
+gui:
+  mobs_per_page: 21                 # Items per page in Collection/XP Sources GUIs
+  leaderboard_size: 10              # Number of entries on the leaderboard
+  boss_bar_duration_ticks: 100      # How long XP boss bar stays visible (100 = 5s)
+  levelup_title_fade_in_ms: 500     # Level-up title fade in duration
+  levelup_title_stay_ms: 3000       # Level-up title stay duration
+  levelup_title_fade_out_ms: 1000   # Level-up title fade out duration
+
+# Sea Creature Upgrade Tiers
+# Each tier maps a material to a flat SC bonus multiplier.
+# tier_level is used for ordering (higher = better).
+sea_creature_upgrade:
+  tiers:
+    copper:
+      material: COPPER_INGOT
+      bonus: 0.5
+      tier_level: 1
+    iron:
+      material: IRON_INGOT
+      bonus: 1.0
+      tier_level: 2
+    gold:
+      material: GOLD_INGOT
+      bonus: 1.5
+      tier_level: 3
+    diamond:
+      material: DIAMOND
+      bonus: 2.0
+      tier_level: 4
+    netherite:
+      material: NETHERITE_INGOT
+      bonus: 2.5
+      tier_level: 5
+
+# ═══════════════════════════════════════════════════════
+#  Balance Tuning — Mob Behavior
+# ═══════════════════════════════════════════════════════
+mob_balance:
+  size_variance_percent: 0.3        # Max random size/weight variance (0.3 = 0-30%)
+  hostile_default_health_mult: 2.0  # Default health multiplier for hostile mobs without explicit config
+  hostile_default_damage_mult: 2.0  # Default damage multiplier for hostile mobs without explicit config
+  initial_aggro_range: 32           # Range (blocks) to find nearest player for initial aggro
+  hostile_retarget_range: 24.0      # Range for hostile mobs to find new target when current is lost
+  passive_aggro_search_range: 32.0  # Range for passive-aggro mobs to search for players
+  passive_aggro_velocity_mult: 0.15 # Speed multiplier for passive-aggro velocity chase
+  passive_aggro_max_velocity: 1.5   # Max velocity cap for passive-aggro mobs
+  passive_aggro_y_velocity_factor: 0.3  # How much Y-velocity is applied (for water/flying mobs)
+  glow_squid_y_threshold: 30        # Below this Y level, glow squid can spawn anywhere
+  glow_squid_depth_weight: 5.0      # Spawn weight for glow squid below Y threshold
+  night_start_time: 13000           # World time (ticks) when night begins for hostile spawns
+  night_end_time: 23000             # World time (ticks) when night ends for hostile spawns
+  # Pull-toward-player mechanic (when fishing up a mob)
+  pull_max_duration_ticks: 60       # Max duration of pull effect (60 = 3 seconds)
+  pull_stop_distance: 2.0           # Stop pulling when mob is within this many blocks
+  pull_max_speed: 1.2               # Maximum pull velocity
+  pull_speed_multiplier: 0.15       # Pull speed scales with distance * this value
+  pull_initial_delay_ticks: 2       # Ticks before pull starts
+  pull_interval_ticks: 5            # Pull velocity applied every N ticks
+  # Group kill & slime mechanics
+  slime_min_split_size: 2           # Slimes won't split below this size
+  slime_child_aggro_range: 32       # Range for slime children to target players
+  group_kill_check_delay_ticks: 5   # Delay before checking if all group members are dead (slimes)
+  group_search_radius_h: 40         # Horizontal search radius for remaining group members
+  group_search_radius_v: 20         # Vertical search radius for remaining group members
+  reward_dedup_window_ticks: 20     # Prevents double rewards within this tick window
+  sibling_remove_radius_h: 20       # Horizontal range for removing mob siblings on death
+  sibling_remove_radius_v: 10       # Vertical range for removing mob siblings on death
+  cooldown_cleanup_interval: 200    # Ticks between aggro cooldown map cleanup
+
+# ═══════════════════════════════════════════════════════
+#  Balance Tuning — Items & Equipment
+# ═══════════════════════════════════════════════════════
+item_balance:
+  harmony_rod_land_mob_multiplier: 2.0  # Land mob chance multiplier when using Harmony Rod
+  deadman_armor_night_multiplier: 2.0   # Deadman armor bonus multiplier at night
+  sc_flat_bonus_per_tier: 0.5           # Flat SC Attack/Defense bonus per upgrade tier level
+
+# ═══════════════════════════════════════════════════════
+#  Balance Tuning — Treasure Chests
+# ═══════════════════════════════════════════════════════
+treasure_balance:
+  power_curve_exponent: 3.0         # Power curve for treasure chance scaling
+  # Fallback treasure rarity distribution (cumulative thresholds, must be ascending)
+  fallback_common_threshold: 50.0   # 0-50 = Common (50%)
+  fallback_uncommon_threshold: 75.0 # 50-75 = Uncommon (25%)
+  fallback_rare_threshold: 90.0     # 75-90 = Rare (15%)
+  fallback_epic_threshold: 98.0     # 90-98 = Epic (8%), rest = Legendary (2%)
+  # Loot tier selection weights (cumulative thresholds for extra items)
+  loot_tier_common_threshold: 40.0
+  loot_tier_uncommon_threshold: 70.0
+  loot_tier_rare_threshold: 90.0    # rest = Epic
+  # Unique item count distribution (cumulative thresholds)
+  item_count_7_threshold: 30.0      # 30% chance for 7 items
+  item_count_8_threshold: 55.0      # 25% chance for 8 items
+  item_count_9_threshold: 75.0      # 20% chance for 9 items
+  item_count_10_threshold: 87.0     # 12% chance for 10 items
+  item_count_11_threshold: 95.0     # 8% chance for 11 items, rest = 12
+  split_stack_chance: 50.0          # % chance to split item stacks across slots
+  suspicious_stew_duration_ticks: 200  # Duration of suspicious stew effects
+  suspicious_stew_amplifier: 0      # Amplifier level for suspicious stew effects
+
+# ═══════════════════════════════════════════════════════
+#  Balance Tuning — Armor Healing
+# ═══════════════════════════════════════════════════════
+armor_healing:
+  perfect_per_piece: 0.75           # HP healed per Perfect Treasure armor piece (per 3s)
+  pure_per_piece: 0.5               # HP healed per Pure Treasure armor piece (per 3s)
+  basic_per_piece: 0.25             # HP healed per basic Treasure armor piece (per 3s)
+
+# ═══════════════════════════════════════════════════════
+#  Balance Tuning — Treasure Totems
+# ═══════════════════════════════════════════════════════
+totems:
+  buff_radius: 10.0                 # Totem buff range in blocks
+  treasure_bonus: 5.0               # Treasure chance bonus % for nearby players
+  rotation_speed: 0.1               # Totem spin speed multiplier
+  bob_frequency: 0.08               # Vertical bobbing frequency
+  bob_amplitude: 0.15               # Vertical bobbing amplitude (blocks)
+
+# ═══════════════════════════════════════════════════════
+#  Economy — Custom Currency (Doubloons)
+# ═══════════════════════════════════════════════════════
+economy:
+  currency_name: "Doubloons"
+  currency_symbol: "⛁"
+  # Sell prices for vanilla items
+  sell_prices:
+    # Fish
+    COD: 10
+    SALMON: 16
+    TROPICAL_FISH: 30
+    PUFFERFISH: 40
+    # Horse armor (tier progression)
+    LEATHER_HORSE_ARMOR: 20
+    COPPER_HORSE_ARMOR: 35
+    IRON_HORSE_ARMOR: 60
+    GOLDEN_HORSE_ARMOR: 100
+    DIAMOND_HORSE_ARMOR: 250
+    NETHERITE_HORSE_ARMOR: 600
+    # Nautilus armor (tier progression)
+    COPPER_NAUTILUS_ARMOR: 20
+    IRON_NAUTILUS_ARMOR: 45
+    GOLDEN_NAUTILUS_ARMOR: 80
+    DIAMOND_NAUTILUS_ARMOR: 200
+    NETHERITE_NAUTILUS_ARMOR: 500
+    # Ores and ingots
+    COPPER_INGOT: 3
+    IRON_INGOT: 8
+    GOLD_INGOT: 12
+    DIAMOND: 60
+    EMERALD: 15
+    NETHERITE_SCRAP: 200
+    LAPIS_LAZULI: 3
+    REDSTONE: 3
+    AMETHYST_SHARD: 6
+    INK_SAC: 10
+    POTTERY_SHERD: 25
+    # Blocks
+    # Other treasure loot
+    NAUTILUS_SHELL: 25
+    HEART_OF_THE_SEA: 200
+    TURTLE_SCUTE: 20
+    GOLDEN_APPLE: 40
+    ENCHANTED_GOLDEN_APPLE: 500
+  # Sell prices for custom materials (by item ID)
+  custom_sell_prices:
+    corrupted_flesh: 20
+    wet_bone: 20
+    polar_fur: 30
+    ice_wing: 30
+    spider_silk: 20
+    residue: 30
+    shark_tooth: 500
+    beast_scale: 1000
+    poseidons_crown: 200
+    poseidons_tear: 2000
+    wardens_echo: 2400
+    dread_soul: 50
+    battle_scrap: 40
+    ironclad_plate: 70
+    hyena_fur: 24
+    ravager_scales: 60
+    phantoms_eye: 200
+    dune_spice: 160
+    slimy_chunk: 20
+    kings_crown: 120
+    mossy_vine: 24
+    temple_slab: 100
+    weird_material: 80
+    guardian_scale: 40
+    enchanted_corrupted_flesh: 180
+    enchanted_wet_bone: 144
+    enchanted_polar_fur: 216
+    enchanted_ice_wing: 270
+    enchanted_hyena_fur: 216
+    enchanted_dread_soul: 720
+    enchanted_guardian_scale: 360
+    enchanted_mossy_vine: 144
+    # Nether materials
+    magma_residue: 24
+    lava_fish: 16
+    crimson_scale: 16
+    smoldering_rod: 36
+    corrupted_gold: 30
+    ghast_membrane: 40
+    strider_hide: 30
+    warped_tendril: 30
+    basalt_shell: 36
+    hoglin_tusk: 60
+    ender_fragment: 70
+    soul_essence: 60
+    wither_bone: 80
+    crimson_heart: 2000
+    volcanic_core: 3000
+    # Enchanted nether materials
+    enchanted_magma_residue: 216
+    enchanted_smoldering_rod: 324
+    enchanted_corrupted_gold: 270
+    enchanted_ghast_membrane: 360
+    enchanted_crimson_scale: 144
+    enchanted_hoglin_tusk: 540
+    enchanted_soul_essence: 540
+    enchanted_basalt_shell: 324
+  # Unified fish-vendor fallback bucket for misc treasure junk.
+  other_vendor_price: 1
+  # Bait buy prices (doubloons per bundle)
+  bait_prices:
+    treasure_bait: 25
+    xp_bait: 20
+
+  # Biome bait buy prices (doubloons per bundle)
+  biome_bait_prices:
+    wild_tropics: 25
+    frozen_peaks: 25
+    scorched_earth: 25
+    heartlands: 25
+    seven_seas: 25
+    hidden_realms: 25
+    crimson_forest: 25
+    warped_forest: 25
+    soul_sand_valley: 25
+    basalt_deltas: 25
+    nether_wastes: 25
+
+  # Fishing shop buy prices (equipment + books)
+  fishing_shop_prices:
+    lure_1: 300
+    luck_of_the_sea_1: 400
+    sea_creature_chance_1: 500
+    trident: 600
+    beginner_trident_1: 700
+    beginner_trident_2: 1000
+
+  # Fish bag buy price
+  fish_bag_price: 100
+  # Lava bag buy price
+  lava_bag_price: 2500
+
+# ═══════════════════════════════════════════════════════
+#  Bait Definitions
+# ═══════════════════════════════════════════════════════
+baits:
+  basic_bait:
+    display_name: "Basic Bait"
+    material: WHEAT_SEEDS
+    rarity: COMMON
+    description: "+5% rare creature chance"
+    bonuses:
+      rare_creature_chance: 5.0
+  quality_bait:
+    display_name: "Quality Bait"
+    material: MELON_SEEDS
+    rarity: UNCOMMON
+    description: "+10% rare creature chance"
+    bonuses:
+      rare_creature_chance: 10.0
+  premium_bait:
+    display_name: "Premium Bait"
+    material: BEETROOT_SEEDS
+    rarity: RARE
+    description: "+15% rare creature chance"
+    bonuses:
+      rare_creature_chance: 15.0
+  legendary_bait:
+    display_name: "Legendary Bait"
+    material: TORCHFLOWER_SEEDS
+    rarity: EPIC
+    description: "+25% rare creature chance"
+    bonuses:
+      rare_creature_chance: 25.0
+  creature_bait:
+    display_name: "Creature Bait"
+    material: SPIDER_EYE
+    rarity: UNCOMMON
+    description: "+20% rare creature chance"
+    bonuses:
+      rare_creature_chance: 20.0
+  treasure_bait:
+    display_name: "Treasure Bait"
+    material: GOLD_NUGGET
+    rarity: UNCOMMON
+    description: "+50% treasure chance"
+    bonuses:
+      treasure_chance: 50.0
+  lucky_bait:
+    display_name: "Lucky Bait"
+    material: RABBIT_FOOT
+    rarity: UNCOMMON
+    description: "+10% double catch chance"
+    bonuses:
+      double_catch_chance: 10.0
+  xp_bait:
+    display_name: "XP Bait"
+    material: EXPERIENCE_BOTTLE
+    rarity: UNCOMMON
+    description: "+50% XP multiplier"
+    bonuses:
+      xp_multiplier: 50.0
+  # Nether Baits
+  magma_bait:
+    display_name: "Magma Bait"
+    material: MAGMA_CREAM
+    rarity: COMMON
+    description: "+5% rare creature chance"
+    bonuses:
+      rare_creature_chance: 5.0
+  soul_bait:
+    display_name: "Soul Bait"
+    material: SOUL_LANTERN
+    rarity: UNCOMMON
+    description: "+15% rare creature chance"
+    bonuses:
+      rare_creature_chance: 15.0
+  blaze_bait:
+    display_name: "Blaze Bait"
+    material: BLAZE_POWDER
+    rarity: RARE
+    description: "+25% rare creature chance"
+    bonuses:
+      rare_creature_chance: 25.0
+  cooled_bait:
+    display_name: "Cooled Bait"
+    material: PACKED_ICE
+    rarity: UNCOMMON
+    description: "Negates heat gain for that catch"
+    bonuses:
+      negate_heat: 1.0
+
+# ════════════════════════════════════════════════════════════
+#  Feature Toggles
+#  Disable individual modules for your server. All enabled by default.
+#  NOTE: Disabling economy automatically disables shop.
+#        Disabling fish_bag also disables lava_bag.
+# ════════════════════════════════════════════════════════════
+features:
+  # Economy & Shop
+  economy_enabled: true          # Doubloon balance tracking. Disabling also disables shop.
+  shop_enabled: true             # /fish shop buy/sell GUI
+  auto_sell_enabled: true        # /fish autosell command
+
+  # GUIs & Menus
+  upgrade_gui_enabled: true      # ⚔ Upgrade Gear menu (requires Fishing Lv 20)
+  leaderboard_enabled: true      # /fish top leaderboard
+  recipe_browser_enabled: true   # /fish recipe browser
+  encyclopedia_enabled: true     # /fish encyclopedia (fishing collection)
+  artifact_collection_enabled: true  # /fish artifacts collection
+
+  # Gameplay
+  lava_fishing_enabled: true     # Nether lava fishing system
+  heat_system_enabled: true      # Heat gauge mechanic (requires lava_fishing_enabled)
+  treasure_chests_enabled: true  # Treasure chest drops while fishing
+  custom_mobs_enabled: true      # Custom sea creature spawning
+  bait_system_enabled: true      # Bait items and offhand bonuses
+  custom_recipes_enabled: true   # Custom crafting recipes
+  advancements_enabled: true     # Custom advancement tree
+  display_case_enabled: true     # Display case furniture
+  treasure_totem_enabled: true   # Treasure Totem placeable item
+  fish_bag_enabled: true         # Fish Bag storage (also controls lava_bag)
+
+  # Visual / QOL
+  damage_indicators_enabled: true    # Floating damage numbers
+  catch_broadcast_enabled: true      # Broadcast rare catches server-wide
+  fishing_tips_enabled: true         # Periodic fishing tips (overrides fishing_tips.enabled)
+  catch_streak_enabled: true         # Catch streak XP multiplier system
+  double_catch_enabled: true         # Double catch chance mechanic
+
+# Economy cap
+# Players cannot hold more than this many Doubloons.
+economy:
+  max_balance: 10000000

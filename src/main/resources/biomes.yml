@@ -1,0 +1,489 @@
+# Biome fishing profiles configuration
+# Defines per-biome passive/hostile mob weights, night-only mobs, and land mob chances.
+# Each profile key matches a BiomeGroup enum value.
+
+biome_profiles:
+  COLD_OCEAN:
+    passive_weights:
+      cod: 30.0
+      salmon: 12.0
+      squid: 8.0
+      pufferfish: 2.0
+      tropical_fish: 2.0
+      nautilus: 3.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 6.0
+      great_white: 3.0
+      megalodon: 1.0
+      poseidon: 0.3
+
+  FROZEN_OCEAN:
+    passive_weights:
+      cod: 8.0
+      salmon: 28.0
+      squid: 8.0
+      pufferfish: 1.0
+      tropical_fish: 1.0
+      nautilus: 2.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 5.0
+      great_white: 3.0
+      megalodon: 1.0
+      poseidon: 0.3
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - polar_bear
+
+  NORMAL_OCEAN:
+    passive_weights:
+      cod: 22.0
+      salmon: 12.0
+      squid: 12.0
+      pufferfish: 6.0
+      tropical_fish: 5.0
+      dolphin: 5.0
+      nautilus: 4.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 7.0
+      great_white: 4.0
+      megalodon: 1.4
+      poseidon: 0.4
+
+  LUKEWARM_OCEAN:
+    passive_weights:
+      cod: 8.0
+      salmon: 5.0
+      squid: 6.0
+      pufferfish: 12.0
+      tropical_fish: 18.0
+      dolphin: 5.0
+      nautilus: 4.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 7.0
+      great_white: 4.0
+      megalodon: 1.4
+      poseidon: 0.4
+
+  WARM_OCEAN:
+    passive_weights:
+      cod: 3.0
+      salmon: 1.0
+      squid: 5.0
+      pufferfish: 12.0
+      tropical_fish: 22.0
+      dolphin: 6.0
+      nautilus: 5.0
+      turtle: 3.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 8.0
+      great_white: 5.0
+      megalodon: 1.6
+      poseidon: 0.5
+
+  RIVER:
+    passive_weights:
+      cod: 10.0
+      salmon: 32.0
+      squid: 10.0
+      pufferfish: 3.0
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      iron_golem_aggro: 4.0
+      pillager_trio: 3.0
+      pillager_quartet: 1.6
+      pillager_quintet: 0.6
+      dead_rider: 0.1
+    night_only:
+      - dead_rider
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - chicken
+        - cow
+        - pig
+        - sheep
+
+  SWAMP:
+    passive_weights:
+      cod: 15.0
+      salmon: 10.0
+      squid: 12.0
+      pufferfish: 5.0
+      frog: 8.0
+      tropical_fish: 3.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      bogged: 8.0
+      slime: 7.0
+      witch: 3.0
+      king_slime: 0.8
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - frog
+        - chicken
+
+  BEACH:
+    passive_weights:
+      cod: 18.0
+      salmon: 10.0
+      squid: 8.0
+      pufferfish: 6.0
+      turtle: 8.0
+    hostile_weights:
+      drowned: 8.0
+      guardian: 3.0
+      elder_guardian: 0.8
+      zombie_nautilus: 6.0
+      great_white: 3.0
+      megalodon: 1.0
+      poseidon: 0.3
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - turtle
+        - chicken
+
+  LUSH_CAVES:
+    passive_weights:
+      cod: 8.0
+      salmon: 5.0
+      squid: 5.0
+      pufferfish: 2.0
+      axolotl: 15.0
+      glow_squid: 10.0
+      tropical_fish: 5.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      glow_squid_of_death: 7.0
+      silverfish: 8.0
+      cave_spider: 5.0
+      spider_jockey: 1.6
+
+  FOREST:
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      iron_golem_aggro: 4.0
+      pillager_trio: 3.0
+      pillager_quartet: 1.6
+      pillager_quintet: 0.6
+      dead_rider: 0.1
+    night_only:
+      - dead_rider
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - pig
+        - sheep
+        - chicken
+        - cow
+        - wolf
+
+  TAIGA:
+    passive_weights:
+      cod: 12.0
+      salmon: 25.0
+      squid: 10.0
+      pufferfish: 3.0
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      stray: 8.0
+      angry_polar_bear: 4.0
+      frost_phantom: 1.6
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - wolf
+        - fox
+        - rabbit
+
+  SNOWY:
+    passive_weights:
+      cod: 10.0
+      salmon: 25.0
+      squid: 8.0
+      pufferfish: 1.0
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      stray: 10.0
+      angry_polar_bear: 5.0
+      frost_phantom: 2.0
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - polar_bear
+        - rabbit
+
+  PLAINS:
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      iron_golem_aggro: 4.0
+      pillager_trio: 3.0
+      pillager_quartet: 1.6
+      pillager_quintet: 0.6
+      dead_rider: 0.1
+    night_only:
+      - dead_rider
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - pig
+        - sheep
+        - chicken
+        - cow
+
+  JUNGLE:
+    passive_weights:
+      cod: 10.0
+      salmon: 8.0
+      squid: 10.0
+      pufferfish: 8.0
+      tropical_fish: 5.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      jungle_spider: 8.0
+      vine_strangler: 4.0
+      temple_guardian: 1.2
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - parrot
+        - ocelot
+        - panda
+
+  SAVANNA:
+    passive_weights:
+      cod: 15.0
+      salmon: 10.0
+      squid: 10.0
+      pufferfish: 5.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      hyena: 8.0
+      stampede_bull: 3.0
+      vulture_king: 1.2
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - chicken
+        - cow
+        - armadillo
+
+  DESERT:
+    passive_weights:
+      cod: 5.0
+      salmon: 3.0
+      squid: 5.0
+      pufferfish: 2.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      husk: 10.0
+      parched: 6.0
+      dune_rider: 2.0
+    land_mobs:
+      chance: 0.3
+      mobs:
+        - rabbit
+
+  MOUNTAINS:
+    passive_weights:
+      cod: 12.0
+      salmon: 18.0
+      squid: 8.0
+      pufferfish: 3.0
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      stray: 8.0
+      angry_polar_bear: 4.0
+      frost_phantom: 1.6
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - goat
+        - llama
+
+  BADLANDS:
+    passive_weights:
+      cod: 5.0
+      salmon: 5.0
+      squid: 5.0
+      pufferfish: 2.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      husk: 10.0
+      parched: 6.0
+      dune_rider: 2.0
+    land_mobs:
+      chance: 0.3
+      mobs:
+        - rabbit
+        - cow
+
+  MUSHROOM:
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      mooshroom_angry: 4.0
+    land_mobs:
+      chance: 0.3
+      mobs:
+        - mooshroom
+
+  MEADOW:
+    hostile_weights:
+      drowned: 7.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      iron_golem_aggro: 4.0
+      pillager_trio: 3.0
+      pillager_quartet: 1.6
+      pillager_quintet: 0.6
+      dead_rider: 0.1
+    night_only:
+      - dead_rider
+    land_mobs:
+      chance: 0.5
+      mobs:
+        - sheep
+        - chicken
+        - rabbit
+
+  DEEP_DARK:
+    passive_weights:
+      cod: 5.0
+      salmon: 3.0
+      squid: 4.0
+      pufferfish: 1.0
+      glow_squid: 8.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      warden: 0.2
+
+  PALE_GARDEN:
+    passive_weights:
+      cod: 12.0
+      salmon: 8.0
+      squid: 8.0
+      pufferfish: 3.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      creaking: 8.0
+      creaking_gang: 2.0
+    land_mobs:
+      chance: 0.3
+      mobs:
+        - chicken
+        - rabbit
+
+  # ===========================================================================
+  # Nether Biomes (Lava Fishing)
+  # ===========================================================================
+
+  NETHER_WASTES:
+    passive_weights:
+      magma_tadpole: 25.0
+      lava_cod: 20.0
+      piglin_floater: 15.0
+      ghastling: 8.0
+    hostile_weights:
+      blaze_fisher: 8.0
+      magma_swimmer: 6.0
+      wither_angler: 4.0
+      ghast_broodmother: 1.0
+      nether_lord: 0.2
+
+  CRIMSON_FOREST:
+    passive_weights:
+      magma_tadpole: 20.0
+      lava_cod: 15.0
+      crimson_minnow: 18.0
+      fungal_strider: 10.0
+    hostile_weights:
+      blaze_fisher: 6.0
+      magma_swimmer: 5.0
+      hoglin_brute: 5.0
+      piglin_war_party: 2.0
+      crimson_abomination: 0.8
+      nether_lord: 0.2
+
+  WARPED_FOREST:
+    passive_weights:
+      magma_tadpole: 18.0
+      lava_cod: 12.0
+      warped_jellyfish: 15.0
+      ender_minnow: 8.0
+    hostile_weights:
+      blaze_fisher: 6.0
+      magma_swimmer: 5.0
+      warped_enderman: 5.0
+      ender_angler: 1.2
+      nether_lord: 0.2
+
+  SOUL_SAND_VALLEY:
+    passive_weights:
+      magma_tadpole: 18.0
+      lava_cod: 15.0
+      lost_soul: 12.0
+    hostile_weights:
+      blaze_fisher: 6.0
+      magma_swimmer: 5.0
+      soul_warden: 5.0
+      wailing_ghast_duo: 1.2
+      nether_lord: 0.2
+
+  BASALT_DELTAS:
+    passive_weights:
+      magma_tadpole: 22.0
+      lava_cod: 15.0
+      basalt_crab: 12.0
+    hostile_weights:
+      blaze_fisher: 7.0
+      magma_swimmer: 6.0
+      magma_golem: 4.0
+      volcanic_wyrm: 0.3
+      nether_lord: 0.2

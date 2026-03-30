@@ -1,0 +1,1118 @@
+# ══════════════════════════════════════════════════════════
+#  Item Definitions
+#  All items are loaded from YAML and registered automatically.
+#  Utility items (fish_bucket, treasure_totem, display_case, etc.)
+#  remain in Java due to unique construction logic.
+# ══════════════════════════════════════════════════════════
+
+# ── Drop Materials ──────────────────────────────────────
+# Created via createMaterial(id, material, name, rarity, description)
+materials:
+  corrupted_flesh:
+    material: ROTTEN_FLESH
+    display_name: "Corrupted Flesh"
+    rarity: COMMON
+    description: "Putrid flesh from the undead."
+
+  wet_bone:
+    material: BONE
+    display_name: "Wet Bone"
+    rarity: COMMON
+    description: "A waterlogged bone."
+
+  polar_fur:
+    material: RABBIT_HIDE
+    display_name: "Polar Fur"
+    rarity: RARE
+    description: "Thick fur from a glacial beast."
+
+  ice_wing:
+    material: PHANTOM_MEMBRANE
+    display_name: "Ice Wing"
+    rarity: EPIC
+    description: "A frozen wing fragment."
+
+  spider_silk:
+    material: STRING
+    display_name: "Spider Silk"
+    rarity: UNCOMMON
+    description: "Fine silk from spiders."
+
+  residue:
+    material: GLOW_INK_SAC
+    display_name: "Residue"
+    rarity: COMMON
+    description: "Glowing residue from the depths."
+
+  shark_tooth:
+    material: FLINT
+    display_name: "Shark Tooth"
+    rarity: RARE
+    description: "A razor-sharp tooth."
+
+  beast_scale:
+    material: QUARTZ
+    display_name: "Beast Scale"
+    rarity: EPIC
+    description: "A massive tooth from an ancient predator."
+
+
+  poseidons_crown:
+    material: GOLDEN_HELMET
+    display_name: "Poseidon's Crown"
+    rarity: LEGENDARY
+    description: "The crown of the ocean's ruler."
+
+  poseidons_tear:
+    material: PRISMARINE_CRYSTALS
+    display_name: "Poseidon's Tear"
+    rarity: LEGENDARY
+    description: "A crystallized tear of the sea god."
+
+  wardens_echo:
+    material: ECHO_SHARD
+    display_name: "Warden's Echo"
+    rarity: LEGENDARY
+    description: "Reverberations of the deep dark."
+
+  dread_soul:
+    material: SCULK
+    display_name: "Dread Soul"
+    rarity: RARE
+    description: "A tormented soul from the pale garden."
+
+  battle_scrap:
+    material: IRON_NUGGET
+    display_name: "Battle Scrap"
+    rarity: UNCOMMON
+    description: "Scrap metal from a skirmish."
+
+  ironclad_plate:
+    material: HEAVY_CORE
+    display_name: "Ironclad Plate"
+    rarity: RARE
+    description: "A dense plate of hardened iron."
+
+  hyena_fur:
+    material: RABBIT_HIDE
+    display_name: "Hyena Fur"
+    rarity: UNCOMMON
+    description: "Coarse fur from a savanna hunter."
+
+  ravager_scales:
+    material: ARMADILLO_SCUTE
+    display_name: "Ravager Scales"
+    rarity: RARE
+    description: "Tough scales from a stampeding beast."
+
+  phantoms_eye:
+    material: ENDER_EYE
+    display_name: "Phantom's Eye"
+    rarity: EPIC
+    description: "A glowing eye from a massive phantom."
+
+  dune_spice:
+    material: GLOWSTONE_DUST
+    display_name: "Dune Spice"
+    rarity: EPIC
+    description: "Rare spice from the scorched sands."
+
+  slimy_chunk:
+    material: SLIME_BALL
+    display_name: "Slimy Chunk"
+    rarity: RARE
+    description: "A sticky lump from a slime."
+
+  kings_crown:
+    material: GOLDEN_HELMET
+    display_name: "King's Crown"
+    rarity: LEGENDARY
+    description: "Crown of the King Slime."
+
+  mossy_vine:
+    material: VINE
+    display_name: "Mossy Vine"
+    rarity: UNCOMMON
+    description: "A moss-covered vine, dripping with jungle humidity."
+
+  temple_slab:
+    material: MOSSY_COBBLESTONE_SLAB
+    display_name: "Temple Slab"
+    rarity: EPIC
+    description: "A heavy mossy stone slab from an ancient jungle temple."
+
+  weird_material:
+    material: MAGMA_CREAM
+    display_name: "Weird Material"
+    rarity: EPIC
+    description: "A strange substance of unknown origin."
+
+  guardian_scale:
+    material: PRISMARINE_SHARD
+    display_name: "Guardian Scale"
+    rarity: UNCOMMON
+    description: "A tough scale from a guardian."
+
+  # ── Nether Drop Materials ────────────────────────────────
+  magma_residue:
+    material: MAGMA_CREAM
+    display_name: "Magma Residue"
+    rarity: COMMON
+    description: "Molten residue from the lava depths."
+
+  lava_fish:
+    material: COOKED_COD
+    display_name: "Lava Fish"
+    rarity: COMMON
+    description: "A charred fish pulled from molten lava."
+
+  crimson_scale:
+    material: RED_DYE
+    display_name: "Crimson Scale"
+    rarity: COMMON
+    description: "A blood-red scale from crimson waters."
+
+  smoldering_rod:
+    material: BLAZE_ROD
+    display_name: "Smoldering Rod"
+    rarity: UNCOMMON
+    description: "A rod still radiating infernal heat."
+
+  corrupted_gold:
+    material: GOLD_NUGGET
+    display_name: "Corrupted Gold"
+    rarity: UNCOMMON
+    description: "Gold tainted by nether corruption."
+
+  ghast_membrane:
+    material: GHAST_TEAR
+    display_name: "Ghast Membrane"
+    rarity: UNCOMMON
+    description: "A translucent membrane from a ghast."
+
+  strider_hide:
+    material: LEATHER
+    display_name: "Strider Hide"
+    rarity: UNCOMMON
+    description: "Heat-resistant hide from a strider."
+
+  warped_tendril:
+    material: CYAN_DYE
+    display_name: "Warped Tendril"
+    rarity: UNCOMMON
+    description: "A twisted tendril from the warped forest."
+
+  basalt_shell:
+    material: DEEPSLATE
+    display_name: "Basalt Shell"
+    rarity: UNCOMMON
+    description: "A hardened shell formed from volcanic basalt."
+
+  hoglin_tusk:
+    material: BONE
+    display_name: "Hoglin Tusk"
+    rarity: RARE
+    description: "A massive tusk from a hoglin brute."
+
+  ender_fragment:
+    material: ENDER_PEARL
+    display_name: "Ender Fragment"
+    rarity: RARE
+    description: "A shard of ender energy found in the nether."
+
+  soul_essence:
+    material: SOUL_LANTERN
+    display_name: "Soul Essence"
+    rarity: RARE
+    description: "Concentrated soul energy from the valley."
+
+  wither_bone:
+    material: WITHER_SKELETON_SKULL
+    display_name: "Wither Bone"
+    rarity: RARE
+    description: "A blackened bone radiating decay."
+
+  crimson_heart:
+    material: NETHER_WART
+    display_name: "Crimson Heart"
+    rarity: EPIC
+    description: "The pulsing heart of a crimson abomination."
+
+  volcanic_core:
+    material: NETHERITE_SCRAP
+    display_name: "Volcanic Core"
+    rarity: LEGENDARY
+    description: "A molten core from the depths of the basalt deltas."
+
+
+# ── Enchanted Materials ─────────────────────────────────
+# Created via createEnchantedMaterial(id, material, name, rarity, description)
+enchanted_materials:
+  enchanted_corrupted_flesh:
+    material: ROTTEN_FLESH
+    display_name: "Enchanted Corrupted Flesh"
+    rarity: UNCOMMON
+    description: "Empowered putrid flesh."
+
+  enchanted_wet_bone:
+    material: BONE
+    display_name: "Enchanted Wet Bone"
+    rarity: UNCOMMON
+    description: "An enchanted waterlogged bone."
+
+  enchanted_polar_fur:
+    material: RABBIT_HIDE
+    display_name: "Enchanted Polar Fur"
+    rarity: EPIC
+    description: "Magically enhanced polar fur."
+
+  enchanted_ice_wing:
+    material: PHANTOM_MEMBRANE
+    display_name: "Enchanted Ice Wing"
+    rarity: LEGENDARY
+    description: "A frigid wing pulsing with power."
+
+  enchanted_hyena_fur:
+    material: RABBIT_HIDE
+    display_name: "Enchanted Hyena Fur"
+    rarity: RARE
+    description: "Magically enhanced hyena fur."
+
+  enchanted_dread_soul:
+    material: SCULK
+    display_name: "Enchanted Dread Soul"
+    rarity: EPIC
+    description: "A soul amplified by dark magic."
+
+  enchanted_guardian_scale:
+    material: PRISMARINE_SHARD
+    display_name: "Enchanted Guardian Scale"
+    rarity: RARE
+    description: "A magically hardened guardian scale."
+
+  enchanted_mossy_vine:
+    material: VINE
+    display_name: "Enchanted Mossy Vine"
+    rarity: RARE
+    description: "A pulsing mossy vine from the jungle depths."
+
+  # ── Enchanted Nether Materials ────────────────────────────
+  enchanted_magma_residue:
+    material: MAGMA_CREAM
+    display_name: "Enchanted Magma Residue"
+    rarity: UNCOMMON
+    description: "Empowered molten residue."
+
+  enchanted_smoldering_rod:
+    material: BLAZE_ROD
+    display_name: "Enchanted Smoldering Rod"
+    rarity: RARE
+    description: "A rod pulsing with concentrated flame."
+
+  enchanted_corrupted_gold:
+    material: GOLD_NUGGET
+    display_name: "Enchanted Corrupted Gold"
+    rarity: RARE
+    description: "Gold refined by nether corruption."
+
+  enchanted_ghast_membrane:
+    material: GHAST_TEAR
+    display_name: "Enchanted Ghast Membrane"
+    rarity: RARE
+    description: "A membrane shimmering with spectral energy."
+
+  enchanted_crimson_scale:
+    material: RED_DYE
+    display_name: "Enchanted Crimson Scale"
+    rarity: RARE
+    description: "A scale infused with crimson power."
+
+  enchanted_hoglin_tusk:
+    material: BONE
+    display_name: "Enchanted Hoglin Tusk"
+    rarity: EPIC
+    description: "A tusk resonating with brute force."
+
+  enchanted_soul_essence:
+    material: SOUL_LANTERN
+    display_name: "Enchanted Soul Essence"
+    rarity: EPIC
+    description: "A soul fragment amplified by dark magic."
+
+  enchanted_basalt_shell:
+    material: DEEPSLATE
+    display_name: "Enchanted Basalt Shell"
+    rarity: EPIC
+    description: "A shell hardened by volcanic enchantment."
+
+# ══════════════════════════════════════════════════════════
+#  Armor Sets
+#  Each set defines: material_type, rarity, set_key (PDC key),
+#  bonuses, optional leather_color, optional attribute_bonuses,
+#  and per-piece stats.
+#
+#  bonus_key: the primary PDC bonus key applied per piece
+#  extra_pdc: additional PDC stats per piece
+#  attribute_bonuses: vanilla attribute modifiers per piece
+#    (water_movement_efficiency, movement_speed, etc.)
+# ══════════════════════════════════════════════════════════
+
+armor_sets:
+  # ── Scale Armor ─────────────────────────────────────────
+  # +1.25 SCC, +1.25 SCD, +1.25 SCA per piece
+  scale:
+    rarity: UNCOMMON
+    set_key: scale_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 1.25
+    extra_pdc:
+      sea_creature_defense: 1.25
+      sea_creature_attack: 1.25
+    attribute_bonuses:
+      water_movement_efficiency: 0.075
+    pieces:
+      helmet:
+        material: TURTLE_HELMET
+        display_name: "Scale Helmet"
+        armor: 2
+        toughness: 0
+        enchantments:
+          RESPIRATION: 3
+          AQUA_AFFINITY: 1
+      chestplate:
+        material: CHAINMAIL_CHESTPLATE
+        display_name: "Scale Chestplate"
+        armor: 6
+        toughness: 0
+      leggings:
+        material: CHAINMAIL_LEGGINGS
+        display_name: "Scale Leggings"
+        armor: 5
+        toughness: 0
+      boots:
+        material: CHAINMAIL_BOOTS
+        display_name: "Scale Boots"
+        armor: 1
+        toughness: 0
+        enchantments:
+          DEPTH_STRIDER: 3
+
+  # ── Ironclad Armor ──────────────────────────────────────
+  # +2.5 SCC, +2.5 SCD, +2.5 SCA per piece
+  ironclad:
+    material_type: IRON
+    rarity: EPIC
+    set_key: ironclad_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 2.5
+    extra_pdc:
+      sea_creature_defense: 2.5
+      sea_creature_attack: 2.5
+    attribute_bonuses:
+      water_movement_efficiency: 0.125
+    pieces:
+      helmet:
+        display_name: "Ironclad Helmet"
+        armor: 3
+        toughness: 2
+      chestplate:
+        display_name: "Ironclad Chestplate"
+        armor: 8
+        toughness: 2
+      leggings:
+        display_name: "Ironclad Leggings"
+        armor: 6
+        toughness: 2
+      boots:
+        display_name: "Ironclad Boots"
+        armor: 3
+        toughness: 2
+
+  # ── Dreadplate Armor ────────────────────────────────────
+  # +5 SCC, +5 SCD, +5 SCA per piece
+  dreadplate:
+    material_type: NETHERITE
+    rarity: LEGENDARY
+    set_key: dreadplate_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 5.0
+    extra_pdc:
+      sea_creature_defense: 5.0
+      sea_creature_attack: 5.0
+    attribute_bonuses:
+      water_movement_efficiency: 0.175
+    pieces:
+      helmet:
+        display_name: "Dreadplate Helmet"
+        armor: 3
+        toughness: 3
+      chestplate:
+        display_name: "Dreadplate Chestplate"
+        armor: 8
+        toughness: 3
+      leggings:
+        display_name: "Dreadplate Leggings"
+        armor: 6
+        toughness: 3
+      boots:
+        display_name: "Dreadplate Boots"
+        armor: 3
+        toughness: 3
+
+  # ── Scholar's Outfit ────────────────────────────────────
+  # +5% XP, +1.25 SCC per piece, +speed
+  scholar:
+    material_type: LEATHER
+    rarity: RARE
+    set_key: scholar_armor
+    leather_color: [75, 0, 130]
+    bonus_key: fishing_xp_bonus
+    bonus_value: 5.0
+    extra_pdc:
+      rare_creature_chance: 1.25
+    attribute_bonuses:
+      movement_speed: 0.01
+    pieces:
+      helmet:
+        display_name: "Scholar's Hood"
+        armor: 1
+        toughness: 0
+        durability: 165
+      chestplate:
+        display_name: "Scholar's Robe"
+        armor: 3
+        toughness: 0
+        durability: 240
+      leggings:
+        display_name: "Scholar's Trousers"
+        armor: 2
+        toughness: 0
+        durability: 225
+      boots:
+        display_name: "Scholar's Sandals"
+        armor: 1
+        toughness: 0
+        durability: 195
+
+  # ── Apprentice Robes ────────────────────────────────────
+  # +10% XP, +2.5 SCC, +1.25 SCD per piece, +speed
+  apprentice:
+    material_type: LEATHER
+    rarity: EPIC
+    set_key: apprentice_armor
+    leather_color: [25, 25, 112]
+    bonus_key: fishing_xp_bonus
+    bonus_value: 10.0
+    extra_pdc:
+      rare_creature_chance: 2.5
+      sea_creature_defense: 1.25
+    attribute_bonuses:
+      movement_speed: 0.015
+    pieces:
+      helmet:
+        display_name: "Apprentice Hood"
+        armor: 2
+        toughness: 1
+        durability: 275
+      chestplate:
+        display_name: "Apprentice Robe"
+        armor: 5
+        toughness: 1
+        durability: 400
+      leggings:
+        display_name: "Apprentice Trousers"
+        armor: 4
+        toughness: 1
+        durability: 375
+      boots:
+        display_name: "Apprentice Boots"
+        armor: 2
+        toughness: 1
+        durability: 325
+
+  # ── Grand Professor Set ─────────────────────────────────
+  # +15% XP, +3.75 SCC, +2.5 SCD per piece, +speed
+  grand_professor:
+    material_type: LEATHER
+    rarity: LEGENDARY
+    set_key: grand_professor_armor
+    leather_color: [255, 215, 0]
+    bonus_key: fishing_xp_bonus
+    bonus_value: 15.0
+    extra_pdc:
+      rare_creature_chance: 3.75
+      sea_creature_defense: 2.5
+    attribute_bonuses:
+      movement_speed: 0.02
+    pieces:
+      helmet:
+        display_name: "Grand Professor's Hat"
+        armor: 3
+        toughness: 2
+        durability: 407
+      chestplate:
+        display_name: "Grand Professor's Robe"
+        armor: 7
+        toughness: 2
+        durability: 592
+      leggings:
+        display_name: "Grand Professor's Trousers"
+        armor: 5
+        toughness: 2
+        durability: 555
+      boots:
+        display_name: "Grand Professor's Boots"
+        armor: 3
+        toughness: 2
+        durability: 481
+
+  # ── Deadman Set ─────────────────────────────────────────
+  # +5 SCC, +5 SCD, +5 SCA per piece (base — night doubles in MobManager)
+  deadman:
+    material_type: LEATHER
+    rarity: EPIC
+    set_key: deadman_armor
+    leather_color: [0, 0, 0]
+    bonus_key: rare_creature_chance
+    bonus_value: 5.0
+    lore: "Armor of the drowned rider."
+    lore_extra: "Stats double at night."
+    lore_extra_color: DARK_PURPLE
+    extra_pdc:
+      sea_creature_defense: 5.0
+      sea_creature_attack: 5.0
+    pieces:
+      helmet:
+        display_name: "Deadman Helmet"
+        armor: 3
+        toughness: 2
+        durability: 275
+      chestplate:
+        display_name: "Deadman Chestplate"
+        armor: 8
+        toughness: 2
+        durability: 400
+      leggings:
+        display_name: "Deadman Leggings"
+        armor: 6
+        toughness: 2
+        durability: 375
+      boots:
+        display_name: "Deadman Boots"
+        armor: 3
+        toughness: 2
+        durability: 325
+
+  # ── Treasure Armor ──────────────────────────────────────
+  # +1.25 TC, +1.0 DC per piece
+  treasure:
+    material_type: GOLDEN
+    rarity: UNCOMMON
+    set_key: treasure_armor
+    bonus_key: treasure_chance_bonus
+    bonus_value: 1.25
+    extra_pdc:
+      double_catch_bonus: 1.0
+    pieces:
+      helmet:
+        display_name: "Treasure Helmet"
+        armor: 2
+        toughness: 0
+        durability: 165
+      chestplate:
+        display_name: "Treasure Chestplate"
+        armor: 5
+        toughness: 0
+        durability: 240
+      leggings:
+        display_name: "Treasure Leggings"
+        armor: 3
+        toughness: 0
+        durability: 225
+      boots:
+        display_name: "Treasure Boots"
+        armor: 1
+        toughness: 0
+        durability: 195
+
+  # ── Pure Treasure Armor ─────────────────────────────────
+  # +2.5 TC, +2.0 DC per piece
+  pure_treasure:
+    material_type: GOLDEN
+    rarity: RARE
+    set_key: pure_treasure_armor
+    bonus_key: treasure_chance_bonus
+    bonus_value: 2.5
+    extra_pdc:
+      double_catch_bonus: 2.0
+    pieces:
+      helmet:
+        display_name: "Pure Treasure Helmet"
+        armor: 3
+        toughness: 1
+        durability: 275
+      chestplate:
+        display_name: "Pure Treasure Chestplate"
+        armor: 7
+        toughness: 1
+        durability: 400
+      leggings:
+        display_name: "Pure Treasure Leggings"
+        armor: 5
+        toughness: 1
+        durability: 375
+      boots:
+        display_name: "Pure Treasure Boots"
+        armor: 2
+        toughness: 1
+        durability: 325
+
+  # ── Perfect Treasure Armor ──────────────────────────────
+  # +5.0 TC, +3.5 DC per piece
+  perfect_treasure:
+    material_type: GOLDEN
+    rarity: EPIC
+    set_key: perfect_treasure_armor
+    bonus_key: treasure_chance_bonus
+    bonus_value: 5.0
+    extra_pdc:
+      double_catch_bonus: 3.5
+    pieces:
+      helmet:
+        display_name: "Perfect Treasure Helmet"
+        armor: 3
+        toughness: 2
+        durability: 407
+      chestplate:
+        display_name: "Perfect Treasure Chestplate"
+        armor: 8
+        toughness: 2
+        durability: 592
+      leggings:
+        display_name: "Perfect Treasure Leggings"
+        armor: 6
+        toughness: 2
+        durability: 555
+      boots:
+        display_name: "Perfect Treasure Boots"
+        armor: 3
+        toughness: 2
+        durability: 481
+
+  # ── Magma Scale Armor ─────────────────────────────────────
+  # +3.0 SCC, +3.0 SCD, +3.0 SCA per piece
+  magma_scale:
+    material_type: GOLDEN
+    rarity: UNCOMMON
+    set_key: magma_scale_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 3.0
+    extra_pdc:
+      sea_creature_defense: 3.0
+      sea_creature_attack: 3.0
+      heat_resistance: 5.0
+    pieces:
+      helmet:
+        display_name: "Magma Scale Helmet"
+        armor: 3
+        toughness: 2
+        durability: 320
+      chestplate:
+        display_name: "Magma Scale Chestplate"
+        armor: 8
+        toughness: 2
+        durability: 470
+      leggings:
+        display_name: "Magma Scale Leggings"
+        armor: 6
+        toughness: 2
+        durability: 440
+      boots:
+        display_name: "Magma Scale Boots"
+        armor: 3
+        toughness: 2
+        durability: 360
+
+  # ── Infernal Plate Armor ─────────────────────────────────
+  # +7.5 SCC, +7.5 SCD, +7.5 SCA, −10% heat per piece
+  infernal_plate:
+    material_type: DIAMOND
+    rarity: EPIC
+    set_key: infernal_plate_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 7.5
+    extra_pdc:
+      sea_creature_defense: 7.5
+      sea_creature_attack: 7.5
+      heat_resistance: 10.0
+    pieces:
+      helmet:
+        display_name: "Infernal Plate Helmet"
+        armor: 3
+        toughness: 3
+        durability: 420
+      chestplate:
+        display_name: "Infernal Plate Chestplate"
+        armor: 8
+        toughness: 3
+        durability: 620
+      leggings:
+        display_name: "Infernal Plate Leggings"
+        armor: 6
+        toughness: 3
+        durability: 580
+      boots:
+        display_name: "Infernal Plate Boots"
+        material: GOLDEN_BOOTS
+        trim_material: netherite
+        trim_pattern: silence
+        armor: 3
+        toughness: 3
+        durability: 500
+
+  # ── Volcanic Dreadplate Armor ────────────────────────────
+  # +6.0 SCC, +6.0 SCD, +6.0 SCA, −15% heat per piece
+  volcanic_dreadplate:
+    material_type: NETHERITE
+    rarity: LEGENDARY
+    set_key: volcanic_dreadplate_armor
+    bonus_key: rare_creature_chance
+    bonus_value: 6.0
+    extra_pdc:
+      sea_creature_defense: 6.0
+      sea_creature_attack: 6.0
+      heat_resistance: 15.0
+    pieces:
+      helmet:
+        display_name: "Volcanic Dreadplate Helmet"
+        armor: 4
+        toughness: 3
+        durability: 420
+      chestplate:
+        display_name: "Volcanic Dreadplate Chestplate"
+        armor: 9
+        toughness: 3
+        durability: 620
+      leggings:
+        display_name: "Volcanic Dreadplate Leggings"
+        armor: 7
+        toughness: 3
+        durability: 580
+      boots:
+        display_name: "Volcanic Dreadplate Boots"
+        material: GOLDEN_BOOTS
+        trim_material: netherite
+        trim_pattern: silence
+        armor: 4
+        toughness: 3
+        durability: 500
+
+
+# ══════════════════════════════════════════════════════════
+#  Fishing Rods
+#  Each rod defines: display_name, rarity, pdc_key,
+#  optional stats (rare_creature_chance, fishing_speed),
+#  and lore lines.
+# ══════════════════════════════════════════════════════════
+
+fishing_rods:
+  neptunes_rod:
+    material: FISHING_ROD
+    display_name: "Neptune's Rod"
+    rarity: RARE
+    pdc_key: neptunes_rod
+    rare_creature_chance: 5.0
+    fishing_speed: 5.0
+    sea_creature_attack: 30.0
+    bobber_damage: 5.0
+    durability: 384
+    lore:
+      - "Attracts rare sea creatures."
+
+  shredder:
+    material: FISHING_ROD
+    display_name: "Shredder"
+    rarity: EPIC
+    pdc_key: shredder
+    rare_creature_chance: 10.0
+    fishing_speed: 10.0
+    sea_creature_attack: 60.0
+    bobber_damage: 9.0
+    durability: 512
+    lore:
+      - "An epic rod forged from the depths."
+
+  leviathan:
+    material: FISHING_ROD
+    display_name: "Leviathan"
+    rarity: LEGENDARY
+    pdc_key: leviathan
+    rare_creature_chance: 20.0
+    fishing_speed: 20.0
+    sea_creature_attack: 100.0
+    bobber_damage: 14.0
+    durability: 768
+    lore:
+      - "The ultimate rod, forged from beasts of legend."
+
+  harmony_rod:
+    material: FISHING_ROD
+    display_name: "Harmony Rod"
+    rarity: UNCOMMON
+    pdc_key: harmony_rod
+    sea_creature_attack: 10.0
+    bobber_damage: 3.0
+    durability: 256
+    lore:
+      - "Scares away hostile creatures."
+      - "Attracts more passive creatures."
+
+  # ── Lava Fishing Rods ────────────────────────────────────
+  ember_rod:
+    material: FISHING_ROD
+    display_name: "Ember Rod"
+    rarity: RARE
+    pdc_key: ember_rod
+    rare_creature_chance: 5.0
+    fishing_speed: 5.0
+    sea_creature_attack: 30.0
+    bobber_damage: 5.0
+    lava_rod: true
+    durability: 384
+    lore:
+      - "A lava fishing rod forged from nether embers."
+
+  inferno_rod:
+    material: FISHING_ROD
+    display_name: "Inferno Rod"
+    rarity: EPIC
+    pdc_key: inferno_rod
+    rare_creature_chance: 10.0
+    fishing_speed: 10.0
+    sea_creature_attack: 60.0
+    bobber_damage: 9.0
+    lava_rod: true
+    durability: 512
+    lore:
+      - "An infernal rod for lava fishing."
+
+  hellfire_rod:
+    material: FISHING_ROD
+    display_name: "Hellfire Rod"
+    rarity: LEGENDARY
+    pdc_key: hellfire_rod
+    rare_creature_chance: 15.0
+    fishing_speed: 15.0
+    sea_creature_attack: 80.0
+    bobber_damage: 11.0
+    lava_rod: true
+    heat_resistance: 20.0
+    durability: 768
+    lore:
+      - "A blazing rod balanced between power and control."
+
+  volcanic_rod:
+    material: FISHING_ROD
+    display_name: "Volcanic Rod"
+    rarity: LEGENDARY
+    pdc_key: volcanic_rod
+    rare_creature_chance: 30.0
+    fishing_speed: 25.0
+    sea_creature_attack: 150.0
+    bobber_damage: 18.0
+    lava_rod: true
+    heat_resistance: 30.0
+    durability: 1024
+    lore:
+      - "Forged from the volcanic core itself."
+
+
+# ══════════════════════════════════════════════════════════
+#  Weapons
+#  Each weapon defines: material, display_name, rarity,
+#  description/lore, enchantments, pdc (arbitrary doubles),
+#  and an optional upgrade_tier.
+# ══════════════════════════════════════════════════════════
+
+weapons:
+  beginner_trident_1:
+    material: TRIDENT
+    display_name: "Novice Trident"
+    rarity: UNCOMMON
+    lore:
+      - text: "A starter trident for early sea hunting."
+        color: DARK_GRAY
+    enchantments:
+      LOYALTY: 1
+    pdc:
+      sea_creature_attack: 5.0
+
+  beginner_trident_2:
+    material: TRIDENT
+    display_name: "Adept Trident"
+    rarity: RARE
+    lore:
+      - text: "A sharper trident favored by experienced anglers."
+        color: DARK_GRAY
+    enchantments:
+      LOYALTY: 2
+    pdc:
+      sea_creature_attack: 10.0
+
+  trident_1:
+    material: TRIDENT
+    display_name: "Prismarine Harpoon"
+    rarity: RARE
+    lore:
+      - text: "A reinforced harpoon for hunting sea beasts."
+        color: DARK_GRAY
+    enchantments:
+      LOYALTY: 3
+    pdc:
+      sea_creature_attack: 20.0
+    upgrade_tier: 1
+
+  trident_2:
+    material: TRIDENT
+    display_name: "Tidesplitter"
+    rarity: EPIC
+    lore:
+      - text: "Splits the waves and pierces the toughest scales."
+    enchantments:
+      LOYALTY: 4
+    pdc:
+      sea_creature_attack: 40.0
+    upgrade_tier: 2
+
+  trident_3:
+    material: TRIDENT
+    display_name: "Dreadspear"
+    rarity: LEGENDARY
+    lore:
+      - text: "Forged with the souls of the deep."
+    enchantments:
+      LOYALTY: 5
+    pdc:
+      sea_creature_attack: 60.0
+    upgrade_tier: 3
+
+  poseidons_trident:
+    material: TRIDENT
+    display_name: "Poseidon's Trident"
+    rarity: LEGENDARY
+    name_color: GOLD
+    lore:
+      - text: "The legendary weapon of the sea god."
+        color: DARK_GRAY
+    enchantments:
+      LOYALTY: 6
+    pdc:
+      sea_creature_attack: 80.0
+    upgrade_tier: 4
+
+
+  # ── Hephaestean Trident ───────────────────────────────
+  hephaestean_trident:
+    material: TRIDENT
+    display_name: "Hephaestean Poseidon's Trident"
+    rarity: MYTHIC
+    pdc_key: hephaesteantrident
+    lore:
+      - text: "Forged by Hephaestus himself"
+        color: DARK_GRAY
+    enchantments:
+      LOYALTY: 3
+      CHANNELING: 1
+      IMPALING: 5
+    pdc:
+      sea_creature_attack: 80.0
+    upgrade_tier: 5
+
+
+# ══════════════════════════════════════════════════════════
+#  Utility Items
+#  Items with unique PDC identifier keys and special
+#  right-click behaviours.
+#  pdc_key: sets a BYTE=1 PDC tag for identification
+# ══════════════════════════════════════════════════════════
+
+utility_items:
+  fish_bucket:
+    material: WATER_BUCKET
+    display_name: "Fish Bucket"
+    rarity: COMMON
+    pdc_key: fish_bucket
+    lore:
+      - text: "A bucket used for catching fish."
+        color: DARK_GRAY
+      - text: "Right-click on water to catch nearby fish!"
+        color: YELLOW
+
+  treasure_totem:
+    material: CONDUIT
+    display_name: "Treasure Totem"
+    rarity: LEGENDARY
+    pdc_key: treasure_totem
+    lore:
+      - text: "Place to grant nearby players"
+        color: YELLOW
+      - text: "+5 Treasure Chance within 10 blocks."
+        color: YELLOW
+
+  display_case:
+    material: GLASS
+    display_name: "Display Case"
+    rarity: RARE
+    pdc_key: display_case
+    lore:
+      - text: "Place to display an item inside."
+        color: YELLOW
+      - text: "Right-click with an item to place it."
+        color: DARK_GRAY
+      - text: "Right-click again to swap."
+        color: DARK_GRAY
+
+  netherite_relic:
+    material: NETHERITE_BLOCK
+    display_name: "Netherite Gladiator Statue"
+    rarity: LEGENDARY
+    pdc_key: netherite_relic
+    lore:
+      - text: "A majestic statue depicting a legendary gladiator."
+        color: DARK_GRAY
+      - text: "Place to display this imposing monument."
+        color: YELLOW
+
+  fishing_journal:
+    material: BOOK
+    display_name: "Fishing Journal"
+    rarity: COMMON
+    pdc_key: fishing_journal
+    lore:
+      - text: "A record of your fishing discoveries."
+        color: DARK_GRAY
+      - text: "Right-click to open Encyclopedia."
+        color: YELLOW
+
+  # ── Cooling Items ────────────────────────────────────────
+  frost_salve:
+    material: SNOWBALL
+    display_name: "Frost Salve"
+    rarity: UNCOMMON
+    pdc_key: frost_salve
+    lore:
+      - text: "Right-click to reduce heat by 25."
+        color: YELLOW
+      - text: "Consumed on use."
+        color: DARK_GRAY
+
+  magma_filter:
+    material: BREWING_STAND
+    display_name: "Magma Filter"
+    rarity: RARE
+    pdc_key: magma_filter
+    lore:
+      - text: "Right-click to reduce heat by 50."
+        color: YELLOW
+      - text: "Consumed on use."
+        color: DARK_GRAY

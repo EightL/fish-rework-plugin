@@ -1,0 +1,2408 @@
+# =============================================================================
+# Mob Definitions for Fishing Rework
+# =============================================================================
+# This file contains all mob definitions used by the fishing system.
+#
+# Structure:
+#   entity_type:        The Bukkit EntityType to spawn
+#   display_name:       The custom display name shown to players
+#   xp:                 Experience awarded when caught/killed
+#   base_weight:        Weight in kg used for fishing mechanics
+#   default_chance:     Base % chance to encounter (0.0 = biome-specific only)
+#   category:           PASSIVE | HOSTILE | TREASURE
+#   required_level:     Minimum fishing level required
+#   boost_by_rare_creature: Whether Rare Creature enchant boosts spawn chance
+#   collection_icon:    Material used as icon in the collection GUI
+#   collection_name:    Display name in the collection GUI
+#   rarity:             COMMON | UNCOMMON | RARE | EPIC | LEGENDARY
+#   drops:              List of item drops (omitted if none)
+#     - item:           Custom item ID from ItemManager
+#     - vanilla:        Vanilla Minecraft material
+#     - random_item:    List of custom item IDs to pick from randomly
+#     - treasure_loot:  RANDOM (treasureManager) or rarity (itemManager)
+#     - chance:         Drop chance (0.0 - 1.0)
+#     - min / max:      Min and max quantity
+# =============================================================================
+
+mobs:
+
+  # ===========================================================================
+  # Passive Fish (Global Defaults)
+  # ===========================================================================
+
+  cod:
+    entity_type: COD
+    display_name: "Cod"
+    xp: 10.0
+    base_weight: 1.0
+    default_chance: 30.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: COD_SPAWN_EGG
+    collection_name: "Common Cod"
+    rarity: COMMON
+    drops:
+    - vanilla: COD
+      chance: 1.0
+      min: 1
+      max: 1
+
+  salmon:
+    entity_type: SALMON
+    display_name: "Salmon"
+    xp: 15.0
+    base_weight: 2.0
+    default_chance: 25.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: SALMON_SPAWN_EGG
+    collection_name: "Slippery Salmon"
+    rarity: COMMON
+    drops:
+    - vanilla: SALMON
+      chance: 1.0
+      min: 1
+      max: 1
+
+  squid:
+    entity_type: SQUID
+    display_name: "Squid"
+    xp: 20.0
+    base_weight: 3.0
+    default_chance: 18.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: SQUID_SPAWN_EGG
+    collection_name: "Inky Squid"
+    rarity: COMMON
+    drops:
+    - vanilla: INK_SAC
+      chance: 1.0
+      min: 1
+      max: 3
+
+  pufferfish:
+    entity_type: PUFFERFISH
+    display_name: "Pufferfish"
+    xp: 30.0
+    base_weight: 1.5
+    default_chance: 12.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: PUFFERFISH_SPAWN_EGG
+    collection_name: "Spiky Pufferfish"
+    rarity: COMMON
+    drops:
+    - vanilla: PUFFERFISH
+      chance: 1.0
+      min: 1
+      max: 1
+
+  # ===========================================================================
+  # Global Hostiles
+  # ===========================================================================
+
+  drowned:
+    entity_type: DROWNED
+    display_name: "Drowned"
+    xp: 50.0
+    base_weight: 60.0
+    default_chance: 7.2
+    category: HOSTILE
+    required_level: 2
+    boost_by_rare_creature: true
+    collection_icon: DROWNED_SPAWN_EGG
+    collection_name: "Undead Drowned"
+    rarity: UNCOMMON
+    drops:
+    - item: corrupted_flesh
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 1.0
+      damage_multiplier: 1.0
+
+  guardian:
+    entity_type: GUARDIAN
+    display_name: "Guardian"
+    xp: 150.0
+    base_weight: 100.0
+    default_chance: 2.5
+    category: HOSTILE
+    required_level: 4
+    boost_by_rare_creature: true
+    collection_icon: GUARDIAN_SPAWN_EGG
+    collection_name: "Prismarine Guardian"
+    rarity: UNCOMMON
+    drops:
+    - item: guardian_scale
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 1.0
+      damage_multiplier: 1.0
+
+  elder_guardian:
+    entity_type: ELDER_GUARDIAN
+    display_name: "Elder Guardian"
+    xp: 500.0
+    base_weight: 2000.0
+    default_chance: 0.7
+    category: HOSTILE
+    required_level: 17
+    boost_by_rare_creature: true
+    collection_icon: ELDER_GUARDIAN_SPAWN_EGG
+    collection_name: "Ancient Elder"
+    rarity: RARE
+    drops:
+    - item: guardian_scale
+      chance: 1.0
+      min: 2
+      max: 4
+    spawn:
+      health_multiplier: 0.7
+      damage_multiplier: 2.0
+
+  # ===========================================================================
+  # Epic Boss
+  # ===========================================================================
+
+  dead_rider:
+    entity_type: STRAY
+    display_name: "Dead Rider"
+    xp: 2500.0
+    base_weight: 5000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 27
+    boost_by_rare_creature: true
+    collection_icon: NETHERITE_SPEAR
+    collection_name: "Dead Rider"
+    rarity: EPIC
+    drops:
+    - random_item:
+      - deadman_helmet
+      - deadman_chestplate
+      - deadman_leggings
+      - deadman_boots
+      chance: 0.25
+      min: 1
+      max: 1
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: ELDER_GUARDIAN
+        display_name: "Elder Guardian Mount"
+        show_name: false
+        aggro:
+          speed: 1.0
+          damage: 24.0
+          range: 2.5
+          hit_interval: 30
+      health: 800.0
+      damage: 12.0
+      name_color: RED
+      equipment:
+        helmet: dead_rider_head
+        chestplate: deadman_chestplate
+        leggings: deadman_leggings
+        boots: deadman_boots
+        mainhand: netherite_spear
+      abilities:
+      - id: GROUND_SLAM
+        cooldown_ticks: 120
+        weight: 3
+        chance: 1.0
+      - id: TIDAL_PULL
+        cooldown_ticks: 100
+        weight: 2
+        chance: 1.0
+      - id: INK_CLOUD
+        cooldown_ticks: 140
+        weight: 1
+        chance: 0.8
+
+  # ===========================================================================
+  # Heartlands Hostiles
+  # ===========================================================================
+
+  iron_golem_aggro:
+    entity_type: IRON_GOLEM
+    display_name: "Rusted Sentinel"
+    xp: 200.0
+    base_weight: 800.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 13
+    boost_by_rare_creature: true
+    collection_icon: IRON_GOLEM_SPAWN_EGG
+    collection_name: "Rusted Sentinel"
+    rarity: UNCOMMON
+    drops:
+    - item: ironclad_plate
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      health: 300.0
+      damage_multiplier: 1.25
+      not_player_created: true
+      abilities:
+      - id: GROUND_SLAM
+        cooldown_ticks: 120
+        weight: 1
+        chance: 1.0
+
+  pillager_trio:
+    entity_type: PILLAGER
+    display_name: "Raider Patrol"
+    xp: 300.0
+    base_weight: 150.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 11
+    boost_by_rare_creature: true
+    collection_icon: PILLAGER_SPAWN_EGG
+    collection_name: "Raider Patrol"
+    rarity: RARE
+    drops:
+    - item: battle_scrap
+      chance: 1.0
+      min: 1
+      max: 3
+    spawn:
+      type: GROUP
+      group_kill_all: true
+      spread: 2.0
+      members:
+      - entity_type: PILLAGER
+        count: 2
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: VINDICATOR
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+
+  pillager_quartet:
+    entity_type: PILLAGER
+    display_name: "Illager War Party"
+    xp: 500.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 21
+    boost_by_rare_creature: true
+    collection_icon: VINDICATOR_SPAWN_EGG
+    collection_name: "Illager War Party"
+    rarity: RARE
+    drops:
+    - item: battle_scrap
+      chance: 1.0
+      min: 2
+      max: 5
+    spawn:
+      type: GROUP
+      group_kill_all: true
+      spread: 2.0
+      members:
+      - entity_type: PILLAGER
+        count: 2
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: VINDICATOR
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: EVOKER
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+
+  pillager_quintet:
+    entity_type: PILLAGER
+    display_name: "Illager Warband"
+    xp: 1000.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 29
+    boost_by_rare_creature: true
+    collection_icon: RAVAGER_SPAWN_EGG
+    collection_name: "Illager Warband"
+    rarity: EPIC
+    drops:
+    - item: battle_scrap
+      chance: 1.0
+      min: 4
+      max: 8
+    spawn:
+      type: GROUP
+      group_kill_all: true
+      spread: 2.0
+      members:
+      - entity_type: PILLAGER
+        count: 2
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: VINDICATOR
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: EVOKER
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: RAVAGER
+        count: 1
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+        show_name: false
+        rider:
+          entity_type: PILLAGER
+          health_multiplier: 2.0
+          damage_multiplier: 2.0
+
+  # ===========================================================================
+  # Scorched Earth Hostiles
+  # ===========================================================================
+
+  husk:
+    entity_type: HUSK
+    display_name: "Dune Shambler"
+    xp: 60.0
+    base_weight: 70.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 3
+    boost_by_rare_creature: true
+    collection_icon: HUSK_SPAWN_EGG
+    collection_name: "Dune Shambler"
+    rarity: UNCOMMON
+    drops:
+    - item: corrupted_flesh
+      chance: 1.0
+      min: 1
+      max: 2
+
+  parched:
+    entity_type: PARCHED
+    display_name: "Scorched Wanderer"
+    xp: 120.0
+    base_weight: 80.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 6
+    boost_by_rare_creature: true
+    collection_icon: PARCHED_SPAWN_EGG
+    collection_name: "Scorched Wanderer"
+    rarity: UNCOMMON
+    drops:
+    - item: wet_bone
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 2.0
+      damage_multiplier: 3.0
+      equipment:
+        mainhand: "enchanted:BOW:POWER:3"
+
+  dune_rider:
+    entity_type: CAMEL_HUSK
+    display_name: "Dune Rider"
+    xp: 350.0
+    base_weight: 300.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 21
+    boost_by_rare_creature: true
+    collection_icon: CAMEL_HUSK_SPAWN_EGG
+    collection_name: "Dune Rider"
+    rarity: RARE
+    drops:
+    - item: dune_spice
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: CAMEL_HUSK
+        display_name: "Dune Steed"
+        show_name: false
+        aggro:
+          speed: 1.3
+          damage: 20.0
+          range: 2.5
+          hit_interval: 30
+      rider_entity_type: PARCHED
+      health: 400.0
+      damage_multiplier: 2.0
+      name_color: GOLD
+      abilities:
+      - id: DUNE_BEAM
+        cooldown_ticks: 120
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Wild Tropics - Swamp Hostiles
+  # ===========================================================================
+
+  bogged:
+    entity_type: BOGGED
+    display_name: "Mire Lurker"
+    xp: 70.0
+    base_weight: 60.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 3
+    boost_by_rare_creature: true
+    collection_icon: BOGGED_SPAWN_EGG
+    collection_name: "Mire Lurker"
+    rarity: UNCOMMON
+    drops:
+    - item: wet_bone
+      chance: 1.0
+      min: 1
+      max: 2
+
+  slime:
+    entity_type: SLIME
+    display_name: "Bog Blob"
+    xp: 50.0
+    base_weight: 40.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 8
+    boost_by_rare_creature: true
+    collection_icon: SLIME_SPAWN_EGG
+    collection_name: "Bog Blob"
+    rarity: UNCOMMON
+    drops:
+    - item: slimy_chunk
+      chance: 1.0
+      min: 1
+      max: 3
+    spawn:
+      type: SCALED
+      slime_size: 4
+      damage_multiplier: 3.0
+      group_kill_all: true
+
+  witch:
+    entity_type: WITCH
+    display_name: "Swamp Hag"
+    xp: 180.0
+    base_weight: 100.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 14
+    boost_by_rare_creature: true
+    collection_icon: WITCH_SPAWN_EGG
+    collection_name: "Swamp Hag"
+    rarity: RARE
+    spawn:
+      health_multiplier: 2.0
+      aggro:
+        speed: 1.2
+        damage: 12.0
+        range: 2.5
+        hit_interval: 19
+      particle: potion
+
+  king_slime:
+    entity_type: SLIME
+    display_name: "King Slime"
+    xp: 500.0
+    base_weight: 600.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 24
+    boost_by_rare_creature: true
+    collection_icon: SLIME_SPAWN_EGG
+    collection_name: "King Slime"
+    rarity: EPIC
+    drops:
+    - item: kings_crown
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      type: SCALED
+      slime_size: 8
+      health: 600.0
+      damage_multiplier: 3.0
+      group_kill_all: true
+      name_color: DARK_GREEN
+      abilities:
+      - id: KING_SLIME_SPLASH
+        cooldown_ticks: 20
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Wild Tropics - Savanna Hostiles
+  # ===========================================================================
+
+  hyena:
+    entity_type: WOLF
+    display_name: "Savanna Hyena"
+    xp: 80.0
+    base_weight: 40.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 8
+    boost_by_rare_creature: true
+    collection_icon: WOLF_SPAWN_EGG
+    collection_name: "Savanna Hyena"
+    rarity: UNCOMMON
+    drops:
+    - item: hyena_fur
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 2.0
+      damage_multiplier: 1.0
+
+  stampede_bull:
+    entity_type: RAVAGER
+    display_name: "Stampede Bull"
+    xp: 250.0
+    base_weight: 300.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 17
+    boost_by_rare_creature: true
+    collection_icon: RAVAGER_SPAWN_EGG
+    collection_name: "Stampede Bull"
+    rarity: RARE
+    drops:
+    - item: ravager_scales
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 1.0
+      damage_multiplier: 1.5
+
+  vulture_king:
+    entity_type: PHANTOM
+    display_name: "Vulture King"
+    xp: 400.0
+    base_weight: 50.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 21
+    boost_by_rare_creature: true
+    collection_icon: PHANTOM_SPAWN_EGG
+    collection_name: "Vulture King"
+    rarity: RARE
+    drops:
+    - item: phantoms_eye
+      chance: 0.75
+      min: 1
+      max: 1
+    spawn:
+      scale: 1.8
+      health: 80.0
+      damage: 30.0
+      abilities:
+      - id: VULTURE_MISSILE
+        cooldown_ticks: 240
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Wild Tropics - Jungle Hostiles
+  # ===========================================================================
+
+  jungle_spider:
+    entity_type: SPIDER
+    display_name: "Venomfang Crawler"
+    xp: 90.0
+    base_weight: 60.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 3
+    boost_by_rare_creature: true
+    collection_icon: SPIDER_SPAWN_EGG
+    collection_name: "Venomfang Crawler"
+    rarity: UNCOMMON
+    drops:
+    - item: spider_silk
+      chance: 1.0
+      min: 1
+      max: 2
+
+  vine_strangler:
+    entity_type: CREEPER
+    display_name: "Vine Strangler"
+    xp: 200.0
+    base_weight: 80.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 7
+    boost_by_rare_creature: true
+    collection_icon: CREEPER_SPAWN_EGG
+    collection_name: "Vine Strangler"
+    rarity: RARE
+    drops:
+    - item: mossy_vine
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      abilities:
+      - id: MINI_BLAST
+        cooldown_ticks: 120
+        weight: 1
+        chance: 1.0
+
+  temple_guardian:
+    entity_type: EVOKER
+    display_name: "Temple Guardian"
+    xp: 450.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 22
+    boost_by_rare_creature: true
+    collection_icon: EVOKER_SPAWN_EGG
+    collection_name: "Temple Guardian"
+    rarity: EPIC
+    drops:
+    - item: temple_slab
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: PANDA
+        display_name: "Jungle Guardian"
+        show_name: true
+        damage_multiplier: 4.0
+        panda_gene: AGGRESSIVE
+        name_color: DARK_GREEN
+      health: 304.0
+      name_color: DARK_PURPLE
+      abilities:
+      - id: TEMPLE_RITUAL
+        cooldown_ticks: 180
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Seven Seas Hostiles
+  # ===========================================================================
+
+  zombie_nautilus:
+    entity_type: ZOMBIE_NAUTILUS
+    display_name: "Zombie Nautilus"
+    xp: 100.0
+    base_weight: 80.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 9
+    boost_by_rare_creature: true
+    collection_icon: ZOMBIE_NAUTILUS_SPAWN_EGG
+    collection_name: "Zombie Nautilus"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: NAUTILUS_SHELL
+      chance: 0.75
+      min: 1
+      max: 1
+    - item: corrupted_flesh
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      health: 60.0
+      damage_multiplier: 2.0
+      name_color: DARK_AQUA
+
+  great_white:
+    entity_type: DOLPHIN
+    display_name: "Great White Shark"
+    xp: 250.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 22
+    boost_by_rare_creature: true
+    collection_icon: DOLPHIN_SPAWN_EGG
+    collection_name: "Great White Shark"
+    rarity: RARE
+    drops:
+    - item: shark_tooth
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      scale: 2.5
+      health: 60.0
+      aggro:
+        speed: 1.5
+        damage: 24.0
+        range: 5.0
+        hit_interval: 30
+      abilities:
+      - id: TIDAL_PULL
+        cooldown_ticks: 100
+        weight: 1
+        chance: 1.0
+
+  megalodon:
+    entity_type: DOLPHIN
+    display_name: "Megalodon"
+    xp: 600.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 29
+    boost_by_rare_creature: true
+    collection_icon: DOLPHIN_SPAWN_EGG
+    collection_name: "Megalodon"
+    rarity: EPIC
+    drops:
+    - item: beast_scale
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 5.0
+      health: 150.0
+      particle: gore
+      aggro:
+        speed: 1.8
+        damage: 22.5
+        range: 10.0
+        hit_interval: 40
+      abilities:
+      - id: TIDAL_PULL
+        cooldown_ticks: 90
+        weight: 1
+        chance: 1.0
+
+  poseidon:
+    entity_type: DROWNED
+    display_name: "Poseidon"
+    xp: 1200.0
+    base_weight: 1000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 33
+    boost_by_rare_creature: true
+    collection_icon: TRIDENT
+    collection_name: "Poseidon"
+    rarity: EPIC
+    drops:
+    - item: poseidons_trident
+      chance: 0.25
+      min: 1
+      max: 1
+    - item: poseidons_crown
+      chance: 0.25
+      min: 1
+      max: 1
+    - item: poseidons_tear
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: DOLPHIN
+        display_name: "Poseidon's Steed"
+        show_name: false
+        scale: 3.0
+        aggro:
+          speed: 1.6
+          damage: 12.75
+          range: 5.0
+          hit_interval: 40
+      health: 750
+      damage: 40.0
+      name_color: AQUA
+      abilities:
+      - id: POSEIDON_WAVE
+        cooldown_ticks: 120
+        weight: 1
+        chance: 1.0
+      - id: POSEIDON_STORM_WAVE
+        cooldown_ticks: 60
+        weight: 2
+        chance: 1.0
+      equipment:
+        helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAzNTRiMDc5Y2VhMDBmMTFhMjhlN2MyMWJhOWMxM2ExN2NjY2IwNjA1NjAxOWNiNGM2NGJjMjQzNTc1NTI5YSJ9fX0="
+        chestplate: "dyed:LEATHER_CHESTPLATE:#005064"
+        leggings: "dyed:LEATHER_LEGGINGS:#005064"
+        boots: "dyed:LEATHER_BOOTS:#005064"
+        mainhand: "enchanted:TRIDENT:IMPALING:5"
+
+  # ===========================================================================
+  # Frozen Peaks Hostiles
+  # ===========================================================================
+
+  stray:
+    entity_type: STRAY
+    display_name: "Frostbitten Archer"
+    xp: 70.0
+    base_weight: 60.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 3
+    boost_by_rare_creature: true
+    collection_icon: STRAY_SPAWN_EGG
+    collection_name: "Frostbitten Archer"
+    rarity: UNCOMMON
+    drops:
+    - item: wet_bone
+      chance: 1.0
+      min: 1
+      max: 2
+
+  angry_polar_bear:
+    entity_type: POLAR_BEAR
+    display_name: "Glacial Mauler"
+    xp: 150.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 12
+    boost_by_rare_creature: true
+    collection_icon: POLAR_BEAR_SPAWN_EGG
+    collection_name: "Glacial Mauler"
+    rarity: RARE
+    drops:
+    - item: polar_fur
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 1.5
+      damage_multiplier: 3.0
+      particle: blood_light
+
+  frost_phantom:
+    entity_type: PHANTOM
+    display_name: "Frost Wraith"
+    xp: 300.0
+    base_weight: 50.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 12
+    boost_by_rare_creature: true
+    collection_icon: PHANTOM_SPAWN_EGG
+    collection_name: "Frost Wraith"
+    rarity: RARE
+    drops:
+    - item: ice_wing
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 2.0
+      health_multiplier: 2.0
+      damage_multiplier: 8.0
+      abilities:
+      - id: FROST_BEAM
+        cooldown_ticks: 120
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Hidden Realms - Caves Hostiles
+  # ===========================================================================
+
+  glow_squid_of_death:
+    entity_type: GLOW_SQUID
+    display_name: "Abyssal Lantern"
+    xp: 100.0
+    base_weight: 50.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 6
+    boost_by_rare_creature: true
+    collection_icon: GLOW_SQUID_SPAWN_EGG
+    collection_name: "Abyssal Lantern"
+    rarity: UNCOMMON
+    drops:
+    - item: residue
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health: 40.0
+      aggro:
+        speed: 1.3
+        damage: 24.0
+        range: 2.5
+        hit_interval: 30
+
+  silverfish:
+    entity_type: SILVERFISH
+    display_name: "Tunnel Borer"
+    xp: 40.0
+    base_weight: 10.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 7
+    boost_by_rare_creature: true
+    collection_icon: SILVERFISH_SPAWN_EGG
+    collection_name: "Tunnel Borer"
+    rarity: UNCOMMON
+    drops:
+    - item: residue
+      chance: 0.75
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 3.0
+      damage_multiplier: 3.0
+
+  cave_spider:
+    entity_type: CAVE_SPIDER
+    display_name: "Venomous Creep"
+    xp: 80.0
+    base_weight: 30.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 4
+    boost_by_rare_creature: true
+    collection_icon: CAVE_SPIDER_SPAWN_EGG
+    collection_name: "Venomous Creep"
+    rarity: UNCOMMON
+    drops:
+    - item: spider_silk
+      chance: 1.0
+      min: 1
+      max: 2
+
+  spider_jockey:
+    entity_type: SPIDER
+    display_name: "Arachne Knight"
+    xp: 250.0
+    base_weight: 150.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 26
+    boost_by_rare_creature: true
+    collection_icon: SPIDER_SPAWN_EGG
+    collection_name: "Arachne Knight"
+    rarity: RARE
+    drops:
+    - item: spider_silk
+      chance: 1.0
+      min: 2
+      max: 4
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: SPIDER
+        display_name: "Arachne Knight"
+        show_name: false
+        scale: 1.5
+        damage_multiplier: 4.0
+        aggro:
+          speed: 1.5
+          damage: 8.0
+          range: 5.0
+          hit_interval: 20
+      rider_entity_type: SKELETON
+      health: 500.0
+      name_color: RED
+      equipment:
+        helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY5ZDgwNmRjOGMwNGU2MGI3NmVjMGI3YmZkMjAyMjFhM2FmODVkMjA4MDQ5YmMwOWFkMTU1MWQ1YzNlZmRkNCJ9fX0="
+        chestplate: "dyed:LEATHER_CHESTPLATE:#005000"
+        leggings: "dyed:LEATHER_LEGGINGS:#005000"
+        boots: "dyed:LEATHER_BOOTS:#005000"
+        mainhand: "enchanted:BOW:POWER:5"
+        offhand: "tipped_arrow:WEAKNESS:200:1:64"
+      abilities:
+      - id: INK_CLOUD
+        cooldown_ticks: 140
+        weight: 1
+        chance: 1.0
+
+  # ===========================================================================
+  # Hidden Realms - Mushroom
+  # ===========================================================================
+
+  mooshroom_angry:
+    entity_type: MOOSHROOM
+    display_name: "Fungal Behemoth"
+    xp: 200.0
+    base_weight: 400.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 3
+    boost_by_rare_creature: true
+    collection_icon: MOOSHROOM_SPAWN_EGG
+    collection_name: "Fungal Behemoth"
+    rarity: RARE
+    spawn:
+      health: 40.0
+      aggro:
+        speed: 1.2
+        damage: 12.0
+        range: 2.5
+        hit_interval: 25
+
+  # ===========================================================================
+  # Hidden Realms - Deep Dark
+  # ===========================================================================
+
+  warden:
+    entity_type: WARDEN
+    display_name: "The Warden"
+    xp: 3000.0
+    base_weight: 8000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 29
+    boost_by_rare_creature: true
+    collection_icon: WARDEN_SPAWN_EGG
+    collection_name: "The Warden"
+    rarity: LEGENDARY
+    drops:
+    - item: wardens_echo
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      health_multiplier: 0.5
+      damage_multiplier: 0.8
+      abilities:
+      - id: DARK_RITUAL
+        cooldown_ticks: 160
+        weight: 1
+        chance: 1.0
+      - id: WARDEN_PHASE_TWO
+        cooldown_ticks: 80
+        weight: 2
+        chance: 1.0
+
+  # ===========================================================================
+  # Hidden Realms - Pale Garden
+  # ===========================================================================
+
+  creaking:
+    entity_type: CREAKING
+    display_name: "The Creaking"
+    xp: 150.0
+    base_weight: 100.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 7
+    boost_by_rare_creature: true
+    collection_icon: CREAKING_SPAWN_EGG
+    collection_name: "The Creaking"
+    rarity: UNCOMMON
+    drops:
+    - item: dread_soul
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 5.0
+      damage_multiplier: 7.0
+      potion_effects:
+      - type: ABSORPTION
+        duration: -1
+        amplifier: 19
+      abilities:
+        - id: INK_CLOUD
+          cooldown_ticks: 120
+          weight: 1
+          chance: 1.0
+    
+
+  creaking_gang:
+    entity_type: CREAKING
+    display_name: "Pale Convergence"
+    xp: 500.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 18
+    boost_by_rare_creature: true
+    collection_icon: CREAKING_SPAWN_EGG
+    collection_name: "Pale Convergence"
+    rarity: RARE
+    drops:
+    - item: dread_soul
+      chance: 1.0
+      min: 2
+      max: 4
+    spawn:
+      type: GROUP
+      spread: 4.0
+      members:
+      - entity_type: CREAKING
+        count: 3
+        health: 80.0
+        name_color: GRAY
+        aggro:
+          speed: 1.2
+          damage: 24.0
+          range: 2.5
+          hit_interval: 25
+        potion_effects:
+        - type: ABSORPTION
+          duration: -1
+          amplifier: 9
+        abilities:
+          - id: INK_CLOUD
+            cooldown_ticks: 150
+            weight: 1
+            chance: 1.0
+
+  # ===========================================================================
+  # Treasure Chests
+  # ===========================================================================
+
+  treasure_common:
+    entity_type: ARMOR_STAND
+    display_name: "Common Treasure Chest"
+    xp: 50.0
+    base_weight: 25.0
+    default_chance: 2.5
+    category: TREASURE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: CHEST
+    collection_name: "Common Treasure"
+    rarity: COMMON
+    drops:
+    - treasure_loot: RANDOM
+      chance: 1.0
+      min: 1
+      max: 1
+
+  treasure_uncommon:
+    entity_type: ARMOR_STAND
+    display_name: "Uncommon Treasure Chest"
+    xp: 100.0
+    base_weight: 12.0
+    default_chance: 1.2
+    category: TREASURE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: COPPER_CHEST
+    collection_name: "Uncommon Treasure"
+    rarity: UNCOMMON
+    drops:
+    - treasure_loot: UNCOMMON
+      chance: 1.0
+      min: 1
+      max: 1
+
+  treasure_rare:
+    entity_type: ARMOR_STAND
+    display_name: "Rare Treasure Chest"
+    xp: 250.0
+    base_weight: 8.0
+    default_chance: 0.5
+    category: TREASURE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: WEATHERED_COPPER_CHEST
+    collection_name: "Rare Treasure"
+    rarity: RARE
+    drops:
+    - treasure_loot: RARE
+      chance: 1.0
+      min: 1
+      max: 1
+
+  treasure_epic:
+    entity_type: ARMOR_STAND
+    display_name: "Epic Treasure Chest"
+    xp: 500.0
+    base_weight: 4.0
+    default_chance: 0.25
+    category: TREASURE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: OXIDIZED_COPPER_CHEST
+    collection_name: "Epic Treasure"
+    rarity: EPIC
+    drops:
+    - treasure_loot: EPIC
+      chance: 1.0
+      min: 1
+      max: 1
+
+  treasure_legendary:
+    entity_type: ARMOR_STAND
+    display_name: "Legendary Treasure Chest"
+    xp: 1000.0
+    base_weight: 1.0
+    default_chance: 0.1
+    category: TREASURE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: ENDER_CHEST
+    collection_name: "Legendary Treasure"
+    rarity: LEGENDARY
+    drops:
+    - treasure_loot: LEGENDARY
+      chance: 1.0
+      min: 1
+      max: 1
+
+  # ===========================================================================
+  # Biome-Specific Aquatic Mobs (Passive)
+  # ===========================================================================
+
+  tropical_fish:
+    entity_type: TROPICAL_FISH
+    display_name: "Tropical Fish"
+    xp: 25.0
+    base_weight: 0.5
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: TROPICAL_FISH_SPAWN_EGG
+    collection_name: "Tropical Fish"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: TROPICAL_FISH
+      chance: 1.0
+      min: 1
+      max: 1
+
+  glow_squid:
+    entity_type: GLOW_SQUID
+    display_name: "Glow Squid"
+    xp: 25.0
+    base_weight: 4.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: GLOW_SQUID_SPAWN_EGG
+    collection_name: "Luminous Squid"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: GLOW_INK_SAC
+      chance: 1.0
+      min: 1
+      max: 3
+
+  dolphin:
+    entity_type: DOLPHIN
+    display_name: "Dolphin"
+    xp: 35.0
+    base_weight: 15.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: DOLPHIN_SPAWN_EGG
+    collection_name: "Playful Dolphin"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: COD
+      chance: 1.0
+      min: 1
+      max: 2
+
+  frog:
+    entity_type: FROG
+    display_name: "Frog"
+    xp: 15.0
+    base_weight: 1.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: FROG_SPAWN_EGG
+    collection_name: "Swamp Frog"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: SLIME_BALL
+      chance: 0.5
+      min: 1
+      max: 1
+
+  axolotl:
+    entity_type: AXOLOTL
+    display_name: "Axolotl"
+    xp: 40.0
+    base_weight: 1.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: AXOLOTL_SPAWN_EGG
+    collection_name: "Cave Axolotl"
+    rarity: RARE
+    drops:
+    - vanilla: TROPICAL_FISH
+      chance: 1.0
+      min: 1
+      max: 1
+
+  turtle:
+    entity_type: TURTLE
+    display_name: "Turtle"
+    xp: 30.0
+    base_weight: 5.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: TURTLE_SPAWN_EGG
+    collection_name: "Beach Turtle"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: TURTLE_SCUTE
+      chance: 0.3
+      min: 1
+      max: 1
+
+  nautilus:
+    entity_type: NAUTILUS
+    display_name: "Nautilus"
+    xp: 35.0
+    base_weight: 8.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: NAUTILUS_SPAWN_EGG
+    collection_name: "Ocean Nautilus"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: NAUTILUS_SHELL
+      chance: 0.75
+      min: 1
+      max: 2
+
+  # ===========================================================================
+  # Biome-Specific Land Mobs (Passive)
+  # ===========================================================================
+
+  chicken:
+    entity_type: CHICKEN
+    display_name: "Chicken"
+    xp: 5.0
+    base_weight: 2.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: CHICKEN_SPAWN_EGG
+    collection_name: "Wild Chicken"
+    rarity: COMMON
+    drops:
+    - vanilla: CHICKEN
+      chance: 1.0
+      min: 1
+      max: 1
+    - vanilla: FEATHER
+      chance: 0.5
+      min: 1
+      max: 2
+
+  cow:
+    entity_type: COW
+    display_name: "Cow"
+    xp: 8.0
+    base_weight: 400.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: COW_SPAWN_EGG
+    collection_name: "Wild Cow"
+    rarity: COMMON
+    drops:
+    - vanilla: BEEF
+      chance: 1.0
+      min: 1
+      max: 2
+    - vanilla: LEATHER
+      chance: 0.5
+      min: 1
+      max: 1
+
+  pig:
+    entity_type: PIG
+    display_name: "Pig"
+    xp: 8.0
+    base_weight: 100.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: PIG_SPAWN_EGG
+    collection_name: "Wild Pig"
+    rarity: COMMON
+    drops:
+    - vanilla: PORKCHOP
+      chance: 1.0
+      min: 1
+      max: 2
+
+  sheep:
+    entity_type: SHEEP
+    display_name: "Sheep"
+    xp: 8.0
+    base_weight: 50.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: SHEEP_SPAWN_EGG
+    collection_name: "Wild Sheep"
+    rarity: COMMON
+    drops:
+    - vanilla: MUTTON
+      chance: 1.0
+      min: 1
+      max: 2
+    - vanilla: WHITE_WOOL
+      chance: 0.5
+      min: 1
+      max: 1
+
+  wolf:
+    entity_type: WOLF
+    display_name: "Wolf"
+    xp: 15.0
+    base_weight: 30.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: WOLF_SPAWN_EGG
+    collection_name: "Wild Wolf"
+    rarity: UNCOMMON
+
+  fox:
+    entity_type: FOX
+    display_name: "Fox"
+    xp: 12.0
+    base_weight: 6.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: FOX_SPAWN_EGG
+    collection_name: "Sly Fox"
+    rarity: UNCOMMON
+
+  rabbit:
+    entity_type: RABBIT
+    display_name: "Rabbit"
+    xp: 5.0
+    base_weight: 1.5
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: RABBIT_SPAWN_EGG
+    collection_name: "Wild Rabbit"
+    rarity: COMMON
+    drops:
+    - vanilla: RABBIT
+      chance: 1.0
+      min: 1
+      max: 1
+    - vanilla: RABBIT_HIDE
+      chance: 0.5
+      min: 1
+      max: 1
+
+  polar_bear:
+    entity_type: POLAR_BEAR
+    display_name: "Polar Bear"
+    xp: 20.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: POLAR_BEAR_SPAWN_EGG
+    collection_name: "Icy Polar Bear"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: COD
+      chance: 0.75
+      min: 1
+      max: 2
+
+  ocelot:
+    entity_type: OCELOT
+    display_name: "Ocelot"
+    xp: 15.0
+    base_weight: 4.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: OCELOT_SPAWN_EGG
+    collection_name: "Jungle Ocelot"
+    rarity: UNCOMMON
+
+  goat:
+    entity_type: GOAT
+    display_name: "Goat"
+    xp: 15.0
+    base_weight: 60.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: GOAT_SPAWN_EGG
+    collection_name: "Mountain Goat"
+    rarity: UNCOMMON
+
+  llama:
+    entity_type: LLAMA
+    display_name: "Llama"
+    xp: 15.0
+    base_weight: 150.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: LLAMA_SPAWN_EGG
+    collection_name: "Wandering Llama"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: LEATHER
+      chance: 0.75
+      min: 1
+      max: 2
+
+  panda:
+    entity_type: PANDA
+    display_name: "Panda"
+    xp: 20.0
+    base_weight: 100.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: PANDA_SPAWN_EGG
+    collection_name: "Bamboo Panda"
+    rarity: RARE
+    drops:
+    - vanilla: BAMBOO
+      chance: 1.0
+      min: 1
+      max: 2
+
+  parrot:
+    entity_type: PARROT
+    display_name: "Parrot"
+    xp: 15.0
+    base_weight: 0.3
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: PARROT_SPAWN_EGG
+    collection_name: "Tropical Parrot"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: FEATHER
+      chance: 1.0
+      min: 1
+      max: 2
+
+  mooshroom:
+    entity_type: MOOSHROOM
+    display_name: "Mooshroom"
+    xp: 25.0
+    base_weight: 400.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: MOOSHROOM_SPAWN_EGG
+    collection_name: "Fungal Mooshroom"
+    rarity: RARE
+    drops:
+    - vanilla: RED_MUSHROOM
+      chance: 1.0
+      min: 1
+      max: 3
+
+  armadillo:
+    entity_type: ARMADILLO
+    display_name: "Armadillo"
+    xp: 10.0
+    base_weight: 5.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: ARMADILLO_SPAWN_EGG
+    collection_name: "Savanna Armadillo"
+    rarity: UNCOMMON
+    drops:
+    - vanilla: ARMADILLO_SCUTE
+      chance: 0.5
+      min: 1
+      max: 1
+
+  # ===========================================================================
+  # Nether — Global Passives & Hostiles (all 5 nether biomes)
+  # ===========================================================================
+
+  magma_tadpole:
+    entity_type: MAGMA_CUBE
+    display_name: "Magma Tadpole"
+    xp: 15.0
+    base_weight: 2.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: MAGMA_CREAM
+    collection_name: "Magma Tadpole"
+    rarity: COMMON
+    drops:
+    - item: magma_residue
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      type: SCALED
+      slime_size: 1
+
+      damage_multiplier: 3.0
+      health_multiplier: 2.0
+  lava_cod:
+    entity_type: COD
+    display_name: "Lava Cod"
+    xp: 20.0
+    base_weight: 1.5
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: COOKED_COD
+    collection_name: "Lava Cod"
+    rarity: COMMON
+    drops:
+    - item: lava_fish
+      chance: 1.0
+      min: 1
+      max: 1
+
+    spawn:
+      health_multiplier: 2.0
+      aggro:
+        speed: 1.5
+        damage: 8.0
+        range: 3.5
+        hit_interval: 15
+      particle: flame
+  blaze_fisher:
+    entity_type: BLAZE
+    display_name: "Blaze Fisher"
+    xp: 110.0
+    base_weight: 80.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 27
+    boost_by_rare_creature: true
+    collection_icon: BLAZE_SPAWN_EGG
+    collection_name: "Blaze Fisher"
+    rarity: UNCOMMON
+    drops:
+    - item: smoldering_rod
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 3.5
+      damage_multiplier: 3.0
+      abilities:
+      - id: EMBER_VOLLEY
+        cooldown_ticks: 120
+        weight: 3
+        chance: 1.0
+      - id: HEAT_MARK
+        cooldown_ticks: 200
+        weight: 2
+        chance: 1.0
+
+      scale: 1.5
+  magma_swimmer:
+    entity_type: MAGMA_CUBE
+    display_name: "Magma Swimmer"
+    xp: 170.0
+    base_weight: 100.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 27
+    boost_by_rare_creature: true
+    collection_icon: MAGMA_CREAM
+    collection_name: "Magma Swimmer"
+    rarity: UNCOMMON
+    drops:
+    - item: magma_residue
+      chance: 1.0
+      min: 1
+      max: 2
+    spawn:
+      type: SCALED
+      slime_size: 4
+      damage_multiplier: 5.0
+      group_kill_all: true
+      abilities:
+      - id: MAGMA_BURST
+        cooldown_ticks: 130
+        weight: 3
+        chance: 1.0
+      - id: LAVA_SURGE
+        cooldown_ticks: 170
+        weight: 2
+        chance: 1.0
+
+  # ===========================================================================
+  # Nether Wastes — Biome-Specific
+  # ===========================================================================
+
+      health_multiplier: 4.0
+  ghastling:
+    entity_type: GHAST
+    display_name: "Ghastling"
+    xp: 30.0
+    base_weight: 5.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: GHAST_TEAR
+    collection_name: "Baby Ghastling"
+    rarity: UNCOMMON
+    drops:
+    - item: ghast_membrane
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 0.3
+
+      health_multiplier: 2
+      aggro:
+        speed: 0.4
+        damage: 4.0
+        range: 1.6
+        hit_interval: 35
+      particle: soul
+  piglin_floater:
+    entity_type: ZOMBIFIED_PIGLIN
+    display_name: "Piglin Floater"
+    xp: 20.0
+    base_weight: 8.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: ZOMBIFIED_PIGLIN_SPAWN_EGG
+    collection_name: "Piglin Floater"
+    rarity: COMMON
+    drops:
+    - item: corrupted_gold
+      chance: 1.0
+      min: 1
+      max: 2
+
+    spawn:
+      health_multiplier: 2.5
+      damage_multiplier: 2.5
+  wither_angler:
+    entity_type: WITHER_SKELETON
+    display_name: "Wither Angler"
+    xp: 350.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 27
+    boost_by_rare_creature: true
+    collection_icon: WITHER_SKELETON_SPAWN_EGG
+    collection_name: "Wither Angler"
+    rarity: RARE
+    drops:
+    - item: wither_bone
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 3.0
+      damage_multiplier: 3.5
+      equipment:
+        mainhand: "enchanted:GOLDEN_SWORD:FIRE_ASPECT:2"
+
+        helmet: enchanted:GOLDEN_HELMET:PROTECTION:3
+        chestplate: enchanted:GOLDEN_CHESTPLATE:PROTECTION:3
+        leggings: enchanted:GOLDEN_LEGGINGS:PROTECTION:3
+        boots: enchanted:GOLDEN_BOOTS:PROTECTION:3
+  ghast_broodmother:
+    entity_type: GHAST
+    display_name: "Ghast Broodmother"
+    xp: 1120.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 31
+    boost_by_rare_creature: true
+    collection_icon: GHAST_SPAWN_EGG
+    collection_name: "Ghast Broodmother"
+    rarity: EPIC
+    drops:
+    - item: ghast_membrane
+      chance: 1.0
+      min: 3
+      max: 5
+    spawn:
+      scale: 2.0
+      health: 600.0
+      name_color: RED
+      glow_color: DARK_RED
+      particle: crimson_ghast
+      potion_effects:
+      - type: GLOWING
+        duration: -1
+        amplifier: 0
+      abilities:
+      - id: BLOOD_TONGUE
+        cooldown_ticks: 100
+        weight: 3
+        chance: 1.0
+      - id: BLOOD_EXPLOSION
+        cooldown_ticks: 180
+        weight: 2
+        chance: 1.0
+
+  # ===========================================================================
+  # Crimson Forest — Biome-Specific
+  # ===========================================================================
+
+  crimson_minnow:
+    entity_type: SALMON
+    display_name: "Crimson Minnow"
+    xp: 20.0
+    base_weight: 1.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: RED_DYE
+    collection_name: "Crimson Minnow"
+    rarity: COMMON
+    drops:
+    - item: crimson_scale
+      chance: 1.0
+      min: 1
+      max: 1
+
+    spawn:
+      health_multiplier: 2.0
+      aggro:
+        speed: 1.6
+        damage: 12.0
+        range: 3.0
+        hit_interval: 20
+      particle: damage_indicator
+  fungal_strider:
+    entity_type: STRIDER
+    display_name: "Fungal Strider"
+    xp: 30.0
+    base_weight: 30.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: STRIDER_SPAWN_EGG
+    collection_name: "Fungal Strider"
+    rarity: UNCOMMON
+    drops:
+    - item: strider_hide
+      chance: 1.0
+      min: 1
+      max: 2
+
+    spawn:
+      health_multiplier: 2.5
+      aggro:
+        speed: 1.4
+        damage: 15.0
+        range: 4.0
+        hit_interval: 25
+      particle: ash
+  hoglin_brute:
+    entity_type: HOGLIN
+    display_name: "Hoglin Brute"
+    xp: 420.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 27
+    boost_by_rare_creature: true
+    collection_icon: HOGLIN_SPAWN_EGG
+    collection_name: "Hoglin Brute"
+    rarity: RARE
+    drops:
+    - item: hoglin_tusk
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 3.5
+      damage_multiplier: 2.5
+      abilities:
+      - id: HOGLIN_FLAMETHROWER
+        cooldown_ticks: 150
+        weight: 3
+        chance: 1.0
+      - id: BRUTE_TUSK_SWEEP
+        cooldown_ticks: 110
+        weight: 2
+        chance: 1.0
+
+  piglin_war_party:
+    entity_type: PIGLIN
+    display_name: "Piglin War Party"
+    xp: 700.0
+    base_weight: 250.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 30
+    boost_by_rare_creature: true
+    collection_icon: PIGLIN_SPAWN_EGG
+    collection_name: "Piglin War Party"
+    rarity: RARE
+    drops:
+    - item: corrupted_gold
+      chance: 1.0
+      min: 3
+      max: 5
+    spawn:
+      type: GROUP
+      group_kill_all: true
+      spread: 2.0
+      members:
+      - entity_type: PIGLIN
+        count: 3
+        health_multiplier: 2.0
+        damage_multiplier: 2.0
+      - entity_type: PIGLIN_BRUTE
+        count: 1
+        health_multiplier: 3.0
+        damage_multiplier: 3.0
+
+  crimson_abomination:
+    entity_type: HOGLIN
+    display_name: "Crimson Abomination"
+    xp: 1344.0
+    base_weight: 800.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 38
+    boost_by_rare_creature: true
+    collection_icon: NETHER_WART
+    collection_name: "Crimson Abomination"
+    rarity: EPIC
+    drops:
+    - item: crimson_heart
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: HOGLIN
+        display_name: "Corrupted Mount"
+        show_name: false
+        aggro:
+          speed: 1.3
+          damage: 20.0
+          range: 3.0
+          hit_interval: 30
+      rider_entity_type: ZOMBIFIED_PIGLIN
+      health: 700.0
+      damage_multiplier: 3.0
+      name_color: DARK_RED
+
+  # ===========================================================================
+  # Warped Forest — Biome-Specific
+  # ===========================================================================
+
+  warped_jellyfish:
+    entity_type: TROPICAL_FISH
+    display_name: "Warped Jellyfish"
+    xp: 25.0
+    base_weight: 2.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: CYAN_DYE
+    collection_name: "Warped Jellyfish"
+    rarity: UNCOMMON
+    drops:
+    - item: warped_tendril
+      chance: 1.0
+      min: 1
+      max: 1
+
+    spawn:
+      health_multiplier: 2.0
+      aggro:
+        speed: 1.5
+        damage: 10.0
+        range: 3.0
+        hit_interval: 20
+      particle: reverse_portal
+  ender_minnow:
+    entity_type: ENDERMITE
+    display_name: "Ender Minnow"
+    xp: 40.0
+    base_weight: 1.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: ENDER_PEARL
+    collection_name: "Ender Minnow"
+    rarity: RARE
+    drops:
+    - item: ender_fragment
+      chance: 1.0
+      min: 1
+      max: 1
+
+    spawn:
+      health_multiplier: 2.5
+      damage_multiplier: 2.5
+      scale: 1.2
+  warped_enderman:
+    entity_type: ENDERMAN
+    display_name: "Warped Enderman"
+    xp: 490.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 28
+    boost_by_rare_creature: true
+    collection_icon: ENDERMAN_SPAWN_EGG
+    collection_name: "Warped Enderman"
+    rarity: RARE
+    drops:
+    - item: warped_tendril
+      chance: 1.0
+      min: 2
+      max: 3
+    spawn:
+      health_multiplier: 3.0
+      damage_multiplier: 1.7
+      potion_effects:
+      - type: SLOWNESS
+        duration: -1
+        amplifier: 1
+      abilities:
+      - id: WARPED_ENDERMAN_GAZE
+        cooldown_ticks: 140
+        weight: 3
+        chance: 1.0
+      - id: WARPED_ENDERMAN_SNARE
+        cooldown_ticks: 180
+        weight: 2
+        chance: 1.0
+
+  ender_angler:
+    entity_type: ENDERMAN
+    display_name: "Riftbound Colossus"
+    xp: 1456.0
+    base_weight: 500.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 36
+    boost_by_rare_creature: true
+    collection_icon: ENDERMAN_SPAWN_EGG
+    collection_name: "Riftbound Colossus"
+    rarity: EPIC
+    drops:
+    - item: ender_fragment
+      chance: 1.0
+      min: 4
+      max: 7
+    spawn:
+      health: 1000.0
+      damage_multiplier: 1.445
+      scale: 2.35
+      name_color: DARK_PURPLE
+      glow_color: BLACK
+      particle: void_colossus
+      potion_effects:
+      - type: GLOWING
+        duration: -1
+        amplifier: 0
+      - type: RESISTANCE
+        duration: -1
+        amplifier: 0
+      - type: SLOWNESS
+        duration: -1
+        amplifier: 1
+      abilities:
+      - id: RIFTBOUND_GAZE
+        cooldown_ticks: 185
+        weight: 2
+        chance: 1.0
+      - id: RIFTBOUND_SNARE
+        cooldown_ticks: 230
+        weight: 3
+        chance: 1.0
+
+  # ===========================================================================
+  # Soul Sand Valley — Biome-Specific
+  # ===========================================================================
+
+  lost_soul:
+    entity_type: VEX
+    display_name: "Lost Soul"
+    xp: 30.0
+    base_weight: 3.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: SOUL_LANTERN
+    collection_name: "Lost Soul"
+    rarity: UNCOMMON
+    drops:
+    - item: soul_essence
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      particle: soul
+
+      health_multiplier: 2.0
+  soul_warden:
+    entity_type: WITHER_SKELETON
+    display_name: "Soul Warden"
+    xp: 490.0
+    base_weight: 200.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 28
+    boost_by_rare_creature: true
+    collection_icon: WITHER_SKELETON_SPAWN_EGG
+    collection_name: "Soul Warden"
+    rarity: RARE
+    drops:
+    - item: wither_bone
+      chance: 0.75
+      min: 1
+      max: 1
+    - item: soul_essence
+      chance: 0.5
+      min: 1
+      max: 1
+    spawn:
+      health_multiplier: 6.75
+      damage_multiplier: 2.25
+      equipment:
+        mainhand: "enchanted:DIAMOND_SWORD:FIRE_ASPECT:2"
+
+        helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2MwOTQ3NjUyMDliOGUyNTlhODFkYmU5ZjA3ZDlhNDRhNDZhMjAyMWMyZWRjMjg1M2VjNGMzZDFjODJlNWE4In19fQ=="
+        chestplate: "dyed_trimmed:LEATHER_CHESTPLATE:#2f3136:DIAMOND:WARD"
+        leggings: "dyed_trimmed:LEATHER_LEGGINGS:#2f3136:DIAMOND:WARD"
+        boots: "dyed_trimmed:LEATHER_BOOTS:#2f3136:DIAMOND:WARD"
+      abilities:
+      - id: SOUL_RUPTURE
+        cooldown_ticks: 135
+        weight: 3
+        chance: 1.0
+      - id: SOUL_GEYSERS
+        cooldown_ticks: 170
+        weight: 2
+        chance: 1.0
+  wailing_ghast_duo:
+    entity_type: GHAST
+    display_name: "Wailing Ghast Duo"
+    xp: 1344.0
+    base_weight: 400.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 34
+    boost_by_rare_creature: true
+    collection_icon: GHAST_SPAWN_EGG
+    collection_name: "Wailing Ghast Duo"
+    rarity: EPIC
+    drops:
+    - item: ghast_membrane
+      chance: 1.0
+      min: 4
+      max: 6
+    spawn:
+      type: GROUP
+      group_kill_all: true
+      spread: 3.0
+      name_color: RED
+      particle: crimson_ghast
+      potion_effects:
+      - type: GLOWING
+        duration: -1
+        amplifier: 0
+      abilities:
+      - id: WAILING_TWIN_LASER
+        cooldown_ticks: 90
+        weight: 3
+        chance: 1.0
+      - id: WAILING_TWIN_TOXIC_SPIT
+        cooldown_ticks: 105
+        weight: 3
+        chance: 1.0
+      members:
+      - entity_type: GHAST
+        count: 2
+        health: 350.0
+
+  # ===========================================================================
+  # Basalt Deltas — Biome-Specific
+  # ===========================================================================
+
+  basalt_crab:
+    entity_type: SILVERFISH
+    display_name: "Basalt Crab"
+    xp: 30.0
+    base_weight: 3.0
+    default_chance: 0.0
+    category: PASSIVE
+    required_level: 27
+    boost_by_rare_creature: false
+    collection_icon: DEEPSLATE
+    collection_name: "Basalt Crab"
+    rarity: UNCOMMON
+    drops:
+    - item: basalt_shell
+      chance: 1.0
+      min: 1
+      max: 1
+
+    spawn:
+      health_multiplier: 3.0
+      damage_multiplier: 2.5
+  magma_golem:
+    entity_type: IRON_GOLEM
+    display_name: "Magma Golem"
+    xp: 560.0
+    base_weight: 1000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 30
+    boost_by_rare_creature: true
+    collection_icon: IRON_GOLEM_SPAWN_EGG
+    collection_name: "Magma Golem"
+    rarity: RARE
+    drops:
+    - item: basalt_shell
+      chance: 1.0
+      min: 2
+      max: 3
+    spawn:
+      health_multiplier: 2.0
+      damage_multiplier: 1.0
+      not_player_created: true
+      abilities:
+      - id: MAGMA_EYE_LASERS
+        cooldown_ticks: 160
+        weight: 3
+        chance: 1.0
+      - id: MAGMA_ARM_ROCKETS
+        cooldown_ticks: 180
+        weight: 2
+        chance: 1.0
+
+  volcanic_wyrm:
+    entity_type: WARDEN
+    display_name: "Volcanic Wyrm"
+    xp: 2800.0
+    base_weight: 10000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 45
+    boost_by_rare_creature: true
+    collection_icon: NETHERITE_SCRAP
+    collection_name: "Volcanic Wyrm"
+    rarity: LEGENDARY
+    drops:
+    - item: volcanic_core
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 2.0
+      health_multiplier: 10.0
+      damage_multiplier: 5.0
+      name_color: DARK_RED
+
+  # ===========================================================================
+  # Cross-Biome Nether Legendary
+  # ===========================================================================
+
+  nether_lord:
+    entity_type: WITHER_SKELETON
+    display_name: "Nether Lord"
+    xp: 2240.0
+    base_weight: 8000.0
+    default_chance: 0.0
+    category: HOSTILE
+    required_level: 42
+    boost_by_rare_creature: true
+    collection_icon: NETHERITE_SWORD
+    collection_name: "Nether Lord"
+    rarity: LEGENDARY
+    drops:
+    - random_item:
+      - volcanic_dreadplate_helmet
+      - volcanic_dreadplate_chestplate
+      - volcanic_dreadplate_leggings
+      - volcanic_dreadplate_boots
+      chance: 0.25
+      min: 1
+      max: 1
+    spawn:
+      type: MOUNTED
+      mount:
+        entity_type: STRIDER
+        display_name: "Nether Lord's Steed"
+        show_name: false
+        scale: 2.0
+        aggro:
+          speed: 1.5
+          damage: 20.0
+          range: 3.0
+          hit_interval: 30
+      health: 1300.0
+      damage: 40.0
+      name_color: DARK_RED
+      equipment:
+        helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAzNTRiMDc5Y2VhMDBmMTFhMjhlN2MyMWJhOWMxM2ExN2NjY2IwNjA1NjAxOWNiNGM2NGJjMjQzNTc1NTI5YSJ9fX0="
+        chestplate: "dyed:LEATHER_CHESTPLATE:#8B0000"
+        leggings: "dyed:LEATHER_LEGGINGS:#8B0000"
+        boots: "dyed:LEATHER_BOOTS:#8B0000"
+        mainhand: "enchanted:NETHERITE_SWORD:FIRE_ASPECT:3"

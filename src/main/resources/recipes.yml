@@ -1,0 +1,1039 @@
+# ══════════════════════════════════════════════════════════
+#  Recipe Definitions
+#  All crafting recipes are defined here and loaded by
+#  YamlRecipeLoader.  Ingredients can be:
+#    - UPPERCASE names → vanilla Material  (e.g. IRON_INGOT)
+#    - lowercase names → custom item from the item registry
+#
+#  Gating:
+#    level: <n>        → requires Fishing level n
+#    advancement: "x"  → requires advancement key (overrides level)
+# ══════════════════════════════════════════════════════════
+
+
+# ── Shaped Recipes ──────────────────────────────────────
+shaped:
+
+
+
+  # Harmony Rod — requires "Bucket Catcher" advancement
+  harmony_rod_recipe:
+    result: harmony_rod
+    advancement: "fishing/bucket_catcher"
+    pattern:
+      - " F "
+      - "FRF"
+      - " F "
+    ingredients:
+      R: FISHING_ROD
+      F:
+        - COD
+        - SALMON
+        - PUFFERFISH
+        - TROPICAL_FISH
+
+  # Treasure Totem — Level 40
+  treasure_totem_recipe:
+    result: treasure_totem
+    level: 40
+    pattern:
+      - "GGG"
+      - "GCG"
+      - "GGG"
+    ingredients:
+      C: CONDUIT
+      G: GOLD_BLOCK
+
+  # Display Case — Level 15
+  display_case_recipe:
+    result: display_case
+    level: 15
+    pattern:
+      - "GGG"
+      - "GCG"
+      - "SSS"
+    ingredients:
+      G:
+        - GLASS
+        - WHITE_STAINED_GLASS
+        - ORANGE_STAINED_GLASS
+        - MAGENTA_STAINED_GLASS
+        - LIGHT_BLUE_STAINED_GLASS
+        - YELLOW_STAINED_GLASS
+        - LIME_STAINED_GLASS
+        - PINK_STAINED_GLASS
+        - GRAY_STAINED_GLASS
+        - LIGHT_GRAY_STAINED_GLASS
+        - CYAN_STAINED_GLASS
+        - PURPLE_STAINED_GLASS
+        - BLUE_STAINED_GLASS
+        - BROWN_STAINED_GLASS
+        - GREEN_STAINED_GLASS
+        - RED_STAINED_GLASS
+        - BLACK_STAINED_GLASS
+      C:
+        - WHITE_CARPET
+        - ORANGE_CARPET
+        - MAGENTA_CARPET
+        - LIGHT_BLUE_CARPET
+        - YELLOW_CARPET
+        - LIME_CARPET
+        - PINK_CARPET
+        - GRAY_CARPET
+        - LIGHT_GRAY_CARPET
+        - CYAN_CARPET
+        - PURPLE_CARPET
+        - BLUE_CARPET
+        - BROWN_CARPET
+        - GREEN_CARPET
+        - RED_CARPET
+        - BLACK_CARPET
+      S:
+        - POLISHED_ANDESITE_SLAB
+        - ANDESITE_SLAB
+        - POLISHED_DIORITE_SLAB
+        - DIORITE_SLAB
+        - POLISHED_GRANITE_SLAB
+        - GRANITE_SLAB
+
+  # Netherite Relic — Level 40
+  netherite_relic_recipe:
+    result: netherite_relic
+    level: 40
+    pattern:
+      - "GNG"
+      - " B "
+      - "SSS"
+    ingredients:
+      G: GOLD_BLOCK
+      N: NETHERITE_HELMET
+      B: NETHERITE_BLOCK
+      S: temple_slab
+
+  # Lava Ring — Level 30
+  lava_ring_recipe:
+    result: lava_ring
+    level: 30
+    pattern:
+      - " B "
+      - "MGM"
+      - " B "
+    ingredients:
+      B: BLAZE_POWDER
+      M: magma_residue
+      G: GHAST_TEAR
+
+  # Trident Tier 1: Prismarine Harpoon — Level 8
+  trident_1_recipe:
+    result: trident_1
+    level: 8
+    pattern:
+      - "  S"
+      - " T "
+      - "B  "
+    ingredients:
+      S: enchanted_guardian_scale
+      T: TRIDENT
+      B: enchanted_wet_bone
+
+  # Trident Tier 2: Tidesplitter — Level 30
+  trident_2_recipe:
+    result: trident_2
+    level: 19
+    pattern:
+      - " VP"
+      - "VTV"
+      - "DV "
+    ingredients:
+      V: enchanted_mossy_vine
+      P: enchanted_ice_wing
+      T: trident_1
+      D: DIAMOND_BLOCK
+
+  # Trident Tier 3: Dreadspear — Level 33
+  trident_3_recipe:
+    result: trident_3
+    level: 28
+    pattern:
+      - " SE"
+      - "STS"
+      - "nS "
+    ingredients:
+      S: enchanted_dread_soul
+      E: phantoms_eye
+      T: trident_2
+      n: NETHERITE_INGOT
+
+  # Gehenna — gated behind lava mastery advancement
+  gehenna_recipe:
+    result: gehenna
+    advancement: "fishing_lava_master"
+    pattern:
+      - "CMC"
+      - "CBC"
+      - " S "
+    ingredients:
+      C: volcanic_core
+      M: crimson_heart
+      B: MACE
+      S: poseidons_crown
+
+
+# ── Shapeless Recipes ───────────────────────────────────
+shapeless:
+
+  # Fish Bucket — requires "Fishh" advancement
+  fish_bucket_recipe:
+    result: fish_bucket
+    advancement: "fishing/fishh"
+    ingredients:
+      - WATER_BUCKET
+      - FISHING_ROD
+
+  # Neptune's Rod — Level 5
+  neptunes_rod_recipe:
+    result: neptunes_rod
+    level: 5
+    pattern:
+      - "  S"
+      - " R "
+      - "N  "
+    ingredients:
+      S: guardian_scale
+      R: FISHING_ROD
+      N: NAUTILUS_SHELL
+
+  # Shredder — Level 19
+  shredder_recipe:
+    result: shredder
+    level: 19
+    pattern:
+      - "  S"
+      - " R "
+      - "H  "
+    ingredients:
+      R: neptunes_rod
+      H: HEART_OF_THE_SEA
+      S: shark_tooth
+
+  # Fishing Journal — requires "Root" advancement
+  fishing_journal_recipe:
+    result: fishing_journal
+    advancement: "fishing/root"
+    ingredients:
+      - BOOK
+      - fish_choice:
+          - COD
+          - SALMON
+          - PUFFERFISH
+          - TROPICAL_FISH
+
+  # Scale Helmet — Level 5
+  scale_helmet_recipe:
+    result: scale_helmet
+    level: 5
+    pattern:
+      - "CSC"
+      - "S S"
+    ingredients:
+      S: guardian_scale
+      C: corrupted_flesh
+
+  # Scale Boots — Level 5
+  scale_boots_recipe:
+    result: scale_boots
+    level: 5
+    pattern:
+      - "C C"
+      - "S S"
+    ingredients:
+      S: guardian_scale
+      C: corrupted_flesh
+
+  # Scale Chestplate — Level 5
+  scale_chestplate_recipe:
+    result: scale_chestplate
+    level: 5
+    pattern:
+      - "I I"
+      - "GCG"
+      - "GCG"
+    ingredients:
+      G: guardian_scale
+      I: IRON_INGOT
+      C: corrupted_flesh
+
+  # Scale Leggings — Level 5
+  scale_leggings_recipe:
+    result: scale_leggings
+    level: 5
+    pattern:
+      - "IGI"
+      - "C C"
+      - "G G"
+    ingredients:
+      G: guardian_scale
+      I: IRON_INGOT
+      C: corrupted_flesh
+
+  # Weird Material — Level 15
+  weird_material_recipe:
+    result: weird_material
+    level: 15
+    ingredients:
+      - residue
+      - slimy_chunk
+      - corrupted_flesh
+      - CLAY_BALL
+
+
+# ── Enchanted Material Recipes ──────────────────────────
+# Shorthand: 9× base material in a 3×3 grid → enchanted result
+# All require Fishing Level 10
+enchanted_material:
+  enchanted_corrupted_flesh_recipe:
+    result: enchanted_corrupted_flesh
+    base: corrupted_flesh
+    level: 10
+
+  enchanted_wet_bone_recipe:
+    result: enchanted_wet_bone
+    base: wet_bone
+    level: 10
+
+  enchanted_polar_fur_recipe:
+    result: enchanted_polar_fur
+    base: polar_fur
+    level: 10
+
+  enchanted_ice_wing_recipe:
+    result: enchanted_ice_wing
+    base: ice_wing
+    level: 10
+
+  enchanted_hyena_fur_recipe:
+    result: enchanted_hyena_fur
+    base: hyena_fur
+    level: 10
+
+  enchanted_dread_soul_recipe:
+    result: enchanted_dread_soul
+    base: dread_soul
+    level: 10
+
+  enchanted_guardian_scale_recipe:
+    result: enchanted_guardian_scale
+    base: guardian_scale
+    level: 10
+
+  enchanted_mossy_vine_recipe:
+    result: enchanted_mossy_vine
+    base: mossy_vine
+    level: 10
+
+
+# ── Upgrade Recipes ─────────────────────────────────────
+# Shorthand for shapeless "upgrade" recipes
+upgrade:
+
+  # Scholar's Outfit — Level 10
+  scholar_helmet_recipe:
+    result: scholar_helmet
+    level: 10
+    pattern:
+      - "HAH"
+      - "S S"
+      - "   "
+    ingredients:
+      H: hyena_fur
+      S: spider_silk
+      A: AMETHYST_SHARD
+
+  scholar_chestplate_recipe:
+    result: scholar_chestplate
+    level: 10
+    pattern:
+      - "H H"
+      - "SAS"
+      - "HAH"
+    ingredients:
+      H: hyena_fur
+      S: spider_silk
+      A: AMETHYST_SHARD
+
+  scholar_leggings_recipe:
+    result: scholar_leggings
+    level: 10
+    pattern:
+      - "HAH"
+      - "S S"
+      - "H H"
+    ingredients:
+      H: hyena_fur
+      S: spider_silk
+      A: AMETHYST_SHARD
+
+  scholar_boots_recipe:
+    result: scholar_boots
+    level: 10
+    pattern:
+      - "H H"
+      - "S S"
+      - "   "
+    ingredients:
+      H: hyena_fur
+      S: spider_silk
+
+  # Treasure Armor — Level 10
+  treasure_helmet_recipe:
+    result: treasure_helmet
+    level: 10
+    pattern:
+      - "HHH"
+      - "P P"
+      - "   "
+    ingredients:
+      H: polar_fur
+      P: enchanted_wet_bone
+
+  treasure_chestplate_recipe:
+    result: treasure_chestplate
+    level: 10
+    pattern:
+      - "H H"
+      - "PGP"
+      - "HPH"
+    ingredients:
+      H: polar_fur
+      P: enchanted_wet_bone
+      G: GOLDEN_APPLE
+
+  treasure_leggings_recipe:
+    result: treasure_leggings
+    level: 10
+    pattern:
+      - "HGH"
+      - "P P"
+      - "H H"
+    ingredients:
+      H: polar_fur
+      P: enchanted_wet_bone
+      G: GOLDEN_APPLE
+
+  treasure_boots_recipe:
+    result: treasure_boots
+    level: 10
+    pattern:
+      - "H H"
+      - "P P"
+      - "   "
+    ingredients:
+      H: polar_fur
+      P: enchanted_wet_bone
+
+  # Ironclad Armor (Upgrade from Scale) — Level 15
+  ironclad_helmet_recipe:
+    result: ironclad_helmet
+    level: 15
+    pattern:
+      - "FIF"
+      - "FHF"
+      - "   "
+    ingredients:
+      H: scale_helmet
+      F: enchanted_corrupted_flesh
+      I: ironclad_plate
+
+  ironclad_chestplate_recipe:
+    result: ironclad_chestplate
+    level: 15
+    pattern:
+      - "F F"
+      - "FHF"
+      - "FIF"
+    ingredients:
+      H: scale_chestplate
+      F: enchanted_corrupted_flesh
+      I: ironclad_plate
+
+  ironclad_leggings_recipe:
+    result: ironclad_leggings
+    level: 15
+    pattern:
+      - "FIF"
+      - "FHF"
+      - "F F"
+    ingredients:
+      H: scale_leggings
+      F: enchanted_corrupted_flesh
+      I: ironclad_plate
+
+  ironclad_boots_recipe:
+    result: ironclad_boots
+    level: 15
+    pattern:
+      - "FHF"
+      - "FIF"
+      - "   "
+    ingredients:
+      H: scale_boots
+      F: enchanted_corrupted_flesh
+      I: ironclad_plate
+
+  # Apprentice Robes (Upgrade from Scholar) — Level 20
+  apprentice_helmet_recipe:
+    result: apprentice_helmet
+    level: 20
+    pattern:
+      - "RRR"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: scholar_helmet
+      P: enchanted_hyena_fur
+      R: ravager_scales
+
+  apprentice_chestplate_recipe:
+    result: apprentice_chestplate
+    level: 20
+    pattern:
+      - "R R"
+      - "PHP"
+      - "RRR"
+    ingredients:
+      H: scholar_chestplate
+      P: enchanted_hyena_fur
+      R: ravager_scales
+
+  apprentice_leggings_recipe:
+    result: apprentice_leggings
+    level: 20
+    pattern:
+      - "RRR"
+      - "PHP"
+      - "R R"
+    ingredients:
+      H: scholar_leggings
+      P: enchanted_hyena_fur
+      R: ravager_scales
+
+  apprentice_boots_recipe:
+    result: apprentice_boots
+    level: 20
+    pattern:
+      - "R R"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: scholar_boots
+      P: enchanted_hyena_fur
+      R: ravager_scales
+
+  # Pure Treasure (Upgrade from Treasure) — Level 25
+  pure_treasure_helmet_recipe:
+    result: pure_treasure_helmet
+    level: 25
+    pattern:
+      - "III"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: treasure_helmet
+      P: enchanted_polar_fur
+      I: ice_wing
+
+  pure_treasure_chestplate_recipe:
+    result: pure_treasure_chestplate
+    level: 25
+    pattern:
+      - "D D"
+      - "PHP"
+      - "III"
+    ingredients:
+      H: treasure_chestplate
+      P: enchanted_polar_fur
+      I: ice_wing
+      D: DIAMOND_BLOCK
+
+  pure_treasure_leggings_recipe:
+    result: pure_treasure_leggings
+    level: 25
+    pattern:
+      - "III"
+      - "PHP"
+      - "D D"
+    ingredients:
+      H: treasure_leggings
+      P: enchanted_polar_fur
+      I: ice_wing
+      D: DIAMOND_BLOCK
+
+  pure_treasure_boots_recipe:
+    result: pure_treasure_boots
+    level: 25
+    pattern:
+      - "I I"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: treasure_boots
+      P: enchanted_polar_fur
+      I: ice_wing
+
+  # Dreadplate (Upgrade from Ironclad) — Level 30
+  dreadplate_helmet_recipe:
+    result: dreadplate_helmet
+    level: 30
+    pattern:
+      - "DSD"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: ironclad_helmet
+      P: enchanted_dread_soul
+      D: NETHERITE_INGOT
+      S: dune_spice
+
+  dreadplate_chestplate_recipe:
+    result: dreadplate_chestplate
+    level: 30
+    pattern:
+      - "D D"
+      - "PHP"
+      - "PSP"
+    ingredients:
+      H: ironclad_chestplate
+      P: enchanted_dread_soul
+      D: NETHERITE_INGOT
+      S: dune_spice
+
+  dreadplate_leggings_recipe:
+    result: dreadplate_leggings
+    level: 30
+    pattern:
+      - "PSP"
+      - "PHP"
+      - "D D"
+    ingredients:
+      H: ironclad_leggings
+      P: enchanted_dread_soul
+      D: NETHERITE_INGOT
+      S: dune_spice
+
+  dreadplate_boots_recipe:
+    result: dreadplate_boots
+    level: 30
+    pattern:
+      - "DHD"
+      - "PSP"
+      - "   "
+    ingredients:
+      H: ironclad_boots
+      P: enchanted_dread_soul
+      D: NETHERITE_INGOT
+      S: dune_spice
+
+  # Grand Professor (Upgrade from Apprentice) — Level 35
+  grand_professor_helmet_recipe:
+    result: grand_professor_helmet
+    level: 35
+    pattern:
+      - "ETE"
+      - "PHP"
+      - "   "
+    ingredients:
+      H: apprentice_helmet
+      P: phantoms_eye
+      T: poseidons_tear
+      E: EMERALD_BLOCK
+
+  grand_professor_chestplate_recipe:
+    result: grand_professor_chestplate
+    level: 35
+    pattern:
+      - "E E"
+      - "PHP"
+      - "PTP"
+    ingredients:
+      H: apprentice_chestplate
+      P: phantoms_eye
+      T: poseidons_tear
+      E: EMERALD_BLOCK
+
+  grand_professor_leggings_recipe:
+    result: grand_professor_leggings
+    level: 35
+    pattern:
+      - "PTP"
+      - "PHP"
+      - "E E"
+    ingredients:
+      H: apprentice_leggings
+      P: phantoms_eye
+      T: poseidons_tear
+      E: EMERALD_BLOCK
+
+  grand_professor_boots_recipe:
+    result: grand_professor_boots
+    level: 35
+    pattern:
+      - "PHP"
+      - "ETE"
+    ingredients:
+      H: apprentice_boots
+      P: phantoms_eye
+      T: poseidons_tear
+      E: EMERALD_BLOCK
+
+  # Leviathan Rod — Level 35
+  leviathan_recipe:
+    result: leviathan
+    level: 35
+    pattern:
+      - "P T"
+      - "PH "
+      - "PPP"
+    ingredients:
+      H: shredder
+      P: beast_scale
+      T: kings_crown
+
+  # Perfect Treasure (Upgrade from Pure Treasure) — Level 40
+  perfect_treasure_helmet_recipe:
+    result: perfect_treasure_helmet
+    level: 40
+    pattern:
+      - "IWI"
+      - "GHG"
+      - "   "
+    ingredients:
+      H: pure_treasure_helmet
+      W: wardens_echo
+      I: enchanted_ice_wing
+      G: ENCHANTED_GOLDEN_APPLE
+
+  perfect_treasure_chestplate_recipe:
+    result: perfect_treasure_chestplate
+    level: 40
+    pattern:
+      - "G G"
+      - "IHI"
+      - "IWI"
+    ingredients:
+      H: pure_treasure_chestplate
+      W: wardens_echo
+      I: enchanted_ice_wing
+      G: ENCHANTED_GOLDEN_APPLE
+
+  perfect_treasure_leggings_recipe:
+    result: perfect_treasure_leggings
+    level: 40
+    pattern:
+      - "IWI"
+      - "IHI"
+      - "G G"
+    ingredients:
+      H: pure_treasure_leggings
+      W: wardens_echo
+      I: enchanted_ice_wing
+      G: ENCHANTED_GOLDEN_APPLE
+
+  perfect_treasure_boots_recipe:
+    result: perfect_treasure_boots
+    level: 40
+    pattern:
+      - "IHI"
+      - "GWG"
+      - "   "
+    ingredients:
+      H: pure_treasure_boots
+      W: wardens_echo
+      I: enchanted_ice_wing
+      G: ENCHANTED_GOLDEN_APPLE
+
+  # ── Nether Armor — Magma Scale (Level 27) ────────────────
+  magma_scale_helmet_recipe:
+    result: magma_scale_helmet
+    level: 27
+    pattern:
+      - "MSM"
+      - "C C"
+      - "   "
+    ingredients:
+      M: magma_residue
+      S: smoldering_rod
+      C: crimson_scale
+
+  magma_scale_chestplate_recipe:
+    result: magma_scale_chestplate
+    level: 27
+    pattern:
+      - "C C"
+      - "MSM"
+      - "MCM"
+    ingredients:
+      M: magma_residue
+      S: smoldering_rod
+      C: crimson_scale
+
+  magma_scale_leggings_recipe:
+    result: magma_scale_leggings
+    level: 27
+    pattern:
+      - "MSM"
+      - "C C"
+      - "M M"
+    ingredients:
+      M: magma_residue
+      S: smoldering_rod
+      C: crimson_scale
+
+  magma_scale_boots_recipe:
+    result: magma_scale_boots
+    level: 27
+    pattern:
+      - "C C"
+      - "M M"
+      - "   "
+    ingredients:
+      M: magma_residue
+      C: crimson_scale
+
+  # ── Nether Armor — Infernal Plate (Upgrade from Magma Scale, Level 34) ──
+  infernal_plate_helmet_recipe:
+    result: infernal_plate_helmet
+    level: 34
+    pattern:
+      - "EGE"
+      - "EHE"
+      - "   "
+    ingredients:
+      H: magma_scale_helmet
+      E: enchanted_smoldering_rod
+      G: enchanted_corrupted_gold
+
+  infernal_plate_chestplate_recipe:
+    result: infernal_plate_chestplate
+    level: 34
+    pattern:
+      - "E E"
+      - "EHE"
+      - "EGE"
+    ingredients:
+      H: magma_scale_chestplate
+      E: enchanted_smoldering_rod
+      G: enchanted_corrupted_gold
+
+  infernal_plate_leggings_recipe:
+    result: infernal_plate_leggings
+    level: 34
+    pattern:
+      - "EGE"
+      - "EHE"
+      - "E E"
+    ingredients:
+      H: magma_scale_leggings
+      E: enchanted_smoldering_rod
+      G: enchanted_corrupted_gold
+
+  infernal_plate_boots_recipe:
+    result: infernal_plate_boots
+    level: 34
+    pattern:
+      - "EHE"
+      - "EGE"
+      - "   "
+    ingredients:
+      H: magma_scale_boots
+      E: enchanted_smoldering_rod
+      G: enchanted_corrupted_gold
+
+  # ── Nether Armor — Volcanic Dreadplate (Upgrade from Infernal, Level 42) ──
+  volcanic_dreadplate_helmet_recipe:
+    result: volcanic_dreadplate_helmet
+    level: 42
+    pattern:
+      - "SVS"
+      - "SHS"
+      - "   "
+    ingredients:
+      H: infernal_plate_helmet
+      S: enchanted_soul_essence
+      V: volcanic_core
+
+  volcanic_dreadplate_chestplate_recipe:
+    result: volcanic_dreadplate_chestplate
+    level: 42
+    pattern:
+      - "S S"
+      - "SHS"
+      - "SVS"
+    ingredients:
+      H: infernal_plate_chestplate
+      S: enchanted_soul_essence
+      V: volcanic_core
+
+  volcanic_dreadplate_leggings_recipe:
+    result: volcanic_dreadplate_leggings
+    level: 42
+    pattern:
+      - "SVS"
+      - "SHS"
+      - "S S"
+    ingredients:
+      H: infernal_plate_leggings
+      S: enchanted_soul_essence
+      V: volcanic_core
+
+  volcanic_dreadplate_boots_recipe:
+    result: volcanic_dreadplate_boots
+    level: 42
+    pattern:
+      - "SHS"
+      - "SVS"
+      - "   "
+    ingredients:
+      H: infernal_plate_boots
+      S: enchanted_soul_essence
+      V: volcanic_core
+
+  # ── Nether Rods ──────────────────────────────────────────
+  ember_rod_recipe:
+    result: ember_rod
+    level: 27
+    pattern:
+      - "MMB"
+      - "BRB"
+      - "BMM"
+    ingredients:
+      B: BLAZE_ROD
+      R: FISHING_ROD
+      M: MAGMA_CREAM
+
+  inferno_rod_recipe:
+    result: inferno_rod
+    level: 25
+    pattern:
+      - "  G"
+      - " R "
+      - "H  "
+    ingredients:
+      R: ember_rod
+      G: enchanted_corrupted_gold
+      H: hoglin_tusk
+
+  hellfire_rod_recipe:
+    result: hellfire_rod
+    level: 35
+    pattern:
+      - "  S"
+      - " R "
+      - "E  "
+    ingredients:
+      R: inferno_rod
+      S: enchanted_soul_essence
+      E: ender_fragment
+
+  volcanic_rod_recipe:
+    result: volcanic_rod
+    level: 45
+    pattern:
+      - "V B"
+      - "VR "
+      - "VVV"
+    ingredients:
+      R: hellfire_rod
+      V: volcanic_core
+      B: enchanted_basalt_shell
+
+  # ── Hephaestean Trident Upgrade ─────────────────────────
+  hephaestean_recipe:
+    result: hephaestean_trident
+    level: 45
+    pattern:
+      - " V "
+      - "VPV"
+      - " V "
+    ingredients:
+      V: volcanic_core
+      P: poseidons_trident
+
+  # ── Cooling Items ────────────────────────────────────────
+  frost_salve_recipe:
+    result: frost_salve
+    level: 27
+    pattern:
+      - "PPP"
+      - "PMP"
+      - "PPP"
+    ingredients:
+      P: PACKED_ICE
+      M: magma_residue
+
+  magma_filter_recipe:
+    result: magma_filter
+    level: 32
+    pattern:
+      - "BSB"
+      - "SFS"
+      - "BSB"
+    ingredients:
+      B: BLAZE_ROD
+      S: frost_salve
+      F: BREWING_STAND
+
+  eruption_ring_recipe:
+    result: eruption_ring
+    level: 36
+    pattern:
+      - " E "
+      - "RCR"
+      - " E "
+    ingredients:
+      E: enchanted_ghast_membrane
+      R: lava_ring
+      C: crimson_heart
+
+
+# ── Enchanted Nether Material Recipes ──────────────────
+# 9× base material in a 3×3 grid → enchanted result
+# All require Fishing Level 25
+  enchanted_magma_residue_recipe:
+    result: enchanted_magma_residue
+    base: magma_residue
+    level: 25
+
+  enchanted_smoldering_rod_recipe:
+    result: enchanted_smoldering_rod
+    base: smoldering_rod
+    level: 25
+
+  enchanted_corrupted_gold_recipe:
+    result: enchanted_corrupted_gold
+    base: corrupted_gold
+    level: 25
+
+  enchanted_ghast_membrane_recipe:
+    result: enchanted_ghast_membrane
+    base: ghast_membrane
+    level: 25
+
+  enchanted_crimson_scale_recipe:
+    result: enchanted_crimson_scale
+    base: crimson_scale
+    level: 25
+
+  enchanted_hoglin_tusk_recipe:
+    result: enchanted_hoglin_tusk
+    base: hoglin_tusk
+    level: 25
+
+  enchanted_soul_essence_recipe:
+    result: enchanted_soul_essence
+    base: soul_essence
+    level: 25
+
+  enchanted_basalt_shell_recipe:
+    result: enchanted_basalt_shell
+    base: basalt_shell
+    level: 25
