@@ -42,6 +42,8 @@ public class BuyShopGUI extends BaseGUI {
     private static final String SHOP_TRIDENT_BASE_ID = "shop_trident";
     private static final String SHOP_TRIDENT_BEGINNER_1_ID = "beginner_trident_1";
     private static final String SHOP_TRIDENT_BEGINNER_2_ID = "beginner_trident_2";
+    private static final String SHOP_QUICK_CROSSBOW_T1_ID = "quickcharge_repeater_1";
+    private static final String SHOP_MULTI_CROSSBOW_T1_ID = "multishot_volley_1";
 
     private static final int MAGMA_SATCHEL_REQUIRED_LEVEL = 27;
     private static final int BAIT_SLOT_COUNT = 45;
@@ -95,7 +97,7 @@ public class BuyShopGUI extends BaseGUI {
             );
             if (price <= 0) continue;
 
-            Rarity rarity = getHighestUnlockedRarity(unlockedMobIds);
+            Rarity rarity = Rarity.UNCOMMON;
 
             ItemStack display = plugin.getItemManager().createBiomeBaitItem(
                 definition.key(),
@@ -175,6 +177,16 @@ public class BuyShopGUI extends BaseGUI {
         double beginnerTrident2Price = plugin.getConfig().getDouble("economy.fishing_shop_prices.beginner_trident_2", 1000.0);
         if (beginnerTrident2Price > 0) {
             addShopCustomItemIfConfigured(SHOP_TRIDENT_BEGINNER_2_ID, "Adept Trident", beginnerTrident2Price);
+        }
+
+        double quickCrossbowPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.quickcharge_repeater_1", 2000.0);
+        if (quickCrossbowPrice > 0) {
+            addShopCustomItemIfConfigured(SHOP_QUICK_CROSSBOW_T1_ID, "Quickcharge Repeater I", quickCrossbowPrice);
+        }
+
+        double multishotCrossbowPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.multishot_volley_1", 1800.0);
+        if (multishotCrossbowPrice > 0) {
+            addShopCustomItemIfConfigured(SHOP_MULTI_CROSSBOW_T1_ID, "Multishot Volley I", multishotCrossbowPrice);
         }
     }
 

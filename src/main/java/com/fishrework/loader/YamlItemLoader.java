@@ -510,6 +510,7 @@ public class YamlItemLoader {
             String nameColorStr = entry.getString("name_color");
             String pdcKeyStr = entry.getString("pdc_key");
             int upgradeTier = entry.getInt("upgrade_tier", 0);
+            int durability = entry.getInt("durability", 0);
 
             // Lore lines (list of {text, color} maps)
             List<Map<?, ?>> loreEntries = entry.getMapList("lore");
@@ -540,13 +541,14 @@ public class YamlItemLoader {
             final String fNameColor = nameColorStr;
                 final String fPdcKey = pdcKeyStr;
             final int fUpgradeTier = upgradeTier;
+            final int fDurability = durability;
             final List<Map<?, ?>> fLoreEntries = new ArrayList<>(loreEntries);
             final Map<String, Integer> fEnchants = enchantments;
             final Map<String, Double> fPdc = pdcDoubles;
 
             registry.put(id, () -> buildWeapon(
                     itemManager, fId, fMat, fName, fRarity, fNameColor, fPdcKey,
-                    fLoreEntries, fEnchants, fPdc, fUpgradeTier));
+                    fLoreEntries, fEnchants, fPdc, fUpgradeTier, fDurability));
             count++;
         }
         return count;
@@ -556,7 +558,7 @@ public class YamlItemLoader {
             String id, Material material, String name, Rarity rarity,
                 String nameColorStr, String pdcKeyStr, List<Map<?, ?>> loreEntries,
             Map<String, Integer> enchantments,
-            Map<String, Double> pdcDoubles, int upgradeTier) {
+            Map<String, Double> pdcDoubles, int upgradeTier, int durability) {
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -621,6 +623,10 @@ public class YamlItemLoader {
             meta.getPersistentDataContainer().set(
                     new NamespacedKey(plugin, "sc_upgrade_tier"),
                     PersistentDataType.STRING, type + ":" + upgradeTier);
+        }
+
+        if (durability > 0 && meta instanceof org.bukkit.inventory.meta.Damageable damageable) {
+            damageable.setMaxDamage(durability);
         }
 
         item.setItemMeta(meta);
@@ -789,6 +795,10 @@ public class YamlItemLoader {
 
     /** Resolves an enchantment name like "RESPIRATION" to its Bukkit Enchantment. */
     private Enchantment resolveEnchantment(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+
         return switch (name.toUpperCase()) {
             case "RESPIRATION" -> Enchantment.RESPIRATION;
             case "AQUA_AFFINITY" -> Enchantment.AQUA_AFFINITY;
@@ -808,7 +818,21 @@ public class YamlItemLoader {
             case "RIPTIDE" -> Enchantment.RIPTIDE;
             case "CHANNELING" -> Enchantment.CHANNELING;
             case "IMPALING" -> Enchantment.IMPALING;
+            case "QUICK_CHARGE" -> Enchantment.QUICK_CHARGE;
+            case "MULTISHOT" -> Enchantment.MULTISHOT;
+            case "PIERCING" -> Enchantment.PIERCING;
+            case "POWER" -> Enchantment.POWER;
+            case "PUNCH" -> Enchantment.PUNCH;
+            case "FLAME" -> Enchantment.FLAME;
+            case "INFINITY" -> Enchantment.INFINITY;
             default -> {
+                NamespacedKey key = NamespacedKey.fromString(name.toLowerCase(Locale.ROOT));
+                if (key != null) {
+                    Enchantment custom = Registry.ENCHANTMENT.get(key);
+                    if (custom != null) {
+                        yield custom;
+                    }
+                }
                 plugin.getLogger().warning("Unknown enchantment: " + name);
                 yield null;
             }

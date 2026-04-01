@@ -126,6 +126,10 @@ public class TreasureManager {
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
                 player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.9f, 0.7f);
             }
+            case SPECIAL -> {
+                player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.2f);
+                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.4f);
+            }
         }
     }
 
@@ -274,6 +278,7 @@ public class TreasureManager {
                 case EPIC       -> getNetherEpicPool();
                 case LEGENDARY  -> getNetherLegendaryPool();
                 case MYTHIC     -> getNetherMythicPool();
+                case SPECIAL    -> getNetherMythicPool();
             };
         }
         return switch (rarity) {
@@ -283,6 +288,7 @@ public class TreasureManager {
             case EPIC       -> getEpicPool();
             case LEGENDARY  -> getLegendaryPool();
             case MYTHIC     -> getMythicPool();
+            case SPECIAL    -> getMythicPool();
         };
     }
 
@@ -710,6 +716,13 @@ public class TreasureManager {
                     lore.add(Component.text("- Enchanted Corrupted Flesh, Dread Soul").color(NamedTextColor.GOLD));
                     lore.add(Component.text("- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
                     break;
+                case SPECIAL:
+                    lore.add(Component.text("- Ancient Debris, Netherite Ingot").color(NamedTextColor.GRAY));
+                    lore.add(Component.text("- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
+                    lore.add(Component.text("- Volcanic Core, Cinder Sigil").color(NamedTextColor.GOLD));
+                    lore.add(Component.text("- Enchanted Soul Essence, Ghast Membrane").color(NamedTextColor.GOLD));
+                    lore.add(Component.text("- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
+                    break;
             }
             return lore;
         }
@@ -761,6 +774,14 @@ public class TreasureManager {
                 lore.add(Component.text("- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
                 lore.add(Component.text("- Enchanted Corrupted Flesh, Enchanted Wet Bone").color(NamedTextColor.GREEN));
                 lore.add(Component.text("- Beast Scale, Dread Soul").color(NamedTextColor.GREEN));
+                lore.add(Component.text("- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
+                break;
+            case SPECIAL:
+                lore.add(Component.text("- Nether Star, Netherite Ingot").color(NamedTextColor.GRAY));
+                lore.add(Component.text("- Enchanted Golden Apple, Diamond Block").color(NamedTextColor.GRAY));
+                lore.add(Component.text("- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
+                lore.add(Component.text("- Volcanic Core, Cinder Sigil").color(NamedTextColor.GREEN));
+                lore.add(Component.text("- Enchanted Soul Essence, Beast Scale").color(NamedTextColor.GREEN));
                 lore.add(Component.text("- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
                 break;
         }

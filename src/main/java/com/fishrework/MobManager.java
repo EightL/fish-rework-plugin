@@ -718,6 +718,8 @@ public class MobManager {
     private net.kyori.adventure.text.format.NamedTextColor resolveColor(String name) {
         if (name == null) return null;
         return switch (name.toUpperCase()) {
+            case "ORANGE" -> net.kyori.adventure.text.format.NamedTextColor.GOLD;
+            case "DARK_RED" -> net.kyori.adventure.text.format.NamedTextColor.DARK_RED;
             case "RED" -> net.kyori.adventure.text.format.NamedTextColor.RED;
             case "AQUA" -> net.kyori.adventure.text.format.NamedTextColor.AQUA;
             case "GOLD" -> net.kyori.adventure.text.format.NamedTextColor.GOLD;

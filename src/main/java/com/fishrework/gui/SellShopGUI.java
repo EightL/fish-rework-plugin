@@ -27,7 +27,7 @@ public class SellShopGUI extends BaseGUI {
 
     // Pre-computed list of sellable items with their prices
     private final List<SellEntry> sellEntries = new ArrayList<>();
-    private final Map<String, Integer> customUnlockLevelById = new HashMap<>();
+    private final Map<String, Set<String>> customUnlockMobIdsByDropId = new HashMap<>();
     private VendorFilter activeFilter = VendorFilter.ALL;
 
     private record SellEntry(String displayName, Material material, String customId, double price, EntryCategory category) {}
@@ -69,7 +69,8 @@ public class SellShopGUI extends BaseGUI {
         }
     }
     private static final String POTTERY_SHERD_WILDCARD_ID = "__pottery_sherd_wildcard__";
-    private static final String OTHER_WILDCARD_ID = "__other_vendor_wildcard__";
+    private static final int SELL_OTHER_SLOT = 47;
+    private static final int MAX_OTHER_TOOLTIP_LINES = 8;
 
     private static final int ITEMS_PER_PAGE = 45; // Rows 0-4
     private long lastResultClick = 0;
@@ -77,7 +78,7 @@ public class SellShopGUI extends BaseGUI {
     public SellShopGUI(FishRework plugin, Player player) {
         super(plugin, 6, "Fish Vendor");
         this.player = player;
-        rebuildCustomUnlockLevelMap();
+        rebuildCustomUnlockMap();
         buildSellEntries();
         initializeItems();
     }
@@ -95,11 +96,13 @@ public class SellShopGUI extends BaseGUI {
 
     private void buildSellEntries() {
         PlayerData playerData = plugin.getPlayerData(player.getUniqueId());
-        int fishingLevel = playerData != null ? playerData.getLevel(Skill.FISHING) : 0;
 
         // Vanilla fish
         org.bukkit.configuration.ConfigurationSection vanillaSection =
                 plugin.getConfig().getConfigurationSection("economy.sell_prices");
+        if (vanillaSection == null) {
+            vanillaSection = plugin.getConfig().getConfigurationSection("sell_prices");
+        }
         if (vanillaSection != null) {
             Set<Material> addedVanillaMaterials = new HashSet<>();
             for (String key : vanillaSection.getKeys(false)) {
@@ -130,6 +133,9 @@ public class SellShopGUI extends BaseGUI {
         // Custom materials
         org.bukkit.configuration.ConfigurationSection customSection =
                 plugin.getConfig().getConfigurationSection("economy.custom_sell_prices");
+        if (customSection == null) {
+            customSection = plugin.getConfig().getConfigurationSection("custom_sell_prices");
+        }
         if (customSection != null) {
             for (String key : customSection.getKeys(false)) {
                 if (isEnchantedMaterialId(key)) {
@@ -140,7 +146,7 @@ public class SellShopGUI extends BaseGUI {
                     continue; // Keep vendor focused on material-like drops, not gear.
                 }
 
-                if (!isCustomEntryUnlockedByFishingLevel(key, fishingLevel)) {
+                if (!isCustomEntryUnlockedInEncyclopedia(key, playerData)) {
                     continue;
                 }
 
@@ -158,11 +164,27 @@ public class SellShopGUI extends BaseGUI {
             }
         }
 
-        double otherPrice = plugin.getConfig().getDouble("economy.other_vendor_price", 1.0);
-        if (otherPrice > 0) {
-            sellEntries.add(new SellEntry("Other", Material.DRIED_KELP, OTHER_WILDCARD_ID, otherPrice, EntryCategory.VANILLA));
+        if (sellEntries.isEmpty()) {
+            addFallbackVanillaEntries();
         }
 
+    }
+
+    private void addFallbackVanillaEntries() {
+        LinkedHashMap<Material, Double> defaults = new LinkedHashMap<>();
+        defaults.put(Material.COD, 5.0);
+        defaults.put(Material.SALMON, 7.0);
+        defaults.put(Material.PUFFERFISH, 10.0);
+        defaults.put(Material.TROPICAL_FISH, 12.0);
+
+        for (Map.Entry<Material, Double> entry : defaults.entrySet()) {
+            Material material = entry.getKey();
+            double price = plugin.getConfig().getDouble(
+                    "economy.sell_prices." + material.name(),
+                    plugin.getConfig().getDouble("sell_prices." + material.name(), entry.getValue()));
+            if (price <= 0) continue;
+            sellEntries.add(new SellEntry(formatName(material.name()), material, null, price, EntryCategory.VANILLA));
+        }
     }
 
     private String formatName(String id) {
@@ -266,6 +288,65 @@ public class SellShopGUI extends BaseGUI {
         sellAll.setItemMeta(saMeta);
         inventory.setItem(51, sellAll);
 
+        // Dedicated Sell Other button (separate from Sell All to avoid accidental junk sales)
+        ItemStack sellOther = new ItemStack(Material.DRIED_KELP);
+        ItemMeta soMeta = sellOther.getItemMeta();
+        soMeta.displayName(Component.text("Sell Other").color(NamedTextColor.GOLD)
+            .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
+
+        List<ItemStack> otherItems = getOtherVendorItems(player);
+        int otherCount = 0;
+        double otherTotal = 0.0;
+        for (ItemStack stack : otherItems) {
+            otherCount += stack.getAmount();
+            otherTotal += stack.getAmount() * plugin.getConfig().getDouble("economy.other_vendor_price", 1.0);
+        }
+
+        List<Component> sellOtherLore = new ArrayList<>();
+        sellOtherLore.add(Component.empty());
+        sellOtherLore.add(Component.text("Sells only 'other' vendor items").color(NamedTextColor.GRAY)
+            .decoration(TextDecoration.ITALIC, false));
+        sellOtherLore.add(Component.text("Price: 1 " + currencyName + " each").color(NamedTextColor.GOLD)
+            .decoration(TextDecoration.ITALIC, false));
+        sellOtherLore.add(Component.text("Found: " + otherCount).color(NamedTextColor.AQUA)
+            .decoration(TextDecoration.ITALIC, false));
+        if (otherCount > 0) {
+            sellOtherLore.add(Component.text("Total: " + String.format("%.0f", otherTotal) + " " + currencyName)
+                .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+        }
+        sellOtherLore.add(Component.empty());
+
+        if (otherItems.isEmpty()) {
+            sellOtherLore.add(Component.text("No other items in inventory").color(NamedTextColor.RED)
+                .decoration(TextDecoration.ITALIC, false));
+        } else {
+            Map<String, Integer> grouped = new LinkedHashMap<>();
+            for (ItemStack stack : otherItems) {
+            String name = getDisplayName(stack);
+            grouped.put(name, grouped.getOrDefault(name, 0) + stack.getAmount());
+            }
+
+            int shown = 0;
+            for (Map.Entry<String, Integer> e : grouped.entrySet()) {
+            if (shown >= MAX_OTHER_TOOLTIP_LINES) break;
+            sellOtherLore.add(Component.text("- " + e.getKey() + " x" + e.getValue())
+                .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+            shown++;
+            }
+            int hidden = grouped.size() - shown;
+            if (hidden > 0) {
+            sellOtherLore.add(Component.text("... and " + hidden + " more").color(NamedTextColor.DARK_GRAY)
+                .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+
+        sellOtherLore.add(Component.empty());
+        sellOtherLore.add(Component.text("Click to open confirmation").color(NamedTextColor.YELLOW)
+            .decoration(TextDecoration.ITALIC, false));
+        soMeta.lore(sellOtherLore);
+        sellOther.setItemMeta(soMeta);
+        inventory.setItem(SELL_OTHER_SLOT, sellOther);
+
         // Filter toggle
         ItemStack filterItem = new ItemStack(activeFilter.icon());
         ItemMeta filterMeta = filterItem.getItemMeta();
@@ -296,10 +377,6 @@ public class SellShopGUI extends BaseGUI {
                 if (item.getType().name().endsWith("_POTTERY_SHERD")) {
                     count += item.getAmount();
                 }
-            } else if (OTHER_WILDCARD_ID.equals(customId)) {
-                if (plugin.getItemManager().isOtherVendorSellMaterial(item)) {
-                    count += item.getAmount();
-                }
             } else if (customId != null) {
                 if (plugin.getItemManager().isCustomItem(item, customId)) {
                     count += item.getAmount();
@@ -325,7 +402,6 @@ public class SellShopGUI extends BaseGUI {
     private double calculateTotalSellValue(Player player) {
         double total = 0;
         PlayerData playerData = plugin.getPlayerData(player.getUniqueId());
-        int fishingLevel = playerData != null ? playerData.getLevel(Skill.FISHING) : 0;
 
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) continue;
@@ -334,7 +410,11 @@ public class SellShopGUI extends BaseGUI {
             if (customId != null) {
                 if (isEnchantedMaterialId(customId)) continue;
                 if (!isCustomItemVendorMaterialAllowed(customId)) continue;
-                if (!isCustomEntryUnlockedByFishingLevel(customId, fishingLevel)) continue;
+                if (!isCustomEntryUnlockedInEncyclopedia(customId, playerData)) continue;
+            }
+
+            if (plugin.getItemManager().isOtherVendorSellMaterial(item)) {
+                continue;
             }
 
             double price = plugin.getItemManager().getSellPrice(item);
@@ -343,6 +423,24 @@ public class SellShopGUI extends BaseGUI {
             }
         }
         return total;
+    }
+
+    private List<ItemStack> getOtherVendorItems(Player player) {
+        List<ItemStack> out = new ArrayList<>();
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) continue;
+            if (!plugin.getItemManager().isOtherVendorSellMaterial(item)) continue;
+            out.add(item);
+        }
+        return out;
+    }
+
+    private String getDisplayName(ItemStack item) {
+        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            return net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                    .serialize(item.getItemMeta().displayName());
+        }
+        return formatName(item.getType().name());
     }
 
     @Override
@@ -363,6 +461,11 @@ public class SellShopGUI extends BaseGUI {
         if (slot == 48 && page > 0) {
             page--;
             initializeItems();
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+            return;
+        }
+        if (slot == SELL_OTHER_SLOT) {
+            new SellOtherConfirmGUI(plugin, player).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             return;
         }
@@ -468,19 +571,15 @@ public class SellShopGUI extends BaseGUI {
 
         ItemStack bought;
         if (entry.customId != null) {
-            if (OTHER_WILDCARD_ID.equals(entry.customId)) {
-                bought = new ItemStack(entry.material, 1);
-            } else {
-                ItemStack custom = plugin.getItemManager().getItem(entry.customId);
-                if (custom == null) {
-                    player.sendMessage(Component.text("This item cannot be bought right now.")
-                            .color(NamedTextColor.RED));
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
-                    return;
-                }
-                bought = custom.clone();
-                bought.setAmount(1);
+            ItemStack custom = plugin.getItemManager().getItem(entry.customId);
+            if (custom == null) {
+                player.sendMessage(Component.text("This item cannot be bought right now.")
+                        .color(NamedTextColor.RED));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+                return;
             }
+            bought = custom.clone();
+            bought.setAmount(1);
         } else {
             bought = new ItemStack(entry.material, 1);
         }
@@ -521,8 +620,6 @@ public class SellShopGUI extends BaseGUI {
             boolean matches;
             if (POTTERY_SHERD_WILDCARD_ID.equals(customId)) {
                 matches = item.getType().name().endsWith("_POTTERY_SHERD");
-            } else if (OTHER_WILDCARD_ID.equals(customId)) {
-                matches = plugin.getItemManager().isOtherVendorSellMaterial(item);
             } else if (customId != null) {
                 matches = plugin.getItemManager().isCustomItem(item, customId);
             } else {
@@ -547,7 +644,6 @@ public class SellShopGUI extends BaseGUI {
         double totalEarnings = 0;
         int totalItems = 0;
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        int fishingLevel = data != null ? data.getLevel(Skill.FISHING) : 0;
 
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
@@ -558,7 +654,11 @@ public class SellShopGUI extends BaseGUI {
             if (customId != null) {
                 if (isEnchantedMaterialId(customId)) continue;
                 if (!isCustomItemVendorMaterialAllowed(customId)) continue;
-                if (!isCustomEntryUnlockedByFishingLevel(customId, fishingLevel)) continue;
+                if (!isCustomEntryUnlockedInEncyclopedia(customId, data)) continue;
+            }
+
+            if (plugin.getItemManager().isOtherVendorSellMaterial(item)) {
+                continue;
             }
 
             double price = plugin.getItemManager().getSellPrice(item);
@@ -587,30 +687,34 @@ public class SellShopGUI extends BaseGUI {
         }
     }
 
-    private void rebuildCustomUnlockLevelMap() {
-        customUnlockLevelById.clear();
+    private void rebuildCustomUnlockMap() {
+        customUnlockMobIdsByDropId.clear();
 
         for (CustomMob mob : plugin.getMobRegistry().getBySkill(Skill.FISHING)) {
-            int requiredLevel = mob.getRequiredLevel();
             for (com.fishrework.model.MobDrop drop : mob.getDrops()) {
                 ItemStack sample = drop.getSampleItem();
                 String customId = getCustomId(sample);
                 if (customId == null || customId.isBlank()) continue;
-
-                Integer existing = customUnlockLevelById.get(customId);
-                if (existing == null || requiredLevel < existing) {
-                    customUnlockLevelById.put(customId, requiredLevel);
-                }
+                customUnlockMobIdsByDropId
+                        .computeIfAbsent(customId, ignored -> new HashSet<>())
+                        .add(mob.getId());
             }
         }
     }
 
-    private boolean isCustomEntryUnlockedByFishingLevel(String customId, int fishingLevel) {
-        Integer required = customUnlockLevelById.get(customId);
-        if (required == null) {
+    private boolean isCustomEntryUnlockedInEncyclopedia(String customId, PlayerData playerData) {
+        Set<String> requiredMobIds = customUnlockMobIdsByDropId.get(customId);
+        if (requiredMobIds == null || requiredMobIds.isEmpty()) {
             return true; // Non-mob custom entries remain available.
         }
-        return fishingLevel >= required;
+
+        if (playerData == null) return false;
+        for (String mobId : requiredMobIds) {
+            if (playerData.hasCaughtMob(mobId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isEnchantedMaterialId(String customId) {
@@ -619,6 +723,11 @@ public class SellShopGUI extends BaseGUI {
 
     private boolean isCustomItemVendorMaterialAllowed(String customId) {
         if (customId == null || customId.isBlank()) return false;
+
+        // Always allow direct mob drops so every encyclopedia-unlocked drop can be sold.
+        if (customUnlockMobIdsByDropId.containsKey(customId)) {
+            return true;
+        }
 
         ItemStack sample = plugin.getItemManager().getItem(customId);
         if (sample == null) return true;

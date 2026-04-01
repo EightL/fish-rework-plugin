@@ -33,6 +33,12 @@ public class FishingUtils {
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.0f);
                 loc.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 50, 1.0, 1.5, 1.0);
             }
+            case SPECIAL -> {
+                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.3f);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.2f, 1.8f);
+                loc.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, loc, 70, 1.2, 1.6, 1.2);
+                loc.getWorld().spawnParticle(Particle.END_ROD, loc, 45, 0.8, 0.8, 0.8);
+            }
             default -> { /* No special effects for common/uncommon */ }
         }
     }
@@ -50,11 +56,12 @@ public class FishingUtils {
         String actionText = isLava ? " lava-fished a " : " caught a ";
         String actionAnText = isLava ? " lava-fished an " : " caught an ";
         
-        if (rarity == Rarity.LEGENDARY) {
+        if (rarity == Rarity.LEGENDARY || rarity == Rarity.SPECIAL) {
+            String rarityLabel = rarity == Rarity.SPECIAL ? "SPECIAL " : "LEGENDARY ";
             message = Component.text("\u2728 ").color(NamedTextColor.GOLD)
                     .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
                     .append(Component.text(actionText).color(NamedTextColor.GRAY))
-                    .append(Component.text("LEGENDARY ").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+                .append(Component.text(rarityLabel).color(color).decoration(TextDecoration.BOLD, true))
                     .append(Component.text(mobName).color(color))
                     .append(Component.text("!").color(NamedTextColor.GRAY))
                     .append(Component.text(" \u2728").color(NamedTextColor.GOLD));

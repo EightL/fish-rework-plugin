@@ -26,6 +26,7 @@ public class EnchantmentListener implements Listener {
 
     private final FishRework plugin;
     private final NamespacedKey SEA_CREATURE_CHANCE_KEY;
+    private final NamespacedKey SHOTGUN_VOLLEY_KEY;
     private final NamespacedKey REQUIRED_ADVANCEMENT_KEY;
 
     private final int fishingEnchantMaxLevel;
@@ -34,6 +35,7 @@ public class EnchantmentListener implements Listener {
     public EnchantmentListener(FishRework plugin) {
         this.plugin = plugin;
         this.SEA_CREATURE_CHANCE_KEY = new NamespacedKey("fishrework", "sea_creature_chance");
+        this.SHOTGUN_VOLLEY_KEY = new NamespacedKey("fishrework", "shotgun_volley");
         // Fishing Level 20 Advancement
         this.REQUIRED_ADVANCEMENT_KEY = new NamespacedKey(plugin, "fishing/level_20");
         this.fishingEnchantMaxLevel = plugin.getConfig().getInt("enchantments.sea_creature_chance_max_level", 6);
@@ -133,6 +135,19 @@ public class EnchantmentListener implements Listener {
 
         if (hasLuck && hasSeaCreature) {
             event.setResult(null); // Block the combination
+        }
+
+        Enchantment shotgunVolley = org.bukkit.Registry.ENCHANTMENT.get(SHOTGUN_VOLLEY_KEY);
+        if (shotgunVolley == null) return;
+
+        boolean hasMultishot = result.containsEnchantment(Enchantment.MULTISHOT);
+        boolean hasShotgunVolley = result.containsEnchantment(shotgunVolley);
+        if (hasMultishot && hasShotgunVolley) {
+            event.setResult(null);
+            if (player != null) {
+                player.sendActionBar(Component.text("Shotgun Volley cannot be combined with Multishot.")
+                        .color(NamedTextColor.RED));
+            }
         }
     }
 

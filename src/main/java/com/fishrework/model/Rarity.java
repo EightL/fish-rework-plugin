@@ -9,7 +9,8 @@ public enum Rarity {
     RARE(NamedTextColor.BLUE),
     EPIC(NamedTextColor.DARK_PURPLE),
     LEGENDARY(NamedTextColor.GOLD),
-    MYTHIC(TextColor.color(0x8B0000));
+    MYTHIC(TextColor.color(0x8B0000)),
+    SPECIAL(TextColor.color(0x00D1FF));
 
     private final TextColor color;
 

@@ -779,6 +779,10 @@ mobs:
       chance: 1.0
       min: 1
       max: 1
+    - item: megalodon_tooth
+      chance: 0.005
+      min: 1
+      max: 1
     spawn:
       scale: 5.0
       health: 150.0
@@ -2031,19 +2035,39 @@ mobs:
       max: 1
     spawn:
       type: MOUNTED
+      glow_color: DARK_RED
       mount:
         entity_type: HOGLIN
         display_name: "Corrupted Mount"
         show_name: false
+        scale: 2.0
         aggro:
-          speed: 1.3
-          damage: 20.0
+          speed: 0.45
+          damage: 10.0
           range: 3.0
           hit_interval: 30
       rider_entity_type: ZOMBIFIED_PIGLIN
-      health: 700.0
-      damage_multiplier: 3.0
+      scale: 1.5
+      health: 233.0
+      damage_multiplier: 1.5
       name_color: DARK_RED
+      equipment:
+        chestplate: "dyed_trimmed:LEATHER_CHESTPLATE:#6E0F18:NETHERITE:SNOUT"
+        leggings: "dyed_trimmed:LEATHER_LEGGINGS:#FF6A00:NETHERITE:SNOUT"
+        boots: "dyed_trimmed:LEATHER_BOOTS:#A0181E:NETHERITE:SNOUT"
+      abilities:
+      - id: BLOOD_YOKE
+        cooldown_ticks: 300
+        weight: 3
+        chance: 1.0
+      - id: WAR_DRUM
+        cooldown_ticks: 400
+        weight: 2
+        chance: 1.0
+      - id: BLOOD_EXPLOSION
+        cooldown_ticks: 500
+        weight: 2
+        chance: 1.0
 
   # ===========================================================================
   # Warped Forest — Biome-Specific
@@ -2337,28 +2361,50 @@ mobs:
         weight: 2
         chance: 1.0
 
-  volcanic_wyrm:
-    entity_type: WARDEN
-    display_name: "Volcanic Wyrm"
-    xp: 2800.0
+  the_wither:
+    entity_type: WITHER
+    display_name: "The Cinder Eclipse"
+    xp: 3200.0
     base_weight: 10000.0
     default_chance: 0.0
     category: HOSTILE
     required_level: 45
     boost_by_rare_creature: true
-    collection_icon: NETHERITE_SCRAP
-    collection_name: "Volcanic Wyrm"
+    collection_icon: NETHER_STAR
+    collection_name: "The Cinder Eclipse"
     rarity: LEGENDARY
     drops:
-    - item: volcanic_core
+    - item: cinder_sigil
       chance: 1.0
       min: 1
       max: 1
     spawn:
-      scale: 2.0
-      health_multiplier: 10.0
-      damage_multiplier: 5.0
-      name_color: DARK_RED
+      scale: 1.8
+      health: 900.0
+      damage: 8.0
+      name_color: DARK_PURPLE
+      glow_color: DARK_GRAY
+      abilities:
+      - id: TORSO_TENTACLES
+        cooldown_ticks: 90
+        weight: 4
+        chance: 1.0
+      - id: ABYSSAL_NOVA
+        cooldown_ticks: 180
+        weight: 2
+        chance: 1.0
+      - id: DARK_RITUAL
+        cooldown_ticks: 120
+        weight: 3
+        chance: 1.0
+      - id: SOUL_GEYSERS
+        cooldown_ticks: 140
+        weight: 2
+        chance: 1.0
+      - id: VALLEY_DIRGE
+        cooldown_ticks: 170
+        weight: 2
+        chance: 1.0
 
   # ===========================================================================
   # Cross-Biome Nether Legendary
@@ -2377,16 +2423,13 @@ mobs:
     collection_name: "Nether Lord"
     rarity: LEGENDARY
     drops:
-    - random_item:
-      - volcanic_dreadplate_helmet
-      - volcanic_dreadplate_chestplate
-      - volcanic_dreadplate_leggings
-      - volcanic_dreadplate_boots
-      chance: 0.25
+    - item: volcanic_core
+      chance: 1.0
       min: 1
       max: 1
     spawn:
       type: MOUNTED
+      glow_color: ORANGE
       mount:
         entity_type: STRIDER
         display_name: "Nether Lord's Steed"
@@ -2394,11 +2437,11 @@ mobs:
         scale: 2.0
         aggro:
           speed: 1.5
-          damage: 20.0
+          damage: 7.0
           range: 3.0
           hit_interval: 30
       health: 1300.0
-      damage: 40.0
+      damage: 16.0
       name_color: DARK_RED
       equipment:
         helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAzNTRiMDc5Y2VhMDBmMTFhMjhlN2MyMWJhOWMxM2ExN2NjY2IwNjA1NjAxOWNiNGM2NGJjMjQzNTc1NTI5YSJ9fX0="
@@ -2406,3 +2449,16 @@ mobs:
         leggings: "dyed:LEATHER_LEGGINGS:#8B0000"
         boots: "dyed:LEATHER_BOOTS:#8B0000"
         mainhand: "enchanted:NETHERITE_SWORD:FIRE_ASPECT:3"
+      abilities:
+      - id: FIRE_GEYSERS
+        cooldown_ticks: 180
+        weight: 3
+        chance: 1.0
+      - id: STRIDER_LAVA_SPEW
+        cooldown_ticks: 130
+        weight: 4
+        chance: 1.0
+      - id: NETHER_REND
+        cooldown_ticks: 160
+        weight: 3
+        chance: 1.0

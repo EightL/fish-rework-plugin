@@ -54,7 +54,9 @@ public class LoreManager {
                     plain.contains("Treasure Find:") ||
                     plain.contains("Heat Resistance:") ||
                     plain.contains("Sea Creature Defense:") ||
+                    plain.contains("Sea Creature Defense Modifier:") ||
                     plain.contains("Sea Creature Attack:") ||
+                    plain.contains("Sea Creature Attack Modifier:") ||
                     plain.contains("SC Flat Attack:") ||
                     plain.contains("SC Flat Defense:") ||
                     plain.contains("Double Catch:") ||
@@ -219,24 +221,6 @@ public class LoreManager {
         } else if (pdc.has(im.DEADMAN_ARMOR_KEY, PersistentDataType.BYTE)) {
             lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             lines.add(statLine("Night multiplier: ", "2×"));
-        } else if (pdc.has(im.SCHOLAR_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Movement Speed: ", "+0.04"));
-        } else if (pdc.has(im.APPRENTICE_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Movement Speed: ", "+0.06"));
-        } else if (pdc.has(im.GRAND_PROFESSOR_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Movement Speed: ", "+0.08"));
-        } else if (pdc.has(im.TREASURE_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Health Regen: ", "1.0 HP / 3s"));
-        } else if (pdc.has(im.PURE_TREASURE_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Health Regen: ", "2.0 HP / 3s"));
-        } else if (pdc.has(im.PERFECT_TREASURE_ARMOR_KEY, PersistentDataType.BYTE)) {
-            lines.add(Component.text("Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Health Regen: ", "3.0 HP / 3s"));
         }
         return lines;
     }

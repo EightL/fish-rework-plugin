@@ -1,6 +1,7 @@
 package com.fishrework.storage;
 
 import com.fishrework.FishRework;
+import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 
@@ -279,6 +280,12 @@ public class DatabaseManager {
         }
         if (settings.containsKey("tips_notifications")) {
             data.setFishingTipsEnabled(Boolean.parseBoolean(settings.get("tips_notifications")));
+        }
+        if (settings.containsKey("particle_mode")) {
+            ParticleDetailMode mode = ParticleDetailMode.fromInput(settings.get("particle_mode"));
+            if (mode != null) {
+                data.setParticleDetailMode(mode);
+            }
         }
         loadBalanceInternal(uuid, data);
         loadFishBagInternal(uuid, data);

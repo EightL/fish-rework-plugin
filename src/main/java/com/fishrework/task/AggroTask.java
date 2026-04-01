@@ -2,6 +2,7 @@ package com.fishrework.task;
 
 import com.fishrework.FishRework;
 import com.fishrework.MobManager;
+import com.fishrework.model.ParticleDetailMode;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
@@ -31,6 +32,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AggroTask implements Runnable {
 
     private static final int TICKS_PER_RUN = 5; // must match scheduler period in FishRework
+    private static final double PARTICLE_VIEW_DISTANCE = 64.0;
+    private static final double PARTICLE_VIEW_DISTANCE_SQ = PARTICLE_VIEW_DISTANCE * PARTICLE_VIEW_DISTANCE;
     private static final Particle.DustOptions BITE_RED = new Particle.DustOptions(Color.fromRGB(190, 25, 25), 1.1f);
     private static final Particle.DustOptions WAILING_AURA_RED = new Particle.DustOptions(Color.fromRGB(255, 62, 62), 2.2f);
     private static final Particle.DustOptions WAILING_AURA_CRIMSON = new Particle.DustOptions(Color.fromRGB(150, 24, 32), 2.0f);
@@ -187,8 +190,8 @@ public class AggroTask implements Runnable {
 
     private void spawnBiteParticles(Player player) {
         Location loc = player.getLocation().add(0, player.getHeight() * 0.5, 0);
-        player.getWorld().spawnParticle(Particle.DUST, loc, 10, 0.25, 0.35, 0.25, 0.0, BITE_RED);
-        player.getWorld().spawnParticle(Particle.DAMAGE_INDICATOR, loc, 4, 0.2, 0.3, 0.2, 0.0);
+        spawnParticle(player.getWorld(), Particle.DUST, loc, 10, 0.25, 0.35, 0.25, 0.0, BITE_RED);
+        spawnParticle(player.getWorld(), Particle.DAMAGE_INDICATOR, loc, 4, 0.2, 0.3, 0.2, 0.0);
     }
 
     private Player findNearestPlayer(Mob mob, double range) {
@@ -288,7 +291,7 @@ public class AggroTask implements Runnable {
                     double ox = rng.nextDouble(-0.6, 0.6);
                     double oy = rng.nextDouble(-0.3, 0.8);
                     double oz = rng.nextDouble(-0.6, 0.6);
-                    world.spawnParticle(Particle.WITCH, loc.clone().add(ox, oy, oz), 1, 0, 0, 0, 0);
+                    spawnParticle(world, Particle.WITCH, loc.clone().add(ox, oy, oz), 1, 0, 0, 0, 0);
                 }
             }
             case "gore" -> {
@@ -298,11 +301,11 @@ public class AggroTask implements Runnable {
                     double ox = rng.nextDouble(-1.5, 1.5);
                     double oy = rng.nextDouble(-0.5, 1.0);
                     double oz = rng.nextDouble(-1.5, 1.5);
-                    world.spawnParticle(Particle.DUST, loc.clone().add(ox, oy, oz), 1, redDust);
+                    spawnParticle(world, Particle.DUST, loc.clone().add(ox, oy, oz), 1, redDust);
                 }
                 // Extra drip particles
                 if (rng.nextInt(3) == 0) {
-                    world.spawnParticle(Particle.DAMAGE_INDICATOR, loc.clone().add(
+                    spawnParticle(world, Particle.DAMAGE_INDICATOR, loc.clone().add(
                         rng.nextDouble(-1.0, 1.0), rng.nextDouble(-0.5, 0.5), rng.nextDouble(-1.0, 1.0)), 1, 0, 0, 0, 0);
                 }
             }
@@ -313,7 +316,7 @@ public class AggroTask implements Runnable {
                     double ox = rng.nextDouble(-0.5, 0.5);
                     double oy = rng.nextDouble(-0.2, 0.6);
                     double oz = rng.nextDouble(-0.5, 0.5);
-                    world.spawnParticle(Particle.DUST, loc.clone().add(ox, oy, oz), 1, lightRed);
+                    spawnParticle(world, Particle.DUST, loc.clone().add(ox, oy, oz), 1, lightRed);
                 }
             }
             case "crimson_ghast" -> {
@@ -338,18 +341,18 @@ public class AggroTask implements Runnable {
                             double y = -1.25 + (seg * 0.36) + (Math.sin(segAngle * 1.7) * 0.12);
                             Location p = loc.clone().add(x, y, z);
 
-                            world.spawnParticle(Particle.DUST, p, 2, main);
-                            world.spawnParticle(Particle.DUST, p, 1, alt);
+                            spawnParticle(world, Particle.DUST, p, 2, main);
+                            spawnParticle(world, Particle.DUST, p, 1, alt);
                             if (toxic && seg % 2 == 0) {
-                                world.spawnParticle(Particle.SNEEZE, p, 1, 0.02, 0.02, 0.02, 0.0);
+                                spawnParticle(world, Particle.SNEEZE, p, 1, 0.02, 0.02, 0.02, 0.0);
                             }
                         }
                     }
 
                     if (toxic) {
-                        world.spawnParticle(Particle.SNEEZE, loc.clone().add(0, 0.25, 0), 8, 0.45, 0.3, 0.45, 0.01);
+                        spawnParticle(world, Particle.SNEEZE, loc.clone().add(0, 0.25, 0), 8, 0.45, 0.3, 0.45, 0.01);
                     } else {
-                        world.spawnParticle(Particle.SQUID_INK, loc.clone().add(0, 0.35, 0), 6, 0.4, 0.28, 0.4, 0.01);
+                        spawnParticle(world, Particle.SQUID_INK, loc.clone().add(0, 0.35, 0), 6, 0.4, 0.28, 0.4, 0.01);
                     }
                     break;
                 }
@@ -372,16 +375,16 @@ public class AggroTask implements Runnable {
                         double y = -1.45 + (seg * 0.34) + (Math.sin(segPhase * 1.8) * 0.2);
                         Location p = loc.clone().add(x, y, z);
 
-                        world.spawnParticle(Particle.DUST, p, 2, blood);
+                        spawnParticle(world, Particle.DUST, p, 2, blood);
                         if (seg % 2 == 0) {
-                            world.spawnParticle(Particle.DUST, p, 2, bloodDark);
+                            spawnParticle(world, Particle.DUST, p, 2, bloodDark);
                         } else {
-                            world.spawnParticle(Particle.SMOKE, p, 2, 0.03, 0.03, 0.03, 0.0);
+                            spawnParticle(world, Particle.SMOKE, p, 2, 0.03, 0.03, 0.03, 0.0);
                         }
                     }
                 }
 
-                world.spawnParticle(Particle.SQUID_INK, loc.clone().add(0, 0.35, 0), 8, 0.45, 0.3, 0.45, 0.01);
+                spawnParticle(world, Particle.SQUID_INK, loc.clone().add(0, 0.35, 0), 8, 0.45, 0.3, 0.45, 0.01);
             }
             case "void_colossus" -> {
                 double t = System.currentTimeMillis() / 150.0;
@@ -402,12 +405,12 @@ public class AggroTask implements Runnable {
                         double z = Math.sin(angle) * radius;
                         Location p = loc.clone().add(x, y + Math.sin(angle * 2.0 + t) * 0.09, z);
 
-                        world.spawnParticle(Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, deepVoid);
+                        spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, deepVoid);
                         if (i % 2 == 0) {
-                            world.spawnParticle(Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, violetEdge);
+                            spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, violetEdge);
                         }
                         if (i % 3 == 0) {
-                            world.spawnParticle(Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, abyssBlue);
+                            spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, abyssBlue);
                         }
                     }
                 }
@@ -416,14 +419,89 @@ public class AggroTask implements Runnable {
                     double angle = (Math.PI * 2.0 * i / 8.0) - t * 0.6;
                     double radius = 2.8 + Math.sin(t + i) * 0.3;
                     Location p = loc.clone().add(Math.cos(angle) * radius, 0.15 + Math.sin(t * 1.3 + i) * 0.15, Math.sin(angle) * radius);
-                    world.spawnParticle(Particle.REVERSE_PORTAL, p, 1, 0.02, 0.02, 0.02, 0.0);
-                    world.spawnParticle(Particle.PORTAL, p, 1, 0.02, 0.02, 0.02, 0.0);
+                    spawnParticle(world, Particle.REVERSE_PORTAL, p, 1, 0.02, 0.02, 0.02, 0.0);
+                    spawnParticle(world, Particle.PORTAL, p, 1, 0.02, 0.02, 0.02, 0.0);
                 }
 
-                world.spawnParticle(Particle.SQUID_INK, loc.clone().add(0, 0.2, 0), 5, 0.4, 0.3, 0.4, 0.01);
-                world.spawnParticle(Particle.SMOKE, loc.clone().add(0, 0.35, 0), 8, 0.45, 0.35, 0.45, 0.01);
+                spawnParticle(world, Particle.SQUID_INK, loc.clone().add(0, 0.2, 0), 5, 0.4, 0.3, 0.4, 0.01);
+                spawnParticle(world, Particle.SMOKE, loc.clone().add(0, 0.35, 0), 8, 0.45, 0.35, 0.45, 0.01);
             }
             default -> {}
         }
+    }
+
+    private void spawnParticle(World world, Particle particle, Location location, int count, Object... extras) {
+        if (world == null || location == null || count <= 0) return;
+
+        for (Player viewer : world.getPlayers()) {
+            if (viewer == null || viewer.isDead()) continue;
+            if (viewer.getLocation().distanceSquared(location) > PARTICLE_VIEW_DISTANCE_SQ) continue;
+
+            int scaledCount = getScaledCount(viewer, count);
+            if (scaledCount <= 0) continue;
+
+            spawnParticleForViewer(viewer, particle, location, scaledCount, extras);
+        }
+    }
+
+    private int getScaledCount(Player viewer, int baseCount) {
+        ParticleDetailMode mode = ParticleDetailMode.HIGH;
+        com.fishrework.model.PlayerData data = plugin.getPlayerData(viewer.getUniqueId());
+        if (data != null && data.getParticleDetailMode() != null) {
+            mode = data.getParticleDetailMode();
+        }
+
+        if (mode == ParticleDetailMode.HIGH) return baseCount;
+        if (mode == ParticleDetailMode.LOW && baseCount <= 2) return 0;
+
+        int scaled = (int) Math.round(baseCount * mode.getParticleScale());
+        return Math.max(1, scaled);
+    }
+
+    private void spawnParticleForViewer(Player viewer, Particle particle, Location location, int count, Object[] extras) {
+        int extraLen = extras == null ? 0 : extras.length;
+        if (extraLen == 0) {
+            viewer.spawnParticle(particle, location, count);
+            return;
+        }
+        if (extraLen == 1) {
+            viewer.spawnParticle(particle, location, count, extras[0]);
+            return;
+        }
+        if (extraLen == 4 && extras[0] instanceof Number n0 && extras[1] instanceof Number n1 && extras[2] instanceof Number n2) {
+            double ox = n0.doubleValue();
+            double oy = n1.doubleValue();
+            double oz = n2.doubleValue();
+            if (extras[3] instanceof Number n3) {
+                viewer.spawnParticle(particle, location, count, ox, oy, oz, n3.doubleValue());
+            } else {
+                viewer.spawnParticle(particle, location, count, ox, oy, oz, extras[3]);
+            }
+            return;
+        }
+        if (extraLen == 5 && extras[0] instanceof Number n0 && extras[1] instanceof Number n1 && extras[2] instanceof Number n2) {
+            double ox = n0.doubleValue();
+            double oy = n1.doubleValue();
+            double oz = n2.doubleValue();
+            if (extras[3] instanceof Number n3) {
+                double extra = n3.doubleValue();
+                if (extras[4] instanceof Boolean force) {
+                    viewer.spawnParticle(particle, location, count, ox, oy, oz, extra, force);
+                } else {
+                    viewer.spawnParticle(particle, location, count, ox, oy, oz, extra, extras[4]);
+                }
+            } else {
+                viewer.spawnParticle(particle, location, count, ox, oy, oz, extras[3]);
+            }
+            return;
+        }
+        if (extraLen == 6 && extras[0] instanceof Number n0 && extras[1] instanceof Number n1 && extras[2] instanceof Number n2
+                && extras[3] instanceof Number n3 && extras[5] instanceof Boolean force) {
+            viewer.spawnParticle(particle, location, count,
+                    n0.doubleValue(), n1.doubleValue(), n2.doubleValue(), n3.doubleValue(), extras[4], force);
+            return;
+        }
+
+        viewer.spawnParticle(particle, location, count, extras[0]);
     }
 }

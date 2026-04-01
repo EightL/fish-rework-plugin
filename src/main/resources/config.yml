@@ -47,7 +47,7 @@ fishing_tips:
   active_window_seconds: 600
   min_delay_seconds: 180
   max_delay_seconds: 420
-  wiki_url: "https://your-wiki-url-here"
+  wiki_url: "https://fish-rework.vercel.app"  # Used in tips that reference the wiki
   tips:
     - "Use /fish or /fishing to open your fishing progression GUI."
     - "Use /fish help to list all available commands."
@@ -259,6 +259,76 @@ combat:
       phase3_ticks: 24
       final_damage: 35.0
       knockback: 1.0
+    blood_yoke:
+      range: 21.6
+      charge_ticks: 18
+      charge_speed: 1.45
+      rush_duration_ticks: 16
+      hit_radius: 2.25
+      impact_damage: 8.0
+      tether_duration_ticks: 60
+      break_distance: 5.5
+      drag_strength: 0.2
+      chip_damage: 4.0
+      chip_interval_ticks: 10
+    war_drum:
+      inner_radius: 3.36
+      middle_radius: 6.0
+      outer_radius: 8.64
+      beat_interval_ticks: 10
+      first_damage: 6.0
+      second_damage: 7.5
+      third_damage: 9.0
+      finale_damage: 12.0
+      finale_knockback: 0.95
+    fire_geysers:
+      field_radius: 8.5
+      pulses: 4
+      geysers_per_pulse: 7
+      pulse_interval_ticks: 8
+      column_height: 3.6
+      hit_radius: 1.0
+      hit_damage: 8.0
+      fire_ticks: 90
+    strider_lava_spew:
+      range: 14.0
+      arc_degrees: 120.0
+      pulse_damage: 4.5
+      fire_ticks: 80
+      pulses: 14
+      pulse_interval_ticks: 2
+      max_hits_per_cast: 5
+    nether_rend:
+      range: 18.0
+      slash_length: 7.0
+      charge_ticks: 18
+      hit_radius: 0.95
+      hit_damage: 13.75
+      fire_ticks: 80
+    wither_lances:
+      range: 24.0
+      lances: 6
+      spread: 6.0
+      telegraph_ticks: 18
+      hit_radius: 1.2
+      hit_damage: 12.0
+      wither_ticks: 80
+    abyssal_nova:
+      radius: 7.5
+      charge_ticks: 26
+      damage: 18.0
+      wither_ticks: 100
+      knockback: 0.75
+    torso_tentacles:
+      range: 16.0
+      shots: 6
+      shot_interval_ticks: 4
+      duration_ticks: 22
+      speed: 0.62
+      turn_strength: 0.28
+      hit_radius: 0.9
+      hit_damage: 4.0
+      graze_damage: 1.2
     wailing_twin_laser:
       range: 42.0
       pulses: 4
@@ -441,14 +511,6 @@ treasure_balance:
   suspicious_stew_amplifier: 0      # Amplifier level for suspicious stew effects
 
 # ═══════════════════════════════════════════════════════
-#  Balance Tuning — Armor Healing
-# ═══════════════════════════════════════════════════════
-armor_healing:
-  perfect_per_piece: 0.75           # HP healed per Perfect Treasure armor piece (per 3s)
-  pure_per_piece: 0.5               # HP healed per Pure Treasure armor piece (per 3s)
-  basic_per_piece: 0.25             # HP healed per basic Treasure armor piece (per 3s)
-
-# ═══════════════════════════════════════════════════════
 #  Balance Tuning — Treasure Totems
 # ═══════════════════════════════════════════════════════
 totems:
@@ -464,6 +526,7 @@ totems:
 economy:
   currency_name: "Doubloons"
   currency_symbol: "⛁"
+  max_balance: 10000000
   # Sell prices for vanilla items
   sell_prices:
     # Fish
@@ -488,6 +551,7 @@ economy:
     COPPER_INGOT: 3
     IRON_INGOT: 8
     GOLD_INGOT: 12
+    NETHERITE_INGOT: 800
     DIAMOND: 60
     EMERALD: 15
     NETHERITE_SCRAP: 200
@@ -501,6 +565,7 @@ economy:
     NAUTILUS_SHELL: 25
     HEART_OF_THE_SEA: 200
     TURTLE_SCUTE: 20
+    TURTLE_HELMET: 100
     GOLDEN_APPLE: 40
     ENCHANTED_GOLDEN_APPLE: 500
   # Sell prices for custom materials (by item ID)
@@ -553,6 +618,7 @@ economy:
     wither_bone: 80
     crimson_heart: 2000
     volcanic_core: 3000
+    cinder_sigil: 3500
     # Enchanted nether materials
     enchanted_magma_residue: 216
     enchanted_smoldering_rod: 324
@@ -591,6 +657,8 @@ economy:
     trident: 600
     beginner_trident_1: 700
     beginner_trident_2: 1000
+    quickcharge_repeater_1: 1800
+    multishot_volley_1: 2000
 
   # Fish bag buy price
   fish_bag_price: 100
@@ -725,7 +793,3 @@ features:
   catch_streak_enabled: true         # Catch streak XP multiplier system
   double_catch_enabled: true         # Double catch chance mechanic
 
-# Economy cap
-# Players cannot hold more than this many Doubloons.
-economy:
-  max_balance: 10000000

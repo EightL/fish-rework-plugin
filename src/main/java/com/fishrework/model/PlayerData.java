@@ -15,6 +15,7 @@ public class PlayerData {
     private final java.util.Set<String> collectedArtifacts = new java.util.HashSet<>();
     private boolean damageIndicatorsEnabled = true;
     private boolean fishingTipsEnabled = true;
+    private ParticleDetailMode particleDetailMode = ParticleDetailMode.HIGH;
     /** Maximum doubloon balance a player can hold. Configurable in config.yml under economy.max_balance. */
     public static final double DEFAULT_MAX_BALANCE = 10_000_000.0;
     private volatile double balance = 0.0;
@@ -191,6 +192,14 @@ public class PlayerData {
         this.fishingTipsEnabled = enabled;
     }
 
+    public ParticleDetailMode getParticleDetailMode() {
+        return particleDetailMode;
+    }
+
+    public void setParticleDetailMode(ParticleDetailMode mode) {
+        this.particleDetailMode = mode == null ? ParticleDetailMode.HIGH : mode;
+    }
+
     // ── Heat System ──
 
     public double getHeat() {
@@ -236,5 +245,6 @@ public class PlayerData {
         fishBagContents = null;
         lavaBagContents = null;
         fishingTipsEnabled = true;
+        particleDetailMode = ParticleDetailMode.HIGH;
     }
 }

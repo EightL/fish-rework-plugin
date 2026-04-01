@@ -21,6 +21,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 public class MobListener implements Listener {
 
@@ -61,6 +62,17 @@ public class MobListener implements Listener {
         if (!"vine_strangler".equals(mobId)) return;
 
         event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (!(event.getEntity() instanceof org.bukkit.entity.WitherSkull skull)) return;
+        if (!(skull.getShooter() instanceof LivingEntity shooter)) return;
+        if (!plugin.getMobManager().isFishedMob(shooter)) return;
+        if (!"the_wither".equals(plugin.getMobManager().getMobId(shooter))) return;
+
+        event.setCancelled(true);
+        Bukkit.getScheduler().runTask(plugin, skull::remove);
     }
 
     @EventHandler(ignoreCancelled = true)

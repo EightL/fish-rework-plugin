@@ -448,25 +448,35 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             // Format: "attack:3" or "defense:2" or "attack:3,defense:2"
             if (!existingUpgrade.isEmpty()) {
                 String type = isAttack ? "attack" : "defense";
-                for (String part : existingUpgrade.split(",")) {
-                    String[] kv = part.split(":");
-                    if (kv.length == 2 && kv[0].equals(type)) {
-                        int existingTier = Integer.parseInt(kv[1]);
-                        if (tierLevel <= existingTier) {
-                            // Show error result
-                            ItemStack errorItem = new ItemStack(Material.BARRIER);
-                            ItemMeta em = errorItem.getItemMeta();
-                            em.displayName(Component.text("Cannot Downgrade!").color(NamedTextColor.RED)
-                                    .decoration(TextDecoration.ITALIC, false));
-                            em.lore(List.of(
-                                    Component.text("This gear already has " + type + " +" + existingTier)
-                                            .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                    Component.text("Use a higher tier material to upgrade.")
-                                            .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                            ));
-                            errorItem.setItemMeta(em);
-                            inventory.setItem(RESULT_SLOT, errorItem);
-                            return;
+                boolean hasFlatUpgrade = isAttack
+                        ? pdc.has(im.SC_FLAT_ATTACK_KEY, PersistentDataType.DOUBLE)
+                        : pdc.has(im.SC_FLAT_DEFENSE_KEY, PersistentDataType.DOUBLE);
+                if (hasFlatUpgrade) {
+                    for (String part : existingUpgrade.split(",")) {
+                        String[] kv = part.split(":");
+                        if (kv.length == 2 && kv[0].equals(type)) {
+                            int existingTier;
+                            try {
+                                existingTier = Integer.parseInt(kv[1]);
+                            } catch (NumberFormatException ignored) {
+                                continue;
+                            }
+                            if (tierLevel <= existingTier) {
+                                // Show error result
+                                ItemStack errorItem = new ItemStack(Material.BARRIER);
+                                ItemMeta em = errorItem.getItemMeta();
+                                em.displayName(Component.text("Cannot Downgrade!").color(NamedTextColor.RED)
+                                        .decoration(TextDecoration.ITALIC, false));
+                                em.lore(List.of(
+                                        Component.text("This gear already has " + type + " +" + existingTier)
+                                                .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                                        Component.text("Use a higher tier material to upgrade.")
+                                                .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                                ));
+                                errorItem.setItemMeta(em);
+                                inventory.setItem(RESULT_SLOT, errorItem);
+                                return;
+                            }
                         }
                     }
                 }

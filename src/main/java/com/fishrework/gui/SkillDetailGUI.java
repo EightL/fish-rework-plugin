@@ -520,7 +520,7 @@ public class SkillDetailGUI extends BaseGUI {
             new ShopMenuGUI(plugin, player).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 46 && skill == Skill.FISHING) {
-            String wikiUrl = plugin.getConfig().getString("tips.wiki_url", "https://your-wiki-url-here");
+            String wikiUrl = plugin.getConfig().getString("tips.wiki_url", "https://fish-rework.vercel.app");
             player.sendMessage(Component.text("Open Fishing Wiki: ", NamedTextColor.YELLOW)
                 .append(Component.text(wikiUrl, NamedTextColor.AQUA)
                     .clickEvent(ClickEvent.openUrl(wikiUrl))

@@ -5,6 +5,7 @@ import com.fishrework.gui.LeaderboardGUI;
 import com.fishrework.gui.RecipeBrowserGUI;
 import com.fishrework.gui.RecipeGuideGUI;
 import com.fishrework.gui.SkillsMenuGUI;
+import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import net.kyori.adventure.text.Component;
@@ -252,6 +253,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 player.sendMessage(Component.text("Damage indicators are now " + (enabled ? "enabled" : "disabled") + ".").color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
             }
 
+            case "particles" -> {
+                return handleParticleModeCommand(player, args.length >= 2 ? java.util.Arrays.copyOfRange(args, 1, args.length) : new String[0]);
+            }
+
             case "heat" -> {
                 if (!checkAdmin(player)) return true;
                 adminHeat(player, args);
@@ -305,6 +310,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             .append(Component.text(" - View/set global XP multiplier").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing dmgindicator <on|off>").color(NamedTextColor.YELLOW)
                 .append(Component.text(" - Toggle damage indicators").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fishing particles [high|medium|low]").color(NamedTextColor.YELLOW)
+            .append(Component.text(" - Set sea creature effect detail").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fs particles <high|medium|low>").color(NamedTextColor.YELLOW)
+            .append(Component.text(" - Quick particle detail shortcut").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("Milestone: Fishing Level 27").color(NamedTextColor.GOLD)
             .append(Component.text(" unlocks Lava Fishing + Magma Satchel in shop").color(NamedTextColor.GRAY)));
 
@@ -335,6 +344,37 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 player.sendMessage(Component.text("/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Set global XP multiplier").color(NamedTextColor.GRAY)));
         }
+    }
+
+    private boolean handleParticleModeCommand(Player player, String[] args) {
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        if (data == null) return true;
+
+        if (args.length != 1) {
+            player.sendMessage(Component.text("Usage: /fishing particles <high|medium|low>").color(NamedTextColor.RED));
+            return true;
+        }
+
+        ParticleDetailMode mode = ParticleDetailMode.fromInput(args[0]);
+        if (mode == null) {
+            player.sendMessage(Component.text("Unknown mode. Use high, medium, or low.").color(NamedTextColor.RED));
+            return true;
+        }
+
+        data.setParticleDetailMode(mode);
+        plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "particle_mode", mode.getId());
+
+        NamedTextColor color = switch (mode) {
+            case HIGH -> NamedTextColor.GREEN;
+            case MEDIUM -> NamedTextColor.YELLOW;
+            case LOW -> NamedTextColor.RED;
+        };
+
+        player.sendMessage(Component.text("Sea creature particles set to " + mode.getId().toUpperCase() + ".")
+                .color(color));
+        player.sendMessage(Component.text("Use /fs particles <high|medium|low> to change this later.")
+                .color(NamedTextColor.GRAY));
+        return true;
     }
 
     private void showSessionStats(Player player) {
@@ -879,6 +919,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         List<String> completions = new ArrayList<>();
         boolean isAdmin = sender.hasPermission("fishrework.admin");
 
+        if ("fs".equalsIgnoreCase(label)) {
+            if (args.length == 1) {
+                completions.add("particles");
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("particles")) {
+                completions.addAll(List.of("high", "medium", "low"));
+            }
+        }
+
         if (args.length == 1) {
             completions.add("top");
             completions.add("encyclopedia");
@@ -892,6 +940,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("sell");
             completions.add("autosell");
             completions.add("notifications");
+            completions.add("particles");
             completions.add("xpmultiplier");
             completions.add("help");
             if (isAdmin) {
@@ -904,6 +953,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 completions.addAll(List.of("on", "off"));
             } else if (args[0].equalsIgnoreCase("notifications")) {
                 completions.addAll(List.of("on", "off", "toggle"));
+            } else if (args[0].equalsIgnoreCase("particles")) {
+                completions.addAll(List.of("high", "medium", "low"));
             } else if (args[0].equalsIgnoreCase("recipe")) {
                 completions.addAll(plugin.getRecipeRegistry().getRecipeResultIds());
             } else if (args[0].equalsIgnoreCase("xpmultiplier")) {
@@ -928,8 +979,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     return null; // Player list
                 }
             }
-        } else if (args.length == 3 && isAdmin) {
-            if (args[0].equalsIgnoreCase("setchance")) {
+        } else if (args.length == 3) {
+            if (!isAdmin) {
+                return completions;
+            } else if (args[0].equalsIgnoreCase("setchance")) {
                 completions.addAll(List.of("5.0", "10.0", "25.0"));
             } else if (args[0].equalsIgnoreCase("give")) {
                 completions.addAll(plugin.getItemManager().getItemNames());

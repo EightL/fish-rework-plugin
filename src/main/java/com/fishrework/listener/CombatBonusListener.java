@@ -7,9 +7,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,9 +24,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Applies Sea Creature Defense (SCD) and Sea Creature Attack (SCA) bonuses,
@@ -43,6 +50,13 @@ public class CombatBonusListener implements Listener {
     private final NamespacedKey emberVolleyProjectileKey;
     private final NamespacedKey wailingToxicProjectileKey;
     private final NamespacedKey wailingToxicHandledKey;
+    private final NamespacedKey projectileDamageKey;
+    private final NamespacedKey shotgunVolleyEnchantKey;
+    private final NamespacedKey shotgunVolleyProjectileKey;
+    private final NamespacedKey shotgunVolleyLevelKey;
+
+    private static final double SHOTGUN_SPREAD_STEP_DEGREES = 4.5;
+    private static final double SHOTGUN_VERTICAL_SPREAD = 0.08;
 
     public CombatBonusListener(FishRework plugin) {
         this.plugin = plugin;
@@ -51,10 +65,39 @@ public class CombatBonusListener implements Listener {
         this.emberVolleyProjectileKey = new NamespacedKey(plugin, "ember_volley_projectile");
         this.wailingToxicProjectileKey = new NamespacedKey(plugin, "wailing_toxic_projectile");
         this.wailingToxicHandledKey = new NamespacedKey(plugin, "wailing_toxic_handled");
+        this.projectileDamageKey = new NamespacedKey(plugin, "projectile_damage");
+        this.shotgunVolleyEnchantKey = new NamespacedKey("fishrework", "shotgun_volley");
+        this.shotgunVolleyProjectileKey = new NamespacedKey(plugin, "shotgun_volley_projectile");
+        this.shotgunVolleyLevelKey = new NamespacedKey(plugin, "shotgun_volley_level");
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onShotgunProjectileHitEntity(ProjectileHitEvent event) {
+        if (!(event.getEntity() instanceof org.bukkit.entity.Projectile projectile)) return;
+        if (!(event.getHitEntity() instanceof LivingEntity victim)) return;
+        if (!(projectile.getShooter() instanceof Player)) return;
+        if (!projectile.getPersistentDataContainer().has(shotgunVolleyProjectileKey, PersistentDataType.BYTE)) return;
+        if (!plugin.getMobManager().isFishedMob(victim)) return;
+
+        // Clear i-frames as early as possible when a tagged pellet collides.
+        victim.setNoDamageTicks(0);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onShotgunProjectileDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof org.bukkit.entity.Projectile projectile)) return;
+        if (!(event.getEntity() instanceof LivingEntity victim)) return;
+        if (!(projectile.getShooter() instanceof Player)) return;
+        if (!projectile.getPersistentDataContainer().has(shotgunVolleyProjectileKey, PersistentDataType.BYTE)) return;
+        if (!plugin.getMobManager().isFishedMob(victim)) return;
+
+        // Ensure each pellet in the volley can register damage on the same mob.
+        victim.setNoDamageTicks(0);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+
         // ── SCD: Fished mob (or its projectile/fangs/vex) attacks player → reduce damage ──
         if (event.getEntity() instanceof Player player) {
             LivingEntity attacker = resolveFishedAttacker(event.getDamager());
@@ -107,7 +150,18 @@ public class CombatBonusListener implements Listener {
                 if (flatAtk == 0) flatAtk = plugin.getConfig().getDouble("combat.default_flat_attack", 1.0);
 
                 // Formula: (Damage + Flat) * (1 + SC_Attack%)
-                double originalDamage = event.getDamage();
+                double projectileBonusDamage = 0.0;
+                if (event.getDamager() instanceof org.bukkit.entity.Projectile projectile) {
+                    PersistentDataContainer projectilePdc = projectile.getPersistentDataContainer();
+                    if (projectilePdc.has(projectileDamageKey, PersistentDataType.DOUBLE)) {
+                        Double stored = projectilePdc.get(projectileDamageKey, PersistentDataType.DOUBLE);
+                        if (stored != null && stored > 0.0) {
+                            projectileBonusDamage = stored;
+                        }
+                    }
+                }
+
+                double originalDamage = event.getDamage() + projectileBonusDamage;
                 double newDamage = (originalDamage + flatAtk) * (1.0 + scaPercent / 100.0);
                 
                 event.setDamage(newDamage);
@@ -177,6 +231,36 @@ public class CombatBonusListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player shooter)) return;
+        if (!(event.getProjectile() instanceof org.bukkit.entity.Projectile projectile)) return;
+
+        org.bukkit.inventory.ItemStack weapon = event.getBow();
+        if (weapon == null || !weapon.hasItemMeta()) return;
+
+        PersistentDataContainer weaponPdc = weapon.getItemMeta().getPersistentDataContainer();
+        Double bonus = null;
+        if (weaponPdc.has(projectileDamageKey, PersistentDataType.DOUBLE)) {
+            bonus = weaponPdc.get(projectileDamageKey, PersistentDataType.DOUBLE);
+            if (bonus != null && bonus > 0.0) {
+                projectile.getPersistentDataContainer().set(projectileDamageKey, PersistentDataType.DOUBLE, bonus);
+            }
+        }
+
+        if (weapon.getType() != Material.CROSSBOW) return;
+        if (!(projectile instanceof AbstractArrow baseArrow)) return;
+
+        org.bukkit.enchantments.Enchantment shotgunVolley = org.bukkit.Registry.ENCHANTMENT.get(shotgunVolleyEnchantKey);
+        if (shotgunVolley == null) return;
+
+        int volleyLevel = weapon.getEnchantmentLevel(shotgunVolley);
+        if (volleyLevel <= 0) return;
+
+        markShotgunProjectile(baseArrow, volleyLevel);
+        spawnShotgunPellets(shooter, baseArrow, volleyLevel, bonus != null ? bonus : 0.0);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -306,5 +390,73 @@ public class CombatBonusListener implements Listener {
             return p;
         }
         return null;
+    }
+
+    private void spawnShotgunPellets(Player shooter, AbstractArrow baseArrow, int volleyLevel, double projectileBonus) {
+        int totalArrows = getShotgunArrowCount(volleyLevel);
+        if (totalArrows <= 1) return;
+
+        Vector baseVelocity = baseArrow.getVelocity();
+        double baseSpeed = baseVelocity.length();
+        if (baseSpeed <= 0.0) {
+            baseSpeed = 3.0;
+            baseVelocity = shooter.getEyeLocation().getDirection().multiply(baseSpeed);
+        }
+
+        Location eye = shooter.getEyeLocation();
+        Vector forward = eye.getDirection().normalize();
+        Vector right = forward.clone().crossProduct(new Vector(0, 1, 0));
+        if (right.lengthSquared() < 1.0E-6) {
+            right = new Vector(1, 0, 0);
+        } else {
+            right.normalize();
+        }
+        Location spawnOrigin = eye.clone().add(forward.clone().multiply(0.55));
+
+        for (int i = 0; i < totalArrows - 1; i++) {
+            double spreadStep = ((i / 2) + 1) * SHOTGUN_SPREAD_STEP_DEGREES;
+            double yawOffset = (i % 2 == 0) ? -spreadStep : spreadStep;
+
+            Vector pelletVelocity = rotateAroundY(baseVelocity, yawOffset);
+            pelletVelocity.setY(pelletVelocity.getY() + ThreadLocalRandom.current().nextDouble(-SHOTGUN_VERTICAL_SPREAD, SHOTGUN_VERTICAL_SPREAD));
+            pelletVelocity = pelletVelocity.normalize().multiply(baseSpeed);
+
+                double lateralDirection = (i % 2 == 0) ? -1.0 : 1.0;
+                double lateralScale = Math.min(2.0, (i / 2) + 1) * 0.06;
+                Location pelletSpawn = spawnOrigin.clone()
+                    .add(right.clone().multiply(lateralDirection * lateralScale))
+                    .add(0.0, 0.02, 0.0);
+
+                Arrow pellet = shooter.getWorld().spawnArrow(pelletSpawn, pelletVelocity, (float) baseSpeed, 0.0f);
+            pellet.setShooter(shooter);
+            pellet.setDamage(baseArrow.getDamage());
+            pellet.setCritical(baseArrow.isCritical());
+            pellet.setFireTicks(baseArrow.getFireTicks());
+            pellet.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+
+            markShotgunProjectile(pellet, volleyLevel);
+            if (projectileBonus > 0.0) {
+                pellet.getPersistentDataContainer().set(projectileDamageKey, PersistentDataType.DOUBLE, projectileBonus);
+            }
+        }
+    }
+
+    private void markShotgunProjectile(AbstractArrow arrow, int volleyLevel) {
+        PersistentDataContainer pdc = arrow.getPersistentDataContainer();
+        pdc.set(shotgunVolleyProjectileKey, PersistentDataType.BYTE, (byte) 1);
+        pdc.set(shotgunVolleyLevelKey, PersistentDataType.INTEGER, volleyLevel);
+    }
+
+    private int getShotgunArrowCount(int volleyLevel) {
+        return Math.max(2, Math.min(6, volleyLevel + 1));
+    }
+
+    private Vector rotateAroundY(Vector vector, double degrees) {
+        double radians = Math.toRadians(degrees);
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
+        double x = (vector.getX() * cos) - (vector.getZ() * sin);
+        double z = (vector.getX() * sin) + (vector.getZ() * cos);
+        return new Vector(x, vector.getY(), z);
     }
 }

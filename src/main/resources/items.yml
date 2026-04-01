@@ -244,6 +244,12 @@ materials:
     rarity: LEGENDARY
     description: "A molten core from the depths of the basalt deltas."
 
+  cinder_sigil:
+    material: NETHER_STAR
+    display_name: "Cinder Sigil"
+    rarity: LEGENDARY
+    description: "A legendary sigil forged from the Wither's cinder eclipse."
+
 
 # ── Enchanted Materials ─────────────────────────────────
 # Created via createEnchantedMaterial(id, material, name, rarity, description)
@@ -459,113 +465,6 @@ armor_sets:
         armor: 3
         toughness: 3
 
-  # ── Scholar's Outfit ────────────────────────────────────
-  # +5% XP, +1.25 SCC per piece, +speed
-  scholar:
-    material_type: LEATHER
-    rarity: RARE
-    set_key: scholar_armor
-    leather_color: [75, 0, 130]
-    bonus_key: fishing_xp_bonus
-    bonus_value: 5.0
-    extra_pdc:
-      rare_creature_chance: 1.25
-    attribute_bonuses:
-      movement_speed: 0.01
-    pieces:
-      helmet:
-        display_name: "Scholar's Hood"
-        armor: 1
-        toughness: 0
-        durability: 165
-      chestplate:
-        display_name: "Scholar's Robe"
-        armor: 3
-        toughness: 0
-        durability: 240
-      leggings:
-        display_name: "Scholar's Trousers"
-        armor: 2
-        toughness: 0
-        durability: 225
-      boots:
-        display_name: "Scholar's Sandals"
-        armor: 1
-        toughness: 0
-        durability: 195
-
-  # ── Apprentice Robes ────────────────────────────────────
-  # +10% XP, +2.5 SCC, +1.25 SCD per piece, +speed
-  apprentice:
-    material_type: LEATHER
-    rarity: EPIC
-    set_key: apprentice_armor
-    leather_color: [25, 25, 112]
-    bonus_key: fishing_xp_bonus
-    bonus_value: 10.0
-    extra_pdc:
-      rare_creature_chance: 2.5
-      sea_creature_defense: 1.25
-    attribute_bonuses:
-      movement_speed: 0.015
-    pieces:
-      helmet:
-        display_name: "Apprentice Hood"
-        armor: 2
-        toughness: 1
-        durability: 275
-      chestplate:
-        display_name: "Apprentice Robe"
-        armor: 5
-        toughness: 1
-        durability: 400
-      leggings:
-        display_name: "Apprentice Trousers"
-        armor: 4
-        toughness: 1
-        durability: 375
-      boots:
-        display_name: "Apprentice Boots"
-        armor: 2
-        toughness: 1
-        durability: 325
-
-  # ── Grand Professor Set ─────────────────────────────────
-  # +15% XP, +3.75 SCC, +2.5 SCD per piece, +speed
-  grand_professor:
-    material_type: LEATHER
-    rarity: LEGENDARY
-    set_key: grand_professor_armor
-    leather_color: [255, 215, 0]
-    bonus_key: fishing_xp_bonus
-    bonus_value: 15.0
-    extra_pdc:
-      rare_creature_chance: 3.75
-      sea_creature_defense: 2.5
-    attribute_bonuses:
-      movement_speed: 0.02
-    pieces:
-      helmet:
-        display_name: "Grand Professor's Hat"
-        armor: 3
-        toughness: 2
-        durability: 407
-      chestplate:
-        display_name: "Grand Professor's Robe"
-        armor: 7
-        toughness: 2
-        durability: 592
-      leggings:
-        display_name: "Grand Professor's Trousers"
-        armor: 5
-        toughness: 2
-        durability: 555
-      boots:
-        display_name: "Grand Professor's Boots"
-        armor: 3
-        toughness: 2
-        durability: 481
-
   # ── Deadman Set ─────────────────────────────────────────
   # +5 SCC, +5 SCD, +5 SCA per piece (base — night doubles in MobManager)
   deadman:
@@ -602,102 +501,6 @@ armor_sets:
         armor: 3
         toughness: 2
         durability: 325
-
-  # ── Treasure Armor ──────────────────────────────────────
-  # +1.25 TC, +1.0 DC per piece
-  treasure:
-    material_type: GOLDEN
-    rarity: UNCOMMON
-    set_key: treasure_armor
-    bonus_key: treasure_chance_bonus
-    bonus_value: 1.25
-    extra_pdc:
-      double_catch_bonus: 1.0
-    pieces:
-      helmet:
-        display_name: "Treasure Helmet"
-        armor: 2
-        toughness: 0
-        durability: 165
-      chestplate:
-        display_name: "Treasure Chestplate"
-        armor: 5
-        toughness: 0
-        durability: 240
-      leggings:
-        display_name: "Treasure Leggings"
-        armor: 3
-        toughness: 0
-        durability: 225
-      boots:
-        display_name: "Treasure Boots"
-        armor: 1
-        toughness: 0
-        durability: 195
-
-  # ── Pure Treasure Armor ─────────────────────────────────
-  # +2.5 TC, +2.0 DC per piece
-  pure_treasure:
-    material_type: GOLDEN
-    rarity: RARE
-    set_key: pure_treasure_armor
-    bonus_key: treasure_chance_bonus
-    bonus_value: 2.5
-    extra_pdc:
-      double_catch_bonus: 2.0
-    pieces:
-      helmet:
-        display_name: "Pure Treasure Helmet"
-        armor: 3
-        toughness: 1
-        durability: 275
-      chestplate:
-        display_name: "Pure Treasure Chestplate"
-        armor: 7
-        toughness: 1
-        durability: 400
-      leggings:
-        display_name: "Pure Treasure Leggings"
-        armor: 5
-        toughness: 1
-        durability: 375
-      boots:
-        display_name: "Pure Treasure Boots"
-        armor: 2
-        toughness: 1
-        durability: 325
-
-  # ── Perfect Treasure Armor ──────────────────────────────
-  # +5.0 TC, +3.5 DC per piece
-  perfect_treasure:
-    material_type: GOLDEN
-    rarity: EPIC
-    set_key: perfect_treasure_armor
-    bonus_key: treasure_chance_bonus
-    bonus_value: 5.0
-    extra_pdc:
-      double_catch_bonus: 3.5
-    pieces:
-      helmet:
-        display_name: "Perfect Treasure Helmet"
-        armor: 3
-        toughness: 2
-        durability: 407
-      chestplate:
-        display_name: "Perfect Treasure Chestplate"
-        armor: 8
-        toughness: 2
-        durability: 592
-      leggings:
-        display_name: "Perfect Treasure Leggings"
-        armor: 6
-        toughness: 2
-        durability: 555
-      boots:
-        display_name: "Perfect Treasure Boots"
-        armor: 3
-        toughness: 2
-        durability: 481
 
   # ── Magma Scale Armor ─────────────────────────────────────
   # +3.0 SCC, +3.0 SCD, +3.0 SCA per piece
@@ -771,16 +574,16 @@ armor_sets:
         durability: 500
 
   # ── Volcanic Dreadplate Armor ────────────────────────────
-  # +6.0 SCC, +6.0 SCD, +6.0 SCA, −15% heat per piece
+  # +10.0 SCC, +10.0 SCD, +10.0 SCA, −15% heat per piece
   volcanic_dreadplate:
     material_type: NETHERITE
     rarity: LEGENDARY
     set_key: volcanic_dreadplate_armor
     bonus_key: rare_creature_chance
-    bonus_value: 6.0
+    bonus_value: 10.0
     extra_pdc:
-      sea_creature_defense: 6.0
-      sea_creature_attack: 6.0
+      sea_creature_defense: 10.0
+      sea_creature_attack: 10.0
       heat_resistance: 15.0
     pieces:
       helmet:
@@ -1021,12 +824,175 @@ weapons:
       - text: "Forged by Hephaestus himself"
         color: DARK_GRAY
     enchantments:
-      LOYALTY: 3
+      LOYALTY: 6
       CHANNELING: 1
       IMPALING: 5
     pdc:
       sea_creature_attack: 80.0
     upgrade_tier: 5
+
+  quickcharge_repeater_1:
+    material: CROSSBOW
+    display_name: "Swiftload Crossbow I"
+    rarity: RARE
+    durability: 1200
+    lore:
+      - text: "Fast-draw entry crossbow for sea creature hunts."
+        color: DARK_GRAY
+    enchantments:
+      QUICK_CHARGE: 3
+    pdc:
+      sea_creature_attack: 4.0
+      projectile_damage: 2.0
+    upgrade_tier: 1
+
+  quickcharge_repeater_2:
+    material: CROSSBOW
+    display_name: "Swiftload Crossbow II"
+    rarity: RARE
+    durability: 1600
+    lore:
+      - text: "Upgraded mechanism with cleaner reload timing."
+        color: DARK_GRAY
+    enchantments:
+      QUICK_CHARGE: 3
+    pdc:
+      sea_creature_attack: 7.5
+      projectile_damage: 3.5
+    upgrade_tier: 2
+
+  quickcharge_repeater_3:
+    material: CROSSBOW
+    display_name: "Swiftload Crossbow III"
+    rarity: EPIC
+    durability: 2000
+    lore:
+      - text: "Compressed draw cycle with stronger bolt pressure."
+        color: DARK_GRAY
+    enchantments:
+      QUICK_CHARGE: 4
+    pdc:
+      sea_creature_attack: 9.5
+      projectile_damage: 5.0
+    upgrade_tier: 3
+
+  quickcharge_repeater_4:
+    material: CROSSBOW
+    display_name: "Swiftload Crossbow IV"
+    rarity: LEGENDARY
+    durability: 2500
+    lore:
+      - text: "Siege-grade internals tuned for high-tempo volleys."
+        color: DARK_GRAY
+    enchantments:
+      QUICK_CHARGE: 4
+    pdc:
+      sea_creature_attack: 13.0
+      projectile_damage: 7.0
+    upgrade_tier: 4
+
+  quickcharge_repeater_5:
+    material: CROSSBOW
+    display_name: "Swiftload Crossbow V"
+    rarity: LEGENDARY
+    durability: 3200
+    lore:
+      - text: "Nether-forged rapid-fire engine built for apex fights."
+        color: DARK_GRAY
+    enchantments:
+      QUICK_CHARGE: 5
+    pdc:
+      sea_creature_attack: 15.0
+      projectile_damage: 9.0
+    upgrade_tier: 5
+
+  multishot_volley_1:
+    material: CROSSBOW
+    display_name: "Volley Crossbow I"
+    rarity: RARE
+    durability: 1200
+    lore:
+      - text: "Wide-angle spread for early swarm control."
+        color: DARK_GRAY
+    enchantments:
+      "fishrework:shotgun_volley": 1
+    pdc:
+      sea_creature_attack: 2.0
+      projectile_damage: 3.0
+    upgrade_tier: 1
+
+  multishot_volley_2:
+    material: CROSSBOW
+    display_name: "Volley Crossbow II"
+    rarity: RARE
+    durability: 1600
+    lore:
+      - text: "Denser spread and steadier bolt grouping."
+        color: DARK_GRAY
+    enchantments:
+      "fishrework:shotgun_volley": 2
+    pdc:
+      sea_creature_attack: 4.0
+      projectile_damage: 4.5
+    upgrade_tier: 2
+
+  multishot_volley_3:
+    material: CROSSBOW
+    display_name: "Volley Crossbow III"
+    rarity: EPIC
+    durability: 2000
+    lore:
+      - text: "Heavy scatter output for mid-tier sea packs."
+        color: DARK_GRAY
+    enchantments:
+      "fishrework:shotgun_volley": 3
+    pdc:
+      sea_creature_attack: 5.5
+      projectile_damage: 6.0
+    upgrade_tier: 3
+
+  multishot_volley_4:
+    material: CROSSBOW
+    display_name: "Volley Crossbow IV"
+    rarity: LEGENDARY
+    durability: 2500
+    lore:
+      - text: "Long-life frame with brutal spread pressure."
+        color: DARK_GRAY
+    enchantments:
+      "fishrework:shotgun_volley": 4
+    pdc:
+      sea_creature_attack: 7.5
+      projectile_damage: 8.0
+    upgrade_tier: 4
+
+  multishot_volley_5:
+    material: CROSSBOW
+    display_name: "Volley Crossbow V"
+    rarity: LEGENDARY
+    durability: 3200
+    lore:
+      - text: "Nether-infused barrage platform for endgame raids."
+        color: DARK_GRAY
+    enchantments:
+      "fishrework:shotgun_volley": 5
+    pdc:
+      sea_creature_attack: 9.5
+      projectile_damage: 10.0
+    upgrade_tier: 5
+
+  megalodon_tooth:
+    material: IRON_SWORD
+    display_name: "Megalodon Tooth"
+    rarity: SPECIAL
+    pdc_key: megalodon_tooth
+    lore:
+      - text: "A jagged relic carved from an apex hunter fang."
+        color: DARK_GRAY
+      - text: "Cuts deep into sea creatures."
+        color: DARK_GRAY
+    pdc:
+      sea_creature_attack: 10.0
 
 
 # ══════════════════════════════════════════════════════════

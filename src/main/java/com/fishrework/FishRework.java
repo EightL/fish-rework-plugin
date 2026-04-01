@@ -165,9 +165,6 @@ public class FishRework extends JavaPlugin {
         // ── 5e. Start BossAbilityTask — executes YAML-defined mob abilities every second ──
         getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.BossAbilityTask(this), 20L, 20L);
 
-        // ── 5f. Start ArmorBonusTask — Treasure set natural regen every 3 seconds ──
-        getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorBonusTask(this), 60L, 60L);
-
         // ── 6. Advancements ──
         getServer().getScheduler().runTask(this, () -> advancementManager.loadAdvancements());
 
@@ -231,7 +228,8 @@ public class FishRework extends JavaPlugin {
                 "pack.mcmeta",
                 "data/minecraft/enchantment/lure.json",
                 "data/minecraft/enchantment/luck_of_the_sea.json",
-                "data/fishrework/enchantment/sea_creature_chance.json");
+            "data/fishrework/enchantment/sea_creature_chance.json",
+            "data/fishrework/enchantment/shotgun_volley.json");
 
         List<String> datapackNames = List.of("fishrework_fishing", "hybesskills_fishing");
         for (String datapackName : datapackNames) {

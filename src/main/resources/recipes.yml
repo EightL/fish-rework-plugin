@@ -336,101 +336,6 @@ enchanted_material:
 # Shorthand for shapeless "upgrade" recipes
 upgrade:
 
-  # Scholar's Outfit — Level 10
-  scholar_helmet_recipe:
-    result: scholar_helmet
-    level: 10
-    pattern:
-      - "HAH"
-      - "S S"
-      - "   "
-    ingredients:
-      H: hyena_fur
-      S: spider_silk
-      A: AMETHYST_SHARD
-
-  scholar_chestplate_recipe:
-    result: scholar_chestplate
-    level: 10
-    pattern:
-      - "H H"
-      - "SAS"
-      - "HAH"
-    ingredients:
-      H: hyena_fur
-      S: spider_silk
-      A: AMETHYST_SHARD
-
-  scholar_leggings_recipe:
-    result: scholar_leggings
-    level: 10
-    pattern:
-      - "HAH"
-      - "S S"
-      - "H H"
-    ingredients:
-      H: hyena_fur
-      S: spider_silk
-      A: AMETHYST_SHARD
-
-  scholar_boots_recipe:
-    result: scholar_boots
-    level: 10
-    pattern:
-      - "H H"
-      - "S S"
-      - "   "
-    ingredients:
-      H: hyena_fur
-      S: spider_silk
-
-  # Treasure Armor — Level 10
-  treasure_helmet_recipe:
-    result: treasure_helmet
-    level: 10
-    pattern:
-      - "HHH"
-      - "P P"
-      - "   "
-    ingredients:
-      H: polar_fur
-      P: enchanted_wet_bone
-
-  treasure_chestplate_recipe:
-    result: treasure_chestplate
-    level: 10
-    pattern:
-      - "H H"
-      - "PGP"
-      - "HPH"
-    ingredients:
-      H: polar_fur
-      P: enchanted_wet_bone
-      G: GOLDEN_APPLE
-
-  treasure_leggings_recipe:
-    result: treasure_leggings
-    level: 10
-    pattern:
-      - "HGH"
-      - "P P"
-      - "H H"
-    ingredients:
-      H: polar_fur
-      P: enchanted_wet_bone
-      G: GOLDEN_APPLE
-
-  treasure_boots_recipe:
-    result: treasure_boots
-    level: 10
-    pattern:
-      - "H H"
-      - "P P"
-      - "   "
-    ingredients:
-      H: polar_fur
-      P: enchanted_wet_bone
-
   # Ironclad Armor (Upgrade from Scale) — Level 15
   ironclad_helmet_recipe:
     result: ironclad_helmet
@@ -479,106 +384,6 @@ upgrade:
       H: scale_boots
       F: enchanted_corrupted_flesh
       I: ironclad_plate
-
-  # Apprentice Robes (Upgrade from Scholar) — Level 20
-  apprentice_helmet_recipe:
-    result: apprentice_helmet
-    level: 20
-    pattern:
-      - "RRR"
-      - "PHP"
-      - "   "
-    ingredients:
-      H: scholar_helmet
-      P: enchanted_hyena_fur
-      R: ravager_scales
-
-  apprentice_chestplate_recipe:
-    result: apprentice_chestplate
-    level: 20
-    pattern:
-      - "R R"
-      - "PHP"
-      - "RRR"
-    ingredients:
-      H: scholar_chestplate
-      P: enchanted_hyena_fur
-      R: ravager_scales
-
-  apprentice_leggings_recipe:
-    result: apprentice_leggings
-    level: 20
-    pattern:
-      - "RRR"
-      - "PHP"
-      - "R R"
-    ingredients:
-      H: scholar_leggings
-      P: enchanted_hyena_fur
-      R: ravager_scales
-
-  apprentice_boots_recipe:
-    result: apprentice_boots
-    level: 20
-    pattern:
-      - "R R"
-      - "PHP"
-      - "   "
-    ingredients:
-      H: scholar_boots
-      P: enchanted_hyena_fur
-      R: ravager_scales
-
-  # Pure Treasure (Upgrade from Treasure) — Level 25
-  pure_treasure_helmet_recipe:
-    result: pure_treasure_helmet
-    level: 25
-    pattern:
-      - "III"
-      - "PHP"
-      - "   "
-    ingredients:
-      H: treasure_helmet
-      P: enchanted_polar_fur
-      I: ice_wing
-
-  pure_treasure_chestplate_recipe:
-    result: pure_treasure_chestplate
-    level: 25
-    pattern:
-      - "D D"
-      - "PHP"
-      - "III"
-    ingredients:
-      H: treasure_chestplate
-      P: enchanted_polar_fur
-      I: ice_wing
-      D: DIAMOND_BLOCK
-
-  pure_treasure_leggings_recipe:
-    result: pure_treasure_leggings
-    level: 25
-    pattern:
-      - "III"
-      - "PHP"
-      - "D D"
-    ingredients:
-      H: treasure_leggings
-      P: enchanted_polar_fur
-      I: ice_wing
-      D: DIAMOND_BLOCK
-
-  pure_treasure_boots_recipe:
-    result: pure_treasure_boots
-    level: 25
-    pattern:
-      - "I I"
-      - "PHP"
-      - "   "
-    ingredients:
-      H: treasure_boots
-      P: enchanted_polar_fur
-      I: ice_wing
 
   # Dreadplate (Upgrade from Ironclad) — Level 30
   dreadplate_helmet_recipe:
@@ -633,58 +438,6 @@ upgrade:
       D: NETHERITE_INGOT
       S: dune_spice
 
-  # Grand Professor (Upgrade from Apprentice) — Level 35
-  grand_professor_helmet_recipe:
-    result: grand_professor_helmet
-    level: 35
-    pattern:
-      - "ETE"
-      - "PHP"
-      - "   "
-    ingredients:
-      H: apprentice_helmet
-      P: phantoms_eye
-      T: poseidons_tear
-      E: EMERALD_BLOCK
-
-  grand_professor_chestplate_recipe:
-    result: grand_professor_chestplate
-    level: 35
-    pattern:
-      - "E E"
-      - "PHP"
-      - "PTP"
-    ingredients:
-      H: apprentice_chestplate
-      P: phantoms_eye
-      T: poseidons_tear
-      E: EMERALD_BLOCK
-
-  grand_professor_leggings_recipe:
-    result: grand_professor_leggings
-    level: 35
-    pattern:
-      - "PTP"
-      - "PHP"
-      - "E E"
-    ingredients:
-      H: apprentice_leggings
-      P: phantoms_eye
-      T: poseidons_tear
-      E: EMERALD_BLOCK
-
-  grand_professor_boots_recipe:
-    result: grand_professor_boots
-    level: 35
-    pattern:
-      - "PHP"
-      - "ETE"
-    ingredients:
-      H: apprentice_boots
-      P: phantoms_eye
-      T: poseidons_tear
-      E: EMERALD_BLOCK
-
   # Leviathan Rod — Level 35
   leviathan_recipe:
     result: leviathan
@@ -697,59 +450,6 @@ upgrade:
       H: shredder
       P: beast_scale
       T: kings_crown
-
-  # Perfect Treasure (Upgrade from Pure Treasure) — Level 40
-  perfect_treasure_helmet_recipe:
-    result: perfect_treasure_helmet
-    level: 40
-    pattern:
-      - "IWI"
-      - "GHG"
-      - "   "
-    ingredients:
-      H: pure_treasure_helmet
-      W: wardens_echo
-      I: enchanted_ice_wing
-      G: ENCHANTED_GOLDEN_APPLE
-
-  perfect_treasure_chestplate_recipe:
-    result: perfect_treasure_chestplate
-    level: 40
-    pattern:
-      - "G G"
-      - "IHI"
-      - "IWI"
-    ingredients:
-      H: pure_treasure_chestplate
-      W: wardens_echo
-      I: enchanted_ice_wing
-      G: ENCHANTED_GOLDEN_APPLE
-
-  perfect_treasure_leggings_recipe:
-    result: perfect_treasure_leggings
-    level: 40
-    pattern:
-      - "IWI"
-      - "IHI"
-      - "G G"
-    ingredients:
-      H: pure_treasure_leggings
-      W: wardens_echo
-      I: enchanted_ice_wing
-      G: ENCHANTED_GOLDEN_APPLE
-
-  perfect_treasure_boots_recipe:
-    result: perfect_treasure_boots
-    level: 40
-    pattern:
-      - "IHI"
-      - "GWG"
-      - "   "
-    ingredients:
-      H: pure_treasure_boots
-      W: wardens_echo
-      I: enchanted_ice_wing
-      G: ENCHANTED_GOLDEN_APPLE
 
   # ── Nether Armor — Magma Scale (Level 27) ────────────────
   magma_scale_helmet_recipe:
@@ -957,6 +657,114 @@ upgrade:
     ingredients:
       V: volcanic_core
       P: poseidons_trident
+
+  # ── Crossbows: Quick Charge Branch ──────────────────────
+  quickcharge_repeater_2_recipe:
+    result: quickcharge_repeater_2
+    level: 14
+    pattern:
+      - "HCH"
+      - "SBS"
+      - "H H"
+    ingredients:
+      C: CROSSBOW
+      H: hyena_fur
+      S: spider_silk
+      B: BOW
+
+  quickcharge_repeater_3_recipe:
+    result: quickcharge_repeater_3
+    level: 23
+    pattern:
+      - "RCR"
+      - "HBH"
+      - "R R"
+    ingredients:
+      C: quickcharge_repeater_2
+      R: ravager_scales
+      H: enchanted_hyena_fur
+      B: BASALT
+
+  quickcharge_repeater_4_recipe:
+    result: quickcharge_repeater_4
+    level: 35
+    pattern:
+      - "PCP"
+      - "TBT"
+      - "P P"
+    ingredients:
+      C: quickcharge_repeater_3
+      P: phantoms_eye
+      T: poseidons_tear
+      B: BOW
+
+  quickcharge_repeater_5_recipe:
+    result: quickcharge_repeater_5
+    level: 42
+    pattern:
+      - "NSN"
+      - "ECE"
+      - "NWN"
+    ingredients:
+      C: quickcharge_repeater_4
+      N: cinder_sigil
+      S: enchanted_soul_essence
+      E: ender_fragment
+      W: wither_bone
+
+  # ── Crossbows: Multishot Branch ─────────────────────────
+  multishot_volley_2_recipe:
+    result: multishot_volley_2
+    level: 16
+    pattern:
+      - "PCP"
+      - "WBW"
+      - "PPP"
+    ingredients:
+      C: CROSSBOW
+      P: polar_fur
+      W: enchanted_wet_bone
+      B: BLAZE_ROD
+
+  multishot_volley_3_recipe:
+    result: multishot_volley_3
+    level: 25
+    pattern:
+      - "ICI"
+      - "PBP"
+      - "I I"
+    ingredients:
+      C: multishot_volley_2
+      I: ice_wing
+      P: enchanted_polar_fur
+      B: BOW
+
+  multishot_volley_4_recipe:
+    result: multishot_volley_4
+    level: 40
+    pattern:
+      - "ECE"
+      - "WBW"
+      - "E E"
+    ingredients:
+      C: multishot_volley_3
+      E: enchanted_ice_wing
+      W: wardens_echo
+      B: BLAZE_POWDER
+
+  multishot_volley_5_recipe:
+    result: multishot_volley_5
+    level: 46
+    pattern:
+      - "VBV"
+      - "SCS"
+      - "VGV"
+    ingredients:
+      C: multishot_volley_4
+      V: volcanic_core
+      S: enchanted_soul_essence
+      B: enchanted_basalt_shell
+      G: enchanted_ghast_membrane
 
   # ── Cooling Items ────────────────────────────────────────
   frost_salve_recipe:

@@ -62,12 +62,6 @@ public class ItemManager {
     public final NamespacedKey CUSTOM_ITEM_KEY;
     public final NamespacedKey IRONCLAD_ARMOR_KEY;
     public final NamespacedKey DREADPLATE_ARMOR_KEY;
-    public final NamespacedKey SCHOLAR_ARMOR_KEY;
-    public final NamespacedKey APPRENTICE_ARMOR_KEY;
-    public final NamespacedKey GRAND_PROFESSOR_ARMOR_KEY;
-    public final NamespacedKey TREASURE_ARMOR_KEY;
-    public final NamespacedKey PURE_TREASURE_ARMOR_KEY;
-    public final NamespacedKey PERFECT_TREASURE_ARMOR_KEY;
     public final NamespacedKey LEVIATHAN_KEY;
     public final NamespacedKey FISHING_XP_BONUS_KEY;
     public final NamespacedKey TREASURE_CHANCE_BONUS_KEY;
@@ -140,12 +134,6 @@ public class ItemManager {
         this.CUSTOM_ITEM_KEY = new NamespacedKey(plugin, "custom_item");
         this.IRONCLAD_ARMOR_KEY = new NamespacedKey(plugin, "ironclad_armor");
         this.DREADPLATE_ARMOR_KEY = new NamespacedKey(plugin, "dreadplate_armor");
-        this.SCHOLAR_ARMOR_KEY = new NamespacedKey(plugin, "scholar_armor");
-        this.APPRENTICE_ARMOR_KEY = new NamespacedKey(plugin, "apprentice_armor");
-        this.GRAND_PROFESSOR_ARMOR_KEY = new NamespacedKey(plugin, "grand_professor_armor");
-        this.TREASURE_ARMOR_KEY = new NamespacedKey(plugin, "treasure_armor");
-        this.PURE_TREASURE_ARMOR_KEY = new NamespacedKey(plugin, "pure_treasure_armor");
-        this.PERFECT_TREASURE_ARMOR_KEY = new NamespacedKey(plugin, "perfect_treasure_armor");
         this.LEVIATHAN_KEY = new NamespacedKey(plugin, "leviathan");
         this.FISHING_XP_BONUS_KEY = new NamespacedKey(plugin, "fishing_xp_bonus");
         this.TREASURE_CHANCE_BONUS_KEY = new NamespacedKey(plugin, "treasure_chance_bonus");
@@ -615,11 +603,18 @@ public class ItemManager {
         // Check vanilla fish sell prices
         double vanillaPrice = plugin.getConfig().getDouble(
                 "economy.sell_prices." + item.getType().name(), 0);
+        if (vanillaPrice <= 0) {
+            vanillaPrice = plugin.getConfig().getDouble(
+                    "sell_prices." + item.getType().name(), 0);
+        }
         if (vanillaPrice > 0) return vanillaPrice;
 
         // Wildcard support: apply POTTERY_SHERD price to all *_POTTERY_SHERD materials.
         if (item.getType().name().endsWith("_POTTERY_SHERD")) {
             double sherdPrice = plugin.getConfig().getDouble("economy.sell_prices.POTTERY_SHERD", 0);
+            if (sherdPrice <= 0) {
+                sherdPrice = plugin.getConfig().getDouble("sell_prices.POTTERY_SHERD", 0);
+            }
             if (sherdPrice > 0) return sherdPrice;
         }
 
@@ -633,8 +628,13 @@ public class ItemManager {
             String customId = item.getItemMeta().getPersistentDataContainer()
                     .get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
             if (customId != null) {
-                return plugin.getConfig().getDouble(
+                double customPrice = plugin.getConfig().getDouble(
                         "economy.custom_sell_prices." + customId, 0);
+                if (customPrice <= 0) {
+                    customPrice = plugin.getConfig().getDouble(
+                            "custom_sell_prices." + customId, 0);
+                }
+                return customPrice;
             }
         }
 
@@ -725,6 +725,10 @@ public class ItemManager {
                 mat = Material.REINFORCED_DEEPSLATE;
                 name = "Mythic Treasure Vault";
                 break;
+            case SPECIAL:
+                mat = Material.REINFORCED_DEEPSLATE;
+                name = "Special Treasure Vault";
+                break;
         }
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
@@ -749,6 +753,7 @@ public class ItemManager {
             case EPIC -> Material.POLISHED_BASALT;
             case LEGENDARY -> Material.CRYING_OBSIDIAN;
             case MYTHIC -> Material.CRYING_OBSIDIAN;
+            case SPECIAL -> Material.CRYING_OBSIDIAN;
         };
 
         String name = "Nether " + rarity.name().substring(0, 1) + rarity.name().substring(1).toLowerCase() + " Treasure";
@@ -761,7 +766,7 @@ public class ItemManager {
                 Component.text("Right-click to open!").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
         ));
 
-        if (rarity == Rarity.MYTHIC) {
+        if (rarity == Rarity.MYTHIC || rarity == Rarity.SPECIAL) {
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
@@ -854,9 +859,12 @@ public class ItemManager {
 
         // Mythic weapon
         itemRegistry.put("gehenna", this::createGehenna);
+
+        // Special weapon
+        itemRegistry.put("megalodon_tooth", this::createMegalodonTooth);
     }
 
-        public ItemStack createGehenna() {
+    public ItemStack createGehenna() {
         ItemStack item = new ItemStack(Material.MACE);
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = Rarity.MYTHIC;
@@ -896,7 +904,49 @@ public class ItemManager {
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
         return item;
-        }
+    }
+
+    public ItemStack createMegalodonTooth() {
+        ItemStack item = new ItemStack(Material.IRON_SWORD);
+        ItemMeta meta = item.getItemMeta();
+        Rarity rarity = Rarity.SPECIAL;
+
+        meta.displayName(Component.text("Megalodon Tooth")
+            .color(rarity.getColor())
+            .decoration(TextDecoration.ITALIC, false));
+
+        meta.addAttributeModifier(Attribute.ATTACK_SPEED, new AttributeModifier(
+            new NamespacedKey(plugin, "megalodon_tooth_speed"),
+            -0.8,
+            AttributeModifier.Operation.ADD_NUMBER,
+            EquipmentSlotGroup.MAINHAND));
+
+        // Netherite sword damage profile on an iron sword base.
+        meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(
+            new NamespacedKey(plugin, "megalodon_tooth_damage"),
+            7.0,
+            AttributeModifier.Operation.ADD_NUMBER,
+            EquipmentSlotGroup.MAINHAND));
+
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("A jagged relic carved from an apex hunter fang.")
+            .color(NamedTextColor.DARK_GRAY)
+            .decoration(TextDecoration.ITALIC, true));
+        lore.add(Component.text("Cuts deep into sea creatures.")
+            .color(NamedTextColor.DARK_GRAY)
+            .decoration(TextDecoration.ITALIC, true));
+        lore.add(Component.empty());
+        meta.lore(lore);
+
+        meta.getPersistentDataContainer().set(SEA_CREATURE_ATTACK_KEY, PersistentDataType.DOUBLE, 10.0);
+        meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "megalodon_tooth");
+        meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
+        meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "megalodon_tooth"), PersistentDataType.BYTE, (byte) 1);
+
+        item.setItemMeta(meta);
+        plugin.getLoreManager().updateLore(item);
+        return item;
+    }
 
     public ItemStack getItem(String name) {
         if (name == null) return null;

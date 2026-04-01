@@ -1,0 +1,11 @@
+{
+  "anvil_cost": 6,
+  "description": {"text": "Shotgun Volley"},
+  "effects": {},
+  "max_cost": {"base": 55, "per_level_above_first": 8},
+  "max_level": 5,
+  "min_cost": {"base": 20, "per_level_above_first": 8},
+  "slots": ["mainhand"],
+  "supported_items": "#minecraft:enchantable/crossbow",
+  "weight": 2
+}
