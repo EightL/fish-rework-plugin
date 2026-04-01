@@ -142,6 +142,7 @@ public class FishRework extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.NetheriteRelicListener(this), this);
         getServer().getPluginManager().registerEvents(new FishingJournalListener(this), this);
         getServer().getPluginManager().registerEvents(new CombatBonusListener(this), this);
+        getServer().getPluginManager().registerEvents(new PiglinCrownListener(this), this);
         getServer().getPluginManager().registerEvents(new WeaponAoEListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.FishBagListener(this), this);

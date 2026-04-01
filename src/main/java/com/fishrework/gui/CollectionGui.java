@@ -278,7 +278,7 @@ public class CollectionGui extends BaseGUI {
                                     (drop.getMinAmount() + "-" + drop.getMaxAmount());
                             
                             // Chance
-                            String chanceStr = String.format("%.0f%%", drop.getChance() * 100);
+                            String chanceStr = formatDropChance(drop.getChance());
                             
                             dropsLore.add(Component.text("- " + name + " (" + rangeStr + ") " + chanceStr)
                                     .color(NamedTextColor.GRAY)
@@ -558,5 +558,13 @@ public class CollectionGui extends BaseGUI {
         }
         
         return chances;
+    }
+
+    private String formatDropChance(double chance) {
+        double percent = Math.max(0.0, chance * 100.0);
+        if (percent >= 10.0) return String.format("%.0f%%", percent);
+        if (percent >= 1.0) return String.format("%.1f%%", percent);
+        if (percent > 0.0) return String.format("%.2f%%", percent);
+        return "0%";
     }
 }

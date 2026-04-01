@@ -818,15 +818,24 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         PlayerData data = plugin.getPlayerData(target.getUniqueId());
         com.fishrework.manager.HeatManager heatManager = plugin.getHeatManager();
         com.fishrework.manager.HeatManager.HeatTier tier = heatManager.getHeatTier(target);
-        double heatResist = plugin.getMobManager().getEquipmentBonus(target, plugin.getItemManager().HEAT_RESISTANCE_KEY);
+        double equipmentHeatResist = plugin.getMobManager().getEquipmentBonus(target, plugin.getItemManager().HEAT_RESISTANCE_KEY);
+        double tempHeatResist = heatManager.getTemporaryHeatResistance(target);
+        long magmaFilterRemaining = heatManager.getMagmaFilterRemainingSeconds(target);
+        double totalHeatResist = equipmentHeatResist + tempHeatResist;
 
         player.sendMessage(Component.text("--- Heat Debug (" + target.getName() + ") ---").color(NamedTextColor.GOLD));
         player.sendMessage(Component.text("Current Heat: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.format("%.1f / 100.0", data.getHeat())).color(NamedTextColor.RED)));
         player.sendMessage(Component.text("Heat Tier: ").color(NamedTextColor.GRAY)
                 .append(Component.text(tier.name()).color(tier.getColor())));
-        player.sendMessage(Component.text("PDC Heat Resist: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f", heatResist)).color(NamedTextColor.AQUA)));
+        player.sendMessage(Component.text("Equipment Heat Resist: ").color(NamedTextColor.GRAY)
+            .append(Component.text(String.format("%.1f%%", equipmentHeatResist)).color(NamedTextColor.AQUA)));
+        player.sendMessage(Component.text("Magma Filter Resist: ").color(NamedTextColor.GRAY)
+            .append(Component.text(String.format("%.1f%%", tempHeatResist)).color(NamedTextColor.AQUA))
+            .append(Component.text(magmaFilterRemaining > 0 ? " (" + magmaFilterRemaining + "s left)" : " (inactive)")
+                .color(magmaFilterRemaining > 0 ? NamedTextColor.YELLOW : NamedTextColor.DARK_GRAY)));
+        player.sendMessage(Component.text("Total Heat Resist: ").color(NamedTextColor.GRAY)
+            .append(Component.text(String.format("%.1f%%", totalHeatResist)).color(NamedTextColor.GREEN)));
         player.sendMessage(Component.text("Peak Heat (Session): ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.format("%.1f", data.getSession().getPeakHeat())).color(NamedTextColor.YELLOW)));
         player.sendMessage(Component.text("Damage Taken: ").color(NamedTextColor.GRAY)

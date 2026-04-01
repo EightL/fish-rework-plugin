@@ -5,17 +5,21 @@ import com.fishrework.model.PlayerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Manages the Heat System for Lava Fishing.
  * Heat increases with each lava catch and passive hostiles.
  * Heat decreases passively over time and via cooling items.
- * High heat grants Sea Creature Chance (SCC) bonuses but risks meltdowns.
+ * High heat grants Sea Creature Chance (SCC) bonuses but risks fishing penalties.
  */
 public class HeatManager {
 
@@ -32,9 +36,7 @@ public class HeatManager {
     private final double scorchingSccBonus;
     private final double infernalSccBonus;
 
-    private final double meltdownDamage;
-    private final int meltdownDurabilityLoss;
-    private final double meltdownResetHeat;
+    private final NamespacedKey magmaFilterResistanceUntilKey;
     
     private final double decayPerTick;
     private final int decayIntervalSeconds;
@@ -51,9 +53,7 @@ public class HeatManager {
         this.scorchingSccBonus = plugin.getConfig().getDouble("heat.scorching_scc_bonus", 50.0);
         this.infernalSccBonus = plugin.getConfig().getDouble("heat.infernal_scc_bonus", 100.0);
 
-        this.meltdownDamage = plugin.getConfig().getDouble("heat.meltdown_damage", 12.0);
-        this.meltdownDurabilityLoss = plugin.getConfig().getInt("heat.meltdown_durability_loss", 200);
-        this.meltdownResetHeat = plugin.getConfig().getDouble("heat.meltdown_reset_heat", 50.0);
+        this.magmaFilterResistanceUntilKey = new NamespacedKey(plugin, "magma_filter_resistance_until");
         
         this.decayPerTick = plugin.getConfig().getDouble("heat.decay_per_tick", 1.0);
         this.decayIntervalSeconds = plugin.getConfig().getInt("heat.decay_interval_seconds", 10);
@@ -111,18 +111,22 @@ public class HeatManager {
     }
 
     /**
-     * Adds heat to a player's gauge. If it reaches 100, triggers a meltdown.
+     * Adds heat to a player's gauge.
      * Respects heat resistance from equipment.
      */
     public void addHeat(Player player, double amount) {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return;
 
-        // Calculate heat resistance from equipment
+        long now = System.currentTimeMillis();
+        expireMagmaFilterIfNeeded(player, now, true);
+
+        // Calculate heat resistance from equipment + temporary buffs.
         double resistance = plugin.getMobManager().getEquipmentBonus(player, plugin.getItemManager().HEAT_RESISTANCE_KEY);
+        resistance += getTemporaryHeatResistance(player);
         double actualAmount = amount;
         
-        // If resistance is 30, it reduces heat gain by 30%
+        // If resistance is 30, it reduces heat gain by 30%.
         if (resistance > 0) {
             double reduction = Math.min(100.0, resistance) / 100.0;
             actualAmount = amount * (1.0 - reduction);
@@ -134,14 +138,9 @@ public class HeatManager {
         data.setHeat(newHeat);
         data.getSession().recordPeakHeat(newHeat);
 
-        // Tier debuff procs are applied as heat rises, before meltdown.
-        applyTierDebuffProcs(player, data, newHeat);
-
-        if (newHeat >= 100.0) {
-            triggerMeltdown(player, data);
-        } else {
-            showHeatGauge(player, newHeat);
-        }
+        // Penalty procs are applied on each lava-fishing heat gain event.
+        applyFishingPenaltyProc(player, data, newHeat);
+        showHeatGauge(player, newHeat);
     }
 
     /**
@@ -158,106 +157,41 @@ public class HeatManager {
     }
 
     /**
-     * Triggers the meltdown punishment.
+     * Applies one scaled penalty chance while lava fishing under heat.
      */
-    private void triggerMeltdown(Player player, PlayerData data) {
-        // Punish player
-        player.damage(meltdownDamage);
-        data.getSession().addHeatDamageTaken(meltdownDamage);
+    private void applyFishingPenaltyProc(Player player, PlayerData data, double currentHeat) {
+        if (currentHeat <= 0.0) return;
 
-        // Damage rod heavily
-        org.bukkit.inventory.ItemStack rod = player.getInventory().getItemInMainHand();
-        if (rod.getType() == org.bukkit.Material.FISHING_ROD && rod.getItemMeta() != null) {
-            org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) rod.getItemMeta();
-            damageable.setDamage(damageable.getDamage() + meltdownDurabilityLoss);
-            if (damageable.getDamage() > rod.getType().getMaxDurability()) {
-                // Let Bukkit break it later, just set it very high
-                damageable.setDamage(rod.getType().getMaxDurability());
+        double maxChance = plugin.getConfig().getDouble("heat.fishing_penalty_max_chance_at_100_heat", 0.55);
+        maxChance = Math.max(0.0, Math.min(1.0, maxChance));
+        double triggerChance = maxChance * Math.min(1.0, currentHeat / 100.0);
+        if (!roll(triggerChance)) return;
+
+        int effectIndex = ThreadLocalRandom.current().nextInt(3);
+        switch (effectIndex) {
+            case 0 -> {
+                int ticks = Math.max(20, plugin.getConfig().getInt("heat.fishing_penalty_slowness_ticks", 100));
+                int amplifier = Math.max(0, plugin.getConfig().getInt("heat.fishing_penalty_slowness_amplifier", 1));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, amplifier, false, true, true));
+                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
+                        .append(Component.text("Due to heat, you got Slowness.").color(NamedTextColor.RED)));
             }
-            rod.setItemMeta(damageable);
-        }
-
-        // Reset heat to config value
-        data.setHeat(meltdownResetHeat);
-
-        // Feedback
-        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 0.8f);
-        player.getWorld().spawnParticle(Particle.FLAME, player.getLocation(), 50, 1.0, 1.0, 1.0, 0.1);
-
-        player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                .append(Component.text("Meltdown! ").color(NamedTextColor.DARK_RED))
-                .append(Component.text("Your rod overheated and vented violently.").color(NamedTextColor.RED)));
-        
-        // Log to console for analytics
-        plugin.getLogger().info("Player " + player.getName() + " suffered a heat meltdown!");
-    }
-
-    /**
-     * Applies chance-based tier penalties. Higher tiers are harsher and proc more often.
-     */
-    private void applyTierDebuffProcs(Player player, PlayerData data, double currentHeat) {
-        if (currentHeat >= 100.0) return;
-
-        HeatTier tier = getHeatTier(player);
-        switch (tier) {
-            case HOT -> {
-                // 5%: rod takes 2x total catch durability (extra +1 because base catch already did +1)
-                if (roll(0.05)) {
-                    applyExtraRodDamage(player, 1);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("HOT proc: ").color(NamedTextColor.GOLD))
-                            .append(Component.text("your rod strains under the heat (+1 durability damage).")
-                                    .color(NamedTextColor.YELLOW)));
-                }
-            }
-            case SCORCHING -> {
-                // 15%: rod takes 3x total catch durability (extra +2)
-                if (roll(0.15)) {
-                    applyExtraRodDamage(player, 2);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("SCORCHING proc: ").color(NamedTextColor.RED))
-                            .append(Component.text("your rod chars (+2 durability damage).")
-                                    .color(NamedTextColor.GOLD)));
-                }
-                // 5%: 2 hearts of heat damage
-                if (roll(0.05)) {
-                    player.damage(4.0);
-                    data.getSession().addHeatDamageTaken(4.0);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("SCORCHING proc: ").color(NamedTextColor.RED))
-                            .append(Component.text("you are burned for 2 hearts.")
-                                    .color(NamedTextColor.DARK_RED)));
-                }
-            }
-            case INFERNAL -> {
-                // 30%: rod takes 5x total catch durability (extra +4)
-                if (roll(0.30)) {
-                    applyExtraRodDamage(player, 4);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("INFERNAL proc: ").color(NamedTextColor.DARK_RED))
-                            .append(Component.text("your rod warps (+4 durability damage).")
-                                    .color(NamedTextColor.RED)));
-                }
-                // 15%: 4 hearts of heat damage
-                if (roll(0.15)) {
-                    player.damage(8.0);
-                    data.getSession().addHeatDamageTaken(8.0);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("INFERNAL proc: ").color(NamedTextColor.DARK_RED))
-                            .append(Component.text("you are burned for 4 hearts.")
-                                    .color(NamedTextColor.RED)));
-                }
-                // 5%: rod takes +50 bonus durability damage
-                if (roll(0.05)) {
-                    applyExtraRodDamage(player, 50);
-                    player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                            .append(Component.text("INFERNAL proc: ").color(NamedTextColor.DARK_RED))
-                            .append(Component.text("searing backlash hits your rod (+50 durability damage).")
-                                    .color(NamedTextColor.GOLD)));
-                }
+            case 1 -> {
+                int ticks = Math.max(20, plugin.getConfig().getInt("heat.fishing_penalty_weakness_ticks", 120));
+                int amplifier = Math.max(0, plugin.getConfig().getInt("heat.fishing_penalty_weakness_amplifier", 0));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, ticks, amplifier, false, true, true));
+                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
+                        .append(Component.text("Due to heat, you got Weakness.").color(NamedTextColor.RED)));
             }
             default -> {
-                // No tier penalties below HOT.
+                double damage = Math.max(0.5, plugin.getConfig().getDouble("heat.fishing_penalty_raw_damage", 4.0));
+                player.damage(damage);
+                data.getSession().addHeatDamageTaken(damage);
+                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
+                        .append(Component.text("Due to heat, you took " + String.format("%.1f", damage) + " damage.")
+                                .color(NamedTextColor.RED)));
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.75f, 0.8f);
+                player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 10, 0.25, 0.2, 0.25, 0.02);
             }
         }
     }
@@ -266,16 +200,45 @@ public class HeatManager {
         return Math.random() < chance;
     }
 
-    private void applyExtraRodDamage(Player player, int extraDamage) {
-        if (extraDamage <= 0) return;
+    public void applyMagmaFilterResistance(Player player) {
+        if (player == null) return;
 
-        org.bukkit.inventory.ItemStack rod = player.getInventory().getItemInMainHand();
-        if (rod.getType() != org.bukkit.Material.FISHING_ROD || rod.getItemMeta() == null) return;
+        int durationSeconds = Math.max(1, plugin.getConfig().getInt("heat.magma_filter_duration_seconds", 300));
+        long until = System.currentTimeMillis() + (durationSeconds * 1000L);
+        player.getPersistentDataContainer().set(magmaFilterResistanceUntilKey, PersistentDataType.LONG, until);
+    }
 
-        org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) rod.getItemMeta();
-        int cappedDamage = Math.min(rod.getType().getMaxDurability(), damageable.getDamage() + extraDamage);
-        damageable.setDamage(cappedDamage);
-        rod.setItemMeta(damageable);
+    public double getTemporaryHeatResistance(Player player) {
+        if (player == null) return 0.0;
+        long remainingSeconds = getMagmaFilterRemainingSeconds(player);
+        if (remainingSeconds <= 0) {
+            return 0.0;
+        }
+        return Math.max(0.0, plugin.getConfig().getDouble("heat.magma_filter_resistance_percent", 50.0));
+    }
+
+    public long getMagmaFilterRemainingSeconds(Player player) {
+        if (player == null) return 0L;
+        Long until = player.getPersistentDataContainer().get(magmaFilterResistanceUntilKey, PersistentDataType.LONG);
+        if (until == null) return 0L;
+
+        long remainingMillis = until - System.currentTimeMillis();
+        if (remainingMillis <= 0L) return 0L;
+        return (remainingMillis + 999L) / 1000L;
+    }
+
+    private boolean expireMagmaFilterIfNeeded(Player player, long now, boolean notify) {
+        if (player == null) return false;
+
+        Long until = player.getPersistentDataContainer().get(magmaFilterResistanceUntilKey, PersistentDataType.LONG);
+        if (until == null || now < until) return false;
+
+        player.getPersistentDataContainer().remove(magmaFilterResistanceUntilKey);
+        if (notify) {
+            player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
+                    .append(Component.text("Magma Filter wore off.").color(NamedTextColor.RED)));
+        }
+        return true;
     }
 
     /**
@@ -311,6 +274,8 @@ public class HeatManager {
         long decayMillis = decayIntervalSeconds * 1000L;
         
         for (Player player : plugin.getServer().getOnlinePlayers()) {
+            expireMagmaFilterIfNeeded(player, now, true);
+
             PlayerData data = plugin.getPlayerData(player.getUniqueId());
             if (data == null || data.getHeat() <= 0) continue;
             

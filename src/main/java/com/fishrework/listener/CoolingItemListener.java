@@ -48,13 +48,23 @@ public class CoolingItemListener implements Listener {
         event.setCancelled(true); // Prevent default usage if any
 
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        if (data == null || data.getHeat() <= 0) {
+        if (data == null) {
+            return;
+        }
+
+        if (isFrostSalve && data.getHeat() <= 0) {
             player.sendMessage(Component.text("You are not hot enough to use this item.").color(NamedTextColor.RED));
             return;
         }
 
         double heatReduction = isMagmaFilter ? 50.0 : 25.0; // Magma filter = 50, Frost salve = 25
-        plugin.getHeatManager().reduceHeat(player, heatReduction);
+        if (data.getHeat() > 0) {
+            plugin.getHeatManager().reduceHeat(player, heatReduction);
+        }
+
+        if (isMagmaFilter) {
+            plugin.getHeatManager().applyMagmaFilterResistance(player);
+        }
 
         // Consume item
         item.setAmount(item.getAmount() - 1);
@@ -64,8 +74,15 @@ public class CoolingItemListener implements Listener {
         player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5f, 1.0f);
         player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 20);
 
-        player.sendMessage(Component.text("You used a cooling item and reduced your heat by " + (int)heatReduction + "%!")
+        if (isMagmaFilter) {
+            double resistancePercent = plugin.getConfig().getDouble("heat.magma_filter_resistance_percent", 50.0);
+            int durationSeconds = plugin.getConfig().getInt("heat.magma_filter_duration_seconds", 300);
+            player.sendMessage(Component.text("Magma Filter active: -" + (int) resistancePercent + "% heat gain for " + durationSeconds + "s!")
                 .color(NamedTextColor.AQUA));
+        } else {
+            player.sendMessage(Component.text("You used a cooling item and reduced your heat by " + (int)heatReduction + "%!")
+                .color(NamedTextColor.AQUA));
+        }
                 
         // Instantly show the updated gauge
         plugin.getHeatManager().showHeatGauge(player, data.getHeat());

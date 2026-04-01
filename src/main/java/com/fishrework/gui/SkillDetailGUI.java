@@ -143,7 +143,10 @@ public class SkillDetailGUI extends BaseGUI {
         double scd = plugin.getMobManager().getEquipmentSeaCreatureDefense(player);
         double sca = plugin.getMobManager().getEquipmentSeaCreatureAttack(player);
         double fishingXpBonus = plugin.getMobManager().getEquipmentFishingXpBonus(player);
-        double heatResistance = plugin.getMobManager().getEquipmentBonus(player, plugin.getItemManager().HEAT_RESISTANCE_KEY);
+        double equipmentHeatResistance = plugin.getMobManager().getEquipmentBonus(player, plugin.getItemManager().HEAT_RESISTANCE_KEY);
+        double magmaFilterHeatResistance = plugin.getHeatManager().getTemporaryHeatResistance(player);
+        long magmaFilterRemainingSeconds = plugin.getHeatManager().getMagmaFilterRemainingSeconds(player);
+        double totalHeatResistance = equipmentHeatResistance + magmaFilterHeatResistance;
         double flatAtk = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double flatDef = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
 
@@ -189,9 +192,14 @@ public class SkillDetailGUI extends BaseGUI {
                     .append(Component.text(String.format("%.1f", value)).color(NamedTextColor.AQUA)));
             bonusLore.add(Component.text("  (+" + String.format("%.1f", effectiveFlat) + " flat * " + String.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
-        if (currentLevel >= 27) {
+        if (currentLevel >= 27 || totalHeatResistance > 0.0) {
             bonusLore.add(Component.text("\u25B6 Heat Resistance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                .append(Component.text(String.format("+%.1f%%", heatResistance)).color(NamedTextColor.GOLD)));
+                .append(Component.text(String.format("+%.1f%%", totalHeatResistance)).color(NamedTextColor.GOLD)));
+            if (magmaFilterHeatResistance > 0.0 && magmaFilterRemainingSeconds > 0) {
+                bonusLore.add(Component.text("  (+" + String.format("%.1f", magmaFilterHeatResistance) + "% from Magma Filter, " + magmaFilterRemainingSeconds + "s left)")
+                        .color(NamedTextColor.DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
         }
 
         // Add Active Bait Bonuses to lore
@@ -394,6 +402,7 @@ public class SkillDetailGUI extends BaseGUI {
 
             // Show unlock info for any level with unlocks
             List<LevelManager.UnlockInfo> unlocks = getDetailUnlocks(level);
+            boolean hasLevelRecipes = !plugin.getRecipeRegistry().getRecipesForLevel(skill, level).isEmpty();
             if (!unlocks.isEmpty()) {
                 lore.add(Component.text(""));
                 lore.add(Component.text("\u2192 Unlocks:")
@@ -414,8 +423,19 @@ public class SkillDetailGUI extends BaseGUI {
             lore.add(Component.text(""));
             if (unlocked) {
                 lore.add(Component.text("\u2714 UNLOCKED").color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+                if (hasLevelRecipes) {
+                    lore.add(Component.text("Click to view recipes!")
+                            .color(NamedTextColor.YELLOW)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .decoration(TextDecoration.BOLD, true));
+                }
             } else {
                 lore.add(Component.text("\u2716 LOCKED").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                if (hasLevelRecipes) {
+                    lore.add(Component.text("Unlock this level to view recipes")
+                            .color(NamedTextColor.DARK_GRAY)
+                            .decoration(TextDecoration.ITALIC, false));
+                }
             }
 
             meta.lore(lore);
@@ -588,6 +608,18 @@ public class SkillDetailGUI extends BaseGUI {
     }
 
     private void openRecipeGuideForLevel(int level) {
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        if (data == null) {
+            return;
+        }
+
+        if (level > data.getLevel(skill)) {
+            player.sendMessage(Component.text("Reach " + skill.getDisplayName() + " Level " + level + " to view these recipes.")
+                    .color(NamedTextColor.RED));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1.0f);
+            return;
+        }
+
         List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForLevel(skill, level);
         if (recipes.isEmpty()) {
             return;

@@ -3,8 +3,8 @@ package com.fishrework.task;
 import com.fishrework.FishRework;
 import com.fishrework.MobManager;
 import com.fishrework.model.CustomMob;
-import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.SpawnConfig;
+import com.fishrework.util.ParticleDetailScaler;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -3235,25 +3235,11 @@ public class BossAbilityTask implements Runnable {
             if (viewer == null || viewer.isDead()) continue;
             if (viewer.getLocation().distanceSquared(location) > PARTICLE_VIEW_DISTANCE_SQ) continue;
 
-            int scaledCount = getScaledCount(viewer, count);
+            int scaledCount = ParticleDetailScaler.getScaledCount(plugin, viewer, count);
             if (scaledCount <= 0) continue;
 
             spawnParticleForViewer(viewer, particle, location, scaledCount, extras);
         }
-    }
-
-    private int getScaledCount(Player viewer, int baseCount) {
-        ParticleDetailMode mode = ParticleDetailMode.HIGH;
-        com.fishrework.model.PlayerData data = plugin.getPlayerData(viewer.getUniqueId());
-        if (data != null && data.getParticleDetailMode() != null) {
-            mode = data.getParticleDetailMode();
-        }
-
-        if (mode == ParticleDetailMode.HIGH) return baseCount;
-        if (mode == ParticleDetailMode.LOW && baseCount <= 2) return 0;
-
-        int scaled = (int) Math.round(baseCount * mode.getParticleScale());
-        return Math.max(1, scaled);
     }
 
     private void spawnParticleForViewer(Player viewer, Particle particle, Location location, int count, Object[] extras) {

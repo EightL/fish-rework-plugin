@@ -77,7 +77,7 @@ public class CombatBonusListener implements Listener {
         if (!(event.getHitEntity() instanceof LivingEntity victim)) return;
         if (!(projectile.getShooter() instanceof Player)) return;
         if (!projectile.getPersistentDataContainer().has(shotgunVolleyProjectileKey, PersistentDataType.BYTE)) return;
-        if (!plugin.getMobManager().isFishedMob(victim)) return;
+        if (victim instanceof Player) return;
 
         // Clear i-frames as early as possible when a tagged pellet collides.
         victim.setNoDamageTicks(0);
@@ -89,7 +89,7 @@ public class CombatBonusListener implements Listener {
         if (!(event.getEntity() instanceof LivingEntity victim)) return;
         if (!(projectile.getShooter() instanceof Player)) return;
         if (!projectile.getPersistentDataContainer().has(shotgunVolleyProjectileKey, PersistentDataType.BYTE)) return;
-        if (!plugin.getMobManager().isFishedMob(victim)) return;
+        if (victim instanceof Player) return;
 
         // Ensure each pellet in the volley can register damage on the same mob.
         victim.setNoDamageTicks(0);

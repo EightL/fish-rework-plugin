@@ -115,13 +115,15 @@ shaped:
     result: lava_ring
     level: 30
     pattern:
-      - " B "
-      - "MGM"
-      - " B "
+      - " G "
+      - "MRC"
+      - " S "
     ingredients:
-      B: BLAZE_POWDER
+      G: ghast_membrane
       M: magma_residue
-      G: GHAST_TEAR
+      R: smoldering_rod
+      C: corrupted_gold
+      S: crimson_scale
 
   # Trident Tier 1: Prismarine Harpoon — Level 8
   trident_1_recipe:
@@ -330,6 +332,49 @@ enchanted_material:
     result: enchanted_mossy_vine
     base: mossy_vine
     level: 10
+
+  # ── Enchanted Nether Materials ────────────────────────────
+  # 9× base material in a 3×3 grid → enchanted result
+  # All require Fishing Level 32
+  enchanted_magma_residue_recipe:
+    result: enchanted_magma_residue
+    base: magma_residue
+    level: 32
+
+  enchanted_smoldering_rod_recipe:
+    result: enchanted_smoldering_rod
+    base: smoldering_rod
+    level: 32
+
+  enchanted_corrupted_gold_recipe:
+    result: enchanted_corrupted_gold
+    base: corrupted_gold
+    level: 32
+
+  enchanted_ghast_membrane_recipe:
+    result: enchanted_ghast_membrane
+    base: ghast_membrane
+    level: 32
+
+  enchanted_crimson_scale_recipe:
+    result: enchanted_crimson_scale
+    base: crimson_scale
+    level: 32
+
+  enchanted_hoglin_tusk_recipe:
+    result: enchanted_hoglin_tusk
+    base: hoglin_tusk
+    level: 32
+
+  enchanted_soul_essence_recipe:
+    result: enchanted_soul_essence
+    base: soul_essence
+    level: 32
+
+  enchanted_basalt_shell_recipe:
+    result: enchanted_basalt_shell
+    base: basalt_shell
+    level: 32
 
 
 # ── Upgrade Recipes ─────────────────────────────────────
@@ -795,53 +840,10 @@ upgrade:
     level: 36
     pattern:
       - " E "
-      - "RCR"
-      - " E "
+      - "CRC"
+      - " M "
     ingredients:
       E: enchanted_ghast_membrane
-      R: lava_ring
       C: crimson_heart
-
-
-# ── Enchanted Nether Material Recipes ──────────────────
-# 9× base material in a 3×3 grid → enchanted result
-# All require Fishing Level 25
-  enchanted_magma_residue_recipe:
-    result: enchanted_magma_residue
-    base: magma_residue
-    level: 25
-
-  enchanted_smoldering_rod_recipe:
-    result: enchanted_smoldering_rod
-    base: smoldering_rod
-    level: 25
-
-  enchanted_corrupted_gold_recipe:
-    result: enchanted_corrupted_gold
-    base: corrupted_gold
-    level: 25
-
-  enchanted_ghast_membrane_recipe:
-    result: enchanted_ghast_membrane
-    base: ghast_membrane
-    level: 25
-
-  enchanted_crimson_scale_recipe:
-    result: enchanted_crimson_scale
-    base: crimson_scale
-    level: 25
-
-  enchanted_hoglin_tusk_recipe:
-    result: enchanted_hoglin_tusk
-    base: hoglin_tusk
-    level: 25
-
-  enchanted_soul_essence_recipe:
-    result: enchanted_soul_essence
-    base: soul_essence
-    level: 25
-
-  enchanted_basalt_shell_recipe:
-    result: enchanted_basalt_shell
-    base: basalt_shell
-    level: 25
+      R: lava_ring
+      M: molten_fin

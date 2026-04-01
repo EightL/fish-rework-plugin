@@ -160,6 +160,12 @@ materials:
     rarity: COMMON
     description: "Molten residue from the lava depths."
 
+  molten_fin:
+    material: PHANTOM_MEMBRANE
+    display_name: "Molten Fin"
+    rarity: LEGENDARY
+    description: "A heatproof fin linked to effortless movement through lava."
+
   lava_fish:
     material: COOKED_COD
     display_name: "Lava Fish"
@@ -501,6 +507,41 @@ armor_sets:
         armor: 3
         toughness: 2
         durability: 325
+
+  # ── Hyena Pants ────────────────────────────────────────
+  # Diamond-tier leggings stats with high mobility and SCC boost
+  hyena_pants:
+    material_type: LEATHER
+    rarity: SPECIAL
+    set_key: hyena_pants
+    leather_color: [150, 136, 120]
+    bonus_key: rare_creature_chance
+    bonus_value: 20.0
+    attribute_bonuses:
+      movement_speed: 0.02
+    pieces:
+      leggings:
+        display_name: "Hyena Pants"
+        armor: 6
+        toughness: 2
+        durability: 495
+        trim_material: netherite
+        trim_pattern: eye
+
+  piglin_crown:
+    material_type: GOLDEN
+    rarity: SPECIAL
+    set_key: piglin_crown
+    bonus_key: rare_creature_chance
+    bonus_value: 8.0
+    extra_pdc:
+      sea_creature_attack: 20.0
+    lore: "Wearing it keeps zombified piglins passive."
+    pieces:
+      helmet:
+        display_name: "Piglin Crown"
+        armor: 4
+        toughness: 3
 
   # ── Magma Scale Armor ─────────────────────────────────────
   # +3.0 SCC, +3.0 SCD, +3.0 SCA per piece
@@ -930,9 +971,9 @@ weapons:
       - text: "Denser spread and steadier bolt grouping."
         color: DARK_GRAY
     enchantments:
-      "fishrework:shotgun_volley": 2
+      "fishrework:shotgun_volley": 1
     pdc:
-      sea_creature_attack: 4.0
+      sea_creature_attack: 8.0
       projectile_damage: 4.5
     upgrade_tier: 2
 
@@ -945,9 +986,9 @@ weapons:
       - text: "Heavy scatter output for mid-tier sea packs."
         color: DARK_GRAY
     enchantments:
-      "fishrework:shotgun_volley": 3
+      "fishrework:shotgun_volley": 2
     pdc:
-      sea_creature_attack: 5.5
+      sea_creature_attack: 12.0
       projectile_damage: 6.0
     upgrade_tier: 3
 
@@ -960,9 +1001,9 @@ weapons:
       - text: "Long-life frame with brutal spread pressure."
         color: DARK_GRAY
     enchantments:
-      "fishrework:shotgun_volley": 4
+      "fishrework:shotgun_volley": 2
     pdc:
-      sea_creature_attack: 7.5
+      sea_creature_attack: 20.0
       projectile_damage: 8.0
     upgrade_tier: 4
 
@@ -975,9 +1016,9 @@ weapons:
       - text: "Nether-infused barrage platform for endgame raids."
         color: DARK_GRAY
     enchantments:
-      "fishrework:shotgun_volley": 5
+      "fishrework:shotgun_volley": 3
     pdc:
-      sea_creature_attack: 9.5
+      sea_creature_attack: 25.0
       projectile_damage: 10.0
     upgrade_tier: 5
 
