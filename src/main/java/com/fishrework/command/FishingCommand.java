@@ -8,6 +8,7 @@ import com.fishrework.gui.SkillsMenuGUI;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,9 +30,64 @@ import com.fishrework.model.BiomeGroup;
 public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private final FishRework plugin;
+    private final Map<String, SubcommandHandler> commandHandlers = new HashMap<>();
+    private final Map<String, SubcommandHandler> adminHandlers = new HashMap<>();
+
+    @FunctionalInterface
+    private interface SubcommandHandler {
+        boolean handle(Player player, String[] args);
+    }
 
     public FishingCommand(FishRework plugin) {
         this.plugin = plugin;
+        registerHandlers();
+    }
+
+    private void registerHandlers() {
+        registerCommand(this::handleEncyclopedia, "encyclopedia", "collection", "fish");
+        registerCommand(this::handleArtifacts, "artifacts");
+        registerCommand(this::handleLeaderboard, "top", "leaderboard");
+        registerCommand(this::handleShop, "shop");
+        registerCommand(this::handleBag, "bag");
+        registerCommand(this::handleRecipe, "recipe");
+        registerCommand(this::handleBalance, "balance", "bal");
+        registerCommand(this::handleInfo, "info");
+        registerCommand(this::handleSync, "sync");
+        registerCommand(this::handleStats, "stats");
+        registerCommand(this::handleSell, "sell");
+        registerCommand(this::handleAutoSell, "autosell");
+        registerCommand(this::handleNotifications, "notifications");
+        registerCommand(this::handleXpMultiplier, "xpmultiplier");
+        registerCommand(this::handleReload, "reload");
+        registerCommand(this::handleHelp, "help");
+        registerCommand(this::handleDamageIndicator, "dmgindicator");
+        registerCommand(this::handleParticles, "particles");
+
+        registerAdminCommand(this::handleAdminAddXp, "addxp");
+        registerAdminCommand(this::handleAdminSetLevel, "setlevel");
+        registerAdminCommand(this::handleAdminSetChance, "setchance");
+        registerAdminCommand(this::handleAdminReset, "reset");
+        registerAdminCommand(this::handleAdminResetChances, "resetchances");
+        registerAdminCommand(this::handleAdminGive, "give");
+        registerAdminCommand(this::handleAdminSpawn, "spawn");
+        registerAdminCommand(this::handleAdminChances, "chances");
+        registerAdminCommand(this::handleAdminFulfill, "fulfill");
+        registerAdminCommand(this::handleAdminPet, "pet");
+        registerAdminCommand(this::handleAdminHeat, "heat");
+        registerAdminCommand(this::handleAdminSetHeat, "setheat");
+        registerAdminCommand(this::handleAdminSetCoins, "setcoins");
+    }
+
+    private void registerCommand(SubcommandHandler handler, String... aliases) {
+        for (String alias : aliases) {
+            commandHandlers.put(alias, handler);
+        }
+    }
+
+    private void registerAdminCommand(SubcommandHandler handler, String... aliases) {
+        for (String alias : aliases) {
+            adminHandlers.put(alias, handler);
+        }
     }
 
     @Override
@@ -45,236 +102,287 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        switch (args[0].toLowerCase()) {
-            case "encyclopedia", "collection", "fish" -> {
-                if (!plugin.isFeatureEnabled("encyclopedia_enabled")) {
-                    player.sendMessage(Component.text("The Fishing Encyclopedia is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                new com.fishrework.gui.CollectionGui(plugin, player).open(player);
-            }
+        String subcommand = args[0].toLowerCase();
 
-            case "artifacts" -> {
-                if (!plugin.isFeatureEnabled("artifact_collection_enabled")) {
-                    player.sendMessage(Component.text("Artifact collection is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                new com.fishrework.gui.ArtifactCollectionGUI(plugin, player).open(player);
-            }
-
-            case "top", "leaderboard" -> {
-                if (!plugin.isFeatureEnabled("leaderboard_enabled")) {
-                    player.sendMessage(Component.text("The leaderboard is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                new LeaderboardGUI(plugin, player, Skill.FISHING).open(player);
-            }
-
-            case "shop" -> {
-                if (!plugin.isFeatureEnabled("shop_enabled")) {
-                    player.sendMessage(Component.text("The shop is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                new com.fishrework.gui.ShopMenuGUI(plugin, player).open(player);
-            }
-
-            case "bag" -> {
-                if (!plugin.isFeatureEnabled("fish_bag_enabled")) {
-                    player.sendMessage(Component.text("Fish Bags are disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                new com.fishrework.gui.FishBagGUI(plugin, player).open(player);
-            }
-
-            case "recipe" -> {
-                if (!plugin.isFeatureEnabled("recipe_browser_enabled")) {
-                    player.sendMessage(Component.text("The recipe browser is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                openRecipeGuide(player, args);
-            }
-
-            case "balance", "bal" -> {
-                if (!plugin.isFeatureEnabled("economy_enabled")) {
-                    player.sendMessage(Component.text("The economy system is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                com.fishrework.model.PlayerData data = plugin.getPlayerData(player.getUniqueId());
-                double balance = data != null ? data.getBalance() : 0;
-                String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-                player.sendMessage(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
-                        .color(NamedTextColor.GOLD));
-            }
-
-            case "info" ->
-                    new SkillsMenuGUI(plugin, player).open(player);
-
-            case "sync" -> {
-                plugin.getRecipeRegistry().syncRecipes(player);
-                player.sendMessage(Component.text("Synced your recipes and advancements!").color(NamedTextColor.GREEN));
-            }
-
-            case "stats" -> showSessionStats(player);
-
-            case "sell" -> quickSell(player);
-
-            case "autosell" -> {
-                if (!plugin.isFeatureEnabled("auto_sell_enabled")) {
-                    player.sendMessage(Component.text("Auto-sell is disabled on this server.").color(NamedTextColor.RED));
-                    return true;
-                }
-                PlayerData data = plugin.getPlayerData(player.getUniqueId());
-                if (data != null) {
-                    boolean newState = !data.getSession().isAutoSellEnabled();
-                    data.getSession().setAutoSellEnabled(newState);
-                    plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell", String.valueOf(newState));
-                    player.sendMessage(Component.text("Auto-sell is now " + (newState ? "ENABLED" : "DISABLED") + "!")
-                            .color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
-                    if (newState) {
-                        player.sendMessage(Component.text("Common fish will be automatically sold for Doubloons.")
-                                .color(NamedTextColor.GRAY));
-                    }
-                }
-            }
-
-            case "notifications" -> {
-                PlayerData data = plugin.getPlayerData(player.getUniqueId());
-                if (data == null) return true;
-
-                boolean enabled;
-                if (args.length >= 2) {
-                    String mode = args[1].toLowerCase();
-                    if (!mode.equals("on") && !mode.equals("off") && !mode.equals("toggle")) {
-                        player.sendMessage(Component.text("Usage: /fishing notifications [on|off|toggle]").color(NamedTextColor.RED));
-                        return true;
-                    }
-                    enabled = mode.equals("toggle") ? !data.isFishingTipsEnabled() : mode.equals("on");
-                } else {
-                    enabled = !data.isFishingTipsEnabled();
-                }
-
-                data.setFishingTipsEnabled(enabled);
-                plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "tips_notifications", String.valueOf(enabled));
-                player.sendMessage(Component.text("Fishing tip notifications are now " + (enabled ? "ENABLED" : "DISABLED") + ".")
-                        .color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
-            }
-
-            case "xpmultiplier" -> {
-                if (args.length == 1) {
-                    double current = plugin.getConfig().getDouble("general.xp_multiplier", 1.0);
-                    player.sendMessage(Component.text("Global XP multiplier: x" + String.format("%.2f", current))
-                            .color(NamedTextColor.AQUA));
-                    break;
-                }
-
-                if (!checkAdmin(player)) return true;
-
-                try {
-                    double requested = Double.parseDouble(args[1]);
-                    double maxMultiplier = plugin.getConfig().getDouble("general.xp_multiplier_max", 100.0);
-                    if (requested < 0.0 || requested > maxMultiplier) {
-                        player.sendMessage(Component.text("Multiplier must be between 0.0 and " + String.format("%.1f", maxMultiplier) + ".")
-                                .color(NamedTextColor.RED));
-                        return true;
-                    }
-
-                    plugin.getConfig().set("general.xp_multiplier", requested);
-                    plugin.saveConfig();
-
-                    player.sendMessage(Component.text("Set global XP multiplier to x" + String.format("%.2f", requested))
-                            .color(NamedTextColor.GREEN));
-                } catch (NumberFormatException e) {
-                    player.sendMessage(Component.text("Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
-                }
-            }
-
-            case "reload" -> {
-                if (!sender.hasPermission("fishrework.reload") && !sender.hasPermission("fishrework.admin")) {
-                    player.sendMessage(Component.text("You don't have permission to reload the config.").color(NamedTextColor.RED));
-                    return true;
-                }
-                plugin.reload();
-                player.sendMessage(Component.text("[Fish Rework] Config reloaded successfully!").color(NamedTextColor.GREEN));
-            }
-
-            case "help" -> sendHelp(player);
-
-            case "addxp" -> {
-                if (!checkAdmin(player)) return true;
-                adminAddXp(player, args);
-            }
-            case "setlevel" -> {
-                if (!checkAdmin(player)) return true;
-                adminSetLevel(player, args);
-            }
-            case "setchance" -> {
-                if (!checkAdmin(player)) return true;
-                adminSetChance(player, args);
-            }
-            case "reset" -> {
-                if (!checkAdmin(player)) return true;
-                adminReset(player, args);
-            }
-            case "resetchances" -> {
-                if (!checkAdmin(player)) return true;
-                adminResetChances(player);
-            }
-            case "give" -> {
-                if (!checkAdmin(player)) return true;
-                adminGive(player, args);
-            }
-            case "spawn" -> {
-                if (!checkAdmin(player)) return true;
-                adminSpawn(player, args);
-            }
-            case "chances" -> {
-                if (!checkAdmin(player)) return true;
-                adminChances(player, args);
-            }
-            case "fulfill" -> {
-                if (!checkAdmin(player)) return true;
-                adminFulfill(player, args);
-            }
-            case "pet" -> {
-                if (!checkAdmin(player)) return true;
-                plugin.getPetManager().spawnCustomPig(player);
-                player.sendMessage(Component.text("Spawned your custom pig friend!").color(NamedTextColor.GREEN));
-            }
-
-            case "dmgindicator" -> {
-                if (args.length < 2) {
-                    player.sendMessage(Component.text("Usage: /fishing dmgindicator <on|off>").color(NamedTextColor.RED));
-                    return true;
-                }
-                boolean enabled = args[1].equalsIgnoreCase("on");
-                PlayerData data = plugin.getPlayerData(player.getUniqueId());
-                data.setDamageIndicatorsEnabled(enabled);
-                plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "dmg_indicator", String.valueOf(enabled));
-                player.sendMessage(Component.text("Damage indicators are now " + (enabled ? "enabled" : "disabled") + ".").color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
-            }
-
-            case "particles" -> {
-                return handleParticleModeCommand(player, args.length >= 2 ? java.util.Arrays.copyOfRange(args, 1, args.length) : new String[0]);
-            }
-
-            case "heat" -> {
-                if (!checkAdmin(player)) return true;
-                adminHeat(player, args);
-            }
-            case "setheat" -> {
-                if (!checkAdmin(player)) return true;
-                adminSetHeat(player, args);
-            }
-            case "setcoins" -> {
-                if (!checkAdmin(player)) return true;
-                adminSetCoins(player, args);
-            }
-
-            default ->
-                    player.sendMessage(Component.text("Unknown subcommand. Use /fishing help").color(NamedTextColor.RED));
+        SubcommandHandler commandHandler = commandHandlers.get(subcommand);
+        if (commandHandler != null) {
+            return commandHandler.handle(player, args);
         }
 
+        SubcommandHandler adminHandler = adminHandlers.get(subcommand);
+        if (adminHandler != null) {
+            if (!checkAdmin(player)) {
+                return true;
+            }
+            return adminHandler.handle(player, args);
+        }
 
+        player.sendMessage(Component.text("Unknown subcommand. Use /fishing help").color(NamedTextColor.RED));
+        return true;
+    }
+
+    private boolean handleEncyclopedia(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.ENCYCLOPEDIA_ENABLED,
+                "The Fishing Encyclopedia is disabled on this server.")) {
+            return true;
+        }
+        new com.fishrework.gui.CollectionGui(plugin, player).open(player);
+        return true;
+    }
+
+    private boolean handleArtifacts(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.ARTIFACT_COLLECTION_ENABLED,
+                "Artifact collection is disabled on this server.")) {
+            return true;
+        }
+        new com.fishrework.gui.ArtifactCollectionGUI(plugin, player).open(player);
+        return true;
+    }
+
+    private boolean handleLeaderboard(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.LEADERBOARD_ENABLED,
+                "The leaderboard is disabled on this server.")) {
+            return true;
+        }
+        new LeaderboardGUI(plugin, player, Skill.FISHING).open(player);
+        return true;
+    }
+
+    private boolean handleShop(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.SHOP_ENABLED,
+                "The shop is disabled on this server.")) {
+            return true;
+        }
+        new com.fishrework.gui.ShopMenuGUI(plugin, player).open(player);
+        return true;
+    }
+
+    private boolean handleBag(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.FISH_BAG_ENABLED,
+                "Fish Bags are disabled on this server.")) {
+            return true;
+        }
+        new com.fishrework.gui.FishBagGUI(plugin, player).open(player);
+        return true;
+    }
+
+    private boolean handleRecipe(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.RECIPE_BROWSER_ENABLED,
+                "The recipe browser is disabled on this server.")) {
+            return true;
+        }
+        openRecipeGuide(player, args);
+        return true;
+    }
+
+    private boolean handleBalance(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.ECONOMY_ENABLED,
+                "The economy system is disabled on this server.")) {
+            return true;
+        }
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        double balance = data != null ? data.getBalance() : 0;
+        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        player.sendMessage(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+                .color(NamedTextColor.GOLD));
+        return true;
+    }
+
+    private boolean handleInfo(Player player, String[] args) {
+        new SkillsMenuGUI(plugin, player).open(player);
+        return true;
+    }
+
+    private boolean handleSync(Player player, String[] args) {
+        plugin.getRecipeRegistry().syncRecipes(player);
+        player.sendMessage(Component.text("Synced your recipes and advancements!").color(NamedTextColor.GREEN));
+        return true;
+    }
+
+    private boolean handleStats(Player player, String[] args) {
+        showSessionStats(player);
+        return true;
+    }
+
+    private boolean handleSell(Player player, String[] args) {
+        quickSell(player);
+        return true;
+    }
+
+    private boolean handleAutoSell(Player player, String[] args) {
+        if (!requireFeature(player, FeatureKeys.AUTO_SELL_ENABLED,
+                "Auto-sell is disabled on this server.")) {
+            return true;
+        }
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        if (data != null) {
+            boolean newState = !data.getSession().isAutoSellEnabled();
+            data.getSession().setAutoSellEnabled(newState);
+            plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell", String.valueOf(newState));
+            player.sendMessage(Component.text("Auto-sell is now " + (newState ? "ENABLED" : "DISABLED") + "!")
+                    .color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
+            if (newState) {
+                player.sendMessage(Component.text("Common fish will be automatically sold for Doubloons.")
+                        .color(NamedTextColor.GRAY));
+            }
+        }
+        return true;
+    }
+
+    private boolean handleNotifications(Player player, String[] args) {
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        if (data == null) {
+            return true;
+        }
+
+        boolean enabled;
+        if (args.length >= 2) {
+            String mode = args[1].toLowerCase();
+            if (!mode.equals("on") && !mode.equals("off") && !mode.equals("toggle")) {
+                player.sendMessage(Component.text("Usage: /fishing notifications [on|off|toggle]").color(NamedTextColor.RED));
+                return true;
+            }
+            enabled = mode.equals("toggle") ? !data.isFishingTipsEnabled() : mode.equals("on");
+        } else {
+            enabled = !data.isFishingTipsEnabled();
+        }
+
+        data.setFishingTipsEnabled(enabled);
+        plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "tips_notifications", String.valueOf(enabled));
+        player.sendMessage(Component.text("Fishing tip notifications are now " + (enabled ? "ENABLED" : "DISABLED") + ".")
+                .color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
+        return true;
+    }
+
+    private boolean handleXpMultiplier(Player player, String[] args) {
+        if (args.length == 1) {
+            double current = plugin.getConfig().getDouble("general.xp_multiplier", 1.0);
+            player.sendMessage(Component.text("Global XP multiplier: x" + String.format("%.2f", current))
+                    .color(NamedTextColor.AQUA));
+            return true;
+        }
+
+        if (!checkAdmin(player)) {
+            return true;
+        }
+
+        try {
+            double requested = Double.parseDouble(args[1]);
+            double maxMultiplier = plugin.getConfig().getDouble("general.xp_multiplier_max", 100.0);
+            if (requested < 0.0 || requested > maxMultiplier) {
+                player.sendMessage(Component.text("Multiplier must be between 0.0 and " + String.format("%.1f", maxMultiplier) + ".")
+                        .color(NamedTextColor.RED));
+                return true;
+            }
+
+            plugin.getConfig().set("general.xp_multiplier", requested);
+            plugin.saveConfig();
+
+            player.sendMessage(Component.text("Set global XP multiplier to x" + String.format("%.2f", requested))
+                    .color(NamedTextColor.GREEN));
+        } catch (NumberFormatException e) {
+            player.sendMessage(Component.text("Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
+        }
+        return true;
+    }
+
+    private boolean handleReload(Player player, String[] args) {
+        if (!player.hasPermission("fishrework.reload") && !player.hasPermission("fishrework.admin")) {
+            player.sendMessage(Component.text("You don't have permission to reload the config.").color(NamedTextColor.RED));
+            return true;
+        }
+        plugin.reload();
+        player.sendMessage(Component.text("[Fish Rework] Config reloaded successfully!").color(NamedTextColor.GREEN));
+        return true;
+    }
+
+    private boolean handleHelp(Player player, String[] args) {
+        sendHelp(player);
+        return true;
+    }
+
+    private boolean handleDamageIndicator(Player player, String[] args) {
+        if (args.length < 2) {
+            player.sendMessage(Component.text("Usage: /fishing dmgindicator <on|off>").color(NamedTextColor.RED));
+            return true;
+        }
+        boolean enabled = args[1].equalsIgnoreCase("on");
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        data.setDamageIndicatorsEnabled(enabled);
+        plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "dmg_indicator", String.valueOf(enabled));
+        player.sendMessage(Component.text("Damage indicators are now " + (enabled ? "enabled" : "disabled") + ".")
+                .color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
+        return true;
+    }
+
+    private boolean handleParticles(Player player, String[] args) {
+        String[] particleArgs = args.length >= 2 ? java.util.Arrays.copyOfRange(args, 1, args.length) : new String[0];
+        return handleParticleModeCommand(player, particleArgs);
+    }
+
+    private boolean handleAdminAddXp(Player player, String[] args) {
+        adminAddXp(player, args);
+        return true;
+    }
+
+    private boolean handleAdminSetLevel(Player player, String[] args) {
+        adminSetLevel(player, args);
+        return true;
+    }
+
+    private boolean handleAdminSetChance(Player player, String[] args) {
+        adminSetChance(player, args);
+        return true;
+    }
+
+    private boolean handleAdminReset(Player player, String[] args) {
+        adminReset(player, args);
+        return true;
+    }
+
+    private boolean handleAdminResetChances(Player player, String[] args) {
+        adminResetChances(player);
+        return true;
+    }
+
+    private boolean handleAdminGive(Player player, String[] args) {
+        adminGive(player, args);
+        return true;
+    }
+
+    private boolean handleAdminSpawn(Player player, String[] args) {
+        adminSpawn(player, args);
+        return true;
+    }
+
+    private boolean handleAdminChances(Player player, String[] args) {
+        adminChances(player, args);
+        return true;
+    }
+
+    private boolean handleAdminFulfill(Player player, String[] args) {
+        adminFulfill(player, args);
+        return true;
+    }
+
+    private boolean handleAdminPet(Player player, String[] args) {
+        plugin.getPetManager().spawnCustomPig(player);
+        player.sendMessage(Component.text("Spawned your custom pig friend!").color(NamedTextColor.GREEN));
+        return true;
+    }
+
+    private boolean handleAdminHeat(Player player, String[] args) {
+        adminHeat(player, args);
+        return true;
+    }
+
+    private boolean handleAdminSetHeat(Player player, String[] args) {
+        adminSetHeat(player, args);
+        return true;
+    }
+
+    private boolean handleAdminSetCoins(Player player, String[] args) {
+        adminSetCoins(player, args);
         return true;
     }
 
@@ -474,6 +582,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return false;
         }
         return true;
+    }
+
+    private boolean requireFeature(Player player, String featureKey, String disabledMessage) {
+        if (plugin.isFeatureEnabled(featureKey)) {
+            return true;
+        }
+        player.sendMessage(Component.text(disabledMessage).color(NamedTextColor.RED));
+        return false;
     }
 
 

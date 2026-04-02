@@ -14,7 +14,6 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -47,9 +46,7 @@ public class YamlRecipeLoader {
      * @return the number of recipes loaded
      */
     public int load(ItemManager itemManager) {
-        File file = new File(plugin.getDataFolder(), "recipes.yml");
-        if (!file.exists()) plugin.saveResource("recipes.yml", false);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlLoaderSupport.loadYaml(plugin, "recipes.yml");
 
         RecipeRegistry registry = plugin.getRecipeRegistry();
         int count = 0;

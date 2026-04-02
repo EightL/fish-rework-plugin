@@ -6,6 +6,7 @@ import com.fishrework.model.CustomMob;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.registry.RecipeDefinition;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -242,7 +243,7 @@ public class SkillDetailGUI extends BaseGUI {
 
         // Slot 6: Shop button
         if (skill == Skill.FISHING) {
-            boolean shopEnabled = plugin.isFeatureEnabled("shop_enabled");
+            boolean shopEnabled = plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED);
             ItemStack shopBtn = new ItemStack(shopEnabled ? Material.EMERALD : Material.BARRIER);
             ItemMeta shopMeta = shopBtn.getItemMeta();
             shopMeta.displayName(Component.text("⛁ Fishing Shop")
@@ -271,7 +272,7 @@ public class SkillDetailGUI extends BaseGUI {
 
         // Slot 2: Sea Creature Upgrade (locked behind Level 20, also hidden if feature disabled)
         if (skill == Skill.FISHING) {
-            boolean upgradeEnabled = plugin.isFeatureEnabled("upgrade_gui_enabled");
+            boolean upgradeEnabled = plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED);
             boolean unlocked = currentLevel >= 20;
             ItemStack upgradeBtn;
             ItemMeta upgMeta;
@@ -506,7 +507,7 @@ public class SkillDetailGUI extends BaseGUI {
             new ArtifactCollectionGUI(plugin, player).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 2 && skill == Skill.FISHING) {
-            if (!plugin.isFeatureEnabled("upgrade_gui_enabled")) {
+            if (!plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED)) {
                 player.sendMessage(net.kyori.adventure.text.Component.text("The Upgrade Gear menu is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
@@ -522,7 +523,7 @@ public class SkillDetailGUI extends BaseGUI {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
             }
         } else if (event.getSlot() == 4 && skill == Skill.FISHING) {
-            if (!plugin.isFeatureEnabled("encyclopedia_enabled")) {
+            if (!plugin.isFeatureEnabled(FeatureKeys.ENCYCLOPEDIA_ENABLED)) {
                 player.sendMessage(net.kyori.adventure.text.Component.text("The Fishing Encyclopedia is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
@@ -531,7 +532,7 @@ public class SkillDetailGUI extends BaseGUI {
             new CollectionGui(plugin, player).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 6 && skill == Skill.FISHING) {
-            if (!plugin.isFeatureEnabled("shop_enabled")) {
+            if (!plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED)) {
                 player.sendMessage(net.kyori.adventure.text.Component.text("The shop is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);

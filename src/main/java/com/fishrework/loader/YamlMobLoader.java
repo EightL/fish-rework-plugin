@@ -15,7 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +42,10 @@ public class YamlMobLoader {
      * @return the number of mobs loaded
      */
     public int load(MobRegistry registry, ItemManager itemManager, TreasureManager treasureManager) {
-        File file = new File(plugin.getDataFolder(), "mobs.yml");
-        if (!file.exists()) plugin.saveResource("mobs.yml", false);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlLoaderSupport.loadYaml(plugin, "mobs.yml");
 
-        ConfigurationSection section = yaml.getConfigurationSection("mobs");
+        ConfigurationSection section = YamlLoaderSupport.requireSection(plugin, yaml, "mobs", "mobs.yml");
         if (section == null) {
-            plugin.getLogger().warning("No 'mobs' section found in mobs.yml");
             return 0;
         }
 
@@ -74,24 +70,48 @@ public class YamlMobLoader {
     private CustomMob parseMob(String id, ConfigurationSection entry,
                                ItemManager itemManager, TreasureManager treasureManager) {
 
-        EntityType entityType = EntityType.valueOf(entry.getString("entity_type", "COD"));
+        EntityType entityType = YamlParseSupport.parseEnum(
+            plugin,
+            EntityType.class,
+            entry.getString("entity_type"),
+            EntityType.COD,
+            "mobs." + id + ".entity_type"
+        );
         String displayName = entry.getString("display_name", id);
         double xp = entry.getDouble("xp", 0.0);
         double baseWeight = entry.getDouble("base_weight", 1.0);
         double defaultChance = entry.getDouble("default_chance", 0.0);
-        String categoryStr = entry.getString("category", "PASSIVE");
+        CustomMob.MobCategory category = YamlParseSupport.parseEnum(
+            plugin,
+            CustomMob.MobCategory.class,
+            entry.getString("category"),
+            CustomMob.MobCategory.PASSIVE,
+            "mobs." + id + ".category"
+        );
         int requiredLevel = entry.getInt("required_level", 0);
         boolean boost = entry.getBoolean("boost_by_rare_creature", false);
-        Material collectionIcon = Material.valueOf(entry.getString("collection_icon", "BARRIER"));
+        Material collectionIcon = YamlParseSupport.parseEnum(
+            plugin,
+            Material.class,
+            entry.getString("collection_icon"),
+            Material.BARRIER,
+            "mobs." + id + ".collection_icon"
+        );
         String collectionName = entry.getString("collection_name", displayName);
-        Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+        Rarity rarity = YamlParseSupport.parseEnum(
+            plugin,
+            Rarity.class,
+            entry.getString("rarity"),
+            Rarity.COMMON,
+            "mobs." + id + ".rarity"
+        );
 
         CustomMob.Builder builder = CustomMob.builder(id, entityType, Skill.FISHING)
                 .displayName(displayName)
                 .xp(xp)
                 .baseWeight(baseWeight)
                 .chance(defaultChance)
-                .category(CustomMob.MobCategory.valueOf(categoryStr))
+            .category(category)
                 .requiredLevel(requiredLevel)
                 .boostByRareCreature(boost)
                 .collectionIcon(collectionIcon)
@@ -136,7 +156,13 @@ public class YamlMobLoader {
 
         if (dropEntry.contains("vanilla")) {
             String materialName = dropEntry.getString("vanilla");
-            Material material = Material.valueOf(materialName);
+            Material material = YamlParseSupport.parseEnum(
+                plugin,
+                Material.class,
+                materialName,
+                Material.STONE,
+                dropEntry.getCurrentPath() + ".vanilla"
+            );
             return MobDrop.builder(() -> new ItemStack(material))
                     .chance(chance).amount(min, max).build();
         }
@@ -155,7 +181,13 @@ public class YamlMobLoader {
                 return MobDrop.builder(() -> treasureManager.getRandomTreasure())
                         .chance(chance).amount(min, max).build();
             } else {
-                Rarity treasureRarity = Rarity.valueOf(value);
+                Rarity treasureRarity = YamlParseSupport.parseEnum(
+                    plugin,
+                    Rarity.class,
+                    value,
+                    Rarity.COMMON,
+                    dropEntry.getCurrentPath() + ".treasure_loot"
+                );
                 return MobDrop.builder(() -> itemManager.getTreasure(treasureRarity))
                         .chance(chance).amount(min, max).build();
             }
@@ -163,7 +195,13 @@ public class YamlMobLoader {
 
         if (dropEntry.contains("nether_treasure_loot")) {
             String value = dropEntry.getString("nether_treasure_loot");
-            Rarity treasureRarity = Rarity.valueOf(value);
+                Rarity treasureRarity = YamlParseSupport.parseEnum(
+                    plugin,
+                    Rarity.class,
+                    value,
+                    Rarity.COMMON,
+                    dropEntry.getCurrentPath() + ".nether_treasure_loot"
+                );
             return MobDrop.builder(() -> itemManager.getNetherTreasure(treasureRarity))
                     .chance(chance).amount(min, max).build();
         }
@@ -175,8 +213,13 @@ public class YamlMobLoader {
     // ── Spawn Config Parsing ──────────────────────────────────
 
     private SpawnConfig parseSpawnConfig(ConfigurationSection sec) {
-        String typeStr = sec.getString("type", "SIMPLE");
-        SpawnConfig.Type type = SpawnConfig.Type.valueOf(typeStr);
+        SpawnConfig.Type type = YamlParseSupport.parseEnum(
+            plugin,
+            SpawnConfig.Type.class,
+            sec.getString("type"),
+            SpawnConfig.Type.SIMPLE,
+            sec.getCurrentPath() + ".type"
+        );
 
         SpawnConfig.Builder b = SpawnConfig.builder(type)
                 .healthMultiplier(sec.getDouble("health_multiplier", -1))
@@ -219,7 +262,15 @@ public class YamlMobLoader {
 
         // Rider entity type override (MOUNTED type)
         if (sec.contains("rider_entity_type")) {
-            b.riderEntityType(EntityType.valueOf(sec.getString("rider_entity_type")));
+            EntityType riderType = YamlParseSupport.parseEnumOrNull(
+                    plugin,
+                    EntityType.class,
+                    sec.getString("rider_entity_type"),
+                    sec.getCurrentPath() + ".rider_entity_type"
+            );
+            if (riderType != null) {
+                b.riderEntityType(riderType);
+            }
         }
 
         // Group members (GROUP type)
@@ -258,7 +309,13 @@ public class YamlMobLoader {
                 ? parseAggro(sec.getConfigurationSection("aggro")) : null;
 
         return new SpawnConfig.EntityConfig(
-                EntityType.valueOf(sec.getString("entity_type", "PIG")),
+            YamlParseSupport.parseEnum(
+                plugin,
+                EntityType.class,
+                sec.getString("entity_type"),
+                EntityType.PIG,
+                sec.getCurrentPath() + ".entity_type"
+            ),
                 sec.getString("display_name", "Mount"),
                 sec.getBoolean("show_name", false),
                 sec.getDouble("health_multiplier", -1),
@@ -293,7 +350,13 @@ public class YamlMobLoader {
         }
 
         return new SpawnConfig.GroupMemberConfig(
-                EntityType.valueOf(sec.getString("entity_type", "ZOMBIE")),
+            YamlParseSupport.parseEnum(
+                plugin,
+                EntityType.class,
+                sec.getString("entity_type"),
+                EntityType.ZOMBIE,
+                sec.getCurrentPath() + ".entity_type"
+            ),
                 sec.getInt("count", 1),
                 sec.getDouble("health_multiplier", -1),
                 sec.getDouble("damage_multiplier", -1),

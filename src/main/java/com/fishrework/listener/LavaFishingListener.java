@@ -8,6 +8,8 @@ import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
 import com.fishrework.model.Skill;
 import com.fishrework.task.LavaBobberTask;
+import com.fishrework.util.BagUtils;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -109,7 +111,7 @@ public class LavaFishingListener implements Listener {
         if (player.getWorld().getEnvironment() != World.Environment.NETHER) return;
 
         // Feature toggle check
-        if (!plugin.isFeatureEnabled("lava_fishing_enabled")) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.LAVA_FISHING_ENABLED)) {
             return;
         }
 
@@ -234,8 +236,20 @@ public class LavaFishingListener implements Listener {
         FishingSession session = data.getSession();
 
         Location hookLoc = state.getHook().getLocation();
+        LavaBaitContext baitContext = resolveLavaBaitContext(player);
+        double heatSccBonus = plugin.getHeatManager().getHeatSccBonus(player);
+        String mobId = resolveLavaMobId(player, hookLoc, baitContext, heatSccBonus);
 
-        // ── Bait Check ──
+        handleLavaCatchOutcome(player, hookLoc, data, session, baitContext, mobId);
+
+        grantLavaCatchXp(player, session, baitContext.xpMultiplier);
+        consumeLavaRodDurability(player);
+        showLavaCatchStreak(player, session);
+        playLavaCatchFeedback(player, hookLoc);
+        applyLavaHeat(player, mobId);
+    }
+
+    private LavaBaitContext resolveLavaBaitContext(Player player) {
         com.fishrework.model.Bait activeBait = null;
         ItemStack offhand = player.getInventory().getItemInOffHand();
         List<String> baitTargetMobIds = Collections.emptyList();
@@ -250,105 +264,126 @@ public class LavaFishingListener implements Listener {
             }
         }
 
-        // Extract bait bonuses
-        double baitRareCreatureBonus = activeBait != null ? activeBait.getBonus(com.fishrework.model.Bait.RARE_CREATURE_CHANCE) : 0;
-        double baitTreasureBonus = activeBait != null ? activeBait.getBonus(com.fishrework.model.Bait.TREASURE_CHANCE) : 0;
-        double baitXpMultiplier = activeBait != null ? activeBait.getBonus(com.fishrework.model.Bait.XP_MULTIPLIER) : 0;
+        double rareCreatureBonus = activeBait != null
+                ? activeBait.getBonus(com.fishrework.model.Bait.RARE_CREATURE_CHANCE)
+                : 0;
+        double treasureBonus = activeBait != null
+                ? activeBait.getBonus(com.fishrework.model.Bait.TREASURE_CHANCE)
+                : 0;
+        double xpMultiplier = activeBait != null
+                ? activeBait.getBonus(com.fishrework.model.Bait.XP_MULTIPLIER)
+                : 0;
 
-        // Extract heat bonuses
-        double heatSccBonus = plugin.getHeatManager().getHeatSccBonus(player);
+        return new LavaBaitContext(baitTargetMobIds, baitNativeBiomeGroups, rareCreatureBonus, treasureBonus, xpMultiplier);
+    }
 
-        // ── Mob/Treasure selection (reuses existing MobManager) ──
-        String mobId = plugin.getMobManager().getMobToSpawn(
-            player,
-            Skill.FISHING,
-            hookLoc,
-            baitRareCreatureBonus + heatSccBonus,
-            baitTreasureBonus,
-            baitTargetMobIds,
-            baitNativeBiomeGroups
+    private String resolveLavaMobId(Player player,
+                                    Location hookLoc,
+                                    LavaBaitContext baitContext,
+                                    double heatSccBonus) {
+        return plugin.getMobManager().getMobToSpawn(
+                player,
+                Skill.FISHING,
+                hookLoc,
+                baitContext.rareCreatureBonus + heatSccBonus,
+                baitContext.treasureBonus,
+                baitContext.targetMobIds,
+                baitContext.nativeBiomeGroups
         );
+    }
 
-        if (mobId != null) {
-            com.fishrework.model.CustomMob mobDef = plugin.getMobRegistry().get(mobId);
-
-            if (mobDef.isTreasure()) {
-                // Treasure
-                ItemStack treasureItem = null;
-                if (!mobDef.getDrops().isEmpty()) {
-                    treasureItem = mobDef.getDrops().get(0).roll();
-                }
-                if (treasureItem == null) treasureItem = plugin.getTreasureManager().getRandomTreasure();
-
-                if (hasFishBagInInventory(player)) {
-                    ItemStack overflow = FishBagGUI.addToBag(data, treasureItem);
-                    plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
-
-                    if (overflow != null) {
-                        Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, overflow);
-                        itemEntity.setInvulnerable(true);
-                    } else {
-                        player.sendActionBar(Component.text("Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
-                    }
-                } else {
-                    // Drop treasure at hook location
-                    Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, treasureItem);
-                    itemEntity.setInvulnerable(true);
-                }
-
-                player.sendMessage(Component.text("You pulled up a " + mobDef.getDisplayName() + "!")
-                        .color(mobDef.getRarity().getColor()));
-
-                plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitXpMultiplier);
-
-                session.recordCatch();
-                session.recordTreasure();
-                FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-                FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
-            } else {
-                // Living creature — spawn at hook location
-                plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitXpMultiplier);
-
-                if (plugin.getMobManager().isHostile(mobId)) {
-                    player.sendMessage(Component.text("🔥 You hooked a nether creature!")
-                            .color(NamedTextColor.RED));
-                } else {
-                    player.sendMessage(Component.text("🔥 You hooked a creature from the lava!")
-                            .color(NamedTextColor.GOLD));
-                }
-
-                session.recordCatch();
-
-                // Play effects for rare+ mobs
-                if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
-                    FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-                    FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
-                }
-            }
-        } else {
-            // No mob selected — grant base lava fishing XP as fallback
+    private void handleLavaCatchOutcome(Player player,
+                                        Location hookLoc,
+                                        PlayerData data,
+                                        FishingSession session,
+                                        LavaBaitContext baitContext,
+                                        String mobId) {
+        if (mobId == null) {
             session.recordCatch();
             player.sendActionBar(Component.text("You pulled up some lava debris...")
                     .color(NamedTextColor.GRAY));
+            return;
         }
 
-        // ── Grant XP ──
+        com.fishrework.model.CustomMob mobDef = plugin.getMobRegistry().get(mobId);
+        if (mobDef == null) {
+            session.recordCatch();
+            return;
+        }
+
+        if (mobDef.isTreasure()) {
+            ItemStack treasureItem = null;
+            if (!mobDef.getDrops().isEmpty()) {
+                treasureItem = mobDef.getDrops().get(0).roll();
+            }
+            if (treasureItem == null) {
+                treasureItem = plugin.getTreasureManager().getRandomTreasure();
+            }
+
+            if (BagUtils.hasFishBagInInventory(plugin, player)) {
+                ItemStack overflow = FishBagGUI.addToBag(data, treasureItem);
+                plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
+
+                if (overflow != null) {
+                    Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, overflow);
+                    itemEntity.setInvulnerable(true);
+                } else {
+                    player.sendActionBar(Component.text("Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
+                }
+            } else {
+                Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, treasureItem);
+                itemEntity.setInvulnerable(true);
+            }
+
+            player.sendMessage(Component.text("You pulled up a " + mobDef.getDisplayName() + "!")
+                    .color(mobDef.getRarity().getColor()));
+
+            plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitContext.xpMultiplier);
+
+            session.recordCatch();
+            session.recordTreasure();
+            FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
+            return;
+        }
+
+        plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitContext.xpMultiplier);
+
+        if (plugin.getMobManager().isHostile(mobId)) {
+            player.sendMessage(Component.text("🔥 You hooked a nether creature!")
+                    .color(NamedTextColor.RED));
+        } else {
+            player.sendMessage(Component.text("🔥 You hooked a creature from the lava!")
+                    .color(NamedTextColor.GOLD));
+        }
+
+        session.recordCatch();
+
+        if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
+            FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
+        }
+    }
+
+    private void grantLavaCatchXp(Player player, FishingSession session, double baitXpMultiplier) {
         double baseXp = plugin.getConfig().getDouble("fishing.xp.lava_catch", 30.0);
         if (baitXpMultiplier > 0) {
             baseXp *= (1.0 + baitXpMultiplier / 100.0);
         }
         baseXp *= session.getStreakMultiplier();
         plugin.getSkillManager().grantXp(player, Skill.FISHING, baseXp, "Lava Fishing");
+    }
 
-        // ── Rod durability ──
+    private void consumeLavaRodDurability(Player player) {
         ItemStack rod = player.getInventory().getItemInMainHand();
         if (rod.getType() == Material.FISHING_ROD && rod.getItemMeta() != null) {
             org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) rod.getItemMeta();
             damageable.setDamage(damageable.getDamage() + 1);
             rod.setItemMeta(damageable);
         }
+    }
 
-        // ── Catch streak display ──
+    private void showLavaCatchStreak(Player player, FishingSession session) {
         int streakTier = session.getStreakTier();
         if (streakTier > 0) {
             String streakText = "⭐".repeat(Math.min(streakTier, 5));
@@ -357,25 +392,49 @@ public class LavaFishingListener implements Listener {
                     + " (+" + String.format("%.0f", bonus) + "% Bonus) " + streakText)
                     .color(NamedTextColor.GOLD));
         }
+    }
 
-        // ── Lava fishing particles ──
+    private void playLavaCatchFeedback(Player player, Location hookLoc) {
         hookLoc.getWorld().spawnParticle(Particle.LAVA, hookLoc, 20, 0.5, 0.5, 0.5);
         player.playSound(hookLoc, Sound.BLOCK_LAVA_EXTINGUISH, 0.8f, 1.0f);
+    }
 
-        // ── Apply Heat ──
-        if (plugin.isFeatureEnabled("heat_system_enabled")) {
-            double heatGained = plugin.getConfig().getDouble("heat.gain_per_catch", 3.0);
-            if (mobId != null) {
-                if (plugin.getMobManager().isHostile(mobId)) {
-                    heatGained += plugin.getConfig().getDouble("heat.gain_per_hostile", 2.0);
-                }
+    private void applyLavaHeat(Player player, String mobId) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.HEAT_SYSTEM_ENABLED)) {
+            return;
+        }
 
-                com.fishrework.model.CustomMob mobDef = plugin.getMobRegistry().get(mobId);
-                if (mobDef != null && mobDef.getRarity() == Rarity.LEGENDARY) {
-                    heatGained += plugin.getConfig().getDouble("heat.gain_per_legendary", 5.0);
-                }
+        double heatGained = plugin.getConfig().getDouble("heat.gain_per_catch", 3.0);
+        if (mobId != null) {
+            if (plugin.getMobManager().isHostile(mobId)) {
+                heatGained += plugin.getConfig().getDouble("heat.gain_per_hostile", 2.0);
             }
-            plugin.getHeatManager().addHeat(player, heatGained);
+
+            com.fishrework.model.CustomMob mobDef = plugin.getMobRegistry().get(mobId);
+            if (mobDef != null && mobDef.getRarity() == Rarity.LEGENDARY) {
+                heatGained += plugin.getConfig().getDouble("heat.gain_per_legendary", 5.0);
+            }
+        }
+        plugin.getHeatManager().addHeat(player, heatGained);
+    }
+
+    private static final class LavaBaitContext {
+        private final List<String> targetMobIds;
+        private final Set<com.fishrework.model.BiomeGroup> nativeBiomeGroups;
+        private final double rareCreatureBonus;
+        private final double treasureBonus;
+        private final double xpMultiplier;
+
+        private LavaBaitContext(List<String> targetMobIds,
+                                Set<com.fishrework.model.BiomeGroup> nativeBiomeGroups,
+                                double rareCreatureBonus,
+                                double treasureBonus,
+                                double xpMultiplier) {
+            this.targetMobIds = targetMobIds;
+            this.nativeBiomeGroups = nativeBiomeGroups;
+            this.rareCreatureBonus = rareCreatureBonus;
+            this.treasureBonus = treasureBonus;
+            this.xpMultiplier = xpMultiplier;
         }
     }
 
@@ -423,15 +482,6 @@ public class LavaFishingListener implements Listener {
         return pdc.has(plugin.getItemManager().LAVA_ROD_KEY, PersistentDataType.BYTE)
                 || pdc.has(plugin.getItemManager().LAVA_ROD_KEY, PersistentDataType.DOUBLE)
                 || pdc.has(plugin.getItemManager().LAVA_ROD_KEY, PersistentDataType.INTEGER);
-    }
-
-    private boolean hasFishBagInInventory(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (plugin.getItemManager().isFishBag(item)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

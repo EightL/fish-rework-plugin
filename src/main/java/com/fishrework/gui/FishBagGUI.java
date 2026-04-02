@@ -2,6 +2,7 @@ package com.fishrework.gui;
 
 import com.fishrework.FishRework;
 import com.fishrework.model.PlayerData;
+import com.fishrework.util.BagUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,10 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Fish Bag GUI (6 rows).
@@ -27,11 +26,6 @@ public class FishBagGUI extends BaseGUI {
     private final Player player;
     private static final int STORAGE_SLOTS = 18;
     private static final int CONTROL_ROW_START = 18;
-
-    // Vanilla fish materials allowed in the bag
-    private static final Set<Material> ALLOWED_MATERIALS = Set.of(
-            Material.COD, Material.SALMON, Material.TROPICAL_FISH, Material.PUFFERFISH, Material.INK_SAC
-    );
 
     public FishBagGUI(FishRework plugin, Player player) {
         super(plugin, 3, "Fish Bag");
@@ -139,7 +133,7 @@ public class FishBagGUI extends BaseGUI {
         ItemStack cursorItem = event.getCursor();
         if (cursorItem != null && !cursorItem.getType().isAir()) {
             // Placing item into bag — validate
-            if (!isAllowedInBag(cursorItem)) {
+            if (!BagUtils.isAllowedInFishBag(plugin, cursorItem)) {
                 event.setCancelled(true);
                 player.sendMessage(Component.text("Only fish and custom materials can go in the Fish Bag!")
                         .color(NamedTextColor.RED));
@@ -150,37 +144,13 @@ public class FishBagGUI extends BaseGUI {
         // Handle shift-click from player inventory into bag
         if (event.isShiftClick() && event.getClickedInventory() != inventory) {
             ItemStack clickedItem = event.getCurrentItem();
-            if (clickedItem != null && !isAllowedInBag(clickedItem)) {
+            if (clickedItem != null && !BagUtils.isAllowedInFishBag(plugin, clickedItem)) {
                 event.setCancelled(true);
                 player.sendMessage(Component.text("Only fish and custom materials can go in the Fish Bag!")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             }
         }
-    }
-
-    private boolean isAllowedInBag(ItemStack item) {
-        if (item == null || item.getType().isAir()) return true;
-
-        // Vanilla fish
-        if (ALLOWED_MATERIALS.contains(item.getType())) return true;
-
-        // Treasure chests
-        if (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-            plugin.getItemManager().TREASURE_TYPE_KEY,
-            PersistentDataType.STRING
-        )) {
-            return true;
-        }
-
-        // Custom items (with CUSTOM_ITEM_KEY PDC)
-        if (item.hasItemMeta()) {
-            return item.getItemMeta().getPersistentDataContainer()
-                    .has(plugin.getItemManager().CUSTOM_ITEM_KEY,
-                    PersistentDataType.STRING);
-        }
-
-        return false;
     }
 
     private void saveBagContents() {
@@ -212,6 +182,10 @@ public class FishBagGUI extends BaseGUI {
     // Returns the leftover if bag is full, null if fully added.
     public static ItemStack addToBag(PlayerData data, ItemStack drop) {
         if (data == null || drop == null || drop.getType().isAir()) return drop;
+        FishRework plugin = FishRework.getInstance();
+        if (plugin != null && !BagUtils.isAllowedInFishBag(plugin, drop)) {
+            return drop;
+        }
 
         ItemStack[] contents = data.getFishBagContents();
         if (contents == null) {

@@ -13,6 +13,11 @@ import java.util.Base64;
 
 public class DatabaseManager {
 
+    private static final String TABLE_PLAYER_FISH_BAG = "player_fish_bag";
+    private static final String TABLE_PLAYER_LAVA_BAG = "player_lava_bag";
+    private static final String BAG_LABEL_FISH = "fish bag";
+    private static final String BAG_LABEL_LAVA = "lava bag";
+
     private final FishRework plugin;
     private Connection connection;
     /** Single lock for all database operations — prevents concurrent access on the shared SQLite connection. */
@@ -111,12 +116,12 @@ public class DatabaseManager {
                     "balance DOUBLE NOT NULL DEFAULT 0);";
             stmt.execute(economySql);
 
-            String fishBagSql = "CREATE TABLE IF NOT EXISTS player_fish_bag (" +
+            String fishBagSql = "CREATE TABLE IF NOT EXISTS " + TABLE_PLAYER_FISH_BAG + " (" +
                     "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "contents TEXT);";
             stmt.execute(fishBagSql);
 
-                String lavaBagSql = "CREATE TABLE IF NOT EXISTS player_lava_bag (" +
+                String lavaBagSql = "CREATE TABLE IF NOT EXISTS " + TABLE_PLAYER_LAVA_BAG + " (" +
                     "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "contents TEXT);";
                 stmt.execute(lavaBagSql);
@@ -320,8 +325,8 @@ public class DatabaseManager {
         String sqlCollection = "DELETE FROM fish_collection WHERE uuid = ?";
         String sqlArtifacts = "DELETE FROM artifact_collection WHERE uuid = ?";
         String sqlEconomy   = "DELETE FROM player_economy WHERE uuid = ?";
-        String sqlFishBag   = "DELETE FROM player_fish_bag WHERE uuid = ?";
-        String sqlLavaBag   = "DELETE FROM player_lava_bag WHERE uuid = ?";
+        String sqlFishBag   = "DELETE FROM " + TABLE_PLAYER_FISH_BAG + " WHERE uuid = ?";
+        String sqlLavaBag   = "DELETE FROM " + TABLE_PLAYER_LAVA_BAG + " WHERE uuid = ?";
         String sqlSettings  = "DELETE FROM player_settings WHERE uuid = ?";
 
         try {
@@ -417,37 +422,13 @@ public class DatabaseManager {
     }
 
     private void saveFishBagInternal(UUID uuid, org.bukkit.inventory.ItemStack[] contents) {
-        if (!isConnected()) return;
-        String sql = "INSERT OR REPLACE INTO player_fish_bag (uuid, contents) VALUES (?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, uuid.toString());
-            if (contents == null) {
-                ps.setNull(2, Types.VARCHAR);
-            } else {
-                byte[] bytes = serializeItemStacks(contents);
-                ps.setString(2, Base64.getEncoder().encodeToString(bytes));
-            }
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save fish bag for " + uuid, e);
-        }
+        saveBagInternal(uuid, contents, TABLE_PLAYER_FISH_BAG, BAG_LABEL_FISH);
     }
 
     private void loadFishBagInternal(UUID uuid, PlayerData data) {
-        if (!isConnected()) return;
-        String sql = "SELECT contents FROM player_fish_bag WHERE uuid = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, uuid.toString());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String b64 = rs.getString("contents");
-                if (b64 != null && !b64.isEmpty()) {
-                    byte[] bytes = Base64.getDecoder().decode(b64);
-                    data.setFishBagContents(deserializeItemStacks(bytes));
-                }
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load fish bag for " + uuid, e);
+        org.bukkit.inventory.ItemStack[] loaded = loadBagContentsInternal(uuid, TABLE_PLAYER_FISH_BAG, BAG_LABEL_FISH);
+        if (loaded != null) {
+            data.setFishBagContents(loaded);
         }
     }
 
@@ -459,8 +440,20 @@ public class DatabaseManager {
     }
 
     private void saveLavaBagInternal(UUID uuid, org.bukkit.inventory.ItemStack[] contents) {
+        saveBagInternal(uuid, contents, TABLE_PLAYER_LAVA_BAG, BAG_LABEL_LAVA);
+    }
+
+    private void loadLavaBagInternal(UUID uuid, PlayerData data) {
+        org.bukkit.inventory.ItemStack[] loaded = loadBagContentsInternal(uuid, TABLE_PLAYER_LAVA_BAG, BAG_LABEL_LAVA);
+        if (loaded != null) {
+            data.setLavaBagContents(loaded);
+        }
+    }
+
+    private void saveBagInternal(UUID uuid, org.bukkit.inventory.ItemStack[] contents,
+                                 String tableName, String bagLabel) {
         if (!isConnected()) return;
-        String sql = "INSERT OR REPLACE INTO player_lava_bag (uuid, contents) VALUES (?, ?)";
+        String sql = "INSERT OR REPLACE INTO " + tableName + " (uuid, contents) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             if (contents == null) {
@@ -471,25 +464,29 @@ public class DatabaseManager {
             }
             ps.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save lava bag for " + uuid, e);
+            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save " + bagLabel + " for " + uuid, e);
         }
     }
 
-    private void loadLavaBagInternal(UUID uuid, PlayerData data) {
-        if (!isConnected()) return;
-        String sql = "SELECT contents FROM player_lava_bag WHERE uuid = ?";
+    private org.bukkit.inventory.ItemStack[] loadBagContentsInternal(UUID uuid, String tableName, String bagLabel) {
+        if (!isConnected()) return null;
+        String sql = "SELECT contents FROM " + tableName + " WHERE uuid = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String b64 = rs.getString("contents");
-                if (b64 != null && !b64.isEmpty()) {
-                    byte[] bytes = Base64.getDecoder().decode(b64);
-                    data.setLavaBagContents(deserializeItemStacks(bytes));
-                }
+            if (!rs.next()) {
+                return null;
             }
+
+            String b64 = rs.getString("contents");
+            if (b64 == null || b64.isEmpty()) {
+                return null;
+            }
+            byte[] bytes = Base64.getDecoder().decode(b64);
+            return deserializeItemStacks(bytes);
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load lava bag for " + uuid, e);
+            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load " + bagLabel + " for " + uuid, e);
+            return null;
         }
     }
 

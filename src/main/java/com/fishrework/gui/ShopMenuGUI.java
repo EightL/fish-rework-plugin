@@ -2,6 +2,7 @@ package com.fishrework.gui;
 
 import com.fishrework.FishRework;
 import com.fishrework.model.PlayerData;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -93,18 +94,14 @@ public class ShopMenuGUI extends BaseGUI {
 
         switch (event.getSlot()) {
             case 11 -> {
-                if (!plugin.isFeatureEnabled("shop_enabled")) {
-                    player.sendMessage(Component.text("The shop is currently disabled.").color(NamedTextColor.RED));
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                if (!requireShopEnabled()) {
                     return;
                 }
                 new SellShopGUI(plugin, player).open(player);
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             }
             case 13 -> {
-                if (!plugin.isFeatureEnabled("shop_enabled")) {
-                    player.sendMessage(Component.text("The shop is currently disabled.").color(NamedTextColor.RED));
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                if (!requireShopEnabled()) {
                     return;
                 }
                 new BuyShopGUI(plugin, player).open(player);
@@ -115,5 +112,14 @@ public class ShopMenuGUI extends BaseGUI {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             }
         }
+    }
+
+    private boolean requireShopEnabled() {
+        if (plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED)) {
+            return true;
+        }
+        player.sendMessage(Component.text("The shop is currently disabled.").color(NamedTextColor.RED));
+        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+        return false;
     }
 }

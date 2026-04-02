@@ -23,7 +23,6 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.Registry;
 
-import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -47,9 +46,7 @@ public class YamlItemLoader {
      * @return the number of items loaded
      */
     public int load(ItemManager itemManager) {
-        File file = new File(plugin.getDataFolder(), "items.yml");
-        if (!file.exists()) plugin.saveResource("items.yml", false);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlLoaderSupport.loadYaml(plugin, "items.yml");
 
         Map<String, Supplier<ItemStack>> registry = itemManager.getItemRegistry();
         int count = 0;
@@ -79,7 +76,7 @@ public class YamlItemLoader {
 
             Material material = resolveMaterial(entry.getString("material", "STONE"), Material.STONE);
             String displayName = entry.getString("display_name", id);
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+            Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.COMMON, "materials." + id + ".rarity");
             String description = entry.getString("description", "");
 
             final String fId = id;
@@ -108,7 +105,8 @@ public class YamlItemLoader {
 
             Material material = resolveMaterial(entry.getString("material", "STONE"), Material.STONE);
             String displayName = entry.getString("display_name", id);
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "UNCOMMON"));
+            Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.UNCOMMON,
+                    "enchanted_materials." + id + ".rarity");
             String description = entry.getString("description", "");
 
             final String fId = id;
@@ -137,7 +135,8 @@ public class YamlItemLoader {
 
             // Common set properties
             String materialType = setSection.getString("material_type", "IRON");
-            Rarity rarity = Rarity.valueOf(setSection.getString("rarity", "COMMON"));
+                Rarity rarity = parseRarity(setSection.getString("rarity"), Rarity.COMMON,
+                    "armor_sets." + setId + ".rarity");
             String setKeyStr = setSection.getString("set_key", setId + "_armor");
             NamespacedKey armorSetKey = new NamespacedKey(plugin, setKeyStr);
             boolean isLeather = "LEATHER".equalsIgnoreCase(materialType);
@@ -385,7 +384,8 @@ public class YamlItemLoader {
             if (entry == null) continue;
 
             String displayName = entry.getString("display_name", rodId);
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+            Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.COMMON,
+                    "fishing_rods." + rodId + ".rarity");
             String pdcKeyStr = entry.getString("pdc_key", rodId);
             double rareCreatureChance = entry.getDouble("rare_creature_chance", 0);
             double fishingSpeed = entry.getDouble("fishing_speed", 0);
@@ -506,7 +506,8 @@ public class YamlItemLoader {
 
             Material material = resolveMaterial(entry.getString("material", "STONE"), Material.STONE);
             String displayName = entry.getString("display_name", id);
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+            Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.COMMON,
+                    "weapons." + id + ".rarity");
             String nameColorStr = entry.getString("name_color");
             String pdcKeyStr = entry.getString("pdc_key");
             int upgradeTier = entry.getInt("upgrade_tier", 0);
@@ -657,7 +658,8 @@ public class YamlItemLoader {
 
             Material material = resolveMaterial(entry.getString("material", "STONE"), Material.STONE);
             String displayName = entry.getString("display_name", id);
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+            Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.COMMON,
+                    "utility_items." + id + ".rarity");
             String pdcKeyStr = entry.getString("pdc_key", id);
             List<Map<?, ?>> loreEntries = entry.getMapList("lore");
 
@@ -773,6 +775,10 @@ public class YamlItemLoader {
             plugin.getLogger().warning("Unknown material: " + rawName + ", falling back to " + fallback);
             return fallback;
         }
+    }
+
+    private Rarity parseRarity(String rawValue, Rarity fallback, String context) {
+        return YamlParseSupport.parseEnum(plugin, Rarity.class, rawValue, fallback, context);
     }
 
     /** Resolves an attribute name like "water_movement_efficiency" to its Bukkit Attribute. */

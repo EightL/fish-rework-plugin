@@ -10,6 +10,7 @@ import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.model.SpawnConfig;
 import com.fishrework.registry.MobRegistry;
+import com.fishrework.util.BagUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Material;
@@ -1326,8 +1327,8 @@ public class MobManager {
      * Overload for when the entity instance is not available (e.g. group kill checks).
      */
     public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory, double scale) {
-        boolean collectToLavaBag = hasLavaBagInInventory(player);
-        boolean collectToFishBag = hasFishBagInInventory(player);
+        boolean collectToLavaBag = BagUtils.hasLavaBagInInventory(plugin, player);
+        boolean collectToFishBag = BagUtils.hasFishBagInInventory(plugin, player);
         PlayerData data = (collectToLavaBag || collectToFishBag) ? plugin.getPlayerData(player.getUniqueId()) : null;
         boolean lavaBagChanged = false;
         boolean fishBagChanged = false;
@@ -1347,7 +1348,7 @@ public class MobManager {
                         }
                     }
 
-                    if (overflow != null && collectToFishBag && isAllowedInFishBag(overflow)) {
+                    if (overflow != null && collectToFishBag && BagUtils.isAllowedInFishBag(plugin, overflow)) {
                         ItemStack fishOverflow = FishBagGUI.addToBag(data, overflow);
                         if (fishOverflow == null || fishOverflow != overflow) {
                             fishBagChanged = true;
@@ -1407,50 +1408,6 @@ public class MobManager {
         return Math.min(max, amount);
     }
 
-    private boolean hasLavaBagInInventory(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (plugin.getItemManager().isLavaBag(item)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasFishBagInInventory(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (plugin.getItemManager().isFishBag(item)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isAllowedInFishBag(ItemStack item) {
-        if (item == null || item.getType().isAir()) return false;
-
-        if (item.getType() == Material.COD
-                || item.getType() == Material.SALMON
-                || item.getType() == Material.TROPICAL_FISH
-                || item.getType() == Material.PUFFERFISH
-                || item.getType() == Material.INK_SAC) {
-            return true;
-        }
-
-        if (!item.hasItemMeta()) return false;
-
-        if (item.getItemMeta().getPersistentDataContainer().has(
-                plugin.getItemManager().TREASURE_TYPE_KEY,
-                PersistentDataType.STRING
-        )) {
-            return true;
-        }
-
-        return item.getItemMeta().getPersistentDataContainer().has(
-            plugin.getItemManager().CUSTOM_ITEM_KEY,
-            PersistentDataType.STRING
-        );
-    }
-    
     /**
      * Centralized method to register a catch/kill for the encyclopedia.
      * Handles: Database update, PlayerData update, First Catch message, Advancement check.

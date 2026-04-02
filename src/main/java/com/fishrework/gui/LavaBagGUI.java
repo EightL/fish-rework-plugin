@@ -2,6 +2,7 @@ package com.fishrework.gui;
 
 import com.fishrework.FishRework;
 import com.fishrework.model.PlayerData;
+import com.fishrework.util.BagUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,10 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Lava Bag GUI (6 rows).
@@ -24,10 +23,6 @@ import java.util.Set;
 public class LavaBagGUI extends BaseGUI {
 
     private final Player player;
-
-    private static final Set<Material> ALLOWED_FISH_MATERIALS = Set.of(
-            Material.COD, Material.SALMON, Material.TROPICAL_FISH, Material.PUFFERFISH, Material.INK_SAC
-    );
 
     public LavaBagGUI(FishRework plugin, Player player) {
         super(plugin, 6, "🔥 Magma Satchel");
@@ -146,25 +141,7 @@ public class LavaBagGUI extends BaseGUI {
     }
 
     public static boolean isAllowedInBag(FishRework plugin, ItemStack item) {
-        if (item == null || item.getType().isAir()) return true;
-
-        if (ALLOWED_FISH_MATERIALS.contains(item.getType())) {
-            return true;
-        }
-
-        if (!item.hasItemMeta()) return false;
-
-        if (item.getItemMeta().getPersistentDataContainer().has(
-                plugin.getItemManager().TREASURE_TYPE_KEY,
-                PersistentDataType.STRING
-        )) {
-            return true;
-        }
-
-        return item.getItemMeta().getPersistentDataContainer().has(
-                plugin.getItemManager().CUSTOM_ITEM_KEY,
-                PersistentDataType.STRING
-        );
+        return BagUtils.isAllowedInFishBag(plugin, item);
     }
 
     private double calculateBagValue() {

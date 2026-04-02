@@ -8,8 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-
 /**
  * Loads artifact definitions from {@code artifacts.yml} and populates the {@link ArtifactRegistry}.
  */
@@ -28,13 +26,10 @@ public class YamlArtifactLoader {
      * @return the number of artifacts loaded
      */
     public int load(ArtifactRegistry registry) {
-        File file = new File(plugin.getDataFolder(), "artifacts.yml");
-        if (!file.exists()) plugin.saveResource("artifacts.yml", false);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlLoaderSupport.loadYaml(plugin, "artifacts.yml");
 
-        ConfigurationSection section = yaml.getConfigurationSection("artifacts");
+        ConfigurationSection section = YamlLoaderSupport.requireSection(plugin, yaml, "artifacts", "artifacts.yml");
         if (section == null) {
-            plugin.getLogger().warning("No 'artifacts' section found in artifacts.yml");
             return 0;
         }
 
@@ -45,14 +40,26 @@ public class YamlArtifactLoader {
 
             String displayName = entry.getString("display_name", id);
             String description = entry.getString("description", "");
-            Rarity rarity = Rarity.valueOf(entry.getString("rarity", "COMMON"));
+            Rarity rarity = YamlParseSupport.parseEnum(
+                plugin,
+                Rarity.class,
+                entry.getString("rarity"),
+                Rarity.COMMON,
+                "artifacts." + id + ".rarity"
+            );
 
             Artifact artifact;
             if (entry.contains("texture_base64")) {
                 artifact = new Artifact(id, displayName, description, rarity,
                         entry.getString("texture_base64"));
             } else {
-                Material material = Material.valueOf(entry.getString("material", "BARRIER"));
+            Material material = YamlParseSupport.parseEnum(
+                plugin,
+                Material.class,
+                entry.getString("material"),
+                Material.BARRIER,
+                "artifacts." + id + ".material"
+            );
                 artifact = new Artifact(id, displayName, description, rarity, material);
             }
 

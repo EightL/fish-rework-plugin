@@ -7,7 +7,6 @@ import com.fishrework.registry.BiomeFishingRegistry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -28,13 +27,10 @@ public class YamlBiomeLoader {
      * @return the number of profiles loaded
      */
     public int load(BiomeFishingRegistry registry) {
-        File file = new File(plugin.getDataFolder(), "biomes.yml");
-        if (!file.exists()) plugin.saveResource("biomes.yml", false);
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration yaml = YamlLoaderSupport.loadYaml(plugin, "biomes.yml");
 
-        ConfigurationSection section = yaml.getConfigurationSection("biome_profiles");
+        ConfigurationSection section = YamlLoaderSupport.requireSection(plugin, yaml, "biome_profiles", "biomes.yml");
         if (section == null) {
-            plugin.getLogger().warning("No 'biome_profiles' section found in biomes.yml");
             return 0;
         }
 
@@ -43,14 +39,19 @@ public class YamlBiomeLoader {
             ConfigurationSection entry = section.getConfigurationSection(key);
             if (entry == null) continue;
 
-            try {
-                BiomeGroup group = BiomeGroup.valueOf(key);
-                BiomeFishingProfile profile = parseProfile(entry);
-                registry.register(group, profile);
-                count++;
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Unknown BiomeGroup '" + key + "' in biomes.yml — skipping");
+            BiomeGroup group = YamlParseSupport.parseEnumOrNull(
+                    plugin,
+                    BiomeGroup.class,
+                    key,
+                    "biome_profiles." + key
+            );
+            if (group == null) {
+                continue;
             }
+
+            BiomeFishingProfile profile = parseProfile(entry);
+            registry.register(group, profile);
+            count++;
         }
 
         plugin.getLogger().info("Loaded " + count + " biome profiles from biomes.yml");

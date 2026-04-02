@@ -22,6 +22,7 @@ import com.fishrework.registry.RecipeRegistry;
 import com.fishrework.registry.ArtifactRegistry;
 import com.fishrework.skill.SkillManager;
 import com.fishrework.storage.DatabaseManager;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -263,13 +264,16 @@ public class FishRework extends JavaPlugin {
         if (!value) return false;
 
         // Dependency rules
-        if (featureKey.equals("shop_enabled") && !getConfig().getBoolean("features.economy_enabled", true)) {
+        if (featureKey.equals(FeatureKeys.SHOP_ENABLED)
+            && !getConfig().getBoolean("features." + FeatureKeys.ECONOMY_ENABLED, true)) {
             return false;
         }
-        if (featureKey.equals("lava_bag") && !getConfig().getBoolean("features.fish_bag_enabled", true)) {
+        if (featureKey.equals(FeatureKeys.LAVA_BAG)
+            && !getConfig().getBoolean("features." + FeatureKeys.FISH_BAG_ENABLED, true)) {
             return false;
         }
-        if (featureKey.equals("heat_system_enabled") && !getConfig().getBoolean("features.lava_fishing_enabled", true)) {
+        if (featureKey.equals(FeatureKeys.HEAT_SYSTEM_ENABLED)
+            && !getConfig().getBoolean("features." + FeatureKeys.LAVA_FISHING_ENABLED, true)) {
             return false;
         }
 

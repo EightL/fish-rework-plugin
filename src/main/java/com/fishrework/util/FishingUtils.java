@@ -47,7 +47,7 @@ public class FishingUtils {
      * Broadcasts rare catches (Epic+) to the whole server if the feature is enabled.
      */
     public static void broadcastRareCatch(FishRework plugin, Player player, String mobName, Rarity rarity, boolean isLava) {
-        if (!plugin.isFeatureEnabled("catch_broadcast_enabled")) return;
+        if (!plugin.isFeatureEnabled(FeatureKeys.CATCH_BROADCAST_ENABLED)) return;
         if (rarity == null || rarity.ordinal() < Rarity.EPIC.ordinal()) return;
 
         TextColor color = rarity.getColor();
