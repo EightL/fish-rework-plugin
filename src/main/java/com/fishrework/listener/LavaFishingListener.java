@@ -281,7 +281,7 @@ public class LavaFishingListener implements Listener {
                                     Location hookLoc,
                                     LavaBaitContext baitContext,
                                     double heatSccBonus) {
-        return plugin.getMobManager().getMobToSpawn(
+        String mobId = plugin.getMobManager().getMobToSpawn(
                 player,
                 Skill.FISHING,
                 hookLoc,
@@ -290,6 +290,17 @@ public class LavaFishingListener implements Listener {
                 baitContext.targetMobIds,
                 baitContext.nativeBiomeGroups
         );
+
+        if (mobId == null) {
+            return null;
+        }
+
+        com.fishrework.model.CustomMob mob = plugin.getMobRegistry().get(mobId);
+        if (mob != null && mob.isTreasure() && !plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED)) {
+            return null;
+        }
+
+        return mobId;
     }
 
     private void handleLavaCatchOutcome(Player player,

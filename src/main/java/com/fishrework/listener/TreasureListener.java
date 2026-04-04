@@ -1,6 +1,7 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -32,6 +33,12 @@ public class TreasureListener implements Listener {
         ItemStack mainItem = event.getPlayer().getInventory().getItemInMainHand();
         boolean mainIsTreasure = isTreasure(mainItem);
 
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED) && mainIsTreasure) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage("Treasure chests are currently disabled on this server.");
+            return;
+        }
+
         if (mainIsTreasure) {
             // If main hand is treasure, cancel EVERYTHING to stop off-hand interaction
             event.setCancelled(true);
@@ -48,6 +55,11 @@ public class TreasureListener implements Listener {
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             ItemStack offItem = event.getItem();
             if (isTreasure(offItem)) {
+                if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED)) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage("Treasure chests are currently disabled on this server.");
+                    return;
+                }
                 event.setCancelled(true);
                 plugin.getTreasureManager().openTreasure(event.getPlayer(), offItem.clone());
                 offItem.subtract(1);

@@ -2,6 +2,7 @@ package com.fishrework.listener;
 
 import com.fishrework.FishRework;
 import com.fishrework.manager.TotemManager;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
@@ -39,6 +40,7 @@ public class TotemListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         ItemStack item = event.getItemInHand();
         if (item.getType() != Material.CONDUIT) return;
         if (!item.hasItemMeta()) return;
@@ -75,6 +77,7 @@ public class TotemListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         Entity clicked = event.getRightClicked();
         if (!plugin.getTotemManager().isTotemInteraction(clicked)) return;
 
@@ -87,6 +90,7 @@ public class TotemListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         Entity target = event.getEntity();
         if (!plugin.getTotemManager().isTotemInteraction(target)) return;
 
@@ -108,6 +112,7 @@ public class TotemListener implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         // Delay by 1 tick to ensure entities are fully loaded
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             Chunk chunk = event.getChunk();
@@ -119,6 +124,7 @@ public class TotemListener implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         plugin.getTotemManager().evictChunk(event.getChunk());
     }
 }

@@ -3,6 +3,7 @@ package com.fishrework.listener;
 import com.fishrework.FishRework;
 import com.fishrework.gui.LavaBagGUI;
 import com.fishrework.util.BagUtils;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class LavaBagListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.LAVA_BAG)) return;
         if (!event.getAction().isRightClick()) return;
 
         Player player = event.getPlayer();
@@ -46,6 +48,7 @@ public class LavaBagListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.LAVA_BAG)) return;
         ItemStack current = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
         boolean currentIsLavaBag = plugin.getItemManager().isLavaBag(current);

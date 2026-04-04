@@ -168,7 +168,7 @@ public class FishingListener implements Listener {
         if (!plugin.isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
             return null;
         }
-        return plugin.getMobManager().getMobToSpawn(
+        String mobId = plugin.getMobManager().getMobToSpawn(
                 player,
                 Skill.FISHING,
                 caughtItem.getLocation(),
@@ -177,6 +177,17 @@ public class FishingListener implements Listener {
                 baitContext.targetMobIds,
                 baitContext.nativeBiomeGroups
         );
+
+        if (mobId == null) {
+            return null;
+        }
+
+        com.fishrework.model.CustomMob mob = plugin.getMobRegistry().get(mobId);
+        if (mob != null && mob.isTreasure() && !plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED)) {
+            return null;
+        }
+
+        return mobId;
     }
 
     private MobCatchResult handleCustomMobCatch(Player player,

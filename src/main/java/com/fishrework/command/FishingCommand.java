@@ -97,6 +97,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
+        if (!player.hasPermission("fishrework.use")) {
+            player.sendMessage(Component.text("You don't have permission to use this command.").color(NamedTextColor.RED));
+            return true;
+        }
+
         if (args.length == 0) {
             new com.fishrework.gui.SkillDetailGUI(plugin, player, Skill.FISHING).open(player);
             return true;

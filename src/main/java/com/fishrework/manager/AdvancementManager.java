@@ -4,6 +4,7 @@ import com.fishrework.FishRework;
 import com.fishrework.model.CustomMob;
 import com.fishrework.model.Skill;
 import com.fishrework.registry.RecipeDefinition;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
@@ -109,6 +110,11 @@ public class AdvancementManager {
      * Syncs a player's advancements and recipe discoveries with their level.
      */
     public void syncAdvancements(Player player, int fishingLevel) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
+            plugin.getRecipeRegistry().syncRecipes(player);
+            return;
+        }
+
         grantAdvancement(player, ROOT_KEY);
 
         for (int level = 5; level <= 50; level += 5) {
@@ -134,6 +140,7 @@ public class AdvancementManager {
     }
 
     public void checkCatchAll(Player player) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return;
         if (hasAdvancement(player, CATCH_ALL_KEY)) return;
 
         com.fishrework.model.PlayerData data = plugin.getPlayerData(player.getUniqueId());
@@ -146,6 +153,9 @@ public class AdvancementManager {
     }
 
     public void loadAdvancements() {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
+            return;
+        }
         unloadAdvancements();
 
         // Root tab
@@ -348,6 +358,7 @@ public class AdvancementManager {
     // ── Grant / Check ─────────────────────────────────────────
 
     public void grantAdvancement(Player player, NamespacedKey key) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return;
         Advancement advancement = Bukkit.getAdvancement(key);
         if (advancement == null) {
             plugin.getLogger().warning("Advancement not found: " + key);
@@ -365,6 +376,7 @@ public class AdvancementManager {
     }
 
     public boolean hasAdvancement(Player player, NamespacedKey key) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return false;
         Advancement advancement = Bukkit.getAdvancement(key);
         if (advancement == null) return false;
         return player.getAdvancementProgress(advancement).isDone();

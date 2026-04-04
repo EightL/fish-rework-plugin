@@ -3,6 +3,7 @@ package com.fishrework.listener;
 import com.fishrework.FishRework;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -32,7 +33,11 @@ public class PlayerListener implements Listener {
                 // Sync advancements with current level
                 if (event.getPlayer().isOnline()) {
                     int fishingLevel = data.getLevel(Skill.FISHING);
-                    plugin.getAdvancementManager().syncAdvancements(event.getPlayer(), fishingLevel);
+                    if (plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
+                        plugin.getAdvancementManager().syncAdvancements(event.getPlayer(), fishingLevel);
+                    } else {
+                        plugin.getRecipeRegistry().syncRecipes(event.getPlayer());
+                    }
                 }
             });
         });

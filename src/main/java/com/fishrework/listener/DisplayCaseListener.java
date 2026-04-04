@@ -4,6 +4,7 @@ import com.fishrework.FishRework;
 import com.fishrework.gui.DisplayCaseCustomizeGUI;
 import com.fishrework.manager.DisplayCaseManager;
 import com.fishrework.manager.ItemManager;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,6 +31,7 @@ public class DisplayCaseListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) return;
         ItemStack handItem = event.getItemInHand();
         if (itemManager.isDisplayCase(handItem)) {
             // It's a display case!
@@ -41,6 +43,7 @@ public class DisplayCaseListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) return;
         Block block = event.getBlock();
         // Check if it's a display case
         if (displayCaseManager.isDisplayCaseBlock(block)) {
@@ -52,6 +55,7 @@ public class DisplayCaseListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
 
@@ -78,6 +82,7 @@ public class DisplayCaseListener implements Listener {
     }
     @EventHandler
     public void onBlockRedstone(org.bukkit.event.block.BlockRedstoneEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) return;
         if (event.getBlock().getType() == Material.IRON_TRAPDOOR) {
             if (displayCaseManager.isDisplayCaseBlock(event.getBlock())) {
                 event.setNewCurrent(event.getOldCurrent()); // Prevent change

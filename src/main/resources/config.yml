@@ -1,6 +1,9 @@
 # Fish Rework Configuration
 # Plugin: Fish Rework v1.0.0
 
+# Increment this only when making backwards-incompatible config changes.
+config_version: 2
+
 # Fishing XP Values
 fishing:
   xp:
@@ -39,6 +42,11 @@ messages:
 # Global settings
 general:
   xp_multiplier: 1.2   # Multiplies all normal earned XP (40% lower than 2.0 baseline)
+
+# Datapack extraction settings
+datapack:
+  name: "fishrework_fishing"
+  write_legacy_alias: false
 
 # Fishing tip notifications (shown only to players who recently fished)
 fishing_tips:
@@ -793,6 +801,7 @@ features:
   display_case_enabled: true     # Display case furniture
   treasure_totem_enabled: true   # Treasure Totem placeable item
   fish_bag_enabled: true         # Fish Bag storage (also controls lava_bag)
+  lava_bag_enabled: true         # Magma Satchel UI/opening (requires fish_bag_enabled)
 
   # Visual / QOL
   damage_indicators_enabled: true    # Floating damage numbers

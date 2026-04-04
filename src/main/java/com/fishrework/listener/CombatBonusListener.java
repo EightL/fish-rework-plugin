@@ -2,6 +2,7 @@ package com.fishrework.listener;
 
 import com.fishrework.FishRework;
 import com.fishrework.gui.StatHelper;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -60,7 +61,8 @@ public class CombatBonusListener implements Listener {
 
     public CombatBonusListener(FishRework plugin) {
         this.plugin = plugin;
-        this.damageIndicatorsEnabled = plugin.getConfig().getBoolean("combat.damage_indicator_enabled", true);
+        this.damageIndicatorsEnabled = plugin.isFeatureEnabled(FeatureKeys.DAMAGE_INDICATORS_ENABLED)
+            && plugin.getConfig().getBoolean("combat.damage_indicator_enabled", true);
         this.heatMarkUntilKey = new NamespacedKey(plugin, "blaze_fisher_heat_mark_until");
         this.emberVolleyProjectileKey = new NamespacedKey(plugin, "ember_volley_projectile");
         this.wailingToxicProjectileKey = new NamespacedKey(plugin, "wailing_toxic_projectile");

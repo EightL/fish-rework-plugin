@@ -1,5 +1,5 @@
 name: FishRework
-version: 1.0.0
+version: ${version}
 main: com.fishrework.FishRework
 api-version: '1.21'
 authors: [Fish Rework]
@@ -12,6 +12,8 @@ commands:
     description: Opens the fishing menu
     usage: /fishing [subcommand]
     aliases: [fish, fs]
+    permission: fishrework.use
+    permission-message: You do not have permission to use this command.
 
 permissions:
   fishrework.use:

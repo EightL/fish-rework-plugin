@@ -10,7 +10,7 @@ import java.util.Map;
  * Each group can have its own fishing profile that modifies spawn weights.
  * <p>
  * Supports vanilla biomes via the {@link Biome} enum AND custom datapack biomes
- * (Terralith, Tectonic) via string-based namespaced key lookup.
+ * (Terralith, Tectonic, Incendium) via string-based namespaced key lookup.
  */
 public enum BiomeGroup {
     COLD_OCEAN,
@@ -298,6 +298,18 @@ public enum BiomeGroup {
         mapKey("terralith:cave/thermal_caves", LUSH_CAVES);
         mapKey("terralith:cave/tuff_caves", LUSH_CAVES);
         mapKey("terralith:cave/underground_jungle", JUNGLE);
+
+        // ══════════════════════════════════════════════════════════
+        //  Incendium — Nether biome fallbacks
+        // ══════════════════════════════════════════════════════════
+        mapKey("incendium:ash_barrens", NETHER_WASTES);
+        mapKey("incendium:infernal_dunes", NETHER_WASTES);
+        mapKey("incendium:inverted_forest", WARPED_FOREST);
+        mapKey("incendium:quartz_flats", NETHER_WASTES);
+        mapKey("incendium:toxic_heap", BASALT_DELTAS);
+        mapKey("incendium:volcanic_deltas", BASALT_DELTAS);
+        mapKey("incendium:weeping_valley", SOUL_SAND_VALLEY);
+        mapKey("incendium:withered_forest", SOUL_SAND_VALLEY);
     }
 
     private static void map(Biome biome, BiomeGroup group) {

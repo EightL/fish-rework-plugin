@@ -2,6 +2,7 @@ package com.fishrework.listener;
 
 import com.fishrework.FishRework;
 import com.fishrework.registry.RecipeDefinition;
+import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,6 +24,8 @@ public class AdvancementListener implements Listener {
 
     @EventHandler
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return;
+
         // Sync recipes whenever ANY advancement is completed
         // This handles vanilla commands, manual grants, and normal progression
         plugin.getRecipeRegistry().syncRecipes(event.getPlayer());

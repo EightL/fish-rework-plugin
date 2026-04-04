@@ -5,6 +5,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 final class YamlLoaderSupport {
 
@@ -16,7 +20,34 @@ final class YamlLoaderSupport {
         if (!file.exists()) {
             plugin.saveResource(fileName, false);
         }
-        return YamlConfiguration.loadConfiguration(file);
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        try (InputStream in = plugin.getResource(fileName)) {
+            if (in != null) {
+                YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(in, StandardCharsets.UTF_8));
+                if (copyMissingPaths(config, defaults)) {
+                    config.save(file);
+                    plugin.getLogger().info("Added missing defaults to " + fileName + ".");
+                }
+            }
+        } catch (IOException e) {
+            plugin.getLogger().warning("Failed to update defaults for " + fileName + ": " + e.getMessage());
+        }
+        return config;
+    }
+
+    private static boolean copyMissingPaths(YamlConfiguration target, YamlConfiguration defaults) {
+        boolean changed = false;
+        for (String path : defaults.getKeys(true)) {
+            if (defaults.isConfigurationSection(path)) {
+                continue;
+            }
+            if (!target.contains(path)) {
+                target.set(path, defaults.get(path));
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     static ConfigurationSection requireSection(FishRework plugin, YamlConfiguration yaml,

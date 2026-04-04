@@ -33,14 +33,24 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FishRework extends JavaPlugin {
 
+    private static final int CURRENT_CONFIG_VERSION = 2;
+    private static final Set<String> KNOWN_FISHING_PLUGIN_NAMES = Set.of(
+        "evenmorefish",
+        "pyrofishingpro",
+        "customfishing",
+        "fishingplus",
+        "fishing"
+    );
     private static FishRework instance;
 
     // Core systems
@@ -80,6 +90,7 @@ public class FishRework extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        ensureConfigDefaults();
         extractFishingEnchantDatapack();
 
         // ── 1. Core systems (order matters) ──
@@ -109,7 +120,11 @@ public class FishRework extends JavaPlugin {
         new YamlMobLoader(this).load(mobRegistry, itemManager, treasureManager);
         new YamlBiomeLoader(this).load(biomeFishingRegistry);
         new YamlArtifactLoader(this).load(artifactRegistry);
-        new com.fishrework.loader.YamlRecipeLoader(this).load(itemManager);
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_RECIPES_ENABLED)) {
+            new com.fishrework.loader.YamlRecipeLoader(this).load(itemManager);
+        } else {
+            getLogger().info("[Fish Rework] Custom recipes are disabled via features.custom_recipes_enabled.");
+        }
 
         // Load bait definitions and register bait items
         baitRegistry = new com.fishrework.registry.BaitRegistry();
@@ -131,47 +146,75 @@ public class FishRework extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new MobListener(this), this);
         getServer().getPluginManager().registerEvents(new FishBucketListener(this), this);
-        getServer().getPluginManager().registerEvents(new CraftingListener(this), this);
-        getServer().getPluginManager().registerEvents(new AdvancementListener(this), this);
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_RECIPES_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new CraftingListener(this), this);
+        }
+        if (isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new AdvancementListener(this), this);
+        }
         getServer().getPluginManager().registerEvents(new EnchantmentListener(this), this);
         getServer().getPluginManager().registerEvents(new HephaesteanTridentListener(this), this);
         getServer().getPluginManager().registerEvents(new FishHookLureListener(this), this);
         getServer().getPluginManager().registerEvents(new LoreUpdateListener(this), this);
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.TreasureListener(this), this);
-        getServer().getPluginManager().registerEvents(new com.fishrework.listener.TotemListener(this), this);
-        getServer().getPluginManager().registerEvents(new com.fishrework.listener.DisplayCaseListener(this), this);
+        if (isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new com.fishrework.listener.TotemListener(this), this);
+        }
+        if (isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new com.fishrework.listener.DisplayCaseListener(this), this);
+        }
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.NetheriteRelicListener(this), this);
         getServer().getPluginManager().registerEvents(new FishingJournalListener(this), this);
         getServer().getPluginManager().registerEvents(new CombatBonusListener(this), this);
         getServer().getPluginManager().registerEvents(new PiglinCrownListener(this), this);
         getServer().getPluginManager().registerEvents(new WeaponAoEListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
-        getServer().getPluginManager().registerEvents(new com.fishrework.listener.FishBagListener(this), this);
-        getServer().getPluginManager().registerEvents(new com.fishrework.listener.LavaBagListener(this), this);
+        if (isFeatureEnabled(FeatureKeys.FISH_BAG_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new com.fishrework.listener.FishBagListener(this), this);
+        }
+        if (isFeatureEnabled(FeatureKeys.LAVA_BAG)) {
+            getServer().getPluginManager().registerEvents(new com.fishrework.listener.LavaBagListener(this), this);
+        }
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.CoolingItemListener(this), this);
-        lavaFishingListener = new LavaFishingListener(this);
-        getServer().getPluginManager().registerEvents(lavaFishingListener, this);
+        if (isFeatureEnabled(FeatureKeys.LAVA_FISHING_ENABLED)) {
+            lavaFishingListener = new LavaFishingListener(this);
+            getServer().getPluginManager().registerEvents(lavaFishingListener, this);
+        }
         getServer().getPluginManager().registerEvents(new AnvilProtectionListener(this), this);
 
-        lavaRingManager.start();
+        if (isFeatureEnabled(FeatureKeys.LAVA_FISHING_ENABLED)) {
+            lavaRingManager.start();
+        }
 
         // ── 5b. Start TotemManager tick task ──
-        totemManager.start();
+        if (isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) {
+            totemManager.start();
+        }
 
         // ── 5c. Start HeatManager passive decay task ──
-        getServer().getScheduler().runTaskTimer(this, () -> heatManager.processPassiveDecay(), 20L, 20L); // check every second
+        if (isFeatureEnabled(FeatureKeys.HEAT_SYSTEM_ENABLED)) {
+            getServer().getScheduler().runTaskTimer(this, () -> heatManager.processPassiveDecay(), 20L, 20L); // check every second
+        }
 
         // ── 5d. Start AggroTask — re-targets hostile fished mobs 4x per second ──
-        getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.AggroTask(this), 5L, 5L);
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
+            getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.AggroTask(this), 5L, 5L);
+        }
 
         // ── 5e. Start BossAbilityTask — executes YAML-defined mob abilities every second ──
-        getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.BossAbilityTask(this), 20L, 20L);
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
+            getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.BossAbilityTask(this), 20L, 20L);
+        }
 
         // ── 6. Advancements ──
-        getServer().getScheduler().runTask(this, () -> advancementManager.loadAdvancements());
+        if (isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
+            getServer().getScheduler().runTask(this, () -> advancementManager.loadAdvancements());
+        }
 
         // ── 7. Commands ──
-        getCommand("fishing").setExecutor(new FishingCommand(this));
+        FishingCommand fishingCommand = new FishingCommand(this);
+        getCommand("fishing").setExecutor(fishingCommand);
+        getCommand("fishing").setTabCompleter(fishingCommand);
 
         // ── 7b. Fishing tip notifications ──
         loadFishingTipsFromConfig();
@@ -196,6 +239,7 @@ public class FishRework extends JavaPlugin {
             getLogger().warning(" (skills.yml → fishing → enabled: false)");
             getLogger().warning("═══════════════════════════════════════════════════════");
         }
+        warnPotentialFishingPluginConflicts();
 
         getLogger().info("[Fish Rework] Enabled v" + getDescription().getVersion() + "!");
     }
@@ -213,6 +257,40 @@ public class FishRework extends JavaPlugin {
         if (databaseManager != null) databaseManager.close();
         getLogger().info("[Fish Rework] Disabled.");
     }
+
+    private void ensureConfigDefaults() {
+        getConfig().options().copyDefaults(true);
+        int existingVersion = getConfig().getInt("config_version", 0);
+        if (existingVersion < CURRENT_CONFIG_VERSION) {
+            getConfig().set("config_version", CURRENT_CONFIG_VERSION);
+            saveConfig();
+            getLogger().info("[Fish Rework] Updated config schema to version " + CURRENT_CONFIG_VERSION + ".");
+        }
+    }
+
+    private void warnPotentialFishingPluginConflicts() {
+        List<String> detected = new ArrayList<>();
+        for (org.bukkit.plugin.Plugin plugin : getServer().getPluginManager().getPlugins()) {
+            String pluginName = plugin.getName();
+            if (pluginName.equalsIgnoreCase(getName())) continue;
+
+            String normalized = pluginName.toLowerCase();
+            if (KNOWN_FISHING_PLUGIN_NAMES.contains(normalized) || normalized.contains("fishing")) {
+                detected.add(pluginName);
+            }
+        }
+
+        if (detected.isEmpty()) {
+            return;
+        }
+
+        getLogger().warning("═══════════════════════════════════════════════════════");
+        getLogger().warning(" Possible fishing-plugin overlap detected: " + String.join(", ", detected));
+        getLogger().warning(" Fish Rework is experimentally incompatible with other");
+        getLogger().warning(" fishing plugins. Use together at your own risk.");
+        getLogger().warning("═══════════════════════════════════════════════════════");
+    }
+
     private void extractFishingEnchantDatapack() {
         // Find the overworld by environment type rather than assuming index 0
         org.bukkit.World w = null;
@@ -233,7 +311,18 @@ public class FishRework extends JavaPlugin {
             "data/fishrework/enchantment/sea_creature_chance.json",
             "data/fishrework/enchantment/shotgun_volley.json");
 
-        List<String> datapackNames = List.of("fishrework_fishing", "hybesskills_fishing");
+        Set<String> datapackNames = new HashSet<>();
+        String configuredDatapackName = getConfig().getString("datapack.name", "fishrework_fishing");
+        if (configuredDatapackName != null && !configuredDatapackName.isBlank()) {
+            datapackNames.add(configuredDatapackName.trim());
+        }
+        if (getConfig().getBoolean("datapack.write_legacy_alias", false)) {
+            datapackNames.add("hybesskills_fishing");
+        }
+        if (datapackNames.isEmpty()) {
+            datapackNames.add("fishrework_fishing");
+        }
+
         for (String datapackName : datapackNames) {
             Path datapacksDir = w.getWorldFolder().toPath().resolve("datapacks").resolve(datapackName);
             for (String p : paths) {
@@ -276,6 +365,10 @@ public class FishRework extends JavaPlugin {
             && !getConfig().getBoolean("features." + FeatureKeys.LAVA_FISHING_ENABLED, true)) {
             return false;
         }
+        if (featureKey.equals(FeatureKeys.RECIPE_BROWSER_ENABLED)
+            && !getConfig().getBoolean("features." + FeatureKeys.CUSTOM_RECIPES_ENABLED, true)) {
+            return false;
+        }
 
         return true;
     }
@@ -286,6 +379,7 @@ public class FishRework extends JavaPlugin {
      */
     public void reload() {
         reloadConfig();
+        ensureConfigDefaults();
         loadFishingTipsFromConfig();
         getLogger().info("[Fish Rework] Configuration reloaded.");
     }
@@ -384,6 +478,7 @@ public class FishRework extends JavaPlugin {
     }
 
     private void startFishingTipsTask() {
+        if (!isFeatureEnabled(FeatureKeys.FISHING_TIPS_ENABLED)) return;
         if (!getConfig().getBoolean("fishing_tips.enabled", true)) return;
 
         long periodTicks = Math.max(20L, getConfig().getLong("fishing_tips.check_interval_seconds", 30L) * 20L);
