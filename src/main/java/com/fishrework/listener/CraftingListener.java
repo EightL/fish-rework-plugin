@@ -31,6 +31,13 @@ public class CraftingListener implements Listener {
         NamespacedKey recipeKey = ((Keyed) recipe).getKey();
         Player player = (Player) event.getView().getPlayer();
 
+        // Prevent vanilla crafting from consuming custom FishRework items
+        // (e.g. custom nether-star materials being used for a beacon).
+        if (isVanillaRecipe(recipeKey) && containsCustomItem(event.getInventory().getMatrix())) {
+            event.getInventory().setResult(null);
+            return;
+        }
+
         // Single check against the recipe registry (level/advancement gating)
         if (!plugin.getRecipeRegistry().canCraft(player, recipeKey)) {
             event.getInventory().setResult(null);
@@ -55,6 +62,22 @@ public class CraftingListener implements Listener {
             || key.equals("trident_3_recipe") || key.equals("hephaestean_recipe")) {
             handleSpecialCraftResult(event, key);
         }
+    }
+
+    private boolean isVanillaRecipe(NamespacedKey recipeKey) {
+        return "minecraft".equals(recipeKey.getNamespace());
+    }
+
+    private boolean containsCustomItem(ItemStack[] matrix) {
+        for (ItemStack item : matrix) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            if (plugin.getItemManager().isCustomItem(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

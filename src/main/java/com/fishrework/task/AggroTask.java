@@ -56,6 +56,7 @@ public class AggroTask implements Runnable {
     public void run() {
         gameTick += TICKS_PER_RUN;
         MobManager mobManager = plugin.getMobManager();
+        plugin.getBossBarManager().cleanupMobBossBars();
         
         // Optimized iteration over active fished mobs only
         for (UUID uuid : mobManager.getActiveFishedMobs()) {
@@ -73,6 +74,8 @@ public class AggroTask implements Runnable {
 
             String mobId = pdc.get(mobManager.MOB_ID_KEY, PersistentDataType.STRING);
             if (mobId == null) continue;
+
+                plugin.getBossBarManager().updateMobBossBar(mob, mobId);
 
             boolean hasPassiveAggro = pdc.has(mobManager.AGGRO_SPEED_KEY, PersistentDataType.DOUBLE)
                     && pdc.has(mobManager.AGGRO_DAMAGE_KEY, PersistentDataType.DOUBLE)

@@ -491,6 +491,23 @@ public class SkillDetailGUI extends BaseGUI {
             ));
             recipeBrowserBtn.setItemMeta(recipeMeta);
             inventory.setItem(49, recipeBrowserBtn);
+
+                ItemStack specialCraftingBtn = new ItemStack(Material.CRAFTING_TABLE);
+                ItemMeta specialCraftingMeta = specialCraftingBtn.getItemMeta();
+                specialCraftingMeta.displayName(Component.text("Special Crafting").color(NamedTextColor.GREEN)
+                    .decoration(TextDecoration.ITALIC, false));
+                specialCraftingMeta.lore(List.of(
+                    Component.empty(),
+                    Component.text("Open a manual 3x3 crafting grid").color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false),
+                    Component.text("for Fish Rework recipes.").color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false),
+                    Component.empty(),
+                    Component.text("Click to open").color(NamedTextColor.GREEN)
+                        .decoration(TextDecoration.ITALIC, false)
+                ));
+                specialCraftingBtn.setItemMeta(specialCraftingMeta);
+                inventory.setItem(51, specialCraftingBtn);
         }
 
         // Back button removed as this is now the main view
@@ -560,6 +577,14 @@ public class SkillDetailGUI extends BaseGUI {
                         gui.initializeItems();
                         gui.open(reopenedPlayer);
                     }).open(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+        } else if (event.getSlot() == 51 && skill == Skill.FISHING) {
+            new SpecialCraftingGUI(plugin, player, reopenedPlayer -> {
+                SkillDetailGUI gui = new SkillDetailGUI(plugin, reopenedPlayer, skill);
+                gui.page = this.page;
+                gui.initializeItems();
+                gui.open(reopenedPlayer);
+            }).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         // Back button handler removed
         } else if (event.getSlot() == 45 && page > 0) {

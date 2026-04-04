@@ -98,11 +98,15 @@ public class MobListener implements Listener {
         LivingEntity entity = event.getEntity();
         if (!plugin.getMobManager().isFishedMob(entity)) return;
 
+        plugin.getMobManager().removeActiveMob(entity.getUniqueId());
+        plugin.getBossBarManager().removeMobBossBar(entity.getUniqueId());
         plugin.getMobManager().removeGlowColorEntry(entity.getUniqueId());
 
         if (plugin.getMobManager().hasSharedMountedHp(entity)) {
             LivingEntity sibling = findSharedMountedSibling(entity);
             if (sibling != null && sibling.isValid() && !sibling.isDead()) {
+                plugin.getMobManager().removeActiveMob(sibling.getUniqueId());
+                plugin.getBossBarManager().removeMobBossBar(sibling.getUniqueId());
                 sibling.remove();
             }
         }
@@ -343,8 +347,15 @@ public class MobListener implements Listener {
             if (mobId.equals(otherMobId)) {
                 // Also remove any passengers (e.g. pillager on ravager)
                 for (org.bukkit.entity.Entity passenger : nearby.getPassengers()) {
+                    if (passenger instanceof LivingEntity passengerLiving
+                            && plugin.getMobManager().isFishedMob(passengerLiving)) {
+                        plugin.getMobManager().removeActiveMob(passengerLiving.getUniqueId());
+                        plugin.getBossBarManager().removeMobBossBar(passengerLiving.getUniqueId());
+                    }
                     passenger.remove();
                 }
+                plugin.getMobManager().removeActiveMob(living.getUniqueId());
+                plugin.getBossBarManager().removeMobBossBar(living.getUniqueId());
                 nearby.remove();
             }
         }

@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +36,13 @@ public abstract class BaseGUI implements InventoryHolder {
     }
 
     public abstract void onClick(InventoryClickEvent event);
+
+    /**
+     * Optional drag handler for GUIs that allow item movement.
+     */
+    public void onDrag(InventoryDragEvent event) {
+        // Default implementation does nothing
+    }
 
     /**
      * Whether this GUI intentionally handles clicks from the player's own inventory

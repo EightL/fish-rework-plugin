@@ -51,8 +51,8 @@ fishing_tips:
   tips:
     - "Use /fish or /fishing to open your fishing progression GUI."
     - "Use /fish help to list all available commands."
-    - "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}"
-    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: {wiki}"
+    - "Visit the wiki for recipes, exact sea creature info, and custom item details: https://fish-rework.vercel.app"
+    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: https://fish-rework.vercel.app"
     - "Use /fish bag to store catches and keep your inventory clean."
     - "Use /fish autosell to auto-sell common fish while you grind."
     - "Use /fish notifications to toggle these tip notifications."

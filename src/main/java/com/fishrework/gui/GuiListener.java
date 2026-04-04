@@ -3,6 +3,7 @@ package com.fishrework.gui;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 public class GuiListener implements Listener {
 
@@ -32,6 +33,17 @@ public class GuiListener implements Listener {
         if (event.getInventory().getHolder() instanceof BaseGUI) {
             BaseGUI gui = (BaseGUI) event.getInventory().getHolder();
             gui.onClose(event);
+        }
+    }
+
+    @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        if (event.getInventory().getHolder() instanceof BaseGUI gui) {
+            if (!gui.handlesPlayerInventoryClicks()) {
+                event.setCancelled(true);
+                return;
+            }
+            gui.onDrag(event);
         }
     }
 }
