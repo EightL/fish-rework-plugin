@@ -1,0 +1,174 @@
+FISH REWORK
+===========
+
+Fish Rework redesigns fishing by letting players fish up sea creatures instead of normal fish items.
+
+Core content at a glance:
+- Fishing Skill progression system
+- 90+ creatures
+- 120+ custom items
+- 80+ crafting recipes
+- Lava fishing system
+- Treasure chests with collectible artifacts
+- Fishing GUI systems (shop, encyclopedia, progression views, and more)
+
+
+HOW IT WORKS
+------------
+
+Start with /fish to open the fishing GUI, then fish to progress.
+
+As players level Fishing, they gain additive bonuses and unlock creature pools, recipes, and new progression steps.
+
+TIP 1:
+Progression is partly biome-based, but players can use biome baits from /fs shop instead of traveling immediately.
+Put bait in off-hand while fishing.
+
+TIP 2:
+Use /fs chances to see the creature pool and catch weights for the current biome.
+
+
+FEATURES
+--------
+
+Fishing progression:
+- 50 levels with a scaling XP curve
+- Per-level bonuses to catch speed, treasure chance, and XP multiplier
+- Level gates on gear, recipes, and shop access
+- Double catch mechanic that scales with level
+
+Sea creatures:
+- 90+ custom mobs across 6 rarity tiers
+- Biome-specific spawn pools (including ocean, river, jungle, and Nether)
+- 30+ custom mob abilities (volley, AoE, tether, charge, etc.)
+
+Lava fishing:
+- Separate system unlocked at level 27 (custom rods required)
+- Heat system: catches build heat, high heat applies debuffs
+- Heat tiers grant extra Sea Creature Chance bonuses
+- Dedicated Nether creature pool
+
+Gear and crafting:
+- 120+ custom items (rods, armor sets, crafting materials)
+- Custom recipes gated by fishing level and progression
+- Upgrade GUI for Sea Creature Attack/Defense bonuses
+- Custom enchantment flow and higher fishing enchant caps via upgrade path
+
+Economy:
+- Custom currency (Doubloons)
+- Sell shop and buy shop flows
+- Optional auto-sell for common catches
+
+Collection and storage:
+- Treasure chest catch chance with rarity-based loot
+- 20 collectible artifacts
+- Fishing encyclopedia tracking catches
+- Fish Bags for automatic drop storage
+- Display cases for showcasing items
+
+GUI systems:
+- Skills menu
+- Recipe browser
+- Artifact collection
+- Fishing shop and vendor
+- Upgrade GUI (unlocks at level 20)
+
+Additional systems:
+- 12 bait types (chance, XP, treasure, heat, biome variants)
+- Custom advancement tree
+- Toggleable fishing tips
+- Floating damage indicators
+- Server-wide rare catch broadcasts
+- Fishing journal
+
+Nearly everything is tunable in YAML configs.
+
+
+REQUIREMENTS
+------------
+
+Server software: Paper 26.1.1+
+Java: 25
+Hard dependencies: None
+
+
+INSTALLATION
+------------
+
+1. Drop the jar into your /plugins folder.
+2. Start the server once to generate configs.
+3. Tune config.yml, mobs.yml, items.yml, and related files.
+
+
+USEFUL COMMANDS
+---------------
+
+All commands work under /fishing, /fish, or /fs.
+
+/fish               - Open the skills menu
+/fish chances       - Show current-biome creature chances
+/fish shop          - Open buy/sell shop
+/fish recipe        - Open recipe browser
+/fish encyclopedia  - Show caught creature collection
+/fish artifacts     - Show artifact collection
+/fish heat          - Show lava heat level
+/fish autosell      - Toggle common-catch autosell
+/fish notifications - Toggle fishing tips
+/fish particles     - Reduce particle intensity
+/fish dmgindicator  - Toggle damage indicators
+/fish help          - Show full command help
+
+Admin commands (requires fishrework.admin):
+
+/fish addxp         - Add fishing XP
+/fish give          - Give custom item
+/fish spawn         - Spawn specific sea creature
+/fish reset         - Reset fishing progression
+/fish setcoins      - Set Doubloon balance
+/fish setheat       - Set heat level
+/fish setchance     - Set specific creature chance weight
+/fish resetchances  - Reset creature chance pool
+/fish xpmultiplier  - Set XP multiplier
+/fish fulfill       - Fulfill progression/collection entries
+/fish reload        - Reload config without restart
+
+
+CONFIGURATION
+-------------
+
+Config is split across:
+- config.yml
+- mobs.yml
+- items.yml
+- biomes.yml
+- recipes.yml
+- artifacts.yml
+
+Individual systems (economy, lava fishing, mobs, advancements, etc.) can be toggled independently.
+
+Wiki: https://fish-rework.vercel.app
+
+
+COMPATIBILITY
+-------------
+
+- Compatible with Terralith, Tectonic, and Incendium biome setups
+- AuraSkills requires Fishing skill disabled:
+  plugins/AuraSkills/skills.yml -> fishing -> enabled: false
+- Running with other fishing plugins is experimental and unsupported
+
+
+BALANCE DISCLAIMER
+------------------
+
+This plugin has not been heavily playtested.
+Drop rates, economy values, and mob difficulty are starting values and likely need tuning.
+Feedback is welcome.
+
+
+FEEDBACK AND SUPPORT
+--------------------
+
+Bug reports, balance feedback, and suggestions are welcome.
+
+Discord: https://discord.gg/d8pZUe5TbP

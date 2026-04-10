@@ -14,6 +14,7 @@ It is not affiliated with, endorsed by, or connected to Hypixel or Hypixel SkyBl
 
 - Paper `26.1.1`
 - Java `25`
+- Internet access on first startup (Paper downloads declared runtime libraries)
 
 ## Install
 

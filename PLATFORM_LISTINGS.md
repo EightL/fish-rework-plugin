@@ -160,10 +160,4 @@ Wiki: **[fish-rework.vercel.app](https://fish-rework.vercel.app)**
 
 Bug reports, balance feedback, and suggestions are all welcome.
 
-Discord: **[discord.gg/axZRQ5Sy](https://discord.gg/axZRQ5Sy)**
-
-GitHub issues are also open if you prefer that.
-
----
-
-*GitHub Repo: SOON*
+Discord: **[discord.gg/axZRQ5Sy](https://discord.gg/d8pZUe5TbP)**

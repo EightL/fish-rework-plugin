@@ -1,6 +1,5 @@
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.fish-rework"
@@ -18,7 +17,8 @@ dependencies {
     // Paper API target for 26.1.1
     compileOnly("io.papermc.paper:paper-api:26.1.1.build.29-alpha")
 
-    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    // Loaded by Paper through plugin.yml libraries at runtime.
+    compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
 java {
@@ -33,11 +33,5 @@ tasks {
     }
     withType<org.gradle.api.tasks.compile.JavaCompile>().configureEach {
         options.release.set(25)
-    }
-    shadowJar {
-        archiveClassifier.set("")
-    }
-    build {
-        dependsOn(shadowJar)
     }
 }

@@ -6,6 +6,8 @@ authors: [Fish Rework]
 description: A custom fishing rework plugin for Paper servers.
 website: https://github.com/EightL/fish-rework
 softdepend: [AuraSkills]
+libraries:
+  - org.xerial:sqlite-jdbc:3.46.0.0
 
 commands:
   fishing:
