@@ -127,7 +127,9 @@ public class FishingListener implements Listener {
         List<String> baitTargetMobIds = java.util.Collections.emptyList();
 
         ItemStack offhand = player.getInventory().getItemInOffHand();
-        if (plugin.isFeatureEnabled(FeatureKeys.BAIT_SYSTEM_ENABLED) && plugin.getItemManager().isBait(offhand)) {
+        if (plugin.isFeatureEnabled(FeatureKeys.BAIT_SYSTEM_ENABLED)
+            && plugin.getItemManager().isBait(offhand)
+            && plugin.getItemManager().isBaitApplicableForWater(offhand)) {
             baitTargetMobIds = plugin.getItemManager().getBaitTargetMobIds(offhand);
             baitNativeBiomeGroups = new java.util.ArrayList<>(plugin.getItemManager().getBaitNativeBiomeGroups(offhand));
             String baitId = plugin.getItemManager().getBaitId(offhand);

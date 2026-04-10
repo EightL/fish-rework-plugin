@@ -524,7 +524,7 @@ armor_sets:
         display_name: "Hyena Pants"
         armor: 6
         toughness: 2
-        durability: 495
+        durability: 650
         trim_material: netherite
         trim_pattern: eye
 
@@ -542,6 +542,7 @@ armor_sets:
         display_name: "Piglin Crown"
         armor: 4
         toughness: 3
+        durability: 500
 
   # ── Magma Scale Armor ─────────────────────────────────────
   # +3.0 SCC, +3.0 SCD, +3.0 SCA per piece
@@ -783,6 +784,7 @@ weapons:
     material: TRIDENT
     display_name: "Novice Trident"
     rarity: UNCOMMON
+    durability: 1200
     lore:
       - text: "A starter trident for early sea hunting."
         color: DARK_GRAY
@@ -795,6 +797,7 @@ weapons:
     material: TRIDENT
     display_name: "Adept Trident"
     rarity: RARE
+    durability: 1600
     lore:
       - text: "A sharper trident favored by experienced anglers."
         color: DARK_GRAY
@@ -807,6 +810,7 @@ weapons:
     material: TRIDENT
     display_name: "Prismarine Harpoon"
     rarity: RARE
+    durability: 1200
     lore:
       - text: "A reinforced harpoon for hunting sea beasts."
         color: DARK_GRAY
@@ -820,6 +824,7 @@ weapons:
     material: TRIDENT
     display_name: "Tidesplitter"
     rarity: EPIC
+    durability: 1600
     lore:
       - text: "Splits the waves and pierces the toughest scales."
     enchantments:
@@ -832,6 +837,7 @@ weapons:
     material: TRIDENT
     display_name: "Dreadspear"
     rarity: LEGENDARY
+    durability: 2000
     lore:
       - text: "Forged with the souls of the deep."
     enchantments:
@@ -845,6 +851,7 @@ weapons:
     display_name: "Poseidon's Trident"
     rarity: LEGENDARY
     name_color: GOLD
+    durability: 2500
     lore:
       - text: "The legendary weapon of the sea god."
         color: DARK_GRAY
@@ -861,6 +868,7 @@ weapons:
     display_name: "Hephaestean Poseidon's Trident"
     rarity: MYTHIC
     pdc_key: hephaesteantrident
+    durability: 3200
     lore:
       - text: "Forged by Hephaestus himself"
         color: DARK_GRAY
@@ -1027,6 +1035,7 @@ weapons:
     display_name: "Megalodon Tooth"
     rarity: SPECIAL
     pdc_key: megalodon_tooth
+    durability: 1200
     lore:
       - text: "A jagged relic carved from an apex hunter fang."
         color: DARK_GRAY

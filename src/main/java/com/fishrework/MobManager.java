@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -70,6 +71,8 @@ public class MobManager {
     // Shared HP tag for sea-mounted pairs
     public final NamespacedKey SHARED_MOUNTED_HP_KEY;
 
+    private final Set<NamespacedKey> netherArmorSetKeys;
+
     public MobManager(FishRework plugin) {
         this.plugin = plugin;
         this.FISHED_MOB_KEY = new NamespacedKey(plugin, "fished_mob");
@@ -85,6 +88,11 @@ public class MobManager {
         this.GROUP_KILL_ALL_KEY = new NamespacedKey(plugin, "group_kill_all");
         this.GROUP_UUID_KEY = new NamespacedKey(plugin, "group_uuid");
         this.SHARED_MOUNTED_HP_KEY = new NamespacedKey(plugin, "shared_mounted_hp");
+        this.netherArmorSetKeys = Set.of(
+            new NamespacedKey(plugin, "magma_scale_armor"),
+            new NamespacedKey(plugin, "infernal_plate_armor"),
+            new NamespacedKey(plugin, "volcanic_dreadplate_armor")
+        );
     }
 
     // Tracking active fished mobs for optimized iteration
@@ -1476,12 +1484,7 @@ public class MobManager {
     public double getEquipmentBonus(Player player, org.bukkit.NamespacedKey key) {
         double bonus = 0;
         for (ItemStack armorItem : player.getInventory().getArmorContents()) {
-            if (armorItem != null && armorItem.hasItemMeta()) {
-                org.bukkit.persistence.PersistentDataContainer pdc = armorItem.getItemMeta().getPersistentDataContainer();
-                if (pdc.has(key, org.bukkit.persistence.PersistentDataType.DOUBLE)) {
-                    bonus += pdc.get(key, org.bukkit.persistence.PersistentDataType.DOUBLE);
-                }
-            }
+            bonus += getScaledArmorBonus(player, armorItem, key);
         }
 
         ItemStack mainHand = player.getInventory().getItemInMainHand();
@@ -1523,6 +1526,7 @@ public class MobManager {
             if (bonus > 0 && isNight && pdc.has(deadmanKey, PersistentDataType.BYTE)) {
                 bonus *= plugin.getConfig().getDouble("item_balance.deadman_armor_night_multiplier", 2.0);
             }
+            bonus *= getNetherArmorWorldMultiplier(player, pdc);
             total += bonus;
         }
         
@@ -1563,7 +1567,7 @@ public class MobManager {
         // Equipment treasure chance bonus (from Treasure armor sets)
         NamespacedKey tcKey = plugin.getItemManager().TREASURE_CHANCE_BONUS_KEY;
         for (ItemStack armor : player.getInventory().getArmorContents()) {
-            total += getItemBonus(armor, tcKey);
+            total += getScaledArmorBonus(player, armor, tcKey);
         }
 
         // Luck of the Sea enchantment on the fishing rod
@@ -1597,7 +1601,7 @@ public class MobManager {
         double total = 0.0;
         NamespacedKey xpKey = plugin.getItemManager().FISHING_XP_BONUS_KEY;
         for (ItemStack armor : player.getInventory().getArmorContents()) {
-            total += getItemBonus(armor, xpKey);
+            total += getScaledArmorBonus(player, armor, xpKey);
         }
         return total;
     }
@@ -1621,6 +1625,7 @@ public class MobManager {
             if (bonus > 0 && isNight && pdc.has(deadmanKey, PersistentDataType.BYTE)) {
                 bonus *= plugin.getConfig().getDouble("item_balance.deadman_armor_night_multiplier", 2.0);
             }
+            bonus *= getNetherArmorWorldMultiplier(player, pdc);
             total += bonus;
         }
         return total;
@@ -1647,6 +1652,7 @@ public class MobManager {
             if (bonus > 0 && isNight && pdc.has(deadmanKey, PersistentDataType.BYTE)) {
                 bonus *= plugin.getConfig().getDouble("item_balance.deadman_armor_night_multiplier", 2.0);
             }
+            bonus *= getNetherArmorWorldMultiplier(player, pdc);
             total += bonus;
         }
 
@@ -1670,7 +1676,7 @@ public class MobManager {
         double total = 0.0;
         NamespacedKey dcKey = plugin.getItemManager().DOUBLE_CATCH_BONUS_KEY;
         for (ItemStack armor : player.getInventory().getArmorContents()) {
-            total += getItemBonus(armor, dcKey);
+            total += getScaledArmorBonus(player, armor, dcKey);
         }
         return total;
     }
@@ -1695,6 +1701,30 @@ public class MobManager {
         long nightStart = plugin.getConfig().getLong("mob_balance.night_start_time", 13000);
         long nightEnd = plugin.getConfig().getLong("mob_balance.night_end_time", 23000);
         return time >= nightStart && time < nightEnd;
+    }
+
+    private double getScaledArmorBonus(Player player, ItemStack armorItem, NamespacedKey statKey) {
+        if (armorItem == null || !armorItem.hasItemMeta()) return 0.0;
+        PersistentDataContainer pdc = armorItem.getItemMeta().getPersistentDataContainer();
+        if (!pdc.has(statKey, PersistentDataType.DOUBLE)) return 0.0;
+        double bonus = pdc.get(statKey, PersistentDataType.DOUBLE);
+        return bonus * getNetherArmorWorldMultiplier(player, pdc);
+    }
+
+    private double getNetherArmorWorldMultiplier(Player player, PersistentDataContainer pdc) {
+        if (!isNetherArmorPiece(pdc)) {
+            return 1.0;
+        }
+        return player.getWorld().getEnvironment() == World.Environment.NETHER ? 1.0 : 0.5;
+    }
+
+    private boolean isNetherArmorPiece(PersistentDataContainer pdc) {
+        for (NamespacedKey setKey : netherArmorSetKeys) {
+            if (pdc.has(setKey, PersistentDataType.BYTE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ── PDC Helpers ───────────────────────────────────────────

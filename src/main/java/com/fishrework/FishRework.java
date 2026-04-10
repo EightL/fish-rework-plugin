@@ -23,8 +23,11 @@ import com.fishrework.registry.ArtifactRegistry;
 import com.fishrework.skill.SkillManager;
 import com.fishrework.storage.DatabaseManager;
 import com.fishrework.util.FeatureKeys;
+import com.fishrework.util.UpdateChecker;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
@@ -44,6 +47,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FishRework extends JavaPlugin {
 
     private static final int CURRENT_CONFIG_VERSION = 2;
+    private UpdateChecker updateChecker;
     private static final Set<String> KNOWN_FISHING_PLUGIN_NAMES = Set.of(
         "evenmorefish",
         "pyrofishingpro",
@@ -91,6 +95,14 @@ public class FishRework extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         ensureConfigDefaults();
+
+        // ── 0. Update checker (async — never blocks startup) ──
+        if (getConfig().getBoolean("update_checker.enabled", true)) {
+            String projectId = getConfig().getString("update_checker.modrinth_project_id", "");
+            updateChecker = new UpdateChecker(this, projectId);
+            updateChecker.checkAsync();
+        }
+
         extractFishingEnchantDatapack();
 
         // ── 1. Core systems (order matters) ──
@@ -259,12 +271,23 @@ public class FishRework extends JavaPlugin {
     }
 
     private void ensureConfigDefaults() {
+        int version = getConfig().getInt("config_version", 0);
+        boolean migrated = version < CURRENT_CONFIG_VERSION;
+
+        // ── Incremental migration steps ──
+        // Each block runs only for configs that haven't seen that version yet.
+        // copyDefaults(true) below handles keys that are simply new/added;
+        // these blocks handle renamed, restructured, or removed keys.
+
+        // v2 → v3 (future): add migration steps here before bumping CURRENT_CONFIG_VERSION.
+
+        // Fill in any keys present in the bundled default config but absent on disk.
         getConfig().options().copyDefaults(true);
-        int existingVersion = getConfig().getInt("config_version", 0);
-        if (existingVersion < CURRENT_CONFIG_VERSION) {
+
+        if (migrated) {
             getConfig().set("config_version", CURRENT_CONFIG_VERSION);
             saveConfig();
-            getLogger().info("[Fish Rework] Updated config schema to version " + CURRENT_CONFIG_VERSION + ".");
+            getLogger().info("[Fish Rework] Config migrated to v" + CURRENT_CONFIG_VERSION + ".");
         }
     }
 
@@ -389,6 +412,7 @@ public class FishRework extends JavaPlugin {
     // ══════════════════════════════════════════════════════════
 
     public static FishRework getInstance() { return instance; }
+    public UpdateChecker getUpdateChecker() { return updateChecker; }
     public DatabaseManager getDatabaseManager() { return databaseManager; }
     public LevelManager getLevelManager() { return levelManager; }
     public SkillManager getSkillManager() { return skillManager; }
@@ -469,8 +493,8 @@ public class FishRework extends JavaPlugin {
         return List.of(
                 "Use /fish or /fishing to open your fishing progression GUI.",
                 "Use /fish help to list all available fishing commands.",
-                "Visit the wiki for recipes, exact sea creature info, and custom item details.",
-                "Struggling against sea creatures? Craft custom gear and check the wiki for builds.",
+                "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}",
+                "Struggling against sea creatures? Craft custom gear and check the wiki for builds: {wiki}",
                 "Use /fish bag to store catches and keep your inventory clean.",
                 "Use /fish autosell to auto-sell common fish while you grind.",
                 "Use /fish notifications to toggle these tips anytime."
@@ -479,7 +503,6 @@ public class FishRework extends JavaPlugin {
 
     private void startFishingTipsTask() {
         if (!isFeatureEnabled(FeatureKeys.FISHING_TIPS_ENABLED)) return;
-        if (!getConfig().getBoolean("fishing_tips.enabled", true)) return;
 
         long periodTicks = Math.max(20L, getConfig().getLong("fishing_tips.check_interval_seconds", 30L) * 20L);
         getServer().getScheduler().runTaskTimer(this, () -> {
@@ -499,9 +522,23 @@ public class FishRework extends JavaPlugin {
                 String tip = pickRandomTip();
                 if (tip != null && !tip.isBlank()) {
                     String wikiUrl = getConfig().getString("fishing_tips.wiki_url", "");
-                    String renderedTip = tip.replace("{wiki}", wikiUrl == null ? "" : wikiUrl);
-                    player.sendMessage(Component.text("[Fishing Tip] ").color(NamedTextColor.AQUA)
-                            .append(Component.text(renderedTip).color(NamedTextColor.GRAY)));
+                    if (wikiUrl == null) wikiUrl = "";
+                    Component prefix = Component.text("[Fishing Tip] ").color(NamedTextColor.AQUA);
+                    Component body;
+                    if (!wikiUrl.isBlank() && tip.contains("{wiki}")) {
+                        String[] parts = tip.split("\\{wiki\\}", 2);
+                        Component link = Component.text(wikiUrl).color(NamedTextColor.AQUA)
+                                .decorate(TextDecoration.UNDERLINED)
+                                .clickEvent(ClickEvent.openUrl(wikiUrl))
+                                .hoverEvent(Component.text("Click to open").color(NamedTextColor.GREEN));
+                        body = Component.text(parts[0]).color(NamedTextColor.GRAY).append(link);
+                        if (parts.length > 1 && !parts[1].isEmpty()) {
+                            body = body.append(Component.text(parts[1]).color(NamedTextColor.GRAY));
+                        }
+                    } else {
+                        body = Component.text(tip.replace("{wiki}", wikiUrl)).color(NamedTextColor.GRAY);
+                    }
+                    player.sendMessage(prefix.append(body));
                 }
 
                 nextFishingTipAtMs.put(player.getUniqueId(), now + randomTipDelayMs());

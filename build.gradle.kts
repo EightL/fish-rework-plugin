@@ -15,14 +15,14 @@ repositories {
 }
 
 dependencies {
-    // Paper API (Keep whatever version you had that worked for your custom mobs)
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    // Paper API target for 26.1.1
+    compileOnly("io.papermc.paper:paper-api:26.1.1.build.29-alpha")
 
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 tasks {
@@ -30,6 +30,9 @@ tasks {
         filesMatching("plugin.yml") {
             expand("version" to project.version)
         }
+    }
+    withType<org.gradle.api.tasks.compile.JavaCompile>().configureEach {
+        options.release.set(25)
     }
     shadowJar {
         archiveClassifier.set("")

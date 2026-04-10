@@ -36,6 +36,21 @@ import java.util.function.Supplier;
  */
 public class ItemManager {
 
+    private static final Set<String> LAVA_ONLY_BAIT_IDS = Set.of(
+        "magma_bait",
+        "soul_bait",
+        "blaze_bait",
+        "cooled_bait"
+    );
+
+    private static final Set<BiomeGroup> NETHER_BIOME_GROUPS = EnumSet.of(
+        BiomeGroup.NETHER_WASTES,
+        BiomeGroup.CRIMSON_FOREST,
+        BiomeGroup.WARPED_FOREST,
+        BiomeGroup.SOUL_SAND_VALLEY,
+        BiomeGroup.BASALT_DELTAS
+    );
+
     private final FishRework plugin;
 
     // Item registry: name → supplier (populated from YAML + Java items)
@@ -402,6 +417,51 @@ public class ItemManager {
     public String getBaitId(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
         return item.getItemMeta().getPersistentDataContainer().get(BAIT_KEY, PersistentDataType.STRING);
+    }
+
+    public boolean isBaitApplicableForWater(ItemStack item) {
+        return isBaitApplicable(item, false);
+    }
+
+    public boolean isBaitApplicableForLava(ItemStack item) {
+        return isBaitApplicable(item, true);
+    }
+
+    private boolean isBaitApplicable(ItemStack item, boolean lavaFishing) {
+        if (!isBait(item)) {
+            return false;
+        }
+
+        String baitId = getBaitId(item);
+        if (baitId == null || baitId.isBlank()) {
+            return false;
+        }
+        baitId = baitId.toLowerCase(Locale.ROOT);
+
+        if (baitId.startsWith("biome_bait:")) {
+            Set<BiomeGroup> nativeGroups = getBaitNativeBiomeGroups(item);
+            if (nativeGroups.isEmpty()) {
+                return !lavaFishing;
+            }
+            boolean hasNetherGroups = containsNetherBiomeGroup(nativeGroups);
+            boolean hasOverworldGroups = nativeGroups.stream().anyMatch(group -> !NETHER_BIOME_GROUPS.contains(group));
+            return lavaFishing ? hasNetherGroups : hasOverworldGroups;
+        }
+
+        if (LAVA_ONLY_BAIT_IDS.contains(baitId)) {
+            return lavaFishing;
+        }
+
+        return !lavaFishing;
+    }
+
+    private boolean containsNetherBiomeGroup(Set<BiomeGroup> groups) {
+        for (BiomeGroup group : groups) {
+            if (NETHER_BIOME_GROUPS.contains(group)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getBaitTargetMobId(ItemStack item) {

@@ -38,6 +38,12 @@ public class PlayerListener implements Listener {
                     } else {
                         plugin.getRecipeRegistry().syncRecipes(event.getPlayer());
                     }
+
+                    // Notify admins of available updates (check runs async at startup)
+                    if (event.getPlayer().hasPermission("fishrework.admin")
+                            && plugin.getUpdateChecker() != null) {
+                        plugin.getUpdateChecker().notifyPlayer(event.getPlayer());
+                    }
                 }
             });
         });

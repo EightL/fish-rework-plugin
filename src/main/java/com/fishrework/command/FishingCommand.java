@@ -9,6 +9,7 @@ import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.util.FeatureKeys;
+import com.fishrework.util.FishingChanceSnapshotHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -70,10 +71,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerAdminCommand(this::handleAdminResetChances, "resetchances");
         registerAdminCommand(this::handleAdminGive, "give");
         registerAdminCommand(this::handleAdminSpawn, "spawn");
-        registerAdminCommand(this::handleAdminChances, "chances");
+        registerCommand(this::handleAdminChances, "chances");
         registerAdminCommand(this::handleAdminFulfill, "fulfill");
         registerAdminCommand(this::handleAdminPet, "pet");
-        registerAdminCommand(this::handleAdminHeat, "heat");
+        registerCommand(this::handleAdminHeat, "heat");
         registerAdminCommand(this::handleAdminSetHeat, "setheat");
         registerAdminCommand(this::handleAdminSetCoins, "setcoins");
     }
@@ -397,6 +398,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 .append(Component.text(" - Open main menu").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing top").color(NamedTextColor.YELLOW)
                 .append(Component.text(" - View leaderboard").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fishing info").color(NamedTextColor.YELLOW)
+                .append(Component.text(" - Open the skills overview menu").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing encyclopedia").color(NamedTextColor.YELLOW)
                 .append(Component.text(" - View fish encyclopedia").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing artifacts").color(NamedTextColor.YELLOW)
@@ -427,6 +430,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             .append(Component.text(" - Set sea creature effect detail").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fs particles <high|medium|low>").color(NamedTextColor.YELLOW)
             .append(Component.text(" - Quick particle detail shortcut").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fishing chances").color(NamedTextColor.YELLOW)
+                .append(Component.text(" - View biome spawn chances at your location").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fishing heat").color(NamedTextColor.YELLOW)
+                .append(Component.text(" - View your lava heat stats").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("Milestone: Fishing Level 27").color(NamedTextColor.GOLD)
             .append(Component.text(" unlocks Lava Fishing + Magma Satchel in shop").color(NamedTextColor.GRAY)));
 
@@ -446,16 +453,20 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .append(Component.text(" - Give custom item").color(NamedTextColor.GRAY)));
             player.sendMessage(Component.text("/fishing spawn <mob>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Spawn mob at location").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing chances").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - View biome spawn chances").color(NamedTextColor.GRAY)));
+            player.sendMessage(Component.text("/fishing fulfill <player> <all|creatures|artifacts>").color(NamedTextColor.YELLOW)
+                    .append(Component.text(" - Unlock all creatures/artifacts for a player").color(NamedTextColor.GRAY)));
             player.sendMessage(Component.text("/fishing heat <player>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - View heat debug stats").color(NamedTextColor.GRAY)));
-                player.sendMessage(Component.text("/fishing setheat <player> <amount>").color(NamedTextColor.YELLOW)
+                    .append(Component.text(" - View another player's heat stats").color(NamedTextColor.GRAY)));
+            player.sendMessage(Component.text("/fishing setheat <player> <amount>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Set heat (clamped to 0-100)").color(NamedTextColor.GRAY)));
-                player.sendMessage(Component.text("/fishing setcoins <player> <amount>").color(NamedTextColor.YELLOW)
+            player.sendMessage(Component.text("/fishing setcoins <player> <amount>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Set doubloons balance").color(NamedTextColor.GRAY)));
-                player.sendMessage(Component.text("/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
+            player.sendMessage(Component.text("/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Set global XP multiplier").color(NamedTextColor.GRAY)));
+            player.sendMessage(Component.text("/fishing pet").color(NamedTextColor.YELLOW)
+                    .append(Component.text(" - Spawn your custom pig companion").color(NamedTextColor.GRAY)));
+            player.sendMessage(Component.text("/fishing reload").color(NamedTextColor.YELLOW)
+                    .append(Component.text(" - Reload config.yml without restart").color(NamedTextColor.GRAY)));
         }
     }
 
@@ -610,6 +621,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             Skill skill = Skill.FISHING;
             double amount = Double.parseDouble(args[2]);
 
+            if (amount < 0 || amount > 1_000_000) {
+                player.sendMessage(Component.text("Amount must be between 0 and 1,000,000.").color(NamedTextColor.RED));
+                return;
+            }
+
             boolean levelUp = plugin.getSkillManager().grantRawXp(target, skill, amount);
             player.sendMessage(Component.text("Added " + amount + " XP to " + target.getName()).color(NamedTextColor.GREEN));
             if (levelUp) target.sendMessage(Component.text("You leveled up from admin command!").color(NamedTextColor.GOLD));
@@ -660,6 +676,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if (target.equals("artifact")) {
             try {
                 double chance = Double.parseDouble(args[2]);
+                if (chance < 0.0 || chance > 100.0) {
+                    player.sendMessage(Component.text("Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
+                    return;
+                }
                 double oldChance = plugin.getConfig().getDouble("artifacts.chance", 3.0);
                 plugin.getConfig().set("artifacts.chance", chance);
                 plugin.saveConfig();
@@ -680,6 +700,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
         try {
             double chance = Double.parseDouble(args[2]);
+            if (chance < 0.0 || chance > 100.0) {
+                player.sendMessage(Component.text("Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
+                return;
+            }
             double oldChance = plugin.getMobManager().getMobChance(target, -1);
             
             plugin.getMobManager().setMobChance(target, chance);
@@ -738,8 +762,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             }
         }
 
-        if (count <= 0) {
-            player.sendMessage(Component.text("Count must be at least 1.").color(NamedTextColor.RED));
+        if (count <= 0 || count > 10_000) {
+            player.sendMessage(Component.text("Count must be between 1 and 10,000.").color(NamedTextColor.RED));
             return;
         }
 
@@ -797,59 +821,26 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     private void adminChances(Player player, String[] args) {
         Skill skill = Skill.FISHING;
 
-        // Include active bait (offhand) in debug chances so command matches real catch rolls.
-        double baitRareCreatureBonus = 0.0;
-        double baitTreasureBonus = 0.0;
-        List<String> baitTargetMobIds = Collections.emptyList();
-        Set<BiomeGroup> baitNativeBiomeGroups = Collections.emptySet();
-        org.bukkit.inventory.ItemStack offhand = player.getInventory().getItemInOffHand();
-        if (plugin.getItemManager().isBait(offhand)) {
-            baitTargetMobIds = plugin.getItemManager().getBaitTargetMobIds(offhand);
-            baitNativeBiomeGroups = plugin.getItemManager().getBaitNativeBiomeGroups(offhand);
-            String baitId = plugin.getItemManager().getBaitId(offhand);
-            if (baitId != null) {
-                com.fishrework.model.Bait bait = plugin.getBaitRegistry().get(baitId);
-                if (bait != null) {
-                    baitRareCreatureBonus = bait.getBonus(com.fishrework.model.Bait.RARE_CREATURE_CHANCE);
-                    baitTreasureBonus = bait.getBonus(com.fishrework.model.Bait.TREASURE_CHANCE);
-                }
-            }
-        }
-
-        java.util.Map<String, Double> chances = plugin.getMobManager().getSpawnChances(
-    player, skill, player.getLocation(), baitRareCreatureBonus, baitTreasureBonus,
-        baitTargetMobIds, baitNativeBiomeGroups);
-
-        // Get biome context
-        // Geat biome context - matching logic from MobManager
-        org.bukkit.block.Biome bukkitBiome = player.getLocation().getBlock().getBiome();
-        String biomeKey = bukkitBiome.getKey().toString();
-        com.fishrework.model.BiomeGroup biome = com.fishrework.model.BiomeGroup.fromBiomeKey(biomeKey);
-        if (biome == com.fishrework.model.BiomeGroup.OTHER) {
-            biome = com.fishrework.model.BiomeGroup.fromBiome(bukkitBiome);
-        }
-
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        int level = data != null ? data.getLevel(skill) : 0;
+        FishingChanceSnapshotHelper.ChanceSnapshot snapshot =
+                FishingChanceSnapshotHelper.capture(plugin, player, skill);
+        java.util.Map<String, Double> chances = snapshot.chances();
+        java.util.Map<String, Double> rawWeights = snapshot.rawWeights();
 
         player.sendMessage(Component.text("--- Fishing Spawn Chances ---").color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text("Biome: " + biome.name()).color(NamedTextColor.GRAY));
-        
-        // Get raw weights to show alongside percentages
-        Map<String, Double> rawWeights = plugin.getMobManager().buildWeightMap(skill, level, 1.0 + ((plugin.getMobManager().getEquipmentRareCreatureBonus(player) + baitRareCreatureBonus)/100.0), 
-                                               1.0 + ((plugin.getMobManager().getTreasureChance(player) + baitTreasureBonus)/100.0), 
-                                                                               (biome != BiomeGroup.OTHER ? plugin.getBiomeFishingRegistry().get(biome) : null), 
-                                                                               player.getLocation(), 
-                                                                               plugin.getItemManager().isHarmonyRod(player.getInventory().getItemInMainHand()) || plugin.getItemManager().isHarmonyRod(player.getInventory().getItemInOffHand()),
-                                                                               baitTargetMobIds,
-                                                                               baitNativeBiomeGroups);
+        player.sendMessage(Component.text("Biome: " + snapshot.biomeGroup().name()).color(NamedTextColor.GRAY));
 
-        if (baitRareCreatureBonus > 0 || baitTreasureBonus > 0) {
-            player.sendMessage(Component.text(String.format("Active Bait Bonus: +%.1f%% Rare, +%.1f%% Treasure", baitRareCreatureBonus, baitTreasureBonus))
+        if (snapshot.activeBaitId() != null && !snapshot.baitAppliesToContext()) {
+            player.sendMessage(Component.text("Held bait is inactive in this dimension.")
+                    .color(NamedTextColor.RED));
+        }
+
+        if (snapshot.baitRareCreatureBonus() > 0 || snapshot.baitTreasureBonus() > 0) {
+            player.sendMessage(Component.text(String.format("Active Bait Bonus: +%.1f%% Rare, +%.1f%% Treasure",
+                    snapshot.baitRareCreatureBonus(), snapshot.baitTreasureBonus()))
                 .color(NamedTextColor.AQUA));
         }
-        if (!baitTargetMobIds.isEmpty()) {
-            player.sendMessage(Component.text("Biome Bait Targets: " + String.join(", ", baitTargetMobIds))
+        if (!snapshot.baitTargetMobIds().isEmpty()) {
+            player.sendMessage(Component.text("Biome Bait Targets: " + String.join(", ", snapshot.baitTargetMobIds()))
                 .color(NamedTextColor.AQUA));
         }
 
@@ -929,6 +920,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     private void adminHeat(Player player, String[] args) {
         Player target = player;
         if (args.length > 1) {
+            if (!player.hasPermission("fishrework.admin")) {
+                player.sendMessage(Component.text("No permission.").color(NamedTextColor.RED));
+                return;
+            }
             target = Bukkit.getPlayer(args[1]);
             if (target == null) {
                 player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED));
@@ -1073,10 +1068,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("particles");
             completions.add("xpmultiplier");
             completions.add("help");
+            completions.addAll(List.of("chances", "heat", "dmgindicator"));
             if (isAdmin) {
-                completions.addAll(List.of("addxp", "setlevel", "setchance", "resetchances", "reset", "give", "spawn", "chances", "fulfill", "heat", "setheat", "setcoins", "dmgindicator"));
-            } else {
-                completions.add("dmgindicator");
+                completions.addAll(List.of("addxp", "setlevel", "setchance", "resetchances", "reset", "give", "spawn", "fulfill", "setheat", "setcoins"));
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("dmgindicator")) {
@@ -1106,7 +1100,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("give")) {
                     return null; // Player list
                 } else if (args[0].equalsIgnoreCase("addxp") || args[0].equalsIgnoreCase("setlevel") || args[0].equalsIgnoreCase("reset") || args[0].equalsIgnoreCase("fulfill") || args[0].equalsIgnoreCase("heat") || args[0].equalsIgnoreCase("setheat") || args[0].equalsIgnoreCase("setcoins")) {
-                    return null; // Player list
+                    return null; // Player list (admin only)
+
                 }
             }
         } else if (args.length == 3) {

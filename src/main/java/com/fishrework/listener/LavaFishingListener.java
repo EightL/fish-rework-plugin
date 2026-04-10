@@ -254,7 +254,9 @@ public class LavaFishingListener implements Listener {
         ItemStack offhand = player.getInventory().getItemInOffHand();
         List<String> baitTargetMobIds = Collections.emptyList();
         Set<com.fishrework.model.BiomeGroup> baitNativeBiomeGroups = Collections.emptySet();
-        if (plugin.getItemManager().isBait(offhand)) {
+        if (plugin.isFeatureEnabled(FeatureKeys.BAIT_SYSTEM_ENABLED)
+            && plugin.getItemManager().isBait(offhand)
+            && plugin.getItemManager().isBaitApplicableForLava(offhand)) {
             baitTargetMobIds = plugin.getItemManager().getBaitTargetMobIds(offhand);
             baitNativeBiomeGroups = plugin.getItemManager().getBaitNativeBiomeGroups(offhand);
             String baitId = plugin.getItemManager().getBaitId(offhand);
@@ -407,7 +409,10 @@ public class LavaFishingListener implements Listener {
 
     private void playLavaCatchFeedback(Player player, Location hookLoc) {
         hookLoc.getWorld().spawnParticle(Particle.LAVA, hookLoc, 20, 0.5, 0.5, 0.5);
-        player.playSound(hookLoc, Sound.BLOCK_LAVA_EXTINGUISH, 0.8f, 1.0f);
+        Sound lavaExtinguish = FishingUtils.getLavaExtinguishSound();
+        if (lavaExtinguish != null) {
+            player.playSound(hookLoc, lavaExtinguish, 0.8f, 1.0f);
+        }
     }
 
     private void applyLavaHeat(Player player, String mobId) {

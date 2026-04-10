@@ -7,6 +7,7 @@ import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.registry.RecipeDefinition;
 import com.fishrework.util.FeatureKeys;
+import com.fishrework.util.FishingChanceSnapshotHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -20,7 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.Map;
 
 public class SkillDetailGUI extends BaseGUI {
 
@@ -73,6 +74,12 @@ public class SkillDetailGUI extends BaseGUI {
         this.bossBar.addPlayer(player);
 
         initializeItems();
+    }
+
+    public SkillDetailGUI setPage(int page) {
+        this.page = Math.max(0, page);
+        initializeItems();
+        return this;
     }
 
     private void initializeItems() {
@@ -232,13 +239,87 @@ public class SkillDetailGUI extends BaseGUI {
         bonus.setItemMeta(bonusMeta);
         inventory.setItem(8, bonus);
 
+        // Slot 7: Current Fish Chances (summary card + open full breakdown)
+        if (skill == Skill.FISHING) {
+            FishingChanceSnapshotHelper.ChanceSnapshot chanceSnapshot =
+                FishingChanceSnapshotHelper.capture(plugin, player, Skill.FISHING);
+            List<Map.Entry<String, Double>> sortedChances =
+                FishingChanceSnapshotHelper.sortByChanceDescending(chanceSnapshot.chances());
+
+            ItemStack chancesButton = new ItemStack(Material.HEART_OF_THE_SEA);
+            ItemMeta chancesMeta = chancesButton.getItemMeta();
+            chancesMeta.displayName(Component.text("🐟 Current Fish Chances").color(NamedTextColor.AQUA)
+                .decoration(TextDecoration.ITALIC, false));
+
+            List<Component> chancesLore = new ArrayList<>();
+            chancesLore.add(Component.empty());
+            chancesLore.add(Component.text("Biome: ").color(NamedTextColor.GRAY)
+                .append(Component.text(chanceSnapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
+                .decoration(TextDecoration.ITALIC, false));
+            chancesLore.add(Component.text("Rare Bonus: ").color(NamedTextColor.GRAY)
+                .append(Component.text(String.format("+%.1f%%", chanceSnapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
+                .decoration(TextDecoration.ITALIC, false));
+            chancesLore.add(Component.text("Treasure Bonus: ").color(NamedTextColor.GRAY)
+                .append(Component.text(String.format("+%.1f%%", chanceSnapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
+                .decoration(TextDecoration.ITALIC, false));
+
+            if (chanceSnapshot.activeBaitId() != null && chanceSnapshot.activeBaitDisplayName() != null) {
+            NamedTextColor baitColor = chanceSnapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
+            String baitSuffix = chanceSnapshot.baitAppliesToContext() ? "" : " (inactive here)";
+            chancesLore.add(Component.text("Bait: ").color(NamedTextColor.GRAY)
+                .append(Component.text(chanceSnapshot.activeBaitDisplayName() + baitSuffix).color(baitColor))
+                .decoration(TextDecoration.ITALIC, false));
+            }
+
+            chancesLore.add(Component.empty());
+            chancesLore.add(Component.text("Top chances right now:").color(NamedTextColor.GOLD)
+                .decoration(TextDecoration.ITALIC, false));
+
+            int topCount = Math.min(5, sortedChances.size());
+            if (topCount == 0) {
+            chancesLore.add(Component.text("• No eligible catches in this context").color(NamedTextColor.RED)
+                .decoration(TextDecoration.ITALIC, false));
+            } else {
+            for (int i = 0; i < topCount; i++) {
+                Map.Entry<String, Double> entry = sortedChances.get(i);
+                String id = entry.getKey();
+                String label = FishingChanceSnapshotHelper.displayNameForEntry(plugin, id);
+
+                NamedTextColor lineColor = NamedTextColor.AQUA;
+                if ("land_mob_bonus".equals(id)) {
+                lineColor = NamedTextColor.GREEN;
+                } else {
+                CustomMob mob = plugin.getMobRegistry().get(id);
+                if (mob != null && mob.isHostile()) {
+                    lineColor = NamedTextColor.RED;
+                }
+                }
+
+                chancesLore.add(Component.text("• " + label + ": ").color(NamedTextColor.GRAY)
+                    .append(Component.text(String.format("%.2f%%", entry.getValue())).color(lineColor))
+                    .decoration(TextDecoration.ITALIC, false));
+            }
+            }
+
+            chancesLore.add(Component.empty());
+            chancesLore.add(Component.text("Click for full breakdown").color(NamedTextColor.GREEN)
+                .decoration(TextDecoration.ITALIC, false));
+
+            chancesMeta.lore(chancesLore);
+            chancesButton.setItemMeta(chancesMeta);
+            inventory.setItem(7, chancesButton);
+        }
+
         // ── Decorative border fill for unused header slots ──
         ItemStack headerFill = new ItemStack(Material.CYAN_STAINED_GLASS_PANE);
         ItemMeta hfMeta = headerFill.getItemMeta();
         hfMeta.displayName(Component.text(" "));
         headerFill.setItemMeta(hfMeta);
-        for (int slot : new int[]{1, 3, 5, 7}) {
+        for (int slot : new int[]{1, 3, 5}) {
             inventory.setItem(slot, headerFill);
+        }
+        if (skill != Skill.FISHING) {
+            inventory.setItem(7, headerFill);
         }
 
         // Slot 6: Shop button
@@ -556,6 +637,9 @@ public class SkillDetailGUI extends BaseGUI {
                 return;
             }
             new ShopMenuGUI(plugin, player).open(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+        } else if (event.getSlot() == 7 && skill == Skill.FISHING) {
+            new CurrentFishChancesGUI(plugin, player, page).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 46 && skill == Skill.FISHING) {
             String wikiUrl = plugin.getConfig().getString("tips.wiki_url", "https://fish-rework.vercel.app");

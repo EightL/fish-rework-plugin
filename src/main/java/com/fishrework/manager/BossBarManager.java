@@ -38,8 +38,7 @@ public class BossBarManager {
             "ender_angler",      // Riftbound Colossus
             "nether_lord",
             "dead_rider",
-            "warden",
-            "the_wither"         // The Cinder Eclipse
+            "warden"
     );
 
     public BossBarManager(FishRework plugin) {
@@ -247,7 +246,6 @@ public class BossBarManager {
             case "nether_lord" -> BarColor.YELLOW;
             case "dead_rider" -> BarColor.WHITE;
             case "warden" -> BarColor.BLUE;
-            case "the_wither" -> BarColor.PURPLE;
             default -> BarColor.RED;
         };
     }

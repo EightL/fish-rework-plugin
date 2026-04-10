@@ -1,8 +1,6 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,11 +8,15 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * Prevents custom Fish Rework items from being processed in crafting stations
  * (Anvil, Grindstone, Smithing Table) that could strip their PDC metadata,
  * creating ungated duplicates or breaking gameplay balance.
+ *
+ * Exception: any damaged custom item can be repaired in an anvil using weird_material.
  */
 public class AnvilProtectionListener implements Listener {
 
@@ -28,8 +30,14 @@ public class AnvilProtectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPrepareAnvil(PrepareAnvilEvent event) {
-        if (hasCustomItem(event.getInventory().getItem(0))
-                || hasCustomItem(event.getInventory().getItem(1))) {
+        ItemStack base = event.getInventory().getItem(0);
+        ItemStack addition = event.getInventory().getItem(1);
+
+        if (tryPrepareCustomRepair(event, base, addition)) {
+            return;
+        }
+
+        if (hasCustomItem(base) || hasCustomItem(addition)) {
             event.setResult(null);
         }
     }
@@ -65,5 +73,42 @@ public class AnvilProtectionListener implements Listener {
     private boolean hasCustomItem(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return false;
         return plugin.getItemManager().isCustomItem(item);
+    }
+
+    private static final String REPAIR_MATERIAL_ID = "weird_material";
+
+    private boolean tryPrepareCustomRepair(PrepareAnvilEvent event, ItemStack base, ItemStack addition) {
+        if (base == null || base.getType().isAir() || addition == null || addition.getType().isAir()) {
+            return false;
+        }
+        if (!hasCustomItem(base)) {
+            return false;
+        }
+
+        ItemMeta baseMeta = base.getItemMeta();
+        if (!(baseMeta instanceof Damageable damageableBase) || damageableBase.getDamage() <= 0) {
+            return false;
+        }
+
+        if (!plugin.getItemManager().isCustomItem(addition, REPAIR_MATERIAL_ID)) {
+            return false;
+        }
+
+        ItemStack repaired = base.clone();
+        ItemMeta meta = repaired.getItemMeta();
+        if (!(meta instanceof Damageable damageable)) {
+            return false;
+        }
+
+        int maxDamage = damageable.getMaxDamage();
+        if (maxDamage <= 0) maxDamage = repaired.getType().getMaxDurability();
+        if (maxDamage <= 0) return false;
+
+        int repairAmount = Math.max(1, maxDamage / 4);
+        damageable.setDamage(Math.max(0, damageable.getDamage() - repairAmount));
+        repaired.setItemMeta(meta);
+
+        event.setResult(repaired);
+        return true;
     }
 }

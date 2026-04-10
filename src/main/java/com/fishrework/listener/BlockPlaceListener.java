@@ -44,15 +44,18 @@ public class BlockPlaceListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW)
     public void onSpawnEggInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         ItemStack item = event.getItem();
 
         // Prevent protected custom items from using vanilla throw/consume behavior.
+        // Use setUseItemInHand(DENY) rather than setCancelled so we stop the item
+        // use even when the block-interaction half of the event is already DENY
+        // (which is always the case for RIGHT_CLICK_AIR).
         if (isProtectedThrowableCustomItem(item)) {
-            event.setCancelled(true);
+            event.setUseItemInHand(org.bukkit.event.Event.Result.DENY);
             return;
         }
 

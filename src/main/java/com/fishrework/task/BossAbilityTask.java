@@ -4,6 +4,7 @@ import com.fishrework.FishRework;
 import com.fishrework.MobManager;
 import com.fishrework.model.CustomMob;
 import com.fishrework.model.SpawnConfig;
+import com.fishrework.util.FishingUtils;
 import com.fishrework.util.ParticleDetailScaler;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -967,7 +968,10 @@ public class BossAbilityTask implements Runnable {
 
             Location impact = mob.getLocation().clone().add(0, 0.35, 0);
             mob.getWorld().playSound(impact, Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.1f);
-            mob.getWorld().playSound(impact, Sound.BLOCK_LAVA_EXTINGUISH, 0.8f, 1.4f);
+            Sound lavaExtinguish = FishingUtils.getLavaExtinguishSound();
+            if (lavaExtinguish != null) {
+                mob.getWorld().playSound(impact, lavaExtinguish, 0.8f, 1.4f);
+            }
             spawnParticle(mob.getWorld(), Particle.EXPLOSION, impact, 2, 0.2, 0.1, 0.2, 0.01);
             spawnParticle(mob.getWorld(), Particle.LAVA, impact, 26, 0.45, 0.2, 0.45, 0.02);
             spawnParticle(mob.getWorld(), Particle.FLAME, impact, 22, 0.5, 0.2, 0.5, 0.02);
@@ -1165,7 +1169,7 @@ public class BossAbilityTask implements Runnable {
         forward.normalize();
 
         Vector right = new Vector(-forward.getZ(), 0, forward.getX());
-        Location mouth = mount.getEyeLocation().clone().add(forward.clone().multiply(0.6)).add(0, -0.4, 0);
+        Location mouth = mount.getEyeLocation().clone().add(forward.clone().multiply(0.6)).add(0, -0.52, 0);
 
         mount.getWorld().playSound(mouth, Sound.ENTITY_STRIDER_HAPPY, 1.0f, 0.45f);
         mount.getWorld().playSound(mouth, Sound.ITEM_FIRECHARGE_USE, 1.0f, 0.7f);
@@ -1195,7 +1199,7 @@ public class BossAbilityTask implements Runnable {
                         Location p = mouth.clone()
                                 .add(forward.clone().multiply(r))
                                 .add(right.clone().multiply(side))
-                                .add(0, -0.06 + (Math.sin((pulse * 0.55) + (r * 1.1)) * 0.05), 0);
+                            .add(0, -0.14 + (Math.sin((pulse * 0.55) + (r * 1.1)) * 0.05), 0);
 
                         spawnParticle(p.getWorld(), Particle.FLAME, p, 2, 0.015, 0.015, 0.015, 0.0);
                         spawnParticle(p.getWorld(), Particle.LAVA, p, 1, 0.02, 0.02, 0.02, 0.0);
@@ -1205,7 +1209,7 @@ public class BossAbilityTask implements Runnable {
                             spawnParticle(p.getWorld(), Particle.SMOKE, p, 1, 0.02, 0.02, 0.02, 0.0);
                         }
 
-                        for (Entity nearby : p.getWorld().getNearbyEntities(p, 0.6, 0.9, 0.6)) {
+                        for (Entity nearby : p.getWorld().getNearbyEntities(p, 0.6, 0.75, 0.6)) {
                             if (!(nearby instanceof Player player)) continue;
                             if (player.isDead()) continue;
 

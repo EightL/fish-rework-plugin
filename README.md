@@ -12,8 +12,8 @@ It is not affiliated with, endorsed by, or connected to Hypixel or Hypixel SkyBl
 
 ## Requirements
 
-- Paper `1.21.11`
-- Java `21`
+- Paper `26.1.1`
+- Java `25`
 
 ## Install
 

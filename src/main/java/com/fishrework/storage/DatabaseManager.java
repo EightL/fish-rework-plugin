@@ -571,8 +571,11 @@ public class DatabaseManager {
             }
             ois.close();
             return items;
-        } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to deserialize fish bag contents", e);
+        } catch (ClassNotFoundException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to deserialize fish bag contents (unknown class - possible version mismatch)", e);
+            return null;
+        } catch (java.io.IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to deserialize fish bag contents (I/O error)", e);
             return null;
         }
     }

@@ -4,6 +4,13 @@
 # Increment this only when making backwards-incompatible config changes.
 config_version: 2
 
+# Update checker — pings Modrinth on startup and notifies admins on join
+update_checker:
+  enabled: true
+  # Set this to your Modrinth project ID or slug after publishing.
+  # Leave blank to disable the check (e.g. during development).
+  modrinth_project_id: ""
+
 # Fishing XP Values
 fishing:
   xp:
@@ -199,8 +206,8 @@ combat:
       range: 16.0
       width: 3.2
       height: 3.8
-      damage: 28.0
-      dark_cone_damage: 6.375
+      damage: 18.8
+      dark_cone_damage: 4.27
       pulse_travel_ticks: 28
       tentacles: 4
       tentacle_duration_ticks: 34
@@ -212,10 +219,10 @@ combat:
     riftbound_snare:
       range: 18.0
       radius: 4.2
-      damage: 18.2
+      damage: 12.2
       pull_strength: 0.95
       slowness_ticks: 80
-      charge_ticks: 20
+      charge_ticks: 60
     soul_rupture:
       radius: 5.2
       damage: 9.0
@@ -271,13 +278,13 @@ combat:
       final_damage: 35.0
       knockback: 1.0
     blood_yoke:
-      range: 21.6
+      range: 36.7
       charge_ticks: 18
       charge_speed: 1.45
       rush_duration_ticks: 16
       hit_radius: 2.25
       impact_damage: 8.0
-      tether_duration_ticks: 60
+      tether_duration_ticks: 30
       break_distance: 5.5
       drag_strength: 0.2
       chip_damage: 4.0
@@ -335,11 +342,11 @@ combat:
       shots: 6
       shot_interval_ticks: 4
       duration_ticks: 22
-      speed: 0.62
+      speed: 0.31
       turn_strength: 0.28
       hit_radius: 0.9
-      hit_damage: 4.0
-      graze_damage: 1.2
+      hit_damage: 6.0
+      graze_damage: 1.8
     wailing_twin_laser:
       range: 42.0
       pulses: 4

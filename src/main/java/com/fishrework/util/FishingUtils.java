@@ -15,6 +15,9 @@ import java.util.List;
 
 public class FishingUtils {
 
+    private static final Particle EPIC_CATCH_PARTICLE = resolveParticle("ENCHANT", "ENCHANTED_HIT");
+    private static final Sound LAVA_EXTINGUISH_SOUND = resolveSound("BLOCK_LAVA_EXTINGUISH", "BLOCKLAVAEXTINGUISH");
+
     /**
      * Plays sound effects and particles based on catch rarity.
      */
@@ -27,7 +30,8 @@ public class FishingUtils {
             }
             case EPIC -> {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.5f);
-                loc.getWorld().spawnParticle(Particle.ENCHANT, loc, 30, 1.0, 1.0, 1.0);
+                Particle epicParticle = EPIC_CATCH_PARTICLE != null ? EPIC_CATCH_PARTICLE : Particle.END_ROD;
+                loc.getWorld().spawnParticle(epicParticle, loc, 30, 1.0, 1.0, 1.0);
             }
             case LEGENDARY -> {
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.8f, 1.0f);
@@ -78,5 +82,31 @@ public class FishingUtils {
                 online.sendMessage(message);
             }
         }
+    }
+
+    public static Sound getLavaExtinguishSound() {
+        return LAVA_EXTINGUISH_SOUND;
+    }
+
+    private static Particle resolveParticle(String... candidates) {
+        for (String candidate : candidates) {
+            try {
+                return Particle.valueOf(candidate);
+            } catch (IllegalArgumentException ignored) {
+                // Try next candidate for cross-version enum compatibility.
+            }
+        }
+        return null;
+    }
+
+    private static Sound resolveSound(String... candidates) {
+        for (String candidate : candidates) {
+            try {
+                return Sound.valueOf(candidate);
+            } catch (IllegalArgumentException ignored) {
+                // Try next candidate for cross-version enum compatibility.
+            }
+        }
+        return null;
     }
 }

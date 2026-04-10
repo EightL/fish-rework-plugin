@@ -3,6 +3,7 @@ package com.fishrework.listener;
 import com.fishrework.FishRework;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Piglin;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,15 +13,40 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class PiglinCrownListener implements Listener {
 
     private static final double PACIFY_RADIUS_XZ = 16.0;
     private static final double PACIFY_RADIUS_Y = 8.0;
+    private static final long PROTECTED_MOB_AGGRO_GRACE_MS = 8000L;
+    private static final Set<String> PIGLIN_AGGRO_PROTECTED_MOBS = Set.of(
+            "piglin_floater",
+            "crimson_abomination"
+    );
 
     private final FishRework plugin;
+    private final Map<UUID, Long> protectedMobAggroBypassUntil = new ConcurrentHashMap<>();
 
     public PiglinCrownListener(FishRework plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerHitsProtectedPiglinMob(EntityDamageByEntityEvent event) {
+        Player attacker = resolveAttackingPlayer(event.getDamager());
+        if (attacker == null) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+        if (!isFishedMob(target)) return;
+
+        String mobId = plugin.getMobManager().getMobId(target);
+        if (mobId == null || !PIGLIN_AGGRO_PROTECTED_MOBS.contains(mobId)) return;
+
+        markProtectedMobAggroBypass(attacker);
+        pacifyNearbyPiglins(target);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -32,11 +58,7 @@ public class PiglinCrownListener implements Listener {
         if (attacker == null || !isWearingPiglinCrown(attacker)) return;
 
         pacify(piglin);
-        for (Entity nearby : piglin.getNearbyEntities(PACIFY_RADIUS_XZ, PACIFY_RADIUS_Y, PACIFY_RADIUS_XZ)) {
-            if (nearby instanceof PigZombie nearbyPiglin && !isFishedMob(nearbyPiglin)) {
-                pacify(nearbyPiglin);
-            }
-        }
+        pacifyNearbyPiglins(piglin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -44,7 +66,7 @@ public class PiglinCrownListener implements Listener {
         if (!(event.getEntity() instanceof PigZombie piglin)) return;
         if (isFishedMob(piglin)) return;
         if (!(event.getTarget() instanceof Player player)) return;
-        if (!isWearingPiglinCrown(player)) return;
+        if (!isWearingPiglinCrown(player) && !hasProtectedMobAggroBypass(player)) return;
 
         event.setCancelled(true);
         pacify(piglin);
@@ -55,7 +77,29 @@ public class PiglinCrownListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!(event.getDamager() instanceof PigZombie piglin)) return;
         if (isFishedMob(piglin)) return;
-        if (!isWearingPiglinCrown(player)) return;
+        if (!isWearingPiglinCrown(player) && !hasProtectedMobAggroBypass(player)) return;
+
+        event.setCancelled(true);
+        pacify(piglin);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPiglinTargetsProtectedPlayer(EntityTargetLivingEntityEvent event) {
+        if (!(event.getEntity() instanceof Piglin piglin)) return;
+        if (isFishedMob(piglin)) return;
+        if (!(event.getTarget() instanceof Player player)) return;
+        if (!hasProtectedMobAggroBypass(player)) return;
+
+        event.setCancelled(true);
+        pacify(piglin);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPiglinDamagesProtectedPlayer(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(event.getDamager() instanceof Piglin piglin)) return;
+        if (isFishedMob(piglin)) return;
+        if (!hasProtectedMobAggroBypass(player)) return;
 
         event.setCancelled(true);
         pacify(piglin);
@@ -75,12 +119,41 @@ public class PiglinCrownListener implements Listener {
         return plugin.getItemManager().isCustomItem(helmet, "piglin_crown_helmet");
     }
 
+    private void markProtectedMobAggroBypass(Player player) {
+        protectedMobAggroBypassUntil.put(player.getUniqueId(), System.currentTimeMillis() + PROTECTED_MOB_AGGRO_GRACE_MS);
+    }
+
+    private boolean hasProtectedMobAggroBypass(Player player) {
+        Long expireAt = protectedMobAggroBypassUntil.get(player.getUniqueId());
+        if (expireAt == null) return false;
+        if (System.currentTimeMillis() > expireAt) {
+            protectedMobAggroBypassUntil.remove(player.getUniqueId());
+            return false;
+        }
+        return true;
+    }
+
     private boolean isFishedMob(LivingEntity entity) {
         return plugin.getMobManager() != null && plugin.getMobManager().isFishedMob(entity);
+    }
+
+    private void pacifyNearbyPiglins(LivingEntity source) {
+        for (Entity nearby : source.getNearbyEntities(PACIFY_RADIUS_XZ, PACIFY_RADIUS_Y, PACIFY_RADIUS_XZ)) {
+            if (nearby instanceof PigZombie nearbyPiglin && !isFishedMob(nearbyPiglin)) {
+                pacify(nearbyPiglin);
+            }
+            if (nearby instanceof Piglin nearbyPiglin && !isFishedMob(nearbyPiglin)) {
+                pacify(nearbyPiglin);
+            }
+        }
     }
 
     private void pacify(PigZombie piglin) {
         piglin.setTarget(null);
         piglin.setAnger(0);
+    }
+
+    private void pacify(Piglin piglin) {
+        piglin.setTarget(null);
     }
 }
