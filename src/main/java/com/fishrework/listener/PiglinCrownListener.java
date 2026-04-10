@@ -1,6 +1,7 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Piglin;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Map;
 import java.util.Set;
@@ -30,9 +32,15 @@ public class PiglinCrownListener implements Listener {
 
     private final FishRework plugin;
     private final Map<UUID, Long> protectedMobAggroBypassUntil = new ConcurrentHashMap<>();
+    private final NamespacedKey magmaScaleArmorKey;
+    private final NamespacedKey infernalPlateArmorKey;
+    private final NamespacedKey volcanicDreadplateArmorKey;
 
     public PiglinCrownListener(FishRework plugin) {
         this.plugin = plugin;
+        this.magmaScaleArmorKey = new NamespacedKey(plugin, "magma_scale_armor");
+        this.infernalPlateArmorKey = new NamespacedKey(plugin, "infernal_plate_armor");
+        this.volcanicDreadplateArmorKey = new NamespacedKey(plugin, "volcanic_dreadplate_armor");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -88,7 +96,7 @@ public class PiglinCrownListener implements Listener {
         if (!(event.getEntity() instanceof Piglin piglin)) return;
         if (isFishedMob(piglin)) return;
         if (!(event.getTarget() instanceof Player player)) return;
-        if (!hasProtectedMobAggroBypass(player)) return;
+        if (!hasProtectedMobAggroBypass(player) && !isWearingPiglinNeutralLavaArmor(player)) return;
 
         event.setCancelled(true);
         pacify(piglin);
@@ -99,7 +107,7 @@ public class PiglinCrownListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
         if (!(event.getDamager() instanceof Piglin piglin)) return;
         if (isFishedMob(piglin)) return;
-        if (!hasProtectedMobAggroBypass(player)) return;
+        if (!hasProtectedMobAggroBypass(player) && !isWearingPiglinNeutralLavaArmor(player)) return;
 
         event.setCancelled(true);
         pacify(piglin);
@@ -117,6 +125,19 @@ public class PiglinCrownListener implements Listener {
     private boolean isWearingPiglinCrown(Player player) {
         ItemStack helmet = player.getInventory().getHelmet();
         return plugin.getItemManager().isCustomItem(helmet, "piglin_crown_helmet");
+    }
+
+    private boolean isWearingPiglinNeutralLavaArmor(Player player) {
+        for (ItemStack armor : player.getInventory().getArmorContents()) {
+            if (armor == null || !armor.hasItemMeta()) continue;
+            var pdc = armor.getItemMeta().getPersistentDataContainer();
+            if (pdc.has(magmaScaleArmorKey, PersistentDataType.BYTE)
+                    || pdc.has(infernalPlateArmorKey, PersistentDataType.BYTE)
+                    || pdc.has(volcanicDreadplateArmorKey, PersistentDataType.BYTE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void markProtectedMobAggroBypass(Player player) {

@@ -68,7 +68,7 @@ public class FishRework extends JavaPlugin {
     private com.fishrework.manager.TreasureManager treasureManager;
     private TotemManager totemManager;
     private com.fishrework.manager.DisplayCaseManager displayCaseManager;
-    private com.fishrework.manager.PetManager petManager;
+
     private com.fishrework.manager.NetheriteRelicManager netheriteRelicManager;
     private com.fishrework.manager.HeatManager heatManager;
     private LavaFishingListener lavaFishingListener;
@@ -114,7 +114,7 @@ public class FishRework extends JavaPlugin {
         treasureManager = new com.fishrework.manager.TreasureManager(this);
         totemManager = new TotemManager(this);
         displayCaseManager = new com.fishrework.manager.DisplayCaseManager(this);
-        petManager = new com.fishrework.manager.PetManager(this);
+
         netheriteRelicManager = new com.fishrework.manager.NetheriteRelicManager(this);
         lavaCreatureManager = new LavaCreatureManager(this);
         lavaRingManager = new LavaRingManager(this);
@@ -217,6 +217,9 @@ public class FishRework extends JavaPlugin {
         if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
             getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.BossAbilityTask(this), 20L, 20L);
         }
+
+        // ── 5f. Start armor full-set cosmetic trails ──
+        getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorSetTrailTask(this), 10L, 4L);
 
         // ── 6. Advancements ──
         if (isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) {
@@ -423,7 +426,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.manager.TreasureManager getTreasureManager() { return treasureManager; }
     public TotemManager getTotemManager() { return totemManager; }
     public com.fishrework.manager.DisplayCaseManager getDisplayCaseManager() { return displayCaseManager; }
-    public com.fishrework.manager.PetManager getPetManager() { return petManager; }
+
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }
     public BiomeFishingRegistry getBiomeFishingRegistry() { return biomeFishingRegistry; }

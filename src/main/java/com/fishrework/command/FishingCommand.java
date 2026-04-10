@@ -73,7 +73,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerAdminCommand(this::handleAdminSpawn, "spawn");
         registerCommand(this::handleAdminChances, "chances");
         registerAdminCommand(this::handleAdminFulfill, "fulfill");
-        registerAdminCommand(this::handleAdminPet, "pet");
+
         registerCommand(this::handleAdminHeat, "heat");
         registerAdminCommand(this::handleAdminSetHeat, "setheat");
         registerAdminCommand(this::handleAdminSetCoins, "setcoins");
@@ -371,11 +371,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         return true;
     }
 
-    private boolean handleAdminPet(Player player, String[] args) {
-        plugin.getPetManager().spawnCustomPig(player);
-        player.sendMessage(Component.text("Spawned your custom pig friend!").color(NamedTextColor.GREEN));
-        return true;
-    }
+
 
     private boolean handleAdminHeat(Player player, String[] args) {
         adminHeat(player, args);
@@ -463,8 +459,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .append(Component.text(" - Set doubloons balance").color(NamedTextColor.GRAY)));
             player.sendMessage(Component.text("/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Set global XP multiplier").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing pet").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Spawn your custom pig companion").color(NamedTextColor.GRAY)));
+
             player.sendMessage(Component.text("/fishing reload").color(NamedTextColor.YELLOW)
                     .append(Component.text(" - Reload config.yml without restart").color(NamedTextColor.GRAY)));
         }

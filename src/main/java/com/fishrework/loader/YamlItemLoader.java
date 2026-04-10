@@ -139,16 +139,7 @@ public class YamlItemLoader {
                     "armor_sets." + setId + ".rarity");
             String setKeyStr = setSection.getString("set_key", setId + "_armor");
             NamespacedKey armorSetKey = new NamespacedKey(plugin, setKeyStr);
-            boolean isLeather = "LEATHER".equalsIgnoreCase(materialType);
-
-            // Leather color
-            org.bukkit.Color leatherColor = null;
-            if (isLeather && setSection.isList("leather_color")) {
-                List<Integer> rgb = setSection.getIntegerList("leather_color");
-                if (rgb.size() == 3) {
-                    leatherColor = org.bukkit.Color.fromRGB(rgb.get(0), rgb.get(1), rgb.get(2));
-                }
-            }
+            org.bukkit.Color setLeatherColor = parseLeatherColor(setSection.getIntegerList("leather_color"));
 
             // Bonus key and value
             String bonusKeyStr = setSection.getString("bonus_key");
@@ -202,6 +193,13 @@ public class YamlItemLoader {
                 }
                 String trimMaterialKey = piece.getString("trim_material", defaultTrimMaterial);
                 String trimPatternKey = piece.getString("trim_pattern", defaultTrimPattern);
+                String baseItemId = piece.getString("base_item");
+
+                org.bukkit.Color pieceLeatherColor = setLeatherColor;
+                if (piece.isList("leather_color")) {
+                    pieceLeatherColor = parseLeatherColor(piece.getIntegerList("leather_color"));
+                }
+                boolean pieceIsLeather = isLeatherMaterial(pieceMaterial);
 
                 // Enchantments
                 Map<String, Integer> enchantments = new LinkedHashMap<>();
@@ -222,8 +220,9 @@ public class YamlItemLoader {
                 final Map<NamespacedKey, Double> fExtraPdc = new LinkedHashMap<>(extraPdc);
                 final Map<String, Double> fAttrBonuses = new LinkedHashMap<>(attributeBonuses);
                 final Map<String, Integer> fEnchants = enchantments;
-                final boolean fIsLeather = isLeather;
-                final org.bukkit.Color fLeatherColor = leatherColor;
+                final String fBaseItemId = baseItemId;
+                final boolean fIsLeather = pieceIsLeather;
+                final org.bukkit.Color fLeatherColor = pieceLeatherColor;
                 final String fLore = loreLine;
                 final String fLoreExtra = loreExtra;
                 final String fLoreExtraColor = loreExtraColor;
@@ -237,7 +236,7 @@ public class YamlItemLoader {
                 registry.put(registryId, () -> buildArmorPiece(
                     itemManager, registryId, fMat, fName, fRarity, fSetKey,
                         fBonusKey, fBonusVal, fExtraPdc, fAttrBonuses,
-                        fEnchants, fIsLeather, fLeatherColor, fArmor, fToughness, fDurability,
+                        fEnchants, fBaseItemId, fIsLeather, fLeatherColor, fArmor, fToughness, fDurability,
                         fLore, fLoreExtra, fLoreExtraColor, fTrimMaterialKey, fTrimPatternKey));
                 count++;
             }
@@ -255,21 +254,32 @@ public class YamlItemLoader {
             Map<NamespacedKey, Double> extraPdc,
             Map<String, Double> attributeBonuses,
             Map<String, Integer> enchantments,
+            String baseItemId,
             boolean isLeather, org.bukkit.Color leatherColor,
             int armor, int toughness, int durability,
             String loreLine, String loreExtra, String loreExtraColor,
             String trimMaterialKey, String trimPatternKey) {
 
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta;
-
-        if (isLeather && leatherColor != null) {
-            org.bukkit.inventory.meta.LeatherArmorMeta leatherMeta =
-                    (org.bukkit.inventory.meta.LeatherArmorMeta) item.getItemMeta();
-            leatherMeta.setColor(leatherColor);
-            meta = leatherMeta;
+        ItemStack item;
+        if (baseItemId != null && !baseItemId.isBlank()) {
+            if ("dead_rider_head".equalsIgnoreCase(baseItemId)) {
+                item = itemManager.getDeadRiderHead();
+            } else {
+                ItemStack base = itemManager.getItem(baseItemId);
+                if (base == null) {
+                    plugin.getLogger().warning("Unknown armor piece base_item for " + registryId + ": " + baseItemId);
+                    item = new ItemStack(material);
+                } else {
+                    item = base.clone();
+                }
+            }
         } else {
-            meta = item.getItemMeta();
+            item = new ItemStack(material);
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        if (isLeather && leatherColor != null && meta instanceof org.bukkit.inventory.meta.LeatherArmorMeta leatherMeta) {
+            leatherMeta.setColor(leatherColor);
         }
 
         // Display name
@@ -745,8 +755,10 @@ public class YamlItemLoader {
             return;
         }
 
-        TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(trimMaterialKey.toLowerCase(Locale.ROOT)));
-        TrimPattern trimPattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(trimPatternKey.toLowerCase(Locale.ROOT)));
+        String normalizedTrimMaterial = normalizeTrimMaterial(trimMaterialKey);
+        String normalizedTrimPattern = normalizeTrimPattern(trimPatternKey);
+        TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(normalizedTrimMaterial.toLowerCase(Locale.ROOT)));
+        TrimPattern trimPattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(normalizedTrimPattern.toLowerCase(Locale.ROOT)));
         if (trimMaterial == null || trimPattern == null) {
             plugin.getLogger().warning("Unknown armor trim for " + registryId + ": material="
                     + trimMaterialKey + ", pattern=" + trimPatternKey);
@@ -754,6 +766,36 @@ public class YamlItemLoader {
         }
 
         meta.setTrim(new ArmorTrim(trimMaterial, trimPattern));
+    }
+
+    private String normalizeTrimMaterial(String trimMaterialKey) {
+        if (trimMaterialKey == null) return "";
+        String normalized = trimMaterialKey.trim().toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "resin_brick" -> "resin";
+            default -> normalized;
+        };
+    }
+
+    private String normalizeTrimPattern(String trimPatternKey) {
+        if (trimPatternKey == null) return "";
+        String normalized = trimPatternKey.trim().toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "bold" -> "bolt";
+            default -> normalized;
+        };
+    }
+
+    private org.bukkit.Color parseLeatherColor(List<Integer> rgb) {
+        if (rgb == null || rgb.size() != 3) return null;
+        int r = Math.max(0, Math.min(255, rgb.get(0)));
+        int g = Math.max(0, Math.min(255, rgb.get(1)));
+        int b = Math.max(0, Math.min(255, rgb.get(2)));
+        return org.bukkit.Color.fromRGB(r, g, b);
+    }
+
+    private boolean isLeatherMaterial(Material material) {
+        return material != null && material.name().startsWith("LEATHER_");
     }
 
     private Material resolveMaterial(String rawName, Material fallback) {

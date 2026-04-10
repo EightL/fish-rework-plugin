@@ -947,9 +947,23 @@ public class MobManager {
     /** Creates a dyed leather armor piece. */
     private ItemStack createDyedLeather(org.bukkit.Material material, org.bukkit.Color color) {
         ItemStack item = new ItemStack(material);
-        org.bukkit.inventory.meta.LeatherArmorMeta meta = (org.bukkit.inventory.meta.LeatherArmorMeta) item.getItemMeta();
-        meta.setColor(color);
-        item.setItemMeta(meta);
+        org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            boolean colored = false;
+            try {
+                java.lang.reflect.Method setColor = meta.getClass().getMethod("setColor", org.bukkit.Color.class);
+                setColor.invoke(meta, color);
+                colored = true;
+            } catch (Exception ignored) {
+                if (meta instanceof org.bukkit.inventory.meta.LeatherArmorMeta leatherMeta) {
+                    leatherMeta.setColor(color);
+                    colored = true;
+                }
+            }
+            if (colored) {
+                item.setItemMeta(meta);
+            }
+        }
         return item;
     }
 

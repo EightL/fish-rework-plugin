@@ -373,8 +373,10 @@ armor_sets:
   # ── Scale Armor ─────────────────────────────────────────
   # +1.25 SCC, +1.25 SCD, +1.25 SCA per piece
   scale:
+    material_type: LEATHER
     rarity: UNCOMMON
     set_key: scale_armor
+    leather_color: [142, 177, 194]
     bonus_key: rare_creature_chance
     bonus_value: 1.25
     extra_pdc:
@@ -384,30 +386,33 @@ armor_sets:
       water_movement_efficiency: 0.075
     pieces:
       helmet:
-        material: TURTLE_HELMET
         display_name: "Scale Helmet"
+        trim_pattern: coast
+        trim_material: copper
         armor: 2
         toughness: 0
-        enchantments:
-          RESPIRATION: 3
-          AQUA_AFFINITY: 1
+        durability: 350
       chestplate:
-        material: CHAINMAIL_CHESTPLATE
         display_name: "Scale Chestplate"
+        trim_pattern: raiser
+        trim_material: copper
         armor: 6
         toughness: 0
+        durability: 500
       leggings:
-        material: CHAINMAIL_LEGGINGS
         display_name: "Scale Leggings"
+        trim_pattern: tide
+        trim_material: copper
         armor: 5
         toughness: 0
+        durability: 450
       boots:
-        material: CHAINMAIL_BOOTS
         display_name: "Scale Boots"
+        trim_pattern: wayfinder
+        trim_material: copper
         armor: 1
         toughness: 0
-        enchantments:
-          DEPTH_STRIDER: 3
+        durability: 300
 
   # ── Ironclad Armor ──────────────────────────────────────
   # +2.5 SCC, +2.5 SCD, +2.5 SCA per piece
@@ -425,18 +430,30 @@ armor_sets:
     pieces:
       helmet:
         display_name: "Ironclad Helmet"
+        trim_pattern: raiser
+        trim_material: copper
         armor: 3
         toughness: 2
       chestplate:
+        material: LEATHER_CHESTPLATE
+        leather_color: [175, 185, 208]
         display_name: "Ironclad Chestplate"
+        trim_pattern: dune
+        trim_material: iron
         armor: 8
         toughness: 2
       leggings:
         display_name: "Ironclad Leggings"
+        trim_pattern: tide
+        trim_material: copper
         armor: 6
         toughness: 2
       boots:
+        material: LEATHER_BOOTS
+        leather_color: [175, 185, 208]
         display_name: "Ironclad Boots"
+        trim_pattern: ward
+        trim_material: iron
         armor: 3
         toughness: 2
 
@@ -455,19 +472,33 @@ armor_sets:
       water_movement_efficiency: 0.175
     pieces:
       helmet:
+        material: LEATHER_HELMET
+        leather_color: [51, 50, 57]
         display_name: "Dreadplate Helmet"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 3
         toughness: 3
+        durability: 650
       chestplate:
+        material: LEATHER_CHESTPLATE
+        leather_color: [51, 50, 57]
         display_name: "Dreadplate Chestplate"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 8
         toughness: 3
+        durability: 800
       leggings:
         display_name: "Dreadplate Leggings"
+        trim_pattern: sentry
+        trim_material: netherite
         armor: 6
         toughness: 3
       boots:
         display_name: "Dreadplate Boots"
+        trim_pattern: rib
+        trim_material: redstone
         armor: 3
         toughness: 3
 
@@ -488,25 +519,33 @@ armor_sets:
       sea_creature_attack: 5.0
     pieces:
       helmet:
-        display_name: "Deadman Helmet"
+        material: LEATHER_HELMET
+        base_item: dead_rider_head
+        display_name: "Dead Rider's Head"
         armor: 3
         toughness: 2
-        durability: 275
+        durability: 600
       chestplate:
         display_name: "Deadman Chestplate"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 8
         toughness: 2
-        durability: 400
+        durability: 750
       leggings:
         display_name: "Deadman Leggings"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 6
         toughness: 2
-        durability: 375
+        durability: 700
       boots:
         display_name: "Deadman Boots"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 3
         toughness: 2
-        durability: 325
+        durability: 550
 
   # ── Hyena Pants ────────────────────────────────────────
   # Diamond-tier leggings stats with high mobility and SCC boost
@@ -547,9 +586,10 @@ armor_sets:
   # ── Magma Scale Armor ─────────────────────────────────────
   # +3.0 SCC, +3.0 SCD, +3.0 SCA per piece
   magma_scale:
-    material_type: GOLDEN
+    material_type: LEATHER
     rarity: UNCOMMON
     set_key: magma_scale_armor
+    leather_color: [78, 36, 8]
     bonus_key: rare_creature_chance
     bonus_value: 3.0
     extra_pdc:
@@ -559,29 +599,37 @@ armor_sets:
     pieces:
       helmet:
         display_name: "Magma Scale Helmet"
+        trim_pattern: wayfinder
+        trim_material: resin
         armor: 3
         toughness: 2
-        durability: 320
+        durability: 400
       chestplate:
         display_name: "Magma Scale Chestplate"
+        trim_pattern: raiser
+        trim_material: resin
         armor: 8
         toughness: 2
-        durability: 470
+        durability: 550
       leggings:
         display_name: "Magma Scale Leggings"
+        trim_pattern: raiser
+        trim_material: resin
         armor: 6
         toughness: 2
-        durability: 440
+        durability: 500
       boots:
         display_name: "Magma Scale Boots"
+        trim_pattern: silence
+        trim_material: resin
         armor: 3
         toughness: 2
-        durability: 360
+        durability: 400
 
   # ── Infernal Plate Armor ─────────────────────────────────
   # +7.5 SCC, +7.5 SCD, +7.5 SCA, −10% heat per piece
   infernal_plate:
-    material_type: DIAMOND
+    material_type: LEATHER
     rarity: EPIC
     set_key: infernal_plate_armor
     bonus_key: rare_creature_chance
@@ -593,24 +641,34 @@ armor_sets:
     pieces:
       helmet:
         display_name: "Infernal Plate Helmet"
+        leather_color: [99, 66, 29]
+        trim_pattern: bold
+        trim_material: resin
         armor: 3
         toughness: 3
         durability: 420
       chestplate:
         display_name: "Infernal Plate Chestplate"
+        leather_color: [92, 46, 15]
+        trim_pattern: silence
+        trim_material: gold
         armor: 8
         toughness: 3
         durability: 620
       leggings:
         display_name: "Infernal Plate Leggings"
+        leather_color: [90, 46, 17]
+        trim_pattern: tide
+        trim_material: resin
         armor: 6
         toughness: 3
         durability: 580
       boots:
         display_name: "Infernal Plate Boots"
-        material: GOLDEN_BOOTS
-        trim_material: netherite
+        leather_color: [92, 61, 40]
+        material: LEATHER_BOOTS
         trim_pattern: silence
+        trim_material: gold
         armor: 3
         toughness: 3
         durability: 500
@@ -629,28 +687,38 @@ armor_sets:
       heat_resistance: 15.0
     pieces:
       helmet:
+        material: LEATHER_HELMET
+        leather_color: [255, 89, 0]
         display_name: "Volcanic Dreadplate Helmet"
+        trim_pattern: silence
+        trim_material: netherite
         armor: 4
         toughness: 3
-        durability: 420
+        durability: 850
       chestplate:
+        material: LEATHER_CHESTPLATE
+        leather_color: [51, 50, 57]
         display_name: "Volcanic Dreadplate Chestplate"
+        trim_pattern: silence
+        trim_material: gold
         armor: 9
         toughness: 3
-        durability: 620
+        durability: 1000
       leggings:
         display_name: "Volcanic Dreadplate Leggings"
+        trim_pattern: sentry
+        trim_material: resin
         armor: 7
         toughness: 3
-        durability: 580
+        durability: 900
       boots:
         display_name: "Volcanic Dreadplate Boots"
-        material: GOLDEN_BOOTS
-        trim_material: netherite
-        trim_pattern: silence
+        material: NETHERITE_BOOTS
+        trim_pattern: rib
+        trim_material: gold
         armor: 4
         toughness: 3
-        durability: 500
+        durability: 800
 
 
 # ══════════════════════════════════════════════════════════
