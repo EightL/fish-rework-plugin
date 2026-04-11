@@ -9,7 +9,6 @@ import com.fishrework.registry.RecipeDefinition;
 import com.fishrework.util.FeatureKeys;
 import com.fishrework.util.FishingChanceSnapshotHelper;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -537,24 +536,26 @@ public class SkillDetailGUI extends BaseGUI {
         // Pagination
         setPaginationControls(45, 53, page, totalPages);
 
-        // Slot 46: Wiki button (fishing only)
+        // Slot 47: Settings button (fishing only)
         if (skill == Skill.FISHING) {
-            ItemStack wikiBtn = new ItemStack(Material.PAPER);
-            ItemMeta wikiMeta = wikiBtn.getItemMeta();
-            wikiMeta.displayName(Component.text("Wiki").color(NamedTextColor.AQUA)
+            ItemStack settingsBtn = new ItemStack(Material.COMPARATOR);
+            ItemMeta settingsMeta = settingsBtn.getItemMeta();
+            settingsMeta.displayName(Component.text("Settings").color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
-            wikiMeta.lore(List.of(
+            settingsMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Open the fishing wiki link").color(NamedTextColor.GRAY)
+                Component.text("Manage your fishing QoL toggles").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("(currently placeholder)").color(NamedTextColor.DARK_GRAY)
+                Component.text("for autosell, notifications,").color(NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("damage indicators, and particles.").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to get link in chat").color(NamedTextColor.GREEN)
+                Component.text("Click to open").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false)
             ));
-            wikiBtn.setItemMeta(wikiMeta);
-            inventory.setItem(46, wikiBtn);
+            settingsBtn.setItemMeta(settingsMeta);
+            inventory.setItem(47, settingsBtn);
 
             ItemStack recipeBrowserBtn = new ItemStack(Material.KNOWLEDGE_BOOK);
             ItemMeta recipeMeta = recipeBrowserBtn.getItemMeta();
@@ -641,14 +642,13 @@ public class SkillDetailGUI extends BaseGUI {
         } else if (event.getSlot() == 7 && skill == Skill.FISHING) {
             new CurrentFishChancesGUI(plugin, player, page).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-        } else if (event.getSlot() == 46 && skill == Skill.FISHING) {
-            String wikiUrl = plugin.getConfig().getString("tips.wiki_url", "https://fish-rework.vercel.app");
-            player.sendMessage(Component.text("Open Fishing Wiki: ", NamedTextColor.YELLOW)
-                .append(Component.text(wikiUrl, NamedTextColor.AQUA)
-                    .clickEvent(ClickEvent.openUrl(wikiUrl))
-                    .decoration(TextDecoration.UNDERLINED, true)
-                    .hoverEvent(Component.text("Click to open", NamedTextColor.GREEN)))
-                .decoration(TextDecoration.ITALIC, false));
+        } else if (event.getSlot() == 47 && skill == Skill.FISHING) {
+            new FishingSettingsGUI(plugin, player, reopenedPlayer -> {
+                SkillDetailGUI gui = new SkillDetailGUI(plugin, reopenedPlayer, skill);
+                gui.page = this.page;
+                gui.initializeItems();
+                gui.open(reopenedPlayer);
+            }).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 49 && skill == Skill.FISHING) {
             new RecipeBrowserGUI(plugin, player, 0,

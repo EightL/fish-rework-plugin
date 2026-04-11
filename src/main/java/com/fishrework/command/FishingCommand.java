@@ -2,6 +2,7 @@ package com.fishrework.command;
 
 import com.fishrework.FishRework;
 import com.fishrework.gui.LeaderboardGUI;
+import com.fishrework.gui.FishingSettingsGUI;
 import com.fishrework.gui.RecipeBrowserGUI;
 import com.fishrework.gui.RecipeGuideGUI;
 import com.fishrework.gui.SkillsMenuGUI;
@@ -58,6 +59,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerCommand(this::handleSell, "sell");
         registerCommand(this::handleAutoSell, "autosell");
         registerCommand(this::handleNotifications, "notifications");
+        registerCommand(this::handleSettings, "settings");
         registerCommand(this::handleXpMultiplier, "xpmultiplier");
         registerCommand(this::handleReload, "reload");
         registerCommand(this::handleHelp, "help");
@@ -260,6 +262,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         return true;
     }
 
+    private boolean handleSettings(Player player, String[] args) {
+        new FishingSettingsGUI(plugin, player,
+                reopenedPlayer -> new com.fishrework.gui.SkillDetailGUI(plugin, reopenedPlayer, Skill.FISHING).open(reopenedPlayer))
+                .open(player);
+        return true;
+    }
+
     private boolean handleXpMultiplier(Player player, String[] args) {
         if (args.length == 1) {
             double current = plugin.getConfig().getDouble("general.xp_multiplier", 1.0);
@@ -416,6 +425,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 .append(Component.text(" - Quick sell all fish from inventory").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing autosell").color(NamedTextColor.YELLOW)
                 .append(Component.text(" - Toggle auto-sell for common fish").color(NamedTextColor.GRAY)));
+        player.sendMessage(Component.text("/fishing settings").color(NamedTextColor.YELLOW)
+                .append(Component.text(" - Open fishing settings").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing notifications [on|off|toggle]").color(NamedTextColor.YELLOW)
             .append(Component.text(" - Toggle fishing tip notifications").color(NamedTextColor.GRAY)));
         player.sendMessage(Component.text("/fishing xpmultiplier [value]").color(NamedTextColor.YELLOW)
@@ -1059,6 +1070,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("stats");
             completions.add("sell");
             completions.add("autosell");
+            completions.add("settings");
             completions.add("notifications");
             completions.add("particles");
             completions.add("xpmultiplier");
