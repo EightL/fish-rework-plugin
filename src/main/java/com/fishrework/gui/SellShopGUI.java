@@ -225,9 +225,9 @@ public class SellShopGUI extends BaseGUI {
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.empty());
-            lore.add(Component.text("Sell Price: " + String.format("%.0f", entry.price) + " " + currencyName + " each")
+            lore.add(Component.text("Sell Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName + " each")
                     .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Buy Price: " + String.format("%.0f", buyPrice) + " " + currencyName + " each")
+            lore.add(Component.text("Buy Price: " + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + " each")
                     .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (POTTERY_SHERD_WILDCARD_ID.equals(entry.customId)) {
                 lore.add(Component.text("Counts all pottery sherd variants")
@@ -236,7 +236,7 @@ public class SellShopGUI extends BaseGUI {
             lore.add(Component.text("You have: " + count).color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
             if (count > 0) {
-                lore.add(Component.text("Total: " + String.format("%.0f", entry.price * count) + " " + currencyName)
+                lore.add(Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price * count) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(Component.text("Left-Click: Sell all").color(NamedTextColor.YELLOW)
@@ -280,7 +280,7 @@ public class SellShopGUI extends BaseGUI {
         double totalValue = calculateTotalSellValue(player);
         saMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Total value: " + String.format("%.0f", totalValue) + " " + currencyName)
+                Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.text("Click to sell everything!").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false)
@@ -311,7 +311,7 @@ public class SellShopGUI extends BaseGUI {
         sellOtherLore.add(Component.text("Found: " + otherCount).color(NamedTextColor.AQUA)
             .decoration(TextDecoration.ITALIC, false));
         if (otherCount > 0) {
-            sellOtherLore.add(Component.text("Total: " + String.format("%.0f", otherTotal) + " " + currencyName)
+            sellOtherLore.add(Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", otherTotal) + " " + currencyName)
                 .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
         }
         sellOtherLore.add(Component.empty());
@@ -363,7 +363,7 @@ public class SellShopGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
         inventory.setItem(53, balanceItem);
@@ -516,7 +516,7 @@ public class SellShopGUI extends BaseGUI {
                         plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
                     }
                     player.sendMessage(Component.text("Sold " + sold + "x " + entry.displayName + " for "
-                            + String.format("%.0f", earnings) + " " + currencyName + "!")
+                            + com.fishrework.util.FormatUtil.format("%.0f", earnings) + " " + currencyName + "!")
                             .color(NamedTextColor.GREEN));
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     initializeItems(); // Refresh
@@ -563,7 +563,7 @@ public class SellShopGUI extends BaseGUI {
         if (data == null) return;
 
         if (data.getBalance() < buyPrice) {
-            player.sendMessage(Component.text("You need " + String.format("%.0f", buyPrice) + " " + currencyName + " to buy "
+            player.sendMessage(Component.text("You need " + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + " to buy "
                     + entry.displayName + "!").color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
@@ -604,7 +604,7 @@ public class SellShopGUI extends BaseGUI {
         plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
 
         player.sendMessage(Component.text("Bought 1x " + entry.displayName + " for "
-                + String.format("%.0f", buyPrice) + " " + currencyName + "!")
+                + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + "!")
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.15f);
         initializeItems();
@@ -676,7 +676,7 @@ public class SellShopGUI extends BaseGUI {
                 plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
             }
             player.sendMessage(Component.text("Sold " + totalItems + " items for "
-                    + String.format("%.0f", totalEarnings) + " " + currencyName + "!")
+                    + com.fishrework.util.FormatUtil.format("%.0f", totalEarnings) + " " + currencyName + "!")
                     .color(NamedTextColor.GREEN));
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
             initializeItems();

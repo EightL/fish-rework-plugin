@@ -81,7 +81,7 @@ public class BossBarManager {
         if (progress < 0) progress = 0;
         if (progress > 1) progress = 1;
 
-        String title = String.format("§b%s Level %d §7(%.1f/%.1f)",
+        String title = com.fishrework.util.FormatUtil.format("§b%s Level %d §7(%.1f/%.1f)",
                 skill.getDisplayName(), data.getLevel(skill), currentXp, nextXp);
 
         BossBarData barData = activeBossBars.get(uuid);
@@ -215,7 +215,7 @@ public class BossBarManager {
 
     private String buildMobBossTitle(LivingEntity entity, String mobId, double maxHealth) {
         String name = resolveBossDisplayName(entity, mobId);
-        return String.format("%s (%.0f/%.0f)", name, Math.max(0.0, entity.getHealth()), maxHealth);
+        return com.fishrework.util.FormatUtil.format("%s (%.0f/%.0f)", name, Math.max(0.0, entity.getHealth()), maxHealth);
     }
 
     private String resolveBossDisplayName(LivingEntity entity, String mobId) {

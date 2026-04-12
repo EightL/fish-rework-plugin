@@ -338,7 +338,7 @@ public class CombatBonusListener implements Listener {
         Location loc = entity.getEyeLocation().add(offsetX, yOffset, offsetZ);
         TextDisplay display = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
 
-        display.text(Component.text(String.format("-%.1f", damage))
+        display.text(Component.text(com.fishrework.util.FormatUtil.format("-%.1f", damage))
                 .color(NamedTextColor.RED)
                 .decorate(TextDecoration.BOLD));
         display.setBillboard(Display.Billboard.CENTER);

@@ -68,7 +68,7 @@ public class SkillManager {
         boolean levelUp = data.addXp(skill, finalXp, levelManager);
 
         // Action bar
-        String actionMsg = "§b+ " + String.format("%.1f", finalXp) + " XP"
+        String actionMsg = "§b+ " + com.fishrework.util.FormatUtil.format("%.1f", finalXp) + " XP"
                 + (source != null ? " (" + source + ")" : "");
         player.sendActionBar(Component.text(actionMsg));
 
@@ -154,7 +154,7 @@ public class SkillManager {
                 pd.addBalance(milestoneReward);
                 pd.getSession().addDoubloonsEarned(milestoneReward);
                 String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-                player.sendMessage(Component.text("  \uD83C\uDFC6 Milestone Reward: " + String.format("%.0f", milestoneReward) + " " + currencyName + "!")
+                player.sendMessage(Component.text("  \uD83C\uDFC6 Milestone Reward: " + com.fishrework.util.FormatUtil.format("%.0f", milestoneReward) + " " + currencyName + "!")
                         .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
                         .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
@@ -184,9 +184,9 @@ public class SkillManager {
 
         if (dc > 0 || tr > 0 || xp > 0) {
             player.sendMessage(Component.text("   Attributes Gained:").color(NamedTextColor.GOLD));
-            if (dc > 0) player.sendMessage(Component.text("    + " + String.format("%.1f%%", dc) + " Double Catch Chance").color(NamedTextColor.GREEN));
-            if (tr > 0) player.sendMessage(Component.text("    + " + String.format("%.1f%%", tr) + " Treasure Chance").color(NamedTextColor.GREEN));
-            if (xp > 0) player.sendMessage(Component.text("    + " + String.format("%.2f", xp) + " XP Multiplier").color(NamedTextColor.GREEN));
+            if (dc > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", dc) + " Double Catch Chance").color(NamedTextColor.GREEN));
+            if (tr > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", tr) + " Treasure Chance").color(NamedTextColor.GREEN));
+            if (xp > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.2f", xp) + " XP Multiplier").color(NamedTextColor.GREEN));
         }
     }
 

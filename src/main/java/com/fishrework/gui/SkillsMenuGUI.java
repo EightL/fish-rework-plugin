@@ -51,8 +51,8 @@ public class SkillsMenuGUI extends BaseGUI {
         
         if (level < plugin.getLevelManager().getMaxLevel()) {
              lore.add(Component.text("Progress: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f", xp)).color(NamedTextColor.GREEN)) // Show total XP? Or relative?
-                .append(Component.text(" / " + String.format("%.0f", nextXp)).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", xp)).color(NamedTextColor.GREEN)) // Show total XP? Or relative?
+                .append(Component.text(" / " + com.fishrework.util.FormatUtil.format("%.0f", nextXp)).color(NamedTextColor.GREEN)));
              
              // Simple progress bar
              // [======....]
@@ -82,11 +82,11 @@ public class SkillsMenuGUI extends BaseGUI {
         lore.add(Component.text(" Fishing Speed: ").color(NamedTextColor.GRAY)
                 .append(Component.text("+" + fishingSpeed).color(NamedTextColor.GREEN)));
         lore.add(Component.text(" Treasure Chance: ").color(NamedTextColor.GRAY)
-                .append(Component.text("+" + String.format("%.1f", treasureChance + totemBonus) + "%").color(NamedTextColor.GREEN)));
+                .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", treasureChance + totemBonus) + "%").color(NamedTextColor.GREEN)));
         lore.add(Component.text(" Sea Creature Chance: ").color(NamedTextColor.GRAY)
-                .append(Component.text("+" + String.format("%.1f", rareChance) + "%").color(NamedTextColor.GREEN)));
+                .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", rareChance) + "%").color(NamedTextColor.GREEN)));
         lore.add(Component.text(" Double Catch: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f%%", levelDoubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", levelDoubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
         double flatAtk = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double flatDef = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
 
@@ -94,19 +94,19 @@ public class SkillsMenuGUI extends BaseGUI {
             double effectiveFlat = flatDef > 0 ? flatDef : 1.0;
             double value = effectiveFlat * (1.0 + scd / 100.0);
             lore.add(Component.text(" Sea Creature Defense: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            lore.add(Component.text("  (+" + String.format("%.1f", effectiveFlat) + " flat * " + String.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
+            lore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY));
         }
         if (sca > 0 || flatAtk > 0) {
             double effectiveFlat = flatAtk > 0 ? flatAtk : 1.0;
             double value = effectiveFlat * (1.0 + sca / 100.0);
             lore.add(Component.text(" Sea Creature Attack: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            lore.add(Component.text("  (+" + String.format("%.1f", effectiveFlat) + " flat * " + String.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
+            lore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY));
         }
         if (fishingXpBonus > 0) {
             lore.add(Component.text(" Fishing XP Bonus: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("+%.0f%%", fishingXpBonus)).color(NamedTextColor.GREEN)));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("+%.0f%%", fishingXpBonus)).color(NamedTextColor.GREEN)));
         }
 
         lore.add(Component.text(""));

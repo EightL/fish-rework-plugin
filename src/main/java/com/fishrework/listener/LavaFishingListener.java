@@ -402,7 +402,7 @@ public class LavaFishingListener implements Listener {
             String streakText = "⭐".repeat(Math.min(streakTier, 5));
             double bonus = (session.getStreakMultiplier() - 1.0) * 100;
             player.sendActionBar(Component.text(streakText + " Streak x" + session.getCurrentStreak()
-                    + " (+" + String.format("%.0f", bonus) + "% Bonus) " + streakText)
+                    + " (+" + com.fishrework.util.FormatUtil.format("%.0f", bonus) + "% Bonus) " + streakText)
                     .color(NamedTextColor.GOLD));
         }
     }

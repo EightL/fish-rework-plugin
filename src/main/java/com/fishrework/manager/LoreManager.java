@@ -123,57 +123,57 @@ public class LoreManager {
         if (treasureBonus > 0) {
             newLore.add(Component.text("Treasure Chance: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", treasureBonus) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", treasureBonus) + "%").color(STAT_VALUE_COLOR)));
         }
         if (rareChance > 0) {
             newLore.add(Component.text("Rare Creature Chance: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", rareChance) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", rareChance) + "%").color(STAT_VALUE_COLOR)));
         }
         if (fishingXpBonus > 0) {
             newLore.add(Component.text("Fishing XP Bonus: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.0f", fishingXpBonus) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.0f", fishingXpBonus) + "%").color(STAT_VALUE_COLOR)));
         }
         if (treasureChanceBonus > 0) {
             newLore.add(Component.text("Treasure Chance: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", treasureChanceBonus) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", treasureChanceBonus) + "%").color(STAT_VALUE_COLOR)));
         }
         if (seaCreatureDefense > 0) {
             newLore.add(Component.text("Sea Creature Defense: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", seaCreatureDefense) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", seaCreatureDefense) + "%").color(STAT_VALUE_COLOR)));
         }
         if (scFlatDefense > 0) {
             newLore.add(Component.text("Sea Creature Defense Modifier: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", scFlatDefense)).color(NamedTextColor.AQUA)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", scFlatDefense)).color(NamedTextColor.AQUA)));
         }
         if (seaCreatureAttack > 0) {
             newLore.add(Component.text("Sea Creature Attack: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", seaCreatureAttack) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", seaCreatureAttack) + "%").color(STAT_VALUE_COLOR)));
         }
         if (scFlatAttack > 0) {
             newLore.add(Component.text("Sea Creature Attack Modifier: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", scFlatAttack)).color(NamedTextColor.AQUA)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", scFlatAttack)).color(NamedTextColor.AQUA)));
         }
         if (doubleCatchBonus > 0) {
             newLore.add(Component.text("Double Catch: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text("+" + String.format("%.1f", doubleCatchBonus) + "%").color(STAT_VALUE_COLOR)));
+                    .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", doubleCatchBonus) + "%").color(STAT_VALUE_COLOR)));
         }
         if (bobberDamage > 0) {
             newLore.add(Component.text("Bobber Damage: ").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("%.1f", bobberDamage)).color(NamedTextColor.RED)));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", bobberDamage)).color(NamedTextColor.RED)));
         }
         if (heatResistance > 0) {
             newLore.add(Component.text("Heat Resistance: ").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)
-                .append(Component.text("+" + String.format("%.1f", heatResistance) + "%").color(heatResistanceColor)));
+                .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", heatResistance) + "%").color(heatResistanceColor)));
         }
 
         if (isNetherArmorPiece) {

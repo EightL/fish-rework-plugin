@@ -35,7 +35,7 @@ public class UpdateChecker {
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(String.format(API_URL, projectId)).openConnection();
+                HttpURLConnection conn = (HttpURLConnection) new URL(com.fishrework.util.FormatUtil.format(API_URL, projectId)).openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5_000);
                 conn.setReadTimeout(5_000);
@@ -79,7 +79,7 @@ public class UpdateChecker {
                 .append(Component.text("v" + latestVersion, NamedTextColor.GREEN)
                     .decorate(TextDecoration.BOLD))
                 .append(Component.text("  Click to download", NamedTextColor.GRAY)
-                    .clickEvent(ClickEvent.openUrl(String.format(MODRINTH_PAGE, projectId))))
+                    .clickEvent(ClickEvent.openUrl(com.fishrework.util.FormatUtil.format(MODRINTH_PAGE, projectId))))
         );
     }
 

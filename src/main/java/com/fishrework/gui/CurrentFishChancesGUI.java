@@ -75,10 +75,10 @@ public class CurrentFishChancesGUI extends BaseGUI {
                 .append(Component.text(snapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
         summaryLore.add(Component.text("Rare Bonus: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("+%.1f%%", snapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", snapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
         summaryLore.add(Component.text("Treasure Bonus: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("+%.1f%%", snapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", snapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
         if (snapshot.activeBaitId() != null && snapshot.activeBaitDisplayName() != null) {
             NamedTextColor baitColor = snapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
@@ -130,12 +130,12 @@ public class CurrentFishChancesGUI extends BaseGUI {
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("Chance: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.2f%%", chance)).color(NamedTextColor.YELLOW))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", chance)).color(NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
 
             if (!"land_mob_bonus".equals(id)) {
                 lore.add(Component.text("Weight: ").color(NamedTextColor.GRAY)
-                        .append(Component.text(String.format("%.1f", weight)).color(NamedTextColor.AQUA))
+                        .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", weight)).color(NamedTextColor.AQUA))
                         .decoration(TextDecoration.ITALIC, false));
                 if (mob != null) {
                     lore.add(Component.text("Required Level: ").color(NamedTextColor.GRAY)

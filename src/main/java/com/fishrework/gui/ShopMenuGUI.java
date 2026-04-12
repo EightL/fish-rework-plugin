@@ -82,7 +82,7 @@ public class ShopMenuGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
                 inventory.setItem(26, balanceItem);

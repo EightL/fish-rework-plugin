@@ -50,7 +50,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
                 Component.empty(),
                 Component.text("Items: " + totalItems).color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Total: " + String.format("%.0f", totalValue) + " " + currencyName)
+                Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
         ));
         info.setItemMeta(infoMeta);
@@ -127,7 +127,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
         }
 
         player.sendMessage(Component.text("Sold " + soldItems + " Other items for "
-                + String.format("%.0f", earnings) + " " + currencyName + "!")
+                + com.fishrework.util.FormatUtil.format("%.0f", earnings) + " " + currencyName + "!")
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
     }

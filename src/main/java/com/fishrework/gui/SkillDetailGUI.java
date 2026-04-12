@@ -65,7 +65,7 @@ public class SkillDetailGUI extends BaseGUI {
         if (progress < 0.0) progress = 0.0;
 
         this.bossBar = org.bukkit.Bukkit.createBossBar(
-                org.bukkit.ChatColor.GREEN + "Level Progress: " + String.format("%.1f", currentXp) + " / " + String.format("%.0f", nextXp),
+                org.bukkit.ChatColor.GREEN + "Level Progress: " + com.fishrework.util.FormatUtil.format("%.1f", currentXp) + " / " + com.fishrework.util.FormatUtil.format("%.0f", nextXp),
                 org.bukkit.boss.BarColor.GREEN,
                 org.bukkit.boss.BarStyle.SOLID
         );
@@ -158,28 +158,28 @@ public class SkillDetailGUI extends BaseGUI {
         double flatDef = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
 
         bonusLore.add(Component.text("\u25B6 Double Catch: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                .append(Component.text(String.format("%.1f%%", doubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", doubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
         if (equipDoubleCatch > 0) {
-            bonusLore.add(Component.text("  (" + String.format("+%.1f%%", equipDoubleCatch) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipDoubleCatch) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         bonusLore.add(Component.text("\u25B6 Treasure Chance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                .append(Component.text(String.format("+%.1f%%", treasure + totemBonus)).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", treasure + totemBonus)).color(NamedTextColor.GREEN)));
         if (totemBonus > 0) {
-            bonusLore.add(Component.text("  (" + String.format("+%.1f%%", totemBonus) + " from Treasure Totem)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", totemBonus) + " from Treasure Totem)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         double combinedMulti = multi * (1.0 + fishingXpBonus / 100.0);
         Component xpLine = Component.text("\u25B6 XP Multiplier ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
         if (fishingXpBonus > 0) {
-            xpLine = xpLine.append(Component.text("+" + String.format("%.0f%%", fishingXpBonus) + " ").color(NamedTextColor.GREEN));
+            xpLine = xpLine.append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.0f%%", fishingXpBonus) + " ").color(NamedTextColor.GREEN));
         }
-        bonusLore.add(xpLine.append(Component.text(String.format("x%.2f", combinedMulti)).color(NamedTextColor.GREEN)));
+        bonusLore.add(xpLine.append(Component.text(com.fishrework.util.FormatUtil.format("x%.2f", combinedMulti)).color(NamedTextColor.GREEN)));
         if (fishingXpBonus > 0) {
-            bonusLore.add(Component.text("  (" + String.format("+%.0f%%", fishingXpBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.0f%%", fishingXpBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         bonusLore.add(Component.text("\u25B6 Rare Creature: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                .append(Component.text(String.format("+%.1f%%", rareCreature + equipBonus)).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", rareCreature + equipBonus)).color(NamedTextColor.GREEN)));
         if (equipBonus > 0) {
-            bonusLore.add(Component.text("  (" + String.format("+%.1f%%", equipBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
 
         int fishingSpeed = plugin.getMobManager().getEquipmentFishingSpeed(player);
@@ -189,21 +189,21 @@ public class SkillDetailGUI extends BaseGUI {
             double effectiveFlat = flatDef > 0 ? flatDef : 1.0;
             double value = effectiveFlat * (1.0 + scd / 100.0);
             bonusLore.add(Component.text("\u25B6 Sea Creature Defense: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            bonusLore.add(Component.text("  (+" + String.format("%.1f", effectiveFlat) + " flat * " + String.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
+            bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (sca > 0 || flatAtk > 0) {
             double effectiveFlat = flatAtk > 0 ? flatAtk : 1.0;
             double value = effectiveFlat * (1.0 + sca / 100.0);
             bonusLore.add(Component.text("\u25B6 Sea Creature Attack: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            bonusLore.add(Component.text("  (+" + String.format("%.1f", effectiveFlat) + " flat * " + String.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
+            bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (currentLevel >= 27 || totalHeatResistance > 0.0) {
             bonusLore.add(Component.text("\u25B6 Heat Resistance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
-                .append(Component.text(String.format("+%.1f%%", totalHeatResistance)).color(NamedTextColor.GOLD)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", totalHeatResistance)).color(NamedTextColor.GOLD)));
             if (magmaFilterHeatResistance > 0.0 && magmaFilterRemainingSeconds > 0) {
-                bonusLore.add(Component.text("  (+" + String.format("%.1f", magmaFilterHeatResistance) + "% from Magma Filter, " + magmaFilterRemainingSeconds + "s left)")
+                bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", magmaFilterHeatResistance) + "% from Magma Filter, " + magmaFilterRemainingSeconds + "s left)")
                         .color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             }
@@ -226,10 +226,10 @@ public class SkillDetailGUI extends BaseGUI {
                     double baitXpMulti = activeBait.getBonus(com.fishrework.model.Bait.XP_MULTIPLIER);
                     double baitRareChance = activeBait.getBonus(com.fishrework.model.Bait.RARE_CREATURE_CHANCE);
 
-                    if (baitDoubleCatch > 0) bonusLore.add(Component.text("  + " + String.format("%.1f%%", baitDoubleCatch) + " Double Catch").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitTreasure > 0) bonusLore.add(Component.text("  + " + String.format("%.1f%%", baitTreasure) + " Treasure Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitXpMulti > 0) bonusLore.add(Component.text("  + " + String.format("%.0f%%", baitXpMulti) + " XP Multiplier").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitRareChance > 0) bonusLore.add(Component.text("  + " + String.format("%.1f%%", baitRareChance) + " Rare Creature Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitDoubleCatch > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitDoubleCatch) + " Double Catch").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitTreasure > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitTreasure) + " Treasure Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitXpMulti > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.0f%%", baitXpMulti) + " XP Multiplier").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitRareChance > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitRareChance) + " Rare Creature Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
                 }
             }
         }
@@ -256,10 +256,10 @@ public class SkillDetailGUI extends BaseGUI {
                 .append(Component.text(chanceSnapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
             chancesLore.add(Component.text("Rare Bonus: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("+%.1f%%", chanceSnapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", chanceSnapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
             chancesLore.add(Component.text("Treasure Bonus: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("+%.1f%%", chanceSnapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
+                .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", chanceSnapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
 
             if (chanceSnapshot.activeBaitId() != null && chanceSnapshot.activeBaitDisplayName() != null) {
@@ -295,7 +295,7 @@ public class SkillDetailGUI extends BaseGUI {
                 }
 
                 chancesLore.add(Component.text("• " + label + ": ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.2f%%", entry.getValue())).color(lineColor))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", entry.getValue())).color(lineColor))
                     .decoration(TextDecoration.ITALIC, false));
             }
             }
@@ -455,12 +455,12 @@ public class SkillDetailGUI extends BaseGUI {
                 StringBuilder bar = new StringBuilder();
                 for (int b = 0; b < bars; b++) bar.append(b < filled ? "\u2588" : "\u2591");
                 lore.add(Component.text(bar.toString()).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
-                        .append(Component.text(String.format(" %.1f%%", progressPct * 100)).color(NamedTextColor.YELLOW)));
-                lore.add(Component.text(String.format("XP: %.0f / %.0f", currentXp, nextXp))
+                        .append(Component.text(com.fishrework.util.FormatUtil.format(" %.1f%%", progressPct * 100)).color(NamedTextColor.YELLOW)));
+                lore.add(Component.text(com.fishrework.util.FormatUtil.format("XP: %.0f / %.0f", currentXp, nextXp))
                         .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
             } else if (!unlocked) {
                 double xpRequired = plugin.getLevelManager().getXpForLevel(level);
-                lore.add(Component.text(String.format("Requires: %.0f XP", xpRequired))
+                lore.add(Component.text(com.fishrework.util.FormatUtil.format("Requires: %.0f XP", xpRequired))
                         .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
             }
 
@@ -472,13 +472,13 @@ public class SkillDetailGUI extends BaseGUI {
             double lvlMulti = plugin.getLevelManager().getXpMultiplier(level);
 
             lore.add(Component.text("  Double Catch: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("%.1f%%", lvlDoubleCatch))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", lvlDoubleCatch))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
             lore.add(Component.text("  Treasure: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("+%.1f%%", lvlTreasure))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", lvlTreasure))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
             lore.add(Component.text("  XP Multi: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
-                    .append(Component.text(String.format("x%.2f", lvlMulti))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("x%.2f", lvlMulti))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
 
             // Show unlock info for any level with unlocks

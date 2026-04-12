@@ -291,7 +291,7 @@ public class FishingListener implements Listener {
             String streakText = "\u2B50".repeat(Math.min(streakTier, 5));
             double bonus = (streakMultiplier - 1.0) * 100;
             player.sendActionBar(Component.text(streakText + " Streak x" + session.getCurrentStreak()
-                    + " (+" + String.format("%.0f", bonus) + "% Bonus) " + streakText)
+                    + " (+" + com.fishrework.util.FormatUtil.format("%.0f", bonus) + "% Bonus) " + streakText)
                     .color(NamedTextColor.GOLD));
         }
         return streakMultiplier;
@@ -325,7 +325,7 @@ public class FishingListener implements Listener {
         session.addDoubloonsEarned(total);
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
         caughtItem.remove();
-        player.sendActionBar(Component.text("Auto-sold for " + String.format("%.0f", total) + " " + currencyName)
+        player.sendActionBar(Component.text("Auto-sold for " + com.fishrework.util.FormatUtil.format("%.0f", total) + " " + currencyName)
                 .color(NamedTextColor.GREEN));
 
         double finalBaseXp = applyXpMultipliers(baseXp, baitXpMultiplier, streakMultiplier);

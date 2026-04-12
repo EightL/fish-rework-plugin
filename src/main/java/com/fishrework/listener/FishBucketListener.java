@@ -88,7 +88,7 @@ public class FishBucketListener implements Listener {
                     
                     // Effects
                     player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);
-                    String weightStr = String.format("%.2f", weight);
+                    String weightStr = com.fishrework.util.FormatUtil.format("%.2f", weight);
                     player.sendMessage(Component.text("You caught the fish! (" + weightStr + "kg)").color(NamedTextColor.GREEN));
                     
                     // Advancement & Recipe

@@ -191,7 +191,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         double balance = data != null ? data.getBalance() : 0;
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        player.sendMessage(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+        player.sendMessage(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
                 .color(NamedTextColor.GOLD));
         return true;
     }
@@ -272,7 +272,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     private boolean handleXpMultiplier(Player player, String[] args) {
         if (args.length == 1) {
             double current = plugin.getConfig().getDouble("general.xp_multiplier", 1.0);
-            player.sendMessage(Component.text("Global XP multiplier: x" + String.format("%.2f", current))
+            player.sendMessage(Component.text("Global XP multiplier: x" + com.fishrework.util.FormatUtil.format("%.2f", current))
                     .color(NamedTextColor.AQUA));
             return true;
         }
@@ -285,7 +285,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             double requested = Double.parseDouble(args[1]);
             double maxMultiplier = plugin.getConfig().getDouble("general.xp_multiplier_max", 100.0);
             if (requested < 0.0 || requested > maxMultiplier) {
-                player.sendMessage(Component.text("Multiplier must be between 0.0 and " + String.format("%.1f", maxMultiplier) + ".")
+                player.sendMessage(Component.text("Multiplier must be between 0.0 and " + com.fishrework.util.FormatUtil.format("%.1f", maxMultiplier) + ".")
                         .color(NamedTextColor.RED));
                 return true;
             }
@@ -293,7 +293,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             plugin.getConfig().set("general.xp_multiplier", requested);
             plugin.saveConfig();
 
-            player.sendMessage(Component.text("Set global XP multiplier to x" + String.format("%.2f", requested))
+            player.sendMessage(Component.text("Set global XP multiplier to x" + com.fishrework.util.FormatUtil.format("%.2f", requested))
                     .color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
             player.sendMessage(Component.text("Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
@@ -521,9 +521,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         player.sendMessage(Component.text("  Treasures Found: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getTreasuresFound())).color(NamedTextColor.GOLD)));
         player.sendMessage(Component.text("  XP Earned: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.0f", session.getXpEarned())).color(NamedTextColor.AQUA)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getXpEarned())).color(NamedTextColor.AQUA)));
         player.sendMessage(Component.text("  " + currencyName + " Earned: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.0f", session.getDoubloonsEarned())).color(NamedTextColor.GREEN)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getDoubloonsEarned())).color(NamedTextColor.GREEN)));
         player.sendMessage(Component.text("  Levels Gained: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getLevelsGained())).color(NamedTextColor.YELLOW)));
         player.sendMessage(Component.text("  New Discoveries: ").color(NamedTextColor.GRAY)
@@ -589,7 +589,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
             }
             player.sendMessage(Component.text("Sold " + totalItems + " items for "
-                    + String.format("%.0f", totalEarnings) + " " + currencyName + "!")
+                    + com.fishrework.util.FormatUtil.format("%.0f", totalEarnings) + " " + currencyName + "!")
                     .color(NamedTextColor.GREEN));
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
         } else {
@@ -841,7 +841,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         if (snapshot.baitRareCreatureBonus() > 0 || snapshot.baitTreasureBonus() > 0) {
-            player.sendMessage(Component.text(String.format("Active Bait Bonus: +%.1f%% Rare, +%.1f%% Treasure",
+            player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Active Bait Bonus: +%.1f%% Rare, +%.1f%% Treasure",
                     snapshot.baitRareCreatureBonus(), snapshot.baitTreasureBonus()))
                 .color(NamedTextColor.AQUA));
         }
@@ -869,9 +869,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     }
                     
                     if (name.equals("land_mob_bonus")) {
-                         player.sendMessage(Component.text(String.format("- %s: %.2f%%", name, chance)).color(color));
+                         player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("- %s: %.2f%%", name, chance)).color(color));
                     } else {
-                         player.sendMessage(Component.text(String.format("- %s: %.2f%% (Weight: %.1f)", name, chance, weight)).color(color));
+                         player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("- %s: %.2f%% (Weight: %.1f)", name, chance, weight)).color(color));
                     }
                 });
     }
@@ -947,21 +947,21 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
         player.sendMessage(Component.text("--- Heat Debug (" + target.getName() + ") ---").color(NamedTextColor.GOLD));
         player.sendMessage(Component.text("Current Heat: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f / 100.0", data.getHeat())).color(NamedTextColor.RED)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f / 100.0", data.getHeat())).color(NamedTextColor.RED)));
         player.sendMessage(Component.text("Heat Tier: ").color(NamedTextColor.GRAY)
                 .append(Component.text(tier.name()).color(tier.getColor())));
         player.sendMessage(Component.text("Equipment Heat Resist: ").color(NamedTextColor.GRAY)
-            .append(Component.text(String.format("%.1f%%", equipmentHeatResist)).color(NamedTextColor.AQUA)));
+            .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", equipmentHeatResist)).color(NamedTextColor.AQUA)));
         player.sendMessage(Component.text("Magma Filter Resist: ").color(NamedTextColor.GRAY)
-            .append(Component.text(String.format("%.1f%%", tempHeatResist)).color(NamedTextColor.AQUA))
+            .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", tempHeatResist)).color(NamedTextColor.AQUA))
             .append(Component.text(magmaFilterRemaining > 0 ? " (" + magmaFilterRemaining + "s left)" : " (inactive)")
                 .color(magmaFilterRemaining > 0 ? NamedTextColor.YELLOW : NamedTextColor.DARK_GRAY)));
         player.sendMessage(Component.text("Total Heat Resist: ").color(NamedTextColor.GRAY)
-            .append(Component.text(String.format("%.1f%%", totalHeatResist)).color(NamedTextColor.GREEN)));
+            .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", totalHeatResist)).color(NamedTextColor.GREEN)));
         player.sendMessage(Component.text("Peak Heat (Session): ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f", data.getSession().getPeakHeat())).color(NamedTextColor.YELLOW)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", data.getSession().getPeakHeat())).color(NamedTextColor.YELLOW)));
         player.sendMessage(Component.text("Damage Taken: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.1f", data.getSession().getHeatDamageTaken())).color(NamedTextColor.DARK_RED)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", data.getSession().getHeatDamageTaken())).color(NamedTextColor.DARK_RED)));
     }
 
     private void adminSetHeat(Player player, String[] args) {
@@ -990,14 +990,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             plugin.getHeatManager().showHeatGauge(target, clampedHeat);
 
             if (requestedHeat != clampedHeat) {
-                player.sendMessage(Component.text(String.format("Set %s's heat to %.1f (clamped from %.1f)", target.getName(), clampedHeat, requestedHeat))
+                player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Set %s's heat to %.1f (clamped from %.1f)", target.getName(), clampedHeat, requestedHeat))
                         .color(NamedTextColor.YELLOW));
             } else {
-                player.sendMessage(Component.text(String.format("Set %s's heat to %.1f", target.getName(), clampedHeat))
+                player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Set %s's heat to %.1f", target.getName(), clampedHeat))
                         .color(NamedTextColor.GREEN));
             }
 
-            target.sendMessage(Component.text(String.format("Your lava heat was set to %.1f by an admin.", clampedHeat))
+            target.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Your lava heat was set to %.1f by an admin.", clampedHeat))
                     .color(NamedTextColor.GOLD));
         } catch (NumberFormatException e) {
             player.sendMessage(Component.text("Invalid heat amount. Use a number from 0 to 100.").color(NamedTextColor.RED));
@@ -1039,9 +1039,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         plugin.getDatabaseManager().saveBalance(target.getUniqueId(), amount);
 
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        player.sendMessage(Component.text("Set " + target.getName() + "'s balance to " + String.format("%.0f", amount) + " " + currencyName + ".")
+        player.sendMessage(Component.text("Set " + target.getName() + "'s balance to " + com.fishrework.util.FormatUtil.format("%.0f", amount) + " " + currencyName + ".")
                 .color(NamedTextColor.GREEN));
-        target.sendMessage(Component.text("Your balance was set to " + String.format("%.0f", amount) + " " + currencyName + " by an admin.")
+        target.sendMessage(Component.text("Your balance was set to " + com.fishrework.util.FormatUtil.format("%.0f", amount) + " " + currencyName + " by an admin.")
                 .color(NamedTextColor.GOLD));
     }
 

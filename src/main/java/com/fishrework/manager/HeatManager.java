@@ -188,7 +188,7 @@ public class HeatManager {
                 player.damage(damage);
                 data.getSession().addHeatDamageTaken(damage);
                 player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                        .append(Component.text("Due to heat, you took " + String.format("%.1f", damage) + " damage.")
+                        .append(Component.text("Due to heat, you took " + com.fishrework.util.FormatUtil.format("%.1f", damage) + " damage.")
                                 .color(NamedTextColor.RED)));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.75f, 0.8f);
                 player.getWorld().spawnParticle(Particle.FLAME, player.getLocation().add(0, 1, 0), 10, 0.25, 0.2, 0.25, 0.02);
@@ -255,12 +255,12 @@ public class HeatManager {
                 .append(Component.text("|".repeat(Math.max(0, filledBars))).color(tier.getColor()))
                 .append(Component.text("|".repeat(Math.max(0, emptyBars))).color(NamedTextColor.DARK_GRAY))
                 .append(Component.text("] ").color(NamedTextColor.GRAY))
-                .append(Component.text(String.format("%.1f", currentHeat) + "%").color(tier.getColor()));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", currentHeat) + "%").color(tier.getColor()));
 
         // Add SCC bonus indicator if any
         double sccBonus = getHeatSccBonus(player);
         if (sccBonus > 0) {
-            gauge = gauge.append(Component.text(" (+" + String.format("%.0f", sccBonus) + "% SCC)").color(NamedTextColor.AQUA));
+            gauge = gauge.append(Component.text(" (+" + com.fishrework.util.FormatUtil.format("%.0f", sccBonus) + "% SCC)").color(NamedTextColor.AQUA));
         }
 
         player.sendActionBar(gauge);

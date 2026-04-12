@@ -188,7 +188,7 @@ public class CollectionGui extends BaseGUI {
                 // Treasures and land mobs (Pigs, etc) don't have "Max Weight" logic that makes sense to users
                 boolean isAquatic = plugin.getMobManager().isAquatic(mob.getEntityType());
                 if (!mob.isTreasure() && isAquatic) {
-                    lore.add(Component.text("Max Weight: " + String.format("%.2f", maxWeight) + "kg")
+                    lore.add(Component.text("Max Weight: " + com.fishrework.util.FormatUtil.format("%.2f", maxWeight) + "kg")
                             .color(NamedTextColor.YELLOW)
                             .decoration(TextDecoration.ITALIC, false));
                 }
@@ -201,9 +201,9 @@ public class CollectionGui extends BaseGUI {
                 double baseXp = mob.getXp();
                 double finalXp = baseXp * xpMulti;
                 Component xpLine = Component.text("XP: ").color(NamedTextColor.GRAY)
-                        .append(Component.text(String.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
+                        .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
                 if (xpMulti > 1.0) {
-                     xpLine = xpLine.append(Component.text(String.format(" (x%.2f = %.0f)", xpMulti, finalXp))
+                     xpLine = xpLine.append(Component.text(com.fishrework.util.FormatUtil.format(" (x%.2f = %.0f)", xpMulti, finalXp))
                         .color(NamedTextColor.AQUA));
                 }
                 lore.add(xpLine.decoration(TextDecoration.ITALIC, false));
@@ -213,7 +213,7 @@ public class CollectionGui extends BaseGUI {
                 if (calculatePercents) {
                     // Use calculated percentage directly
                     double pct = mobChances.getOrDefault(mob.getId(), 0.0);
-                    chanceLine = chanceLine.append(Component.text(String.format("%.2f%% (in %s)", pct, filter.name().replace('_', ' ')))
+                    chanceLine = chanceLine.append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%% (in %s)", pct, filter.name().replace('_', ' ')))
                             .color(NamedTextColor.GREEN));
                             
                     // Land Mob Special Case Indicator
@@ -562,9 +562,9 @@ public class CollectionGui extends BaseGUI {
 
     private String formatDropChance(double chance) {
         double percent = Math.max(0.0, chance * 100.0);
-        if (percent >= 10.0) return String.format("%.0f%%", percent);
-        if (percent >= 1.0) return String.format("%.1f%%", percent);
-        if (percent > 0.0) return String.format("%.2f%%", percent);
+        if (percent >= 10.0) return com.fishrework.util.FormatUtil.format("%.0f%%", percent);
+        if (percent >= 1.0) return com.fishrework.util.FormatUtil.format("%.1f%%", percent);
+        if (percent > 0.0) return com.fishrework.util.FormatUtil.format("%.2f%%", percent);
         return "0%";
     }
 }

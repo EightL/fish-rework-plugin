@@ -83,7 +83,7 @@ public class XpSourcesGUI extends BaseGUI {
 
             // Chance component
             Component chanceComp = Component.text("Spawn Chance: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.2f%%", chance))
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", chance))
                             .color(chance > 0 ? NamedTextColor.AQUA : NamedTextColor.DARK_GRAY));
 
             if (mob.getRequiredLevel() > 0) {
@@ -100,9 +100,9 @@ public class XpSourcesGUI extends BaseGUI {
             double baseXp = mob.getXp();
             double finalXp = baseXp * xpMulti;
             Component xpComp = Component.text("XP: ").color(NamedTextColor.GRAY)
-                    .append(Component.text(String.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
+                    .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
             if (xpMulti > 1.0) {
-                xpComp = xpComp.append(Component.text(String.format(" (* %.2f = %.0f)", xpMulti, finalXp)).color(NamedTextColor.AQUA));
+                xpComp = xpComp.append(Component.text(com.fishrework.util.FormatUtil.format(" (* %.2f = %.0f)", xpMulti, finalXp)).color(NamedTextColor.AQUA));
             }
 
             ItemStack item = new ItemStack(mob.getCollectionIcon());
@@ -132,7 +132,7 @@ public class XpSourcesGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text("XP: ").color(NamedTextColor.GRAY)
-                .append(Component.text(String.format("%.0f", xp)).color(NamedTextColor.YELLOW)));
+                .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", xp)).color(NamedTextColor.YELLOW)));
         meta.lore(lore);
         item.setItemMeta(meta);
         inventory.setItem(slot, item);

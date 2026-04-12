@@ -71,7 +71,7 @@ public class FishBagGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         saMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Total value: " + String.format("%.0f", totalValue) + " " + currencyName)
+                Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
                 Component.text("Click to sell all bag contents!").color(NamedTextColor.YELLOW)
@@ -84,7 +84,7 @@ public class FishBagGUI extends BaseGUI {
         double balance = data != null ? data.getBalance() : 0;
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
         inventory.setItem(26, balanceItem);

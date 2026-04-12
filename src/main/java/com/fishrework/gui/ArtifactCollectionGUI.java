@@ -118,7 +118,7 @@ public class ArtifactCollectionGUI extends BaseGUI {
         headerLore.add(Component.empty());
         headerLore.add(Component.text("Collected: " + collected + "/" + total).color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
-        headerLore.add(Component.text("Artifact Chance: " + String.format("%.1f%%", artifactChance))
+        headerLore.add(Component.text("Artifact Chance: " + com.fishrework.util.FormatUtil.format("%.1f%%", artifactChance))
                 .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         headerLore.add(Component.empty());
         headerLore.add(Component.text("Rare collectibles found in").color(NamedTextColor.GRAY)

@@ -245,7 +245,7 @@ public class BuyShopGUI extends BaseGUI {
                 // Add price lore
                 List<Component> lore = meta.lore() != null ? new ArrayList<>(meta.lore()) : new ArrayList<>();
                 lore.add(Component.empty());
-                lore.add(Component.text("Price: " + String.format("%.0f", entry.price) + " " + currencyName)
+                lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
                     .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(Component.text("Click to buy 1").color(NamedTextColor.GREEN)
@@ -275,7 +275,7 @@ public class BuyShopGUI extends BaseGUI {
 
                 List<Component> lore = meta.lore() != null ? new ArrayList<>(meta.lore()) : new ArrayList<>();
                 lore.add(Component.empty());
-                lore.add(Component.text("Price: " + String.format("%.0f", entry.price) + " " + currencyName)
+                lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
                         .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(Component.text("Click to buy!").color(NamedTextColor.GREEN)
@@ -294,7 +294,7 @@ public class BuyShopGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + String.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
             inventory.setItem(BALANCE_SLOT, balanceItem);
@@ -352,7 +352,7 @@ public class BuyShopGUI extends BaseGUI {
 
         if (data.getBalance() < totalCost) {
             player.sendMessage(Component.text("Not enough " + currencyName + "! Need "
-                    + String.format("%.0f", totalCost) + " but have " + String.format("%.0f", data.getBalance()))
+                    + com.fishrework.util.FormatUtil.format("%.0f", totalCost) + " but have " + com.fishrework.util.FormatUtil.format("%.0f", data.getBalance()))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
@@ -379,7 +379,7 @@ public class BuyShopGUI extends BaseGUI {
         }
 
         player.sendMessage(Component.text("Bought " + totalBaits + "x " + clickedEntry.displayName + " for "
-                + String.format("%.0f", totalCost) + " " + currencyName
+                + com.fishrework.util.FormatUtil.format("%.0f", totalCost) + " " + currencyName
                 + "!")
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
