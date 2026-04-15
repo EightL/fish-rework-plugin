@@ -16,7 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
  * (Anvil, Grindstone, Smithing Table) that could strip their PDC metadata,
  * creating ungated duplicates or breaking gameplay balance.
  *
- * Exception: any damaged custom item can be repaired in an anvil using weird_material.
+ * Exceptions:
+ * - vanilla-compatible custom gear in the anvil base slot follows vanilla behavior
+ * - any damaged custom item can be repaired in an anvil using weird_material
  */
 public class AnvilProtectionListener implements Listener {
 
@@ -34,6 +36,10 @@ public class AnvilProtectionListener implements Listener {
         ItemStack addition = event.getInventory().getItem(1);
 
         if (tryPrepareCustomRepair(event, base, addition)) {
+            return;
+        }
+
+        if (isVanillaCompatibleCustomBase(base)) {
             return;
         }
 
@@ -76,6 +82,10 @@ public class AnvilProtectionListener implements Listener {
     }
 
     private static final String REPAIR_MATERIAL_ID = "weird_material";
+
+    private boolean isVanillaCompatibleCustomBase(ItemStack base) {
+        return base != null && plugin.getItemManager().isVanillaCompatibleCustomItem(base);
+    }
 
     private boolean tryPrepareCustomRepair(PrepareAnvilEvent event, ItemStack base, ItemStack addition) {
         if (base == null || base.getType().isAir() || addition == null || addition.getType().isAir()) {

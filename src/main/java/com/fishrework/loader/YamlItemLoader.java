@@ -353,6 +353,7 @@ public class YamlItemLoader {
 
         // PDC: registry id used for runtime refresh/rebuild lookups
         meta.getPersistentDataContainer().set(itemManager.CUSTOM_ITEM_KEY, PersistentDataType.STRING, registryId);
+        itemManager.setVanillaFallbackMaterial(meta, material);
 
         if (meta instanceof ArmorMeta armorMeta) {
             applyArmorTrim(armorMeta, registryId, trimMaterialKey, trimPatternKey);
@@ -491,6 +492,7 @@ public class YamlItemLoader {
         // PDC: registry id used for runtime refresh/rebuild lookups
         meta.getPersistentDataContainer().set(itemManager.CUSTOM_ITEM_KEY,
             PersistentDataType.STRING, registryId);
+        itemManager.setVanillaFallbackMaterial(meta, item.getType());
 
         // Custom durability
         if (durability > 0 && meta instanceof org.bukkit.inventory.meta.Damageable damageable) {
@@ -604,6 +606,7 @@ public class YamlItemLoader {
         // PDC: custom item id
         meta.getPersistentDataContainer().set(itemManager.CUSTOM_ITEM_KEY,
                 PersistentDataType.STRING, id);
+        itemManager.setVanillaFallbackMaterial(meta, material);
 
         // PDC: rarity
         meta.getPersistentDataContainer().set(itemManager.RARITY_KEY,

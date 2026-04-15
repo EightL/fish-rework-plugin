@@ -126,6 +126,7 @@ public class ItemManager {
     public final NamespacedKey LAVA_BOBBER_KEY;
     public final NamespacedKey HEAT_RESISTANCE_KEY;
     public final NamespacedKey HEPHAESTEANTRIDENTKEY;
+    public final NamespacedKey VANILLA_FALLBACK_MATERIAL_KEY;
 
     public ItemManager(FishRework plugin) {
         this.plugin = plugin;
@@ -171,6 +172,7 @@ public class ItemManager {
         this.LAVA_BOBBER_KEY = new NamespacedKey(plugin, "lava_bobber");
         this.HEAT_RESISTANCE_KEY = new NamespacedKey(plugin, "heat_resistance");
         this.HEPHAESTEANTRIDENTKEY = new NamespacedKey(plugin, "hephaesteantrident");
+        this.VANILLA_FALLBACK_MATERIAL_KEY = new NamespacedKey(plugin, "vanilla_fallback_material");
     }
 
     // ── Item Factories (Materials) ───────────────────────────
@@ -233,6 +235,37 @@ public class ItemManager {
     public String getCustomItemId(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return null;
         return item.getItemMeta().getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+    }
+
+    public void setVanillaFallbackMaterial(ItemMeta meta, Material material) {
+        if (meta == null || material == null) return;
+        meta.getPersistentDataContainer().set(
+                VANILLA_FALLBACK_MATERIAL_KEY,
+                PersistentDataType.STRING,
+                material.name()
+        );
+    }
+
+    public Material getVanillaFallbackMaterial(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return null;
+
+        String materialName = item.getItemMeta().getPersistentDataContainer().get(
+                VANILLA_FALLBACK_MATERIAL_KEY,
+                PersistentDataType.STRING
+        );
+        if (materialName == null || materialName.isBlank()) return null;
+
+        try {
+            return Material.valueOf(materialName.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            plugin.getLogger().warning("Invalid vanilla fallback material '" + materialName
+                    + "' on custom item '" + getCustomItemId(item) + "'.");
+            return null;
+        }
+    }
+
+    public boolean isVanillaCompatibleCustomItem(ItemStack item) {
+        return isCustomItem(item) && getVanillaFallbackMaterial(item) != null;
     }
 
     // ── Utility: Equipment Slot ──────────────────────────────
@@ -960,6 +993,7 @@ public class ItemManager {
         meta.getPersistentDataContainer().set(SEA_CREATURE_ATTACK_KEY, PersistentDataType.DOUBLE, 25.0);
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "gehenna");
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
+        setVanillaFallbackMaterial(meta, item.getType());
 
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
@@ -1002,6 +1036,7 @@ public class ItemManager {
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "megalodon_tooth");
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
         meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "megalodon_tooth"), PersistentDataType.BYTE, (byte) 1);
+        setVanillaFallbackMaterial(meta, item.getType());
 
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
