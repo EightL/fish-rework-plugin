@@ -62,12 +62,12 @@ fishing_tips:
   active_window_seconds: 600
   min_delay_seconds: 180
   max_delay_seconds: 420
-  wiki_url: "https://fish-rework.vercel.app"  # Used in tips that reference the wiki
+  wiki_url: "https://eightl-projects.vercel.app"  # Used in tips that reference the wiki
   tips:
     - "Use /fish or /fishing to open your fishing progression GUI."
     - "Use /fish help to list all available commands."
-    - "Visit the wiki for recipes, exact sea creature info, and custom item details: https://fish-rework.vercel.app"
-    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: https://fish-rework.vercel.app"
+    - "Visit the wiki for recipes, exact sea creature info, and custom item details: https://eightl-projects.vercel.app"
+    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: https://eightl-projects.vercel.app"
     - "Use /fish bag to store catches and keep your inventory clean."
     - "Use /fish autosell to auto-sell common fish while you grind."
     - "Use /fish notifications to toggle these tip notifications."

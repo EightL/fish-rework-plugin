@@ -28,6 +28,19 @@ TIP 2:
 Use /fs chances to see the creature pool and catch weights for the current biome.
 
 
+WIKI
+----
+
+Main wiki:
+https://eightl-projects.vercel.app
+
+Key pages:
+- https://eightl-projects.vercel.app/overview
+- https://eightl-projects.vercel.app/mechanics
+- https://eightl-projects.vercel.app/commands
+- https://eightl-projects.vercel.app/config
+
+
 FEATURES
 --------
 
@@ -108,9 +121,13 @@ All commands work under /fishing, /fish, or /fs.
 /fish               - Open the skills menu
 /fish chances       - Show current-biome creature chances
 /fish shop          - Open buy/sell shop
+/fish bag           - Open Fish Bag storage
+/fish balance       - Show Doubloons balance
 /fish recipe        - Open recipe browser
 /fish encyclopedia  - Show caught creature collection
 /fish artifacts     - Show artifact collection
+/fish stats         - Show session catch/combat stats
+/fish sync          - Re-sync recipes and advancement unlocks
 /fish heat          - Show lava heat level
 /fish autosell      - Toggle common-catch autosell
 /fish notifications - Toggle fishing tips
@@ -121,6 +138,7 @@ All commands work under /fishing, /fish, or /fs.
 Admin commands (requires fishrework.admin):
 
 /fish addxp         - Add fishing XP
+/fish setlevel      - Set fishing level
 /fish give          - Give custom item
 /fish spawn         - Spawn specific sea creature
 /fish reset         - Reset fishing progression
@@ -146,7 +164,7 @@ Config is split across:
 
 Individual systems (economy, lava fishing, mobs, advancements, etc.) can be toggled independently.
 
-Wiki: https://fish-rework.vercel.app
+Config guide: https://eightl-projects.vercel.app/config
 
 
 COMPATIBILITY

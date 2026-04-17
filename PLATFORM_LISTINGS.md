@@ -12,6 +12,16 @@ To get started, open up fishing GUI with `/fish`, and start fishing! Each level 
 
 
 >**TIP #2:** Type `/fs chances` which displays available sea creatures in the specific biome you are in.
+
+## Wiki
+
+Main wiki: **[eightl-projects.vercel.app](https://eightl-projects.vercel.app)**
+
+- Overview: [eightl-projects.vercel.app/overview](https://eightl-projects.vercel.app/overview)
+- Mechanics hub: [eightl-projects.vercel.app/mechanics](https://eightl-projects.vercel.app/mechanics)
+- Commands reference: [eightl-projects.vercel.app/commands](https://eightl-projects.vercel.app/commands)
+- Config guide: [eightl-projects.vercel.app/config](https://eightl-projects.vercel.app/config)
+
 ---
 
 ## Features
@@ -100,9 +110,13 @@ All commands work under `/fishing`, `/fish`, or `/fs`.
 | `/fish`               | Open the skills menu                            |
 | `/fish chances`       | Show sea creature chance pool for current biome |
 | `/fish shop`          | Buy/sell shop                                   |
+| `/fish bag`           | Open Fish Bag storage                           |
+| `/fish balance`       | Show Doubloons balance                          |
 | `/fish recipe`        | Browse crafting recipes                         |
 | `/fish encyclopedia`  | Creatures you've caught                         |
 | `/fish artifacts`     | Artifact collection                             |
+| `/fish stats`         | Show session catch/combat stats                 |
+| `/fish sync`          | Re-sync recipes and advancement unlocks         |
 | `/fish heat`          | Check your current heat level (lava fishing)    |
 | `/fish autosell`      | Toggle auto-selling common fish (experimental)  |
 | `/fish notifications` | Toggle fishing tips                             |
@@ -115,6 +129,7 @@ All commands work under `/fishing`, `/fish`, or `/fs`.
 | Command                | What it does                              |
 |------------------------|-------------------------------------------|
 | `/fish addxp`          | Add fishing XP to a player                |
+| `/fish setlevel`       | Set a player's fishing level               |
 | `/fish give`           | Give a custom item to a player            |
 | `/fish spawn`          | Spawn a specific sea creature             |
 | `/fish reset`          | Reset a player's fishing progression      |
@@ -134,7 +149,7 @@ Config is split across six files: `config.yml`, `mobs.yml`, `items.yml`, `biomes
 `recipes.yml`, and `artifacts.yml`. 
 Individual systems (economy, lava fishing, custom mobs, advancements, etc.) can each be toggled off independently.
 
-Wiki: **[fish-rework.vercel.app](https://fish-rework.vercel.app)**
+Config guide: **[eightl-projects.vercel.app/config](https://eightl-projects.vercel.app/config)**
 
 ---
 
