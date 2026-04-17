@@ -13,11 +13,45 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Allows the player to select a biome filter for the Encyclopedia.
  */
 public class BiomeSelectionGui extends BaseGUI {
+    private static final List<BiomeGroup> OVERWORLD_GROUP_ORDER = List.of(
+            BiomeGroup.COLD_OCEAN,
+            BiomeGroup.FROZEN_OCEAN,
+            BiomeGroup.NORMAL_OCEAN,
+            BiomeGroup.LUKEWARM_OCEAN,
+            BiomeGroup.WARM_OCEAN,
+            BiomeGroup.RIVER,
+            BiomeGroup.SWAMP,
+            BiomeGroup.BEACH,
+            BiomeGroup.LUSH_CAVES,
+            BiomeGroup.FOREST,
+            BiomeGroup.TAIGA,
+            BiomeGroup.SNOWY,
+            BiomeGroup.PLAINS,
+            BiomeGroup.JUNGLE,
+            BiomeGroup.SAVANNA,
+            BiomeGroup.DESERT,
+            BiomeGroup.MOUNTAINS,
+            BiomeGroup.BADLANDS,
+            BiomeGroup.MUSHROOM,
+            BiomeGroup.MEADOW,
+            BiomeGroup.DEEP_DARK,
+            BiomeGroup.PALE_GARDEN
+    );
+
+    private static final List<BiomeGroup> NETHER_GROUP_ORDER = List.of(
+            BiomeGroup.CRIMSON_FOREST,
+            BiomeGroup.WARPED_FOREST,
+            BiomeGroup.SOUL_SAND_VALLEY,
+            BiomeGroup.BASALT_DELTAS,
+            BiomeGroup.NETHER_WASTES
+    );
+
 
     private final Player player;
     private final BiomeGroup currentFilter;
@@ -149,6 +183,8 @@ public class BiomeSelectionGui extends BaseGUI {
             case BADLANDS: return Material.TERRACOTTA;
             case MUSHROOM: return Material.RED_MUSHROOM;
             case MEADOW: return Material.POPPY;
+            case DEEP_DARK: return Material.SCULK;
+            case PALE_GARDEN: return Material.WHITE_TULIP;
             case CRIMSON_FOREST: return Material.CRIMSON_NYLIUM;
             case WARPED_FOREST: return Material.WARPED_NYLIUM;
             case SOUL_SAND_VALLEY: return Material.SOUL_SAND;
@@ -196,26 +232,12 @@ public class BiomeSelectionGui extends BaseGUI {
     }
 
     private List<BiomeGroup> getVisibleGroups() {
-        if (biomeDimension == CollectionGui.BiomeDimension.NETHER) {
-            return List.of(
-                    BiomeGroup.CRIMSON_FOREST,
-                    BiomeGroup.WARPED_FOREST,
-                    BiomeGroup.SOUL_SAND_VALLEY,
-                    BiomeGroup.BASALT_DELTAS,
-                    BiomeGroup.NETHER_WASTES
-            );
-        }
+        List<BiomeGroup> orderedGroups = biomeDimension == CollectionGui.BiomeDimension.NETHER
+                ? NETHER_GROUP_ORDER
+                : OVERWORLD_GROUP_ORDER;
 
-        return List.of(
-                BiomeGroup.LUSH_CAVES,
-                BiomeGroup.JUNGLE,
-                BiomeGroup.DEEP_DARK,
-                BiomeGroup.NORMAL_OCEAN,
-                BiomeGroup.RIVER,
-                BiomeGroup.SWAMP,
-                BiomeGroup.FOREST,
-                BiomeGroup.DESERT,
-                BiomeGroup.MEADOW
-        );
+        return orderedGroups.stream()
+                .filter(group -> plugin.getBiomeFishingRegistry().has(group))
+                .collect(Collectors.toList());
     }
 }

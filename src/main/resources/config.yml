@@ -116,6 +116,20 @@ mobs:
 artifacts:
   chance: 3.0  # % chance to find an artifact in a treasure chest (per chest rarity)
 
+# Artifact Passive Buffs
+# Applied while carrying unique artifacts in inventory/armor/offhand.
+artifact_passives:
+  scan_interval_ticks: 20
+  caps:
+    rare_creature_chance: 15.0
+    treasure_chance: 15.0
+    fishing_xp_bonus: 20.0
+    double_catch_chance: 12.0
+    fishing_speed: 20.0
+    sea_creature_attack: 12.0
+    sea_creature_defense: 12.0
+    heat_resistance: 30.0
+
 # Enchantment Configuration
 enchantments:
   sea_creature_chance_max_level: 6  # Max level for Sea Creature Chance & Lure/LoTS enchants
@@ -154,16 +168,16 @@ combat:
       shot_interval_ticks: 6
       projectile_speed: 0.85
       spread: 0.12
-      projectile_damage: 6.0
+      projectile_damage: 4.2
       fire_ticks: 40
     heat_mark:
       range: 18.0
       duration_ticks: 80
-      bonus_damage: 5.0
+      bonus_damage: 3.5
       burn_ticks: 60
     magma_burst:
       radius: 5.2
-      damage: 8.0
+      damage: 5.6
       fire_ticks: 60
       knockback: 0.65
     lava_surge:
@@ -172,12 +186,12 @@ combat:
       lunge_y: 0.4
       impact_delay_ticks: 10
       impact_radius: 3.2
-      impact_damage: 10.0
+      impact_damage: 7.0
       impact_fire_ticks: 80
     hoglin_flamethrower:
       range: 8.0
       arc_degrees: 100.0
-      pulse_damage: 3.3
+      pulse_damage: 2.31
       fire_ticks: 90
       pulses: 10
       pulse_interval_ticks: 2
@@ -185,20 +199,20 @@ combat:
     brute_tusk_sweep:
       range: 4.8
       arc_degrees: 110.0
-      damage: 12.0
+      damage: 8.4
       knockback: 0.95
     warped_enderman_gaze:
       range: 16.0
       width: 2.7
       height: 3.0
-      damage: 20.4
-      dark_cone_damage: 3.1875
+      damage: 14.28
+      dark_cone_damage: 2.23125
       darkness_ticks: 60
       weakness_ticks: 80
     warped_enderman_snare:
       range: 18.0
       radius: 4.2
-      damage: 10.2
+      damage: 7.14
       pull_strength: 0.95
       slowness_ticks: 80
       charge_ticks: 20
@@ -206,8 +220,8 @@ combat:
       range: 16.0
       width: 3.2
       height: 3.8
-      damage: 18.8
-      dark_cone_damage: 4.27
+      damage: 13.16
+      dark_cone_damage: 2.989
       pulse_travel_ticks: 28
       tentacles: 4
       tentacle_duration_ticks: 34
@@ -219,13 +233,13 @@ combat:
     riftbound_snare:
       range: 18.0
       radius: 4.2
-      damage: 12.2
+      damage: 8.54
       pull_strength: 0.95
       slowness_ticks: 80
       charge_ticks: 60
     soul_rupture:
       radius: 5.2
-      damage: 9.0
+      damage: 6.3
       weakness_ticks: 90
       wither_ticks: 50
     soul_geysers:
@@ -235,13 +249,13 @@ combat:
       pulse_interval_ticks: 8
       column_height: 3.2
       hit_radius: 0.9
-      hit_damage: 7.0
+      hit_damage: 4.9
       blind_ticks: 60
     valley_dirge:
       radius: 6.4
       pulses: 3
       pulse_interval_ticks: 10
-      damage_per_pulse: 4.5
+      damage_per_pulse: 3.15
       darkness_ticks: 50
       pull_strength: 0.55
     magma_eye_lasers:
@@ -258,7 +272,7 @@ combat:
       speed: 0.58
       turn_strength: 0.24
       hit_radius: 1.7
-      hit_damage: 14.0
+      hit_damage: 9.8
       hit_fire_ticks: 90
     blood_tongue:
       range: 52.0
@@ -266,7 +280,7 @@ combat:
       speed: 0.50
       turn_strength: 0.1
       hit_radius: 1.2
-      hit_damage: 25.0
+      hit_damage: 17.5
       yank_strength: 0.75
       wither_ticks: 60
     blood_explosion:
@@ -275,7 +289,7 @@ combat:
       phase1_ticks: 30
       phase2_ticks: 30
       phase3_ticks: 24
-      final_damage: 35.0
+      final_damage: 24.5
       knockback: 1.0
     blood_yoke:
       range: 36.7
@@ -283,21 +297,21 @@ combat:
       charge_speed: 1.45
       rush_duration_ticks: 16
       hit_radius: 2.25
-      impact_damage: 8.0
+      impact_damage: 5.6
       tether_duration_ticks: 30
       break_distance: 5.5
       drag_strength: 0.2
-      chip_damage: 4.0
+      chip_damage: 2.8
       chip_interval_ticks: 10
     war_drum:
       inner_radius: 3.36
       middle_radius: 6.0
       outer_radius: 8.64
       beat_interval_ticks: 10
-      first_damage: 6.0
-      second_damage: 7.5
-      third_damage: 9.0
-      finale_damage: 12.0
+      first_damage: 4.2
+      second_damage: 5.25
+      third_damage: 6.3
+      finale_damage: 8.4
       finale_knockback: 0.95
     fire_geysers:
       field_radius: 8.5
@@ -306,12 +320,12 @@ combat:
       pulse_interval_ticks: 8
       column_height: 3.6
       hit_radius: 1.0
-      hit_damage: 8.0
+      hit_damage: 5.6
       fire_ticks: 90
     strider_lava_spew:
       range: 14.0
       arc_degrees: 120.0
-      pulse_damage: 4.5
+      pulse_damage: 3.15
       fire_ticks: 80
       pulses: 14
       pulse_interval_ticks: 2
@@ -321,7 +335,7 @@ combat:
       slash_length: 7.0
       charge_ticks: 18
       hit_radius: 0.95
-      hit_damage: 13.75
+      hit_damage: 9.625
       fire_ticks: 80
     wither_lances:
       range: 24.0
@@ -329,12 +343,12 @@ combat:
       spread: 6.0
       telegraph_ticks: 18
       hit_radius: 1.2
-      hit_damage: 12.0
+      hit_damage: 8.4
       wither_ticks: 80
     abyssal_nova:
       radius: 7.5
       charge_ticks: 26
-      damage: 18.0
+      damage: 12.6
       wither_ticks: 100
       knockback: 0.75
     torso_tentacles:
@@ -345,15 +359,15 @@ combat:
       speed: 0.31
       turn_strength: 0.28
       hit_radius: 0.9
-      hit_damage: 6.0
-      graze_damage: 1.8
+      hit_damage: 4.2
+      graze_damage: 1.26
     wailing_twin_laser:
       range: 42.0
       pulses: 4
       pulse_interval_ticks: 5
       beam_step: 0.7
       beam_radius: 1.3
-      pulse_damage: 10.0
+      pulse_damage: 7.0
       fire_ticks: 60
     wailing_twin_toxic_spit:
       range: 38.0
@@ -361,14 +375,14 @@ combat:
       shot_interval_ticks: 7
       projectile_speed: 1.05
       spread: 0.075
-      projectile_damage: 8.0
+      projectile_damage: 5.6
       poison_ticks: 70
       poison_amplifier: 1
     poseidon_wave:
       range: 14.0
       width: 3.8
       height: 2.4
-      damage: 28.0
+      damage: 19.6
       knockback: 0.65               # Reduced from the original wave shove
       vertical_knockback: 0.14      # Lower launch so Poseidon feels less punishing
       slowness_ticks: 60
@@ -376,7 +390,7 @@ combat:
       range: 24.0
       strikes: 6
       strike_spread: 5.0
-      strike_damage: 9.0
+      strike_damage: 6.3
 
 items:
   hephaesteantrident:
@@ -472,7 +486,7 @@ sea_creature_upgrade:
 mob_balance:
   size_variance_percent: 0.3        # Max random size/weight variance (0.3 = 0-30%)
   hostile_default_health_mult: 2.0  # Default health multiplier for hostile mobs without explicit config
-  hostile_default_damage_mult: 2.0  # Default damage multiplier for hostile mobs without explicit config
+  hostile_default_damage_mult: 1.4  # Default damage multiplier for hostile mobs without explicit config
   initial_aggro_range: 32           # Range (blocks) to find nearest player for initial aggro
   hostile_retarget_range: 24.0      # Range for hostile mobs to find new target when current is lost
   passive_aggro_search_range: 32.0  # Range for passive-aggro mobs to search for players
@@ -796,6 +810,7 @@ features:
   recipe_browser_enabled: true   # /fish recipe browser
   encyclopedia_enabled: true     # /fish encyclopedia (fishing collection)
   artifact_collection_enabled: true  # /fish artifacts collection
+  artifact_passives_enabled: true    # Passive buffs from carried artifacts
 
   # Gameplay
   lava_fishing_enabled: true     # Nether lava fishing system

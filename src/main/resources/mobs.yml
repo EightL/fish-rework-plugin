@@ -125,7 +125,7 @@ mobs:
       max: 2
     spawn:
       health_multiplier: 1.0
-      damage_multiplier: 1.0
+      damage_multiplier: 0.7
 
   guardian:
     entity_type: GUARDIAN
@@ -146,7 +146,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 1.0
-      damage_multiplier: 1.0
+      damage_multiplier: 0.7
 
   elder_guardian:
     entity_type: ELDER_GUARDIAN
@@ -166,8 +166,8 @@ mobs:
       min: 2
       max: 4
     spawn:
-      health_multiplier: 0.7
-      damage_multiplier: 2.0
+      health_multiplier: 0.84
+      damage_multiplier: 2.2
 
   # ===========================================================================
   # Epic Boss
@@ -202,11 +202,11 @@ mobs:
         show_name: false
         aggro:
           speed: 1.0
-          damage: 24.0
+          damage: 16.8
           range: 2.5
           hit_interval: 30
       health: 800.0
-      damage: 12.0
+      damage: 8.4
       name_color: RED
       equipment:
         helmet: dead_rider_head
@@ -251,7 +251,7 @@ mobs:
       max: 1
     spawn:
       health: 300.0
-      damage_multiplier: 1.25
+      damage_multiplier: 0.875
       not_player_created: true
       abilities:
       - id: GROUND_SLAM
@@ -284,11 +284,11 @@ mobs:
       - entity_type: PILLAGER
         count: 2
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: VINDICATOR
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
 
   pillager_quartet:
     entity_type: PILLAGER
@@ -315,15 +315,15 @@ mobs:
       - entity_type: PILLAGER
         count: 2
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: VINDICATOR
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: EVOKER
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
 
   pillager_quintet:
     entity_type: PILLAGER
@@ -350,24 +350,24 @@ mobs:
       - entity_type: PILLAGER
         count: 2
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: VINDICATOR
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: EVOKER
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: RAVAGER
         count: 1
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
         show_name: false
         rider:
           entity_type: PILLAGER
           health_multiplier: 2.0
-          damage_multiplier: 2.0
+          damage_multiplier: 1.4
 
   # ===========================================================================
   # Scorched Earth Hostiles
@@ -410,7 +410,7 @@ mobs:
       max: 2
     spawn:
       health_multiplier: 2.0
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
       equipment:
         mainhand: "enchanted:BOW:POWER:3"
 
@@ -437,14 +437,9 @@ mobs:
         entity_type: CAMEL_HUSK
         display_name: "Dune Steed"
         show_name: false
-        aggro:
-          speed: 1.3
-          damage: 20.0
-          range: 2.5
-          hit_interval: 30
       rider_entity_type: PARCHED
       health: 400.0
-      damage_multiplier: 2.0
+      damage_multiplier: 2.2
       name_color: GOLD
       abilities:
       - id: DUNE_BEAM
@@ -494,7 +489,7 @@ mobs:
     spawn:
       type: SCALED
       slime_size: 4
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
       group_kill_all: true
 
   witch:
@@ -513,7 +508,7 @@ mobs:
       health_multiplier: 2.0
       aggro:
         speed: 1.2
-        damage: 12.0
+        damage: 8.4
         range: 2.5
         hit_interval: 19
       particle: potion
@@ -539,7 +534,7 @@ mobs:
       type: SCALED
       slime_size: 8
       health: 600.0
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
       group_kill_all: true
       name_color: DARK_GREEN
       abilities:
@@ -575,7 +570,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 2.0
-      damage_multiplier: 1.0
+      damage_multiplier: 0.7
 
   stampede_bull:
     entity_type: RAVAGER
@@ -595,8 +590,8 @@ mobs:
       min: 1
       max: 2
     spawn:
-      health_multiplier: 1.0
-      damage_multiplier: 1.5
+      health_multiplier: 1.3
+      damage_multiplier: 1.65
 
   vulture_king:
     entity_type: PHANTOM
@@ -617,8 +612,8 @@ mobs:
       max: 1
     spawn:
       scale: 1.8
-      health: 80.0
-      damage: 30.0
+      health: 104.0
+      damage: 24.0
       abilities:
       - id: VULTURE_MISSILE
         cooldown_ticks: 240
@@ -694,7 +689,7 @@ mobs:
         entity_type: PANDA
         display_name: "Jungle Guardian"
         show_name: true
-        damage_multiplier: 4.0
+        damage_multiplier: 2.8
         panda_gene: AGGRESSIVE
         name_color: DARK_GREEN
       health: 304.0
@@ -732,7 +727,7 @@ mobs:
       max: 1
     spawn:
       health: 60.0
-      damage_multiplier: 2.0
+      damage_multiplier: 1.4
       name_color: DARK_AQUA
 
   great_white:
@@ -757,7 +752,7 @@ mobs:
       health: 60.0
       aggro:
         speed: 1.5
-        damage: 24.0
+        damage: 16.8
         range: 5.0
         hit_interval: 30
       abilities:
@@ -793,7 +788,7 @@ mobs:
       particle: gore
       aggro:
         speed: 1.8
-        damage: 22.5
+        damage: 15.75
         range: 10.0
         hit_interval: 40
       abilities:
@@ -836,11 +831,11 @@ mobs:
         scale: 3.0
         aggro:
           speed: 1.6
-          damage: 12.75
+          damage: 8.925
           range: 5.0
           hit_interval: 40
       health: 750
-      damage: 40.0
+      damage: 28.0
       name_color: AQUA
       abilities:
       - id: POSEIDON_WAVE
@@ -899,7 +894,7 @@ mobs:
       max: 2
     spawn:
       health_multiplier: 1.5
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
       particle: blood_light
 
   frost_phantom:
@@ -922,7 +917,7 @@ mobs:
     spawn:
       scale: 2.0
       health_multiplier: 2.0
-      damage_multiplier: 8.0
+      damage_multiplier: 5.6
       abilities:
       - id: FROST_BEAM
         cooldown_ticks: 120
@@ -954,7 +949,7 @@ mobs:
       health: 40.0
       aggro:
         speed: 1.3
-        damage: 24.0
+        damage: 16.8
         range: 2.5
         hit_interval: 30
 
@@ -977,7 +972,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 3.0
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
 
   cave_spider:
     entity_type: CAVE_SPIDER
@@ -1021,10 +1016,10 @@ mobs:
         display_name: "Arachne Knight"
         show_name: false
         scale: 1.5
-        damage_multiplier: 4.0
+        damage_multiplier: 2.8
         aggro:
           speed: 1.5
-          damage: 8.0
+          damage: 5.6
           range: 5.0
           hit_interval: 20
       rider_entity_type: SKELETON
@@ -1063,7 +1058,7 @@ mobs:
       health: 40.0
       aggro:
         speed: 1.2
-        damage: 12.0
+        damage: 8.4
         range: 2.5
         hit_interval: 25
 
@@ -1090,7 +1085,7 @@ mobs:
       max: 2
     spawn:
       health_multiplier: 0.5
-      damage_multiplier: 0.8
+      damage_multiplier: 0.56
       abilities:
       - id: DARK_RITUAL
         cooldown_ticks: 160
@@ -1123,8 +1118,8 @@ mobs:
       min: 1
       max: 1
     spawn:
-      health_multiplier: 5.0
-      damage_multiplier: 7.0
+      health_multiplier: 6.0
+      damage_multiplier: 7.7
       potion_effects:
       - type: ABSORPTION
         duration: -1
@@ -1163,7 +1158,7 @@ mobs:
         name_color: GRAY
         aggro:
           speed: 1.2
-          damage: 24.0
+          damage: 16.8
           range: 2.5
           hit_interval: 25
         potion_effects:
@@ -1742,7 +1737,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 3.5
-      damage_multiplier: 3.0
+      damage_multiplier: 2.1
       abilities:
       - id: EMBER_VOLLEY
         cooldown_ticks: 120
@@ -1778,7 +1773,7 @@ mobs:
     spawn:
       type: SCALED
       slime_size: 4
-      damage_multiplier: 5.0
+      damage_multiplier: 3.5
       group_kill_all: true
       abilities:
       - id: MAGMA_BURST
@@ -1862,7 +1857,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 3.0
-      damage_multiplier: 3.5
+      damage_multiplier: 2.45
       equipment:
         mainhand: "enchanted:GOLDEN_SWORD:FIRE_ASPECT:2"
 
@@ -1982,7 +1977,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 3.5
-      damage_multiplier: 2.5
+      damage_multiplier: 1.75
       abilities:
       - id: HOGLIN_FLAMETHROWER
         cooldown_ticks: 150
@@ -2022,11 +2017,11 @@ mobs:
       - entity_type: PIGLIN
         count: 3
         health_multiplier: 2.0
-        damage_multiplier: 2.0
+        damage_multiplier: 1.4
       - entity_type: PIGLIN_BRUTE
         count: 1
         health_multiplier: 3.0
-        damage_multiplier: 3.0
+        damage_multiplier: 2.1
 
   crimson_abomination:
     entity_type: HOGLIN
@@ -2055,13 +2050,13 @@ mobs:
         scale: 2.0
         aggro:
           speed: 0.45
-          damage: 10.0
+          damage: 7.0
           range: 3.0
           hit_interval: 30
       rider_entity_type: ZOMBIFIED_PIGLIN
       scale: 1.5
       health: 447.6
-      damage_multiplier: 1.5
+      damage_multiplier: 1.05
       name_color: DARK_RED
       equipment:
         chestplate: "dyed_trimmed:LEATHER_CHESTPLATE:#6E0F18:NETHERITE:SNOUT"
@@ -2152,7 +2147,7 @@ mobs:
       max: 3
     spawn:
       health_multiplier: 3.0
-      damage_multiplier: 1.7
+      damage_multiplier: 1.19
       potion_effects:
       - type: SLOWNESS
         duration: -1
@@ -2186,7 +2181,7 @@ mobs:
       max: 7
     spawn:
       health: 700.0
-      damage_multiplier: 1.012
+      damage_multiplier: 0.7084
       scale: 2.35
       name_color: DARK_PURPLE
       glow_color: BLACK
@@ -2259,7 +2254,7 @@ mobs:
       max: 1
     spawn:
       health_multiplier: 6.75
-      damage_multiplier: 2.25
+      damage_multiplier: 1.575
       equipment:
         mainhand: "enchanted:DIAMOND_SWORD:FIRE_ASPECT:2"
 
@@ -2361,7 +2356,7 @@ mobs:
       max: 3
     spawn:
       health_multiplier: 2.0
-      damage_multiplier: 1.0
+      damage_multiplier: 0.7
       not_player_created: true
       abilities:
       - id: MAGMA_EYE_LASERS
@@ -2393,7 +2388,7 @@ mobs:
     spawn:
       scale: 1.8
       health: 1170.0
-      damage: 8.0
+      damage: 5.6
       name_color: DARK_PURPLE
       glow_color: DARK_GRAY
       abilities:
@@ -2449,11 +2444,11 @@ mobs:
         scale: 2.0
         aggro:
           speed: 1.5
-          damage: 7.0
+          damage: 4.9
           range: 3.0
           hit_interval: 30
       health: 910.0
-      damage: 16.0
+      damage: 11.2
       name_color: DARK_RED
       equipment:
         helmet: "skull:eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjAzNTRiMDc5Y2VhMDBmMTFhMjhlN2MyMWJhOWMxM2ExN2NjY2IwNjA1NjAxOWNiNGM2NGJjMjQzNTc1NTI5YSJ9fX0="

@@ -9,6 +9,7 @@ import com.fishrework.loader.YamlBiomeLoader;
 import com.fishrework.loader.YamlItemLoader;
 import com.fishrework.loader.YamlMobLoader;
 import com.fishrework.manager.AdvancementManager;
+import com.fishrework.manager.ArtifactPassiveManager;
 import com.fishrework.manager.BossBarManager;
 import com.fishrework.manager.ItemManager;
 import com.fishrework.manager.LavaCreatureManager;
@@ -74,6 +75,7 @@ public class FishRework extends JavaPlugin {
     private LavaFishingListener lavaFishingListener;
     private LavaCreatureManager lavaCreatureManager;
     private LavaRingManager lavaRingManager;
+    private ArtifactPassiveManager artifactPassiveManager;
     private RecipeCraftingManager recipeCraftingManager;
 
     // Registries
@@ -118,6 +120,7 @@ public class FishRework extends JavaPlugin {
         netheriteRelicManager = new com.fishrework.manager.NetheriteRelicManager(this);
         lavaCreatureManager = new LavaCreatureManager(this);
         lavaRingManager = new LavaRingManager(this);
+        artifactPassiveManager = new ArtifactPassiveManager(this);
 
         // ── 2. Registries ──
         mobRegistry = new MobRegistry();
@@ -197,6 +200,9 @@ public class FishRework extends JavaPlugin {
         if (isFeatureEnabled(FeatureKeys.LAVA_FISHING_ENABLED)) {
             lavaRingManager.start();
         }
+        if (isFeatureEnabled(FeatureKeys.ARTIFACT_PASSIVES_ENABLED)) {
+            artifactPassiveManager.start();
+        }
 
         // ── 5b. Start TotemManager tick task ──
         if (isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) {
@@ -264,6 +270,7 @@ public class FishRework extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
         if (totemManager != null) totemManager.stop();
         if (lavaRingManager != null) lavaRingManager.shutdown();
+        if (artifactPassiveManager != null) artifactPassiveManager.shutdown();
         if (lavaCreatureManager != null) lavaCreatureManager.shutdown();
         for (PlayerData data : playerDataMap.values()) {
             databaseManager.savePlayer(data);
@@ -460,6 +467,10 @@ public class FishRework extends JavaPlugin {
 
     public LavaCreatureManager getLavaCreatureManager() {
         return lavaCreatureManager;
+    }
+
+    public ArtifactPassiveManager getArtifactPassiveManager() {
+        return artifactPassiveManager;
     }
 
     public void markFishingActivity(org.bukkit.entity.Player player) {

@@ -598,49 +598,53 @@ upgrade:
     result: volcanic_dreadplate_helmet
     level: 42
     pattern:
-      - "SVS"
+      - "EVE"
       - "SHS"
       - "   "
     ingredients:
       H: infernal_plate_helmet
       S: enchanted_soul_essence
       V: volcanic_core
+      E: enchanted_ghast_membrane
 
   volcanic_dreadplate_chestplate_recipe:
     result: volcanic_dreadplate_chestplate
     level: 42
     pattern:
       - "S S"
-      - "SHS"
+      - "LHL"
       - "SVS"
     ingredients:
       H: infernal_plate_chestplate
       S: enchanted_soul_essence
       V: volcanic_core
+      L: enchanted_ghast_membrane
 
   volcanic_dreadplate_leggings_recipe:
     result: volcanic_dreadplate_leggings
     level: 42
     pattern:
       - "SVS"
-      - "SHS"
+      - "BHB"
       - "S S"
     ingredients:
       H: infernal_plate_leggings
       S: enchanted_soul_essence
       V: volcanic_core
+      W: enchanted_wither_bone
 
   volcanic_dreadplate_boots_recipe:
     result: volcanic_dreadplate_boots
     level: 42
     pattern:
       - "SHS"
-      - "SVS"
+      - "WVW"
       - "   "
     ingredients:
       H: infernal_plate_boots
       S: enchanted_soul_essence
       V: volcanic_core
+      W: enchanted_wither_bone
 
   # ── Nether Rods ──────────────────────────────────────────
   ember_rod_recipe:
@@ -657,52 +661,58 @@ upgrade:
 
   inferno_rod_recipe:
     result: inferno_rod
-    level: 25
+    level: 33
     pattern:
-      - "  G"
-      - " R "
-      - "H  "
+      - " EG"
+      - "ERE"
+      - "HE "
     ingredients:
       R: ember_rod
       G: enchanted_corrupted_gold
       H: hoglin_tusk
+      M: enchanted_magma_residue
+      E: ghast_membrane
 
   hellfire_rod_recipe:
     result: hellfire_rod
-    level: 35
+    level: 41
     pattern:
-      - "  S"
-      - " R "
-      - "E  "
+      - " EC"
+      - "SRS"
+      - "ME "
     ingredients:
       R: inferno_rod
       S: enchanted_soul_essence
       E: ender_fragment
+      M: enchanted_magma_residue
+      C: crimson_heart
 
   volcanic_rod_recipe:
     result: volcanic_rod
     level: 45
     pattern:
-      - "V B"
-      - "VR "
-      - "VVV"
+      - "VCB"
+      - "CRC"
+      - "SCV"
     ingredients:
       R: hellfire_rod
       V: volcanic_core
       B: enchanted_basalt_shell
-
+      C: enchanted_crimson_scale
+      S: cinder_sigil
   # ── Hephaestean Trident Upgrade ─────────────────────────
   hephaestean_recipe:
     result: hephaestean_trident
     level: 45
     pattern:
-      - " V "
+      - "MCM"
       - "VPV"
-      - " V "
+      - "MCM"
     ingredients:
       V: volcanic_core
       P: poseidons_trident
-
+      C: cinder_sigil
+      M: enchanted_magma_residue
   # ── Crossbows: Quick Charge Branch ──────────────────────
   quickcharge_repeater_2_recipe:
     result: quickcharge_repeater_2
@@ -734,28 +744,29 @@ upgrade:
     result: quickcharge_repeater_4
     level: 35
     pattern:
-      - "PCP"
-      - "TBT"
-      - "P P"
+      - "SPS"
+      - "TCT"
+      - "MMM"
     ingredients:
       C: quickcharge_repeater_3
       P: phantoms_eye
       T: poseidons_tear
-      B: BOW
+      M: enchanted_magma_residue
+      S: enchanted_crimson_scale
 
   quickcharge_repeater_5_recipe:
     result: quickcharge_repeater_5
     level: 42
     pattern:
-      - "NSN"
+      - "VSV"
       - "ECE"
-      - "NWN"
+      - "WWW"
     ingredients:
       C: quickcharge_repeater_4
-      N: cinder_sigil
+      V: volcanic_core
       S: enchanted_soul_essence
       E: ender_fragment
-      W: wither_bone
+      W: enchanted_wither_bone
 
   # ── Crossbows: Multishot Branch ─────────────────────────
   multishot_volley_2_recipe:
@@ -789,13 +800,15 @@ upgrade:
     level: 40
     pattern:
       - "ECE"
-      - "WBW"
-      - "E E"
+      - "BWB"
+      - "GCG"
     ingredients:
       C: multishot_volley_3
       E: enchanted_ice_wing
       W: wardens_echo
-      B: BLAZE_POWDER
+      B: enchanted_basalt_shell
+      G: ghast_membrane
+      C: crimson_heart
 
   multishot_volley_5_recipe:
     result: multishot_volley_5
@@ -839,11 +852,11 @@ upgrade:
     result: eruption_ring
     level: 36
     pattern:
-      - " E "
-      - "CRC"
-      - " M "
+      - "GEG"
+      - "ERE"
+      - "GMG"
     ingredients:
       E: enchanted_ghast_membrane
-      C: crimson_heart
       R: lava_ring
       M: molten_fin
+      G: enchanted_goblin_tusk

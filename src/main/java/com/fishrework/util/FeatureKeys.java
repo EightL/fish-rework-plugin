@@ -6,6 +6,7 @@ public final class FeatureKeys {
     }
 
     public static final String ARTIFACT_COLLECTION_ENABLED = "artifact_collection_enabled";
+    public static final String ARTIFACT_PASSIVES_ENABLED = "artifact_passives_enabled";
     public static final String AUTO_SELL_ENABLED = "auto_sell_enabled";
     public static final String BAIT_SYSTEM_ENABLED = "bait_system_enabled";
     public static final String CATCH_BROADCAST_ENABLED = "catch_broadcast_enabled";

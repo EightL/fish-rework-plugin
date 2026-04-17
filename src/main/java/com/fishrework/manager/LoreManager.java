@@ -1,6 +1,10 @@
 package com.fishrework.manager;
 
 import com.fishrework.FishRework;
+import com.fishrework.model.Artifact;
+import com.fishrework.model.ArtifactPassiveEffect;
+import com.fishrework.model.ArtifactPassiveStat;
+import com.fishrework.model.ArtifactPassiveType;
 import com.fishrework.model.Rarity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LoreManager {
 
@@ -40,6 +45,8 @@ public class LoreManager {
     public void updateLore(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
         ItemMeta meta = item.getItemMeta();
+        String artifactId = meta.getPersistentDataContainer().get(plugin.getItemManager().ARTIFACT_KEY, PersistentDataType.STRING);
+        boolean isArtifactItem = artifactId != null;
 
         // 1. Extract existing flavor text
         List<Component> newLore = new ArrayList<>();
@@ -55,6 +62,10 @@ public class LoreManager {
                    // But wait, flavor text might have empty lines.
                    // Better: Check if line contains known Stat Keywords
                    continue; // Skip empty lines for now, we add them back later
+                }
+
+                if (isArtifactItem && isArtifactMarkerLine(plain)) {
+                    continue;
                 }
 
                 if (plain.contains("Rare Creature Chance:") ||
@@ -73,6 +84,7 @@ public class LoreManager {
                     plain.contains("SC Flat Defense:") ||
                     plain.contains("Double Catch:") ||
                     plain.contains("Bobber Damage:") ||
+                    plain.contains("Passive Effect:") ||
                     plain.contains("Full Set bonus") ||
                     isRarityLine(plain)) {
                     break;
@@ -92,8 +104,36 @@ public class LoreManager {
         double heatResistance = getStat(meta, plugin.getItemManager().HEAT_RESISTANCE_KEY);
         double scFlatAttack = getStat(meta, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double scFlatDefense = getStat(meta, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
+        double baseSpeed = getStat(meta, plugin.getItemManager().FISHING_SPEED_KEY);
+        List<Component> artifactPotionLore = new ArrayList<>();
         boolean isNetherArmorPiece = isNetherArmorPiece(meta);
         NamedTextColor heatResistanceColor = isNetherArmorPiece ? NamedTextColor.GREEN : NamedTextColor.GOLD;
+
+        if (artifactId != null) {
+            Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
+            if (artifact != null) {
+                for (ArtifactPassiveEffect effect : artifact.getPassiveEffects()) {
+                    if (effect.getType() == ArtifactPassiveType.STAT_BONUS && effect.getStat() != null) {
+                        switch (effect.getStat()) {
+                            case RARE_CREATURE_CHANCE -> rareChance += effect.getValue();
+                            case TREASURE_CHANCE -> treasureChanceBonus += effect.getValue();
+                            case FISHING_XP_BONUS -> fishingXpBonus += effect.getValue();
+                            case DOUBLE_CATCH_CHANCE -> doubleCatchBonus += effect.getValue();
+                            case FISHING_SPEED -> baseSpeed += effect.getValue();
+                            case SEA_CREATURE_ATTACK -> seaCreatureAttack += effect.getValue();
+                            case SEA_CREATURE_DEFENSE -> seaCreatureDefense += effect.getValue();
+                            case HEAT_RESISTANCE -> heatResistance += effect.getValue();
+                        }
+                    } else if (effect.getType() == ArtifactPassiveType.POTION && effect.getPotionEffectType() != null) {
+                        String potionName = formatPotionName(effect.getPotionEffectType().getKey().getKey());
+                        int level = effect.getPotionAmplifier() + 1;
+                        artifactPotionLore.add(Component.text("Passive Effect: ").color(NamedTextColor.GRAY)
+                                .decoration(TextDecoration.ITALIC, false)
+                                .append(Component.text(potionName + " " + toRoman(level)).color(NamedTextColor.AQUA)));
+                    }
+                }
+            }
+        }
 
         // Add Sea Creature Chance from Enchantment
         org.bukkit.enchantments.Enchantment seaCreatureEnchant = org.bukkit.Registry.ENCHANTMENT.get(new NamespacedKey("fishrework", "sea_creature_chance"));
@@ -101,7 +141,6 @@ public class LoreManager {
             rareChance += meta.getEnchantLevel(seaCreatureEnchant) * 5.0;
         }
 
-        double baseSpeed = getStat(meta, plugin.getItemManager().FISHING_SPEED_KEY);
         int lureLevel = meta.getEnchantLevel(Enchantment.LURE);
         int speedBonus = (int) (baseSpeed + lureLevel * 5);
 
@@ -176,6 +215,8 @@ public class LoreManager {
                 .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", heatResistance) + "%").color(heatResistanceColor)));
         }
 
+        newLore.addAll(artifactPotionLore);
+
         if (isNetherArmorPiece) {
             newLore.add(Component.text("Stats are halved outside of Nether.")
                     .color(NamedTextColor.DARK_GRAY)
@@ -186,6 +227,15 @@ public class LoreManager {
         if (!fullSetLines.isEmpty()) {
             newLore.add(Component.empty());
             newLore.addAll(fullSetLines);
+        }
+
+        if (isArtifactItem) {
+            if (!newLore.isEmpty() && !isBlankComponent(newLore.get(newLore.size() - 1))) {
+                newLore.add(Component.empty());
+            }
+            newLore.add(Component.text("\u2B50 Artifact").color(NamedTextColor.LIGHT_PURPLE)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .decoration(TextDecoration.BOLD, true));
         }
 
         meta.lore(newLore);
@@ -199,6 +249,16 @@ public class LoreManager {
         return false;
     }
 
+    private boolean isArtifactMarkerLine(String plain) {
+        String normalized = plain.replace("\u2B50", "").trim();
+        return normalized.equalsIgnoreCase("Artifact");
+    }
+
+    private boolean isBlankComponent(Component component) {
+        String plain = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(component);
+        return plain.trim().isEmpty();
+    }
+
     private double getStat(ItemMeta meta, NamespacedKey key) {
         if (meta.getPersistentDataContainer().has(key, PersistentDataType.DOUBLE)) {
             return meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
@@ -209,6 +269,27 @@ public class LoreManager {
     private static Component statLine(String label, String value) {
         return Component.text(label).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(value).color(NamedTextColor.GREEN));
+    }
+
+    private String formatPotionName(String key) {
+        String[] words = key.toLowerCase(Locale.ROOT).split("_");
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.isEmpty()) continue;
+            out.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
+            if (i < words.length - 1) out.append(' ');
+        }
+        return out.toString();
+    }
+
+    private String toRoman(int value) {
+        if (value <= 1) return "I";
+        if (value == 2) return "II";
+        if (value == 3) return "III";
+        if (value == 4) return "IV";
+        if (value == 5) return "V";
+        return String.valueOf(value);
     }
 
     private boolean isNetherArmorPiece(ItemMeta meta) {

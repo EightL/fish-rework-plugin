@@ -770,18 +770,15 @@ public class ItemManager {
                 .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text(artifact.getDescription()).color(NamedTextColor.GRAY)
-                .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.empty());
-        lore.add(Component.text("\u2B50 Artifact").color(NamedTextColor.LIGHT_PURPLE)
-                .decoration(TextDecoration.ITALIC, false)
-                .decoration(TextDecoration.BOLD, true));
+        lore.add(Component.text(artifact.getDescription()).color(NamedTextColor.DARK_GRAY)
+                .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
 
         meta.getPersistentDataContainer().set(ARTIFACT_KEY, PersistentDataType.STRING, artifact.getId());
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
         item.setItemMeta(meta);
+        plugin.getLoreManager().updateLore(item);
         return item;
     }
 

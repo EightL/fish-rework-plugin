@@ -125,6 +125,8 @@ public class ArtifactCollectionGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
         headerLore.add(Component.text("treasure chests while fishing.").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
+        headerLore.add(Component.text("Keep in inventory to preserve their effects.").color(NamedTextColor.GREEN)
+                .decoration(TextDecoration.ITALIC, false));
         headerMeta.lore(headerLore);
         header.setItemMeta(headerMeta);
         inventory.setItem(4, header);

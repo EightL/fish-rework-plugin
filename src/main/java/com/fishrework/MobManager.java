@@ -1,6 +1,7 @@
 package com.fishrework;
 
 import com.fishrework.gui.LavaBagGUI;
+import com.fishrework.model.ArtifactPassiveStat;
 import com.fishrework.model.BiomeFishingProfile;
 import com.fishrework.model.BiomeGroup;
 import com.fishrework.model.CustomMob;
@@ -11,6 +12,7 @@ import com.fishrework.model.Skill;
 import com.fishrework.model.SpawnConfig;
 import com.fishrework.registry.MobRegistry;
 import com.fishrework.util.BagUtils;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Material;
@@ -1516,6 +1518,12 @@ public class MobManager {
                 bonus += pdc.get(key, org.bukkit.persistence.PersistentDataType.DOUBLE);
             }
         }
+
+        ArtifactPassiveStat artifactStat = getArtifactStatForKey(key);
+        if (artifactStat != null) {
+            bonus += getArtifactPassiveBonus(player, artifactStat);
+        }
+
         return bonus;
     }
 
@@ -1559,6 +1567,7 @@ public class MobManager {
         }
         
         
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.RARE_CREATURE_CHANCE);
         return total;
     }
 
@@ -1595,6 +1604,7 @@ public class MobManager {
             total += offHand.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.LUCK_OF_THE_SEA) * luckPerLevel;
         }
 
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.TREASURE_CHANCE);
         return total;
     }
 
@@ -1617,6 +1627,7 @@ public class MobManager {
         for (ItemStack armor : player.getInventory().getArmorContents()) {
             total += getScaledArmorBonus(player, armor, xpKey);
         }
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.FISHING_XP_BONUS);
         return total;
     }
 
@@ -1642,6 +1653,7 @@ public class MobManager {
             bonus *= getNetherArmorWorldMultiplier(player, pdc);
             total += bonus;
         }
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.SEA_CREATURE_DEFENSE);
         return total;
     }
 
@@ -1679,6 +1691,7 @@ public class MobManager {
             }
         }
 
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.SEA_CREATURE_ATTACK);
         return total;
     }
 
@@ -1692,6 +1705,7 @@ public class MobManager {
         for (ItemStack armor : player.getInventory().getArmorContents()) {
             total += getScaledArmorBonus(player, armor, dcKey);
         }
+        total += getArtifactPassiveBonus(player, ArtifactPassiveStat.DOUBLE_CATCH_CHANCE);
         return total;
     }
 
@@ -1704,7 +1718,29 @@ public class MobManager {
             total += (int) getItemBonus(stack, speedKey);
             total += stack.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.LURE) * plugin.getConfig().getInt("enchantments.lure_fishing_speed_per_level", 5);
         }
+        total += (int) Math.round(getArtifactPassiveBonus(player, ArtifactPassiveStat.FISHING_SPEED));
         return total;
+    }
+
+    private double getArtifactPassiveBonus(Player player, ArtifactPassiveStat stat) {
+        if (player == null || stat == null) return 0.0;
+        if (!plugin.isFeatureEnabled(FeatureKeys.ARTIFACT_PASSIVES_ENABLED)) return 0.0;
+        if (plugin.getArtifactPassiveManager() == null) return 0.0;
+        return plugin.getArtifactPassiveManager().getStatBonus(player, stat);
+    }
+
+    private ArtifactPassiveStat getArtifactStatForKey(NamespacedKey key) {
+        if (key == null || plugin.getItemManager() == null) return null;
+
+        if (key.equals(plugin.getItemManager().RARE_CREATURE_CHANCE_KEY)) return ArtifactPassiveStat.RARE_CREATURE_CHANCE;
+        if (key.equals(plugin.getItemManager().TREASURE_CHANCE_BONUS_KEY)) return ArtifactPassiveStat.TREASURE_CHANCE;
+        if (key.equals(plugin.getItemManager().FISHING_XP_BONUS_KEY)) return ArtifactPassiveStat.FISHING_XP_BONUS;
+        if (key.equals(plugin.getItemManager().SEA_CREATURE_ATTACK_KEY)) return ArtifactPassiveStat.SEA_CREATURE_ATTACK;
+        if (key.equals(plugin.getItemManager().SEA_CREATURE_DEFENSE_KEY)) return ArtifactPassiveStat.SEA_CREATURE_DEFENSE;
+        if (key.equals(plugin.getItemManager().DOUBLE_CATCH_BONUS_KEY)) return ArtifactPassiveStat.DOUBLE_CATCH_CHANCE;
+        if (key.equals(plugin.getItemManager().FISHING_SPEED_KEY)) return ArtifactPassiveStat.FISHING_SPEED;
+        if (key.equals(plugin.getItemManager().HEAT_RESISTANCE_KEY)) return ArtifactPassiveStat.HEAT_RESISTANCE;
+        return null;
     }
 
     /**

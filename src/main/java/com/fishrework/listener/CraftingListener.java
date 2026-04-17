@@ -44,10 +44,10 @@ public class CraftingListener implements Listener {
             return;
         }
 
+        com.fishrework.registry.RecipeDefinition def = plugin.getRecipeRegistry().getDefinition(recipeKey);
         // ── Custom Ingredient Validation ──
         // Since recipes use MaterialChoice (for client recipe book compatibility),
         // we must validate that custom items in the grid are actually the correct ones.
-        com.fishrework.registry.RecipeDefinition def = plugin.getRecipeRegistry().getDefinition(recipeKey);
         if (def != null && def.hasCustomIngredients()) {
             if (!validateCustomIngredients(event, def)) {
                 event.getInventory().setResult(null);
@@ -55,12 +55,8 @@ public class CraftingListener implements Listener {
             }
         }
 
-        // ── Trident Upgrade Logic ──
-        // Check if we are crafting one of the specific trident recipes
-        String key = recipeKey.getKey();
-        if (key.equals("trident_1_recipe") || key.equals("trident_2_recipe")
-            || key.equals("trident_3_recipe") || key.equals("hephaestean_recipe")) {
-            handleSpecialCraftResult(event, key);
+        if (def != null) {
+            handleSpecialCraftResult(event, recipeKey.getKey());
         }
     }
 

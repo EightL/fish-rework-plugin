@@ -943,7 +943,6 @@ weapons:
     enchantments:
       LOYALTY: 6
       CHANNELING: 1
-      IMPALING: 5
     pdc:
       sea_creature_attack: 80.0
     upgrade_tier: 5

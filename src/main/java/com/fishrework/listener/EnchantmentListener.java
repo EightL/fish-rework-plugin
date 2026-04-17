@@ -18,6 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnchantmentListener implements Listener {
     private static final Material SWORD_FALLBACK_MATERIAL = Material.NETHERITE_SWORD;
 
@@ -63,41 +66,35 @@ public class EnchantmentListener implements Listener {
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         ItemStack base = event.getInventory().getItem(0);
         ItemStack addition = event.getInventory().getItem(1);
-        if (!isCustomTrident(base)) {
-            return;
-        }
-        if (addition == null || addition.getType() != Material.ENCHANTED_BOOK || !addition.hasItemMeta()) {
-            return;
-        }
-        if (!(addition.getItemMeta() instanceof EnchantmentStorageMeta bookMeta)) {
-            return;
-        }
-
         ItemStack result = event.getResult();
-        ItemStack working = (result == null || result.getType().isAir()) ? base.clone() : result.clone();
+        int repairCost = event.getInventory().getRepairCost();
         boolean changed = false;
-        int addedCost = 0;
 
-        for (var entry : bookMeta.getStoredEnchants().entrySet()) {
-            Enchantment enchantment = entry.getKey();
-            int level = entry.getValue();
-
-            if (!shouldApplyToCustomTrident(working, enchantment, level)) {
-                continue;
-            }
-
-            working.addUnsafeEnchantment(enchantment, level);
+        AnvilResult customTridentResult = extendCustomTridentResult(base, addition, result, repairCost);
+        if (customTridentResult.changed()) {
+            result = customTridentResult.result();
+            repairCost = customTridentResult.repairCost();
             changed = true;
-            addedCost += Math.max(1, level * 2);
+        }
+
+        ItemStack sanitizedResult = sanitizeRestrictedFishingFusion(base, addition, result);
+        if (sanitizedResult != result) {
+            result = sanitizedResult;
+            changed = true;
         }
 
         if (!changed) {
             return;
         }
 
-        plugin.getLoreManager().updateLore(working);
-        event.setResult(working);
-        event.getInventory().setRepairCost(Math.max(event.getInventory().getRepairCost(), Math.max(1, addedCost)));
+        if (result != null && !result.getType().isAir() && plugin.getItemManager().isCustomItem(result)) {
+            plugin.getLoreManager().updateLore(result);
+        }
+        event.setResult(result);
+        if (result == null || result.getType().isAir()) {
+            return;
+        }
+        event.getInventory().setRepairCost(repairCost);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -152,6 +149,132 @@ public class EnchantmentListener implements Listener {
         return item != null
                 && item.getType() == Material.TRIDENT
                 && plugin.getItemManager().isCustomItem(item);
+    }
+
+    private AnvilResult extendCustomTridentResult(ItemStack base, ItemStack addition, ItemStack result, int repairCost) {
+        if (!isCustomTrident(base)) {
+            return new AnvilResult(result, repairCost, false);
+        }
+        if (addition == null || addition.getType() != Material.ENCHANTED_BOOK || !addition.hasItemMeta()) {
+            return new AnvilResult(result, repairCost, false);
+        }
+        if (!(addition.getItemMeta() instanceof EnchantmentStorageMeta bookMeta)) {
+            return new AnvilResult(result, repairCost, false);
+        }
+
+        ItemStack working = (result == null || result.getType().isAir()) ? base.clone() : result.clone();
+        boolean changed = false;
+        int addedCost = 0;
+
+        for (var entry : bookMeta.getStoredEnchants().entrySet()) {
+            Enchantment enchantment = entry.getKey();
+            int level = entry.getValue();
+
+            if (!shouldApplyToCustomTrident(working, enchantment, level)) {
+                continue;
+            }
+
+            working.addUnsafeEnchantment(enchantment, level);
+            changed = true;
+            addedCost += Math.max(1, level * 2);
+        }
+
+        if (!changed) {
+            return new AnvilResult(result, repairCost, false);
+        }
+
+        return new AnvilResult(working, Math.max(repairCost, Math.max(1, addedCost)), true);
+    }
+
+    private ItemStack sanitizeRestrictedFishingFusion(ItemStack base, ItemStack addition, ItemStack result) {
+        if (base == null || base.getType().isAir() || addition == null || addition.getType().isAir()
+                || result == null || result.getType().isAir()) {
+            return result;
+        }
+
+        ItemStack sanitized = null;
+        for (Enchantment enchantment : getRestrictedFishingFusionEnchants()) {
+            int resultLevel = getEnchantLevel(result, enchantment);
+            if (resultLevel <= tableEnchantCap) {
+                continue;
+            }
+
+            int inputMaxLevel = Math.max(getEnchantLevel(base, enchantment), getEnchantLevel(addition, enchantment));
+            if (resultLevel <= inputMaxLevel) {
+                continue;
+            }
+
+            if (sanitized == null) {
+                sanitized = result.clone();
+            }
+            setEnchantLevel(sanitized, enchantment, inputMaxLevel);
+        }
+
+        if (sanitized == null) {
+            return result;
+        }
+
+        if (isSameItem(base, sanitized)) {
+            return null;
+        }
+        return sanitized;
+    }
+
+    private List<Enchantment> getRestrictedFishingFusionEnchants() {
+        List<Enchantment> enchantments = new ArrayList<>(3);
+        enchantments.add(Enchantment.LURE);
+        enchantments.add(Enchantment.LUCK_OF_THE_SEA);
+
+        Enchantment seaCreatureChance = Registry.ENCHANTMENT.get(SEA_CREATURE_CHANCE_KEY);
+        if (seaCreatureChance != null) {
+            enchantments.add(seaCreatureChance);
+        }
+        return enchantments;
+    }
+
+    private int getEnchantLevel(ItemStack item, Enchantment enchantment) {
+        if (item == null || enchantment == null || !item.hasItemMeta()) {
+            return 0;
+        }
+        if (item.getType() == Material.ENCHANTED_BOOK && item.getItemMeta() instanceof EnchantmentStorageMeta bookMeta) {
+            return bookMeta.getStoredEnchantLevel(enchantment);
+        }
+        return item.getEnchantmentLevel(enchantment);
+    }
+
+    private void setEnchantLevel(ItemStack item, Enchantment enchantment, int level) {
+        if (item == null || enchantment == null || !item.hasItemMeta()) {
+            return;
+        }
+
+        if (item.getType() == Material.ENCHANTED_BOOK && item.getItemMeta() instanceof EnchantmentStorageMeta bookMeta) {
+            bookMeta.removeStoredEnchant(enchantment);
+            if (level > 0) {
+                bookMeta.addStoredEnchant(enchantment, level, true);
+            }
+            item.setItemMeta(bookMeta);
+            return;
+        }
+
+        item.removeEnchantment(enchantment);
+        if (level > 0) {
+            item.addUnsafeEnchantment(enchantment, level);
+        }
+    }
+
+    private boolean isSameItem(ItemStack first, ItemStack second) {
+        if (first == second) {
+            return true;
+        }
+        if (first == null || second == null) {
+            return false;
+        }
+
+        ItemStack firstCopy = first.clone();
+        firstCopy.setAmount(1);
+        ItemStack secondCopy = second.clone();
+        secondCopy.setAmount(1);
+        return firstCopy.isSimilar(secondCopy);
     }
 
     private boolean shouldApplyToCustomTrident(ItemStack item, Enchantment enchantment, int level) {
@@ -231,4 +354,6 @@ public class EnchantmentListener implements Listener {
         }
         return builder.toString();
     }
+
+    private record AnvilResult(ItemStack result, int repairCost, boolean changed) {}
 }

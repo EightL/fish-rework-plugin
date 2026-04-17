@@ -73,23 +73,29 @@ public class RecipeCraftingManager {
     }
 
     public ItemStack applySpecialCraftingResult(String recipeKey, ItemStack baseResult, List<ItemStack> sourceIngredients) {
-        if (baseResult == null || !isTridentUpgradeRecipe(recipeKey)) {
+        if (baseResult == null) {
             return baseResult;
         }
 
-        ItemStack baseTrident = findTridentBaseItem(recipeKey, sourceIngredients);
-        if (baseTrident == null || !baseTrident.hasItemMeta()) {
+        ItemStack inheritedSource = findInheritedSourceItem(baseResult, sourceIngredients);
+        if (inheritedSource == null || !inheritedSource.hasItemMeta() || inheritedSource.getEnchantments().isEmpty()) {
             return baseResult;
         }
 
         ItemStack newResult = baseResult.clone();
-        ItemMeta baseMeta = baseTrident.getItemMeta();
         ItemMeta resultMeta = newResult.getItemMeta();
+        if (resultMeta == null) {
+            return baseResult;
+        }
 
-        for (Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : baseMeta.getEnchants().entrySet()) {
-            if (!entry.getKey().equals(org.bukkit.enchantments.Enchantment.LOYALTY)) {
-                resultMeta.addEnchant(entry.getKey(), entry.getValue(), true);
+        boolean stripLoyalty = isTridentUpgradeRecipe(recipeKey);
+        for (Map.Entry<org.bukkit.enchantments.Enchantment, Integer> entry : inheritedSource.getEnchantments().entrySet()) {
+            if (stripLoyalty && entry.getKey().equals(org.bukkit.enchantments.Enchantment.LOYALTY)) {
+                continue;
             }
+
+            int targetLevel = Math.max(newResult.getEnchantmentLevel(entry.getKey()), entry.getValue());
+            resultMeta.addEnchant(entry.getKey(), targetLevel, true);
         }
 
         newResult.setItemMeta(resultMeta);
@@ -252,29 +258,51 @@ public class RecipeCraftingManager {
                 || "hephaestean_recipe".equals(recipeKey);
     }
 
-    private ItemStack findTridentBaseItem(String recipeKey, List<ItemStack> sourceIngredients) {
+    private ItemStack findInheritedSourceItem(ItemStack result, List<ItemStack> sourceIngredients) {
+        if (result == null || sourceIngredients == null || sourceIngredients.isEmpty()) {
+            return null;
+        }
+
+        Material resultMaterial = getLogicalMaterial(result);
+        if (resultMaterial == null) {
+            return null;
+        }
+
+        ItemStack bestMatch = null;
+        int bestScore = Integer.MIN_VALUE;
         for (ItemStack item : sourceIngredients) {
             if (item == null || item.getType().isAir()) {
                 continue;
             }
 
-            if ("trident_1_recipe".equals(recipeKey)) {
-                if (item.getType() == Material.TRIDENT
-                        && !plugin.getItemManager().isCustomItem(item, "trident_1")
-                        && !plugin.getItemManager().isCustomItem(item, "trident_2")
-                        && !plugin.getItemManager().isCustomItem(item, "trident_3")
-                        && !plugin.getItemManager().isCustomItem(item, "poseidons_trident")) {
-                    return item;
-                }
-            } else if ("trident_2_recipe".equals(recipeKey) && plugin.getItemManager().isCustomItem(item, "trident_1")) {
-                return item;
-            } else if ("trident_3_recipe".equals(recipeKey) && plugin.getItemManager().isCustomItem(item, "trident_2")) {
-                return item;
-            } else if ("hephaestean_recipe".equals(recipeKey) && plugin.getItemManager().isCustomItem(item, "poseidons_trident")) {
-                return item;
+            if (getLogicalMaterial(item) != resultMaterial) {
+                continue;
+            }
+
+            int score = 0;
+            if (item.getType() == result.getType()) {
+                score += 20;
+            }
+            if (plugin.getItemManager().isCustomItem(item)) {
+                score += 10;
+            }
+            score += item.getEnchantments().size();
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = item;
             }
         }
-        return null;
+        return bestMatch;
+    }
+
+    private Material getLogicalMaterial(ItemStack item) {
+        if (item == null || item.getType().isAir()) {
+            return null;
+        }
+
+        Material fallback = plugin.getItemManager().getVanillaFallbackMaterial(item);
+        return fallback != null ? fallback : item.getType();
     }
 
     private String getDisplayName(ItemStack item) {

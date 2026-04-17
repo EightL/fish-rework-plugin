@@ -144,35 +144,46 @@ public class LoreUpdateListener implements Listener {
     private ItemStack refreshFromRegistry(ItemStack item) {
         if (item == null || item.getType().isAir() || !item.hasItemMeta()) return null;
 
-        String id = item.getItemMeta().getPersistentDataContainer().get(
-                plugin.getItemManager().CUSTOM_ITEM_KEY, PersistentDataType.STRING);
-        if (id == null) return null;
-
-        Supplier<ItemStack> supplier = plugin.getItemManager().getItemRegistry().get(id);
-        if (supplier == null) return null;
-
-        ItemStack fresh = supplier.get();
-        if (fresh == null) return null;
-
-        fresh.setAmount(item.getAmount());
-
-        // Preserve mutable player-applied state so refresh doesn't wipe progression.
-        for (var ench : item.getEnchantments().entrySet()) {
-            fresh.addUnsafeEnchantment(ench.getKey(), ench.getValue());
-        }
-
         ItemMeta oldMeta = item.getItemMeta();
-        ItemMeta freshMeta = fresh.getItemMeta();
-        if (oldMeta.hasDisplayName()) {
-            freshMeta.displayName(oldMeta.displayName());
-        }
-        if (oldMeta instanceof Damageable oldDamageable && freshMeta instanceof Damageable freshDamageable) {
-            freshDamageable.setDamage(oldDamageable.getDamage());
-        }
-        fresh.setItemMeta(freshMeta);
 
-        plugin.getLoreManager().updateLore(fresh);
+        String id = oldMeta.getPersistentDataContainer().get(
+                plugin.getItemManager().CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        if (id != null) {
+            Supplier<ItemStack> supplier = plugin.getItemManager().getItemRegistry().get(id);
+            if (supplier == null) return null;
 
-        return fresh;
+            ItemStack fresh = supplier.get();
+            if (fresh == null) return null;
+
+            fresh.setAmount(item.getAmount());
+
+            // Preserve mutable player-applied state so refresh doesn't wipe progression.
+            for (var ench : item.getEnchantments().entrySet()) {
+                fresh.addUnsafeEnchantment(ench.getKey(), ench.getValue());
+            }
+
+            ItemMeta freshMeta = fresh.getItemMeta();
+            if (oldMeta.hasDisplayName()) {
+                freshMeta.displayName(oldMeta.displayName());
+            }
+            if (oldMeta instanceof Damageable oldDamageable && freshMeta instanceof Damageable freshDamageable) {
+                freshDamageable.setDamage(oldDamageable.getDamage());
+            }
+            fresh.setItemMeta(freshMeta);
+
+            plugin.getLoreManager().updateLore(fresh);
+            return fresh;
+        }
+
+        String artifactId = oldMeta.getPersistentDataContainer().get(
+                plugin.getItemManager().ARTIFACT_KEY, PersistentDataType.STRING);
+        if (artifactId == null) return null;
+
+        com.fishrework.model.Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
+        if (artifact == null) return null;
+
+        ItemStack freshArtifact = plugin.getItemManager().createArtifactItem(artifact);
+        freshArtifact.setAmount(item.getAmount());
+        return freshArtifact;
     }
 }

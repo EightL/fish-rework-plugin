@@ -12,30 +12,50 @@ artifacts:
     description: "A symbol of luck, though it hasn't helped you much yet."
     rarity: COMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmVhYTFkNmM3Njk2OWRkNmMzZDdmN2YzYjAxNjcyN2VlNjg3YTRjYzc1OTJkZTQ5MjVlZmMxOGNiOGQ3NDVlNSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: rare_creature_chance
+        value: 1.0
 
   beach_ball:
     display_name: "Deflated Beach Ball"
     description: "Evidence of a summer vacation gone wrong."
     rarity: COMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDNjNTdmYWQwZDIyZjc1Njc2MGM0Mzc2ZTAyZmJjY2IxNTk4ZTJjNmY3NWE1NTVmODM0ZmExODJjYThlMWE4NCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: fishing_speed
+        value: 2.0
 
   eraser:
     display_name: "Ancient Eraser"
     description: "Used to correct the mistakes of the past. It's mostly worn down."
     rarity: COMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDQ5NWQzZjBmOTcxOWQ5OWQzZDllODg3NzliOTA2YTA2MzUxM2RkYzEzNmVlZWQ5MGM2OTRmODY3ZGNkZjE1NCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: fishing_xp_bonus
+        value: 1.5
 
   book:
     display_name: "Soggy Tome"
     description: "The ink has run, but the knowledge within feels heavy."
     rarity: COMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZkN2I3MjA0YmVhMWZmMGRmNzkzMGJkNDU1OWEzMGI1ZWE1NTllNTYyNDI5NDY5NGU4NjdiZjdiNWFlMDM2MSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: fishing_xp_bonus
+        value: 2.5
 
   rubiks:
     display_name: "Impossible Puzzle"
     description: "A colorful cube fused in a solved state. Or is it?"
     rarity: COMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjQ3MjEwMTU1ZTI5YWJkNWMwOTRkZDE4MWQ0MGNkMmU4YmIwZDcxYmY2ODU5OTFjMjg0OTk2Yzg4YjFiOWQ0ZCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: double_catch_chance
+        value: 0.8
 
   # ── Uncommon ──
   monster_plushie:
@@ -43,30 +63,50 @@ artifacts:
     description: "A strange little doll. It's kinda cute, in a weird way."
     rarity: UNCOMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWJjYjExZmM1ODNmZDZiMWRkOTAxMGM4YWM3ODI2YzUzZWU3NmYyOWE2YzU4OWM3MzFlNzI5NDU0MzQyMTk3MCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: sea_creature_defense
+        value: 2.0
 
   skull:
     display_name: "Pirate's Remnant"
     description: "Alas, poor Yorick! He probably shouldn't have sailed here."
     rarity: UNCOMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY3ZTUyMDk4ZjAyN2Q2Y2VkOWNiMmNiMTljOGIzMGY3OTg3MzEzNmI1MmRkYWVlMWZlMjRjNGQzZTI2YzYzYyJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: sea_creature_attack
+        value: 2.0
 
   evoker_plushie:
     display_name: "Voodoo Poupée"
     description: "It feels warm to the touch. Best not to poke it."
     rarity: UNCOMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWQ2N2MwMzBjNjg1MDEyZjFiN2ViNmQzMTRmZDJkYzYyZTUwNWUzMzBiZTMwMDZmZDEyM2ZlNjgwYTJiNThhMyJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: rare_creature_chance
+        value: 2.0
 
   ring:
     display_name: "Rusted Signet Ring"
     description: "The seal is worn, but the gold still glimmers beneath the grime."
     rarity: UNCOMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWVhMzUyNzNkNzJlMTgzZjRkZjY5ZTNlN2ZkYjE2MzQ3NjFiODU4NmUyNzFhMDFiZDAxZmYxZmZiNGU1NjI0NSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: treasure_chance
+        value: 2.0
 
   trial_vault:
     display_name: "Locked Strongbox"
     description: "Rattles when shaken. Sadly, you left the key at home."
     rarity: UNCOMMON
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmIyNmI2NmQ3NWFjYTYxM2FiNmFlZTgyODgwY2RjMjRkY2FiZmM5NmFmNGY0YmNlNGFiN2ZmMDIxZjVlMmQyMCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: double_catch_chance
+        value: 1.5
 
   # ── Rare (Gems) ──
   ruby_gem:
@@ -74,36 +114,63 @@ artifacts:
     description: "A gem pulsating with the heat of the earth."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTRlYmY1NjA2YWM4M2E3NGMxY2I5ZjdlNTYwNGJlM2NlMjk3ODkyYTRjYTEwMDVjZTUxMGNhMjVlYmEyODg4In19fQ=="
+    passive_effects:
+      - type: stat_bonus
+        stat: heat_resistance
+        value: 5.0
+      - type: stat_bonus
+        stat: sea_creature_attack
+        value: 2.5
 
   amber_gem:
     display_name: "Amber Gem"
     description: "Trapped time within a golden cage."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTUwOWMyMzZjZjg5OGZlNjJjN2I1NDQ2ODE4MzM4MTYwY2I5NTU2MzQ4NmQzZTI5YWZmZmRmODg3N2MwOGJmNCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: treasure_chance
+        value: 3.0
 
   citrine_gem:
     display_name: "Citrine Gem"
     description: "A fragment of light, solid and warm."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzcxNTA5NTc0MzQ0MjQxYjJjZGZmZmJiZjFkYzdhZjgzNDQwNTUzMzU0ZDBhNWM1MzhlZjllZWQ2NTYzNjE5OSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: fishing_speed
+        value: 3.5
 
   sapphire_gem:
     display_name: "Sapphire Gem"
     description: "Cold deeper than the abyss from which it came."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQ1ZDdmZjFkNjJkZTU5MTMxMGZlZTE2MzAyNDZjZGE0OWEzYzI4Y2FiMDYzYmZmNTQ3MDNiNWQ5NWUyNzFkMCJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: sea_creature_defense
+        value: 3.5
 
   jasper_gem:
     display_name: "Jasper Gem"
     description: "Rough and unrefined, yet unmistakably powerful."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDUwMjNhY2YyNTIzMzNjZWZjNjY4ZDg5YzEwYzE2MDA4NDc5NjBjMWNmN2QzZTdiYzE3NTAzNWU4MzcxY2ExNSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: double_catch_chance
+        value: 2.5
 
   onyx:
     display_name: "Onyx"
     description: "It seems to absorb the light around it."
     rarity: RARE
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTIyYjExMDdkYWI1MjgwYzQ2M2JmOGNkODFkYzdiNGU1M2E3YTYwYzQ5OGUyNmQyMTcyODI4MmM2NDVkMTc4YiJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: rare_creature_chance
+        value: 3.0
 
   # ── Epic ──
   sunstone:
@@ -111,12 +178,27 @@ artifacts:
     description: "It burns with an eternal, smokeless fire."
     rarity: EPIC
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRlNGI4OWE0M2Q2ZGVhZWQ1M2ZkODExMTI1YTQ0NWUzMmRmOGJlNzMyNjJmZjk4MDA3M2Y2OWU3ZmE1MTIyZiJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: heat_resistance
+        value: 12.0
+      - type: potion
+        potion: FIRE_RESISTANCE
+        amplifier: 0
+        duration_ticks: 120
 
   moonlight_crystal:
     display_name: "Lunar Prism"
     description: "Captures the ghost of a moonbeam in solid form."
     rarity: EPIC
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTg1M2NmZGI1MDQ5NzQ4NmYyNWVhMDdlNGM2ZjJhNzUyMDNmYjE3YTJiNWM4NDgyYjM4OTQ3ODQwMDgwMGRlNiJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: treasure_chance
+        value: 4.0
+      - type: stat_bonus
+        stat: fishing_xp_bonus
+        value: 3.0
 
   # ── Legendary ──
   companion_cube:
@@ -124,9 +206,27 @@ artifacts:
     description: "It will never threaten to stab you, and in fact, cannot speak."
     rarity: LEGENDARY
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVjODY0ZWEwZTM2MTE3NzhiNDA4MjA5ZDI3OWE0ZmU0MTI4NjAxMmVkY2VkYjc3MDcyNTRmNTI1MWU0NmRmMyJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: double_catch_chance
+        value: 4.0
+      - type: stat_bonus
+        stat: sea_creature_defense
+        value: 5.0
 
   kirby:
     display_name: "Kirby"
     description: "Poyo!"
     rarity: LEGENDARY
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVlMGMxYjIxMmY0ZjMwOTg1OWE2MzJiYjRmNjJmMGEyODBhZGI5ZDk3NDg1ODE1NDVlYjhhZDlkM2RmNjA4OSJ9fX0="
+    passive_effects:
+      - type: stat_bonus
+        stat: sea_creature_attack
+        value: 6.0
+      - type: stat_bonus
+        stat: fishing_speed
+        value: 5.0
+      - type: potion
+        potion: DOLPHINS_GRACE
+        amplifier: 0
+        duration_ticks: 80
