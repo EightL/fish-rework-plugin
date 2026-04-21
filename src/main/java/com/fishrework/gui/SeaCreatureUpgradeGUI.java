@@ -94,7 +94,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         // Arrow indicator
         ItemStack arrow = new ItemStack(Material.ARROW);
         ItemMeta am = arrow.getItemMeta();
-        am.displayName(Component.text("→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+        am.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
         arrow.setItemMeta(am);
         inventory.setItem(ARROW_SLOT, arrow);
 
@@ -108,7 +108,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         inventory.setItem(COMBINE_MIDDLE_SLOT, createBlankSlot(Material.LIME_STAINED_GLASS_PANE));
         ItemStack combineArrow = new ItemStack(Material.ARROW);
         ItemMeta cam = combineArrow.getItemMeta();
-        cam.displayName(Component.text("→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+        cam.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
         combineArrow.setItemMeta(cam);
         inventory.setItem(COMBINE_ARROW_SLOT, combineArrow);
         inventory.setItem(COMBINE_RESULT_SLOT, createPlaceholder(Material.BLACK_STAINED_GLASS_PANE,
@@ -117,7 +117,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         // Back button (slot 48)
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(Component.text("Back").color(NamedTextColor.RED)
+        backMeta.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.back", "Back").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         back.setItemMeta(backMeta);
         inventory.setItem(48, back);
@@ -218,7 +218,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                     player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
                 } else {
                     // Invalid item on cursor - Don't swap, just message
-                    player.sendMessage(Component.text("That item doesn't go in this slot!").color(NamedTextColor.RED));
+                    player.sendMessage(plugin.getLanguageManager().getMessage("seacreatureupgradegui.that_item_doesnt_go_in", "That item doesn't go in this slot!").color(NamedTextColor.RED));
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
                 }
             } else {
@@ -239,7 +239,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 0.5f, 1.0f);
             } else {
                 // Invalid item on cursor - Message
-                player.sendMessage(Component.text("That item doesn't go in this slot!").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("seacreatureupgradegui.that_item_doesnt_go_in", "That item doesn't go in this slot!").color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
             }
         }
@@ -465,12 +465,12 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                                 // Show error result
                                 ItemStack errorItem = new ItemStack(Material.BARRIER);
                                 ItemMeta em = errorItem.getItemMeta();
-                                em.displayName(Component.text("Cannot Downgrade!").color(NamedTextColor.RED)
+                                em.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.cannot_downgrade", "Cannot Downgrade!").color(NamedTextColor.RED)
                                         .decoration(TextDecoration.ITALIC, false));
                                 em.lore(List.of(
                                         Component.text("This gear already has " + type + " +" + existingTier)
                                                 .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                                        Component.text("Use a higher tier material to upgrade.")
+                                        plugin.getLanguageManager().getMessage("seacreatureupgradegui.use_a_higher_tier_material", "Use a higher tier material to upgrade.")
                                                 .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                                 ));
                                 errorItem.setItemMeta(em);
@@ -691,7 +691,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         updateAllResults();
 
         player.playSound(player.getLocation(), Sound.BLOCK_SMITHING_TABLE_USE, 1.0f, 1.0f);
-        player.sendMessage(Component.text("Gear upgraded!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("seacreatureupgradegui.gear_upgraded", "Gear upgraded!").color(NamedTextColor.GREEN));
     }
 
     private void handleCombineResultClick() {
@@ -707,7 +707,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
 
         if (combineLevelCost > 0) {
             if (player.getLevel() < combineLevelCost) {
-                player.sendMessage(Component.text("Not enough enchant levels.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("seacreatureupgradegui.not_enough_enchant_levels", "Not enough enchant levels.").color(NamedTextColor.RED));
                 updateCombineResult();
                 return;
             }
@@ -724,7 +724,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         updateAllResults();
 
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.1f);
-        player.sendMessage(Component.text("Enchants fused!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("seacreatureupgradegui.enchants_fused", "Enchants fused!").color(NamedTextColor.GREEN));
     }
 
     private void consumeOne(int slot) {

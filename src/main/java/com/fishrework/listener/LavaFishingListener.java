@@ -180,7 +180,7 @@ public class LavaFishingListener implements Listener {
         task.runTaskTimer(plugin, 1L, 1L);  // Every tick
 
         // Feedback
-        player.sendActionBar(Component.text("🔥 Lava fishing! Cast into lava...")
+        player.sendActionBar(plugin.getLanguageManager().getMessage("lavafishinglistener.lava_fishing_cast_into_lava", "🔥 Lava fishing! Cast into lava...")
                 .color(NamedTextColor.GOLD));
     }
 
@@ -313,7 +313,7 @@ public class LavaFishingListener implements Listener {
                                         String mobId) {
         if (mobId == null) {
             session.recordCatch();
-            player.sendActionBar(Component.text("You pulled up some lava debris...")
+            player.sendActionBar(plugin.getLanguageManager().getMessage("lavafishinglistener.you_pulled_up_some_lava", "You pulled up some lava debris...")
                     .color(NamedTextColor.GRAY));
             return;
         }
@@ -341,7 +341,7 @@ public class LavaFishingListener implements Listener {
                     Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, overflow);
                     itemEntity.setInvulnerable(true);
                 } else {
-                    player.sendActionBar(Component.text("Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
+                    player.sendActionBar(plugin.getLanguageManager().getMessage("lavafishinglistener.treasure_sent_to_fish_bag", "Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
                 }
             } else {
                 Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, treasureItem);
@@ -363,10 +363,10 @@ public class LavaFishingListener implements Listener {
         plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitContext.xpMultiplier);
 
         if (plugin.getMobManager().isHostile(mobId)) {
-            player.sendMessage(Component.text("🔥 You hooked a nether creature!")
+            player.sendMessage(plugin.getLanguageManager().getMessage("lavafishinglistener.you_hooked_a_nether_creature", "🔥 You hooked a nether creature!")
                     .color(NamedTextColor.RED));
         } else {
-            player.sendMessage(Component.text("🔥 You hooked a creature from the lava!")
+            player.sendMessage(plugin.getLanguageManager().getMessage("lavafishinglistener.you_hooked_a_creature_from", "🔥 You hooked a creature from the lava!")
                     .color(NamedTextColor.GOLD));
         }
 

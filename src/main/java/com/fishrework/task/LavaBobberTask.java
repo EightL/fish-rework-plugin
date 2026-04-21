@@ -153,7 +153,8 @@ public class LavaBobberTask extends BukkitRunnable {
         if (state.getReelWindowTimer() <= 0) {
             state.setHasCatch(false);
             player.playSound(hookLoc, Sound.ENTITY_GENERIC_SPLASH, 0.5f, 0.5f);
-            player.sendActionBar(net.kyori.adventure.text.Component.text("The catch escaped!")
+            String escapedMessage = plugin.getConfig().getString("messages.lava_catch_escaped", "The catch escaped!");
+            player.sendActionBar(net.kyori.adventure.text.Component.text(escapedMessage)
                     .color(net.kyori.adventure.text.format.NamedTextColor.RED));
 
             // Restart timer for next bite attempt
@@ -175,7 +176,8 @@ public class LavaBobberTask extends BukkitRunnable {
         hookLoc.getWorld().spawnParticle(Particle.FLAME, hookLoc, 8, 0.4, 0.2, 0.4);
         player.playSound(hookLoc, Sound.ENTITY_GENERIC_BURN, 1.0f, 0.8f);
 
-        player.sendActionBar(net.kyori.adventure.text.Component.text("⚡ REEL IN NOW! ⚡")
+        String reelNowMessage = plugin.getConfig().getString("messages.lava_reel_now", "⚡ REEL IN NOW! ⚡");
+        player.sendActionBar(net.kyori.adventure.text.Component.text(reelNowMessage)
                 .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
                 .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
     }

@@ -366,6 +366,16 @@ enchanted_material:
     base: hoglin_tusk
     level: 32
 
+  enchanted_wither_bone_recipe:
+    result: enchanted_wither_bone
+    base: wither_bone
+    level: 32
+
+  enchanted_goblin_tusk_recipe:
+    result: enchanted_goblin_tusk
+    base: hoglin_tusk
+    level: 32
+
   enchanted_soul_essence_recipe:
     result: enchanted_soul_essence
     base: soul_essence
@@ -626,7 +636,7 @@ upgrade:
     pattern:
       - "SVS"
       - "BHB"
-      - "S S"
+      - "W W"
     ingredients:
       H: infernal_plate_leggings
       S: enchanted_soul_essence
@@ -670,7 +680,6 @@ upgrade:
       R: ember_rod
       G: enchanted_corrupted_gold
       H: hoglin_tusk
-      M: enchanted_magma_residue
       E: ghast_membrane
 
   hellfire_rod_recipe:

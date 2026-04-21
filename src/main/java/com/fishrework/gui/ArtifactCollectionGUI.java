@@ -88,14 +88,14 @@ public class ArtifactCollectionGUI extends BaseGUI {
                 // Mystery pane
                 ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
                 ItemMeta meta = item.getItemMeta();
-                meta.displayName(Component.text("???").color(NamedTextColor.RED)
+                meta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.", "???").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
 
                 List<Component> lore = new ArrayList<>();
-                lore.add(Component.text("Undiscovered Artifact").color(NamedTextColor.GRAY)
+                lore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.undiscovered_artifact", "Undiscovered Artifact").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
-                lore.add(Component.text("Rarity: ").color(NamedTextColor.DARK_GRAY)
+                lore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.rarity", "Rarity: ").color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false)
                         .append(Component.text(artifact.getRarity().name()).color(artifact.getRarity().getColor())
                                 .decoration(TextDecoration.BOLD, true)));
@@ -111,7 +111,7 @@ public class ArtifactCollectionGUI extends BaseGUI {
         // Header - title info (slot 4)
         ItemStack header = new ItemStack(Material.NETHER_STAR);
         ItemMeta headerMeta = header.getItemMeta();
-        headerMeta.displayName(Component.text("\u2B50 Artifact Collection").color(NamedTextColor.GOLD)
+        headerMeta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.u2b50_artifact_collection", "\u2B50 Artifact Collection").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false)
                 .decoration(TextDecoration.BOLD, true));
         List<Component> headerLore = new ArrayList<>();
@@ -121,11 +121,11 @@ public class ArtifactCollectionGUI extends BaseGUI {
         headerLore.add(Component.text("Artifact Chance: " + com.fishrework.util.FormatUtil.format("%.1f%%", artifactChance))
                 .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         headerLore.add(Component.empty());
-        headerLore.add(Component.text("Rare collectibles found in").color(NamedTextColor.GRAY)
+        headerLore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.rare_collectibles_found_in", "Rare collectibles found in").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        headerLore.add(Component.text("treasure chests while fishing.").color(NamedTextColor.GRAY)
+        headerLore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.treasure_chests_while_fishing", "treasure chests while fishing.").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        headerLore.add(Component.text("Keep in inventory to preserve their effects.").color(NamedTextColor.GREEN)
+        headerLore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.keep_in_inventory_to_preserve", "Keep in inventory to preserve their effects.").color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
         headerMeta.lore(headerLore);
         header.setItemMeta(headerMeta);
@@ -151,12 +151,12 @@ public class ArtifactCollectionGUI extends BaseGUI {
         String filterName = (filter == null) ? "ALL" : filter.name();
         net.kyori.adventure.text.format.TextColor filterColor = (filter == null) ? NamedTextColor.WHITE : filter.getColor();
         
-        filterMeta.displayName(Component.text("Filter: ").color(NamedTextColor.GOLD)
+        filterMeta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.filter", "Filter: ").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(filterName).color(filterColor).decoration(TextDecoration.BOLD, true)));
         
         List<Component> filterLore = new ArrayList<>();
-        filterLore.add(Component.text("Click to cycle rarity").color(NamedTextColor.GRAY)
+        filterLore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.click_to_cycle_rarity", "Click to cycle rarity").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         filterMeta.lore(filterLore);
         filterItem.setItemMeta(filterMeta);
@@ -165,7 +165,7 @@ public class ArtifactCollectionGUI extends BaseGUI {
         // Page Info (Slot 49) - adapted strictly for display
         ItemStack pageInfo = new ItemStack(Material.BOOK);
         ItemMeta pageMeta = pageInfo.getItemMeta();
-        pageMeta.displayName(Component.text("Stats").color(NamedTextColor.YELLOW)
+        pageMeta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.stats", "Stats").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> pageLore = new ArrayList<>();
         pageLore.add(Component.text("Showing: " + filterName).color(NamedTextColor.GRAY)

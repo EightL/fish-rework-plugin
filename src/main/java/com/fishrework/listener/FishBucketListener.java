@@ -99,7 +99,7 @@ public class FishBucketListener implements Listener {
                     entity.remove();
                 } else {
                     // Hostile
-                    player.sendMessage(Component.text("You cannot catch monsters with a bucket!").color(NamedTextColor.RED));
+                    player.sendMessage(plugin.getLanguageManager().getMessage("fishbucketlistener.you_cannot_catch_monsters_with", "You cannot catch monsters with a bucket!").color(NamedTextColor.RED));
                 }
             } 
             // If not a fished mob (e.g. vanilla sheep or salmon), nothing happens because event is cancelled.
@@ -112,7 +112,7 @@ public class FishBucketListener implements Listener {
         
         if (plugin.getItemManager().isFishBucket(item)) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("You cannot empty the Fish Bucket!").color(NamedTextColor.RED));
+            event.getPlayer().sendMessage(plugin.getLanguageManager().getMessage("fishbucketlistener.you_cannot_empty_the_fish", "You cannot empty the Fish Bucket!").color(NamedTextColor.RED));
         }
     }
 }

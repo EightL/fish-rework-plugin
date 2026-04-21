@@ -222,7 +222,7 @@ public class FishingListener implements Listener {
 
                 if (overflow == null) {
                     caughtItem.remove();
-                    player.sendActionBar(Component.text("Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
+                    player.sendActionBar(plugin.getLanguageManager().getMessage("fishinglistener.treasure_sent_to_fish_bag", "Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
                 } else {
                     caughtItem.setItemStack(overflow);
                     resultingItemStack = overflow;
@@ -257,18 +257,18 @@ public class FishingListener implements Listener {
                     (random.nextDouble() - 0.5) * 1.5
             );
             plugin.getMobManager().spawnMob(secondSpawn, mobId, player, baitXpMultiplier);
-            player.sendMessage(Component.text("🎣 DOUBLE CATCH!").color(NamedTextColor.GOLD));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.double_catch", "🎣 DOUBLE CATCH!").color(NamedTextColor.GOLD));
         }
 
         if (plugin.getMobManager().isHostile(mobId)) {
-            player.sendMessage(Component.text("You hooked a rare sea creature!").color(NamedTextColor.AQUA));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.you_hooked_a_rare_sea", "You hooked a rare sea creature!").color(NamedTextColor.AQUA));
         }
 
         plugin.getAdvancementManager().grantAdvancement(player, plugin.getAdvancementManager().FISHH_KEY);
 
         if (!player.hasDiscoveredRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY)) {
             player.discoverRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY);
-            player.sendMessage(Component.text("Unlocked Recipe: Fish Bucket!").color(NamedTextColor.GOLD));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.unlocked_recipe_fish_bucket", "Unlocked Recipe: Fish Bucket!").color(NamedTextColor.GOLD));
         }
 
         session.recordCatch();
@@ -349,7 +349,7 @@ public class FishingListener implements Listener {
         plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
         if (overflow == null) {
             caughtItem.remove();
-            player.sendActionBar(Component.text("Catch sent to Fish Bag!").color(NamedTextColor.GOLD));
+            player.sendActionBar(plugin.getLanguageManager().getMessage("fishinglistener.catch_sent_to_fish_bag", "Catch sent to Fish Bag!").color(NamedTextColor.GOLD));
         } else {
             caughtItem.setItemStack(overflow);
         }
@@ -358,7 +358,7 @@ public class FishingListener implements Listener {
     private void tryDoubleCatchDrop(Player player, ItemStack itemStack, double doubleCatchChance) {
         if (random.nextDouble() * 100 < doubleCatchChance) {
             player.getWorld().dropItemNaturally(player.getLocation(), itemStack.clone());
-            player.sendMessage(Component.text("\uD83C\uDFA3 DOUBLE CATCH!").color(NamedTextColor.GOLD));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.ud83cudfa3_double_catch", "\uD83C\uDFA3 DOUBLE CATCH!").color(NamedTextColor.GOLD));
         }
     }
 

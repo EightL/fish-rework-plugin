@@ -59,14 +59,14 @@ public class LavaBagGUI extends BaseGUI {
         double totalValue = calculateBagValue();
         ItemStack sellAll = new ItemStack(Material.GOLD_INGOT);
         ItemMeta saMeta = sellAll.getItemMeta();
-        saMeta.displayName(Component.text("Sell All").color(NamedTextColor.GOLD)
+        saMeta.displayName(plugin.getLanguageManager().getMessage("lavabaggui.sell_all", "Sell All").color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         saMeta.lore(List.of(
             Component.empty(),
             Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                 .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
             Component.empty(),
-            Component.text("Click to sell all satchel contents!").color(NamedTextColor.YELLOW)
+            plugin.getLanguageManager().getMessage("lavabaggui.click_to_sell_all_satchel", "Click to sell all satchel contents!").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         sellAll.setItemMeta(saMeta);
@@ -107,7 +107,7 @@ public class LavaBagGUI extends BaseGUI {
         if (cursorItem != null && !cursorItem.getType().isAir()) {
             if (!isAllowedInBag(plugin, cursorItem)) {
                 event.setCancelled(true);
-                player.sendMessage(Component.text("Only registered custom creature drops can go in the Magma Satchel!")
+                player.sendMessage(plugin.getLanguageManager().getMessage("lavabaggui.only_registered_custom_creature_drops", "Only registered custom creature drops can go in the Magma Satchel!")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             }
@@ -117,7 +117,7 @@ public class LavaBagGUI extends BaseGUI {
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem != null && !isAllowedInBag(plugin, clickedItem)) {
                 event.setCancelled(true);
-                player.sendMessage(Component.text("Only registered custom creature drops can go in the Magma Satchel!")
+                player.sendMessage(plugin.getLanguageManager().getMessage("lavabaggui.only_registered_custom_creature_drops", "Only registered custom creature drops can go in the Magma Satchel!")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             }

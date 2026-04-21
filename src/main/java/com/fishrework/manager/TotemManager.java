@@ -102,7 +102,7 @@ public class TotemManager {
         display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
         display.setGravity(false);
         display.setPersistent(true);
-        display.customName(Component.text("Treasure Totem").color(NamedTextColor.GOLD));
+        display.customName(plugin.getLanguageManager().getMessage("totemmanager.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD));
         display.setCustomNameVisible(true);
 
         // Initial transformation — centered and scaled up

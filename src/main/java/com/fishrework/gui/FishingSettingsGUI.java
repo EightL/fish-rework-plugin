@@ -48,12 +48,12 @@ public class FishingSettingsGUI extends BaseGUI {
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
-                                Component.text("Automatically sells common fish.").color(NamedTextColor.GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.automatically_sells_common_fish", "Automatically sells common fish.").color(NamedTextColor.GRAY)
                                         .decoration(TextDecoration.ITALIC, false),
-                                Component.text("Command: /fish autosell").color(NamedTextColor.DARK_GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.command_fish_autosell", "Command: /fish autosell").color(NamedTextColor.DARK_GRAY)
                                         .decoration(TextDecoration.ITALIC, false)
                         )
-                        : List.of(Component.text("Disabled by server admin.").color(NamedTextColor.RED)
+                        : List.of(plugin.getLanguageManager().getMessage("fishingsettingsgui.disabled_by_server_admin", "Disabled by server admin.").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false))
         );
     }
@@ -68,12 +68,12 @@ public class FishingSettingsGUI extends BaseGUI {
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
-                                Component.text("Shows occasional fishing tips.").color(NamedTextColor.GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.shows_occasional_fishing_tips", "Shows occasional fishing tips.").color(NamedTextColor.GRAY)
                                         .decoration(TextDecoration.ITALIC, false),
-                                Component.text("Command: /fish notifications").color(NamedTextColor.DARK_GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.command_fish_notifications", "Command: /fish notifications").color(NamedTextColor.DARK_GRAY)
                                         .decoration(TextDecoration.ITALIC, false)
                         )
-                        : List.of(Component.text("Disabled by server admin.").color(NamedTextColor.RED)
+                        : List.of(plugin.getLanguageManager().getMessage("fishingsettingsgui.disabled_by_server_admin", "Disabled by server admin.").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false))
         );
     }
@@ -88,12 +88,12 @@ public class FishingSettingsGUI extends BaseGUI {
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
-                                Component.text("Shows floating damage numbers.").color(NamedTextColor.GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.shows_floating_damage_numbers", "Shows floating damage numbers.").color(NamedTextColor.GRAY)
                                         .decoration(TextDecoration.ITALIC, false),
-                                Component.text("Command: /fish dmgindicator").color(NamedTextColor.DARK_GRAY)
+                                plugin.getLanguageManager().getMessage("fishingsettingsgui.command_fish_dmgindicator", "Command: /fish dmgindicator").color(NamedTextColor.DARK_GRAY)
                                         .decoration(TextDecoration.ITALIC, false)
                         )
-                        : List.of(Component.text("Disabled by server admin.").color(NamedTextColor.RED)
+                        : List.of(plugin.getLanguageManager().getMessage("fishingsettingsgui.disabled_by_server_admin", "Disabled by server admin.").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false))
         );
     }
@@ -117,12 +117,12 @@ public class FishingSettingsGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
                 Component.empty(),
-                Component.text("Changes how intense sea creature effects look.").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("fishingsettingsgui.changes_how_intense_sea_creature", "Changes how intense sea creature effects look.").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Command: /fish particles <high|medium|low>").color(NamedTextColor.DARK_GRAY)
+                plugin.getLanguageManager().getMessage("fishingsettingsgui.command_fish_particles_highmediumlow", "Command: /fish particles <high|medium|low>").color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to cycle.").color(NamedTextColor.YELLOW)
+                plugin.getLanguageManager().getMessage("fishingsettingsgui.click_to_cycle", "Click to cycle.").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         item.setItemMeta(meta);

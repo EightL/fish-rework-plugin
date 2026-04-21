@@ -96,12 +96,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("Only players can use this command.").color(NamedTextColor.RED));
+            sender.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.only_players_can_use_this", "Only players can use this command.").color(NamedTextColor.RED));
             return true;
         }
 
         if (!player.hasPermission("fishrework.use")) {
-            player.sendMessage(Component.text("You don't have permission to use this command.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_dont_have_permission_to", "You don't have permission to use this command.").color(NamedTextColor.RED));
             return true;
         }
 
@@ -125,7 +125,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return adminHandler.handle(player, args);
         }
 
-        player.sendMessage(Component.text("Unknown subcommand. Use /fishing help").color(NamedTextColor.RED));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_subcommand_use_fishing_help", "Unknown subcommand. Use /fishing help").color(NamedTextColor.RED));
         return true;
     }
 
@@ -203,7 +203,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private boolean handleSync(Player player, String[] args) {
         plugin.getRecipeRegistry().syncRecipes(player);
-        player.sendMessage(Component.text("Synced your recipes and advancements!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.synced_your_recipes_and_advancements", "Synced your recipes and advancements!").color(NamedTextColor.GREEN));
         return true;
     }
 
@@ -230,7 +230,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             player.sendMessage(Component.text("Auto-sell is now " + (newState ? "ENABLED" : "DISABLED") + "!")
                     .color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
             if (newState) {
-                player.sendMessage(Component.text("Common fish will be automatically sold for Doubloons.")
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.common_fish_will_be_automatically", "Common fish will be automatically sold for Doubloons.")
                         .color(NamedTextColor.GRAY));
             }
         }
@@ -247,7 +247,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if (args.length >= 2) {
             String mode = args[1].toLowerCase();
             if (!mode.equals("on") && !mode.equals("off") && !mode.equals("toggle")) {
-                player.sendMessage(Component.text("Usage: /fishing notifications [on|off|toggle]").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_notifications_onofftoggle", "Usage: /fishing notifications [on|off|toggle]").color(NamedTextColor.RED));
                 return true;
             }
             enabled = mode.equals("toggle") ? !data.isFishingTipsEnabled() : mode.equals("on");
@@ -296,18 +296,18 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             player.sendMessage(Component.text("Set global XP multiplier to x" + com.fishrework.util.FormatUtil.format("%.2f", requested))
                     .color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_xpmultiplier_value", "Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
         }
         return true;
     }
 
     private boolean handleReload(Player player, String[] args) {
         if (!player.hasPermission("fishrework.reload") && !player.hasPermission("fishrework.admin")) {
-            player.sendMessage(Component.text("You don't have permission to reload the config.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_dont_have_permission_to", "You don't have permission to reload the config.").color(NamedTextColor.RED));
             return true;
         }
         plugin.reload();
-        player.sendMessage(Component.text("[Fish Rework] Config reloaded successfully!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fish_rework_config_reloaded_successfully", "[Fish Rework] Config reloaded successfully!").color(NamedTextColor.GREEN));
         return true;
     }
 
@@ -318,7 +318,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private boolean handleDamageIndicator(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage(Component.text("Usage: /fishing dmgindicator <on|off>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_dmgindicator_onoff", "Usage: /fishing dmgindicator <on|off>").color(NamedTextColor.RED));
             return true;
         }
         boolean enabled = args[1].equalsIgnoreCase("on");
@@ -398,81 +398,81 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private void sendHelp(Player player) {
-        player.sendMessage(Component.text("--- FishRework Help ---").color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text("/fishing").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open main menu").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing top").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View leaderboard").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing info").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open the skills overview menu").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing encyclopedia").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View fish encyclopedia").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing artifacts").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View artifact encyclopedia").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing sync").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Fix missing recipes").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing recipe [item_id]").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open the recipe browser for a held/custom item").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing shop").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open the fishing shop").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing bag").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open your fish bag").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing balance").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Check your Doubloons balance").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing stats").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View session statistics").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing sell").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Quick sell all fish from inventory").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing autosell").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Toggle auto-sell for common fish").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing settings").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Open fishing settings").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing notifications [on|off|toggle]").color(NamedTextColor.YELLOW)
-            .append(Component.text(" - Toggle fishing tip notifications").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing xpmultiplier [value]").color(NamedTextColor.YELLOW)
-            .append(Component.text(" - View/set global XP multiplier").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing dmgindicator <on|off>").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - Toggle damage indicators").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing particles [high|medium|low]").color(NamedTextColor.YELLOW)
-            .append(Component.text(" - Set sea creature effect detail").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fs particles <high|medium|low>").color(NamedTextColor.YELLOW)
-            .append(Component.text(" - Quick particle detail shortcut").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing chances").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View biome spawn chances at your location").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("/fishing heat").color(NamedTextColor.YELLOW)
-                .append(Component.text(" - View your lava heat stats").color(NamedTextColor.GRAY)));
-        player.sendMessage(Component.text("Milestone: Fishing Level 27").color(NamedTextColor.GOLD)
-            .append(Component.text(" unlocks Lava Fishing + Magma Satchel in shop").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishrework_help", "--- FishRework Help ---").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing", "/fishing").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_main_menu", " - Open main menu").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_top", "/fishing top").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_leaderboard", " - View leaderboard").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_info", "/fishing info").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_skills_overview_menu", " - Open the skills overview menu").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_encyclopedia", "/fishing encyclopedia").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_fish_encyclopedia", " - View fish encyclopedia").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_artifacts", "/fishing artifacts").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_artifact_encyclopedia", " - View artifact encyclopedia").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_sync", "/fishing sync").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.fix_missing_recipes", " - Fix missing recipes").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_recipe_itemid", "/fishing recipe [item_id]").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_recipe_browser_for", " - Open the recipe browser for a held/custom item").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_shop", "/fishing shop").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_fishing_shop", " - Open the fishing shop").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_bag", "/fishing bag").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_your_fish_bag", " - Open your fish bag").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_balance", "/fishing balance").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.check_your_doubloons_balance", " - Check your Doubloons balance").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_stats", "/fishing stats").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_session_statistics", " - View session statistics").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_sell", "/fishing sell").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.quick_sell_all_fish_from", " - Quick sell all fish from inventory").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_autosell", "/fishing autosell").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_autosell_for_common_fish", " - Toggle auto-sell for common fish").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_settings", "/fishing settings").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_fishing_settings", " - Open fishing settings").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_notifications_onofftoggle", "/fishing notifications [on|off|toggle]").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_fishing_tip_notifications", " - Toggle fishing tip notifications").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier [value]").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.viewset_global_xp_multiplier", " - View/set global XP multiplier").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_dmgindicator_onoff", "/fishing dmgindicator <on|off>").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_damage_indicators", " - Toggle damage indicators").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_particles_highmediumlow", "/fishing particles [high|medium|low]").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.set_sea_creature_effect_detail", " - Set sea creature effect detail").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fs_particles_highmediumlow", "/fs particles <high|medium|low>").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.quick_particle_detail_shortcut", " - Quick particle detail shortcut").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_chances", "/fishing chances").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_biome_spawn_chances_at", " - View biome spawn chances at your location").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_heat", "/fishing heat").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.view_your_lava_heat_stats", " - View your lava heat stats").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.milestone_fishing_level_27", "Milestone: Fishing Level 27").color(NamedTextColor.GOLD)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.unlocks_lava_fishing__magma", " unlocks Lava Fishing + Magma Satchel in shop").color(NamedTextColor.GRAY)));
 
         if (player.hasPermission("fishrework.admin")) {
-            player.sendMessage(Component.text("--- Admin Commands ---").color(NamedTextColor.RED));
-            player.sendMessage(Component.text("/fishing addxp <player> <amount>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Give XP to player").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing setlevel <player> <level>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Set player level").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing setchance <mob|artifact> <chance>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Set mob/artifact spawn chance").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing resetchances").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Reset all chances to defaults").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing reset <player>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Reset player data").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing give <player> <item> [count]").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Give custom item").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing spawn <mob>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Spawn mob at location").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing fulfill <player> <all|creatures|artifacts>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Unlock all creatures/artifacts for a player").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing heat <player>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - View another player's heat stats").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing setheat <player> <amount>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Set heat (clamped to 0-100)").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing setcoins <player> <amount>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Set doubloons balance").color(NamedTextColor.GRAY)));
-            player.sendMessage(Component.text("/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Set global XP multiplier").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.admin_commands", "--- Admin Commands ---").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_addxp_player_amount", "/fishing addxp <player> <amount>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.give_xp_to_player", " - Give XP to player").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setlevel_player_level", "/fishing setlevel <player> <level>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_player_level", " - Set player level").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setchance_mobartifact_chance", "/fishing setchance <mob|artifact> <chance>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_mobartifact_spawn_chance", " - Set mob/artifact spawn chance").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_resetchances", "/fishing resetchances").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.reset_all_chances_to_defaults", " - Reset all chances to defaults").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_reset_player", "/fishing reset <player>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.reset_player_data", " - Reset player data").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_give_player_item_count", "/fishing give <player> <item> [count]").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.give_custom_item", " - Give custom item").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_spawn_mob", "/fishing spawn <mob>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.spawn_mob_at_location", " - Spawn mob at location").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_fulfill_player_allcreaturesartifacts", "/fishing fulfill <player> <all|creatures|artifacts>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.unlock_all_creaturesartifacts_for_a", " - Unlock all creatures/artifacts for a player").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_heat_player", "/fishing heat <player>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.view_another_players_heat_stats", " - View another player's heat stats").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setheat_player_amount", "/fishing setheat <player> <amount>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_heat_clamped_to_0100", " - Set heat (clamped to 0-100)").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setcoins_player_amount", "/fishing setcoins <player> <amount>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_doubloons_balance", " - Set doubloons balance").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_global_xp_multiplier", " - Set global XP multiplier").color(NamedTextColor.GRAY)));
 
-            player.sendMessage(Component.text("/fishing reload").color(NamedTextColor.YELLOW)
-                    .append(Component.text(" - Reload config.yml without restart").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_reload", "/fishing reload").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.reload_configyml_without_restart", " - Reload config.yml without restart").color(NamedTextColor.GRAY)));
         }
     }
 
@@ -481,13 +481,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if (data == null) return true;
 
         if (args.length != 1) {
-            player.sendMessage(Component.text("Usage: /fishing particles <high|medium|low>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_particles_highmediumlow", "Usage: /fishing particles <high|medium|low>").color(NamedTextColor.RED));
             return true;
         }
 
         ParticleDetailMode mode = ParticleDetailMode.fromInput(args[0]);
         if (mode == null) {
-            player.sendMessage(Component.text("Unknown mode. Use high, medium, or low.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_mode_use_high_medium", "Unknown mode. Use high, medium, or low.").color(NamedTextColor.RED));
             return true;
         }
 
@@ -502,7 +502,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
         player.sendMessage(Component.text("Sea creature particles set to " + mode.getId().toUpperCase() + ".")
                 .color(color));
-        player.sendMessage(Component.text("Use /fs particles <high|medium|low> to change this later.")
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.use_fs_particles_highmediumlow_to", "Use /fs particles <high|medium|low> to change this later.")
                 .color(NamedTextColor.GRAY));
         return true;
     }
@@ -513,35 +513,35 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         com.fishrework.model.FishingSession session = data.getSession();
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
 
-        player.sendMessage(Component.text("--- Fishing Session Stats ---").color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text("  Total Catches: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_session_stats", "--- Fishing Session Stats ---").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.total_catches", "  Total Catches: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getTotalCatches())).color(NamedTextColor.WHITE)));
-        player.sendMessage(Component.text("  Mobs Killed: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.mobs_killed", "  Mobs Killed: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getMobsKilled())).color(NamedTextColor.RED)));
-        player.sendMessage(Component.text("  Treasures Found: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.treasures_found", "  Treasures Found: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getTreasuresFound())).color(NamedTextColor.GOLD)));
-        player.sendMessage(Component.text("  XP Earned: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.xp_earned", "  XP Earned: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getXpEarned())).color(NamedTextColor.AQUA)));
         player.sendMessage(Component.text("  " + currencyName + " Earned: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getDoubloonsEarned())).color(NamedTextColor.GREEN)));
-        player.sendMessage(Component.text("  Levels Gained: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.levels_gained", "  Levels Gained: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getLevelsGained())).color(NamedTextColor.YELLOW)));
-        player.sendMessage(Component.text("  New Discoveries: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.new_discoveries", "  New Discoveries: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getNewDiscoveries())).color(NamedTextColor.LIGHT_PURPLE)));
 
         // Streak info
         if (session.getBestStreak() > 0) {
-            player.sendMessage(Component.text("  Current Streak: ").color(NamedTextColor.GRAY)
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.current_streak", "  Current Streak: ").color(NamedTextColor.GRAY)
                     .append(Component.text("x" + session.getCurrentStreak()).color(NamedTextColor.GOLD)));
-            player.sendMessage(Component.text("  Best Streak: ").color(NamedTextColor.GRAY)
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.best_streak", "  Best Streak: ").color(NamedTextColor.GRAY)
                     .append(Component.text("x" + session.getBestStreak()).color(NamedTextColor.GOLD)));
         }
 
         // Auto-sell status
-        player.sendMessage(Component.text("  Auto-Sell: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.autosell", "  Auto-Sell: ").color(NamedTextColor.GRAY)
                 .append(Component.text(session.isAutoSellEnabled() ? "ON" : "OFF")
                         .color(session.isAutoSellEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED)));
-        player.sendMessage(Component.text("----------------------------").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.", "----------------------------").color(NamedTextColor.GOLD));
     }
 
     private void openRecipeGuide(Player player, String[] args) {
@@ -593,14 +593,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .color(NamedTextColor.GREEN));
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
         } else {
-            player.sendMessage(Component.text("You don't have anything to sell!")
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_dont_have_anything_to", "You don't have anything to sell!")
                     .color(NamedTextColor.RED));
         }
     }
 
     private boolean checkAdmin(Player player) {
         if (!player.hasPermission("fishrework.admin")) {
-            player.sendMessage(Component.text("No permission.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.no_permission", "No permission.").color(NamedTextColor.RED));
             return false;
         }
         return true;
@@ -617,36 +617,36 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private void adminAddXp(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing addxp <player> <amount>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_addxp_player_amount", "Usage: /fishing addxp <player> <amount>").color(NamedTextColor.RED));
             return;
         }
         Player target = Bukkit.getPlayer(args[1]);
-        if (target == null) { player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED)); return; }
+        if (target == null) { player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED)); return; }
 
         try {
             Skill skill = Skill.FISHING;
             double amount = Double.parseDouble(args[2]);
 
             if (amount < 0 || amount > 1_000_000) {
-                player.sendMessage(Component.text("Amount must be between 0 and 1,000,000.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.amount_must_be_between_0", "Amount must be between 0 and 1,000,000.").color(NamedTextColor.RED));
                 return;
             }
 
             boolean levelUp = plugin.getSkillManager().grantRawXp(target, skill, amount);
             player.sendMessage(Component.text("Added " + amount + " XP to " + target.getName()).color(NamedTextColor.GREEN));
-            if (levelUp) target.sendMessage(Component.text("You leveled up from admin command!").color(NamedTextColor.GOLD));
+            if (levelUp) target.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_leveled_up_from_admin", "You leveled up from admin command!").color(NamedTextColor.GOLD));
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Invalid number.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
         }
     }
 
     private void adminSetLevel(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing setlevel <player> <level>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setlevel_player_level", "Usage: /fishing setlevel <player> <level>").color(NamedTextColor.RED));
             return;
         }
         Player target = Bukkit.getPlayer(args[1]);
-        if (target == null) { player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED)); return; }
+        if (target == null) { player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED)); return; }
 
         try {
             Skill skill = Skill.FISHING;
@@ -666,13 +666,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
             plugin.getAdvancementManager().syncAdvancements(target, level);
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Invalid number.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
         }
     }
 
     private void adminSetChance(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing setchance <mob|artifact> <chance>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setchance_mobartifact_chance", "Usage: /fishing setchance <mob|artifact> <chance>").color(NamedTextColor.RED));
             return;
         }
 
@@ -683,7 +683,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             try {
                 double chance = Double.parseDouble(args[2]);
                 if (chance < 0.0 || chance > 100.0) {
-                    player.sendMessage(Component.text("Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
+                    player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.chance_must_be_between_00", "Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
                     return;
                 }
                 double oldChance = plugin.getConfig().getDouble("artifacts.chance", 3.0);
@@ -691,7 +691,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 plugin.saveConfig();
                 player.sendMessage(Component.text("Updated artifact chance: " + oldChance + "% -> " + chance + "%").color(NamedTextColor.GREEN));
             } catch (NumberFormatException e) {
-                player.sendMessage(Component.text("Invalid number.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
             }
             return;
         }
@@ -707,7 +707,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         try {
             double chance = Double.parseDouble(args[2]);
             if (chance < 0.0 || chance > 100.0) {
-                player.sendMessage(Component.text("Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.chance_must_be_between_00", "Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
                 return;
             }
             double oldChance = plugin.getMobManager().getMobChance(target, -1);
@@ -715,18 +715,18 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             plugin.getMobManager().setMobChance(target, chance);
             player.sendMessage(Component.text("Updated " + target + " chance: " + oldChance + "% -> " + chance + "%").color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Invalid number.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
         }
     }
 
     private void adminReset(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage(Component.text("Usage: /fishing reset <player>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_reset_player", "Usage: /fishing reset <player>").color(NamedTextColor.RED));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
-        if (target == null) { player.sendMessage(Component.text("Player not found online.").color(NamedTextColor.RED)); return; }
+        if (target == null) { player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found_online", "Player not found online.").color(NamedTextColor.RED)); return; }
 
         plugin.getDatabaseManager().resetData(target.getUniqueId());
         PlayerData data = plugin.getPlayerData(target.getUniqueId());
@@ -738,23 +738,23 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         target.closeInventory();
 
         player.sendMessage(Component.text("Reset all data for " + target.getName()).color(NamedTextColor.GREEN));
-        target.sendMessage(Component.text("Your skills and collection have been reset.").color(NamedTextColor.RED));
+        target.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.your_skills_and_collection_have", "Your skills and collection have been reset.").color(NamedTextColor.RED));
     }
 
     private void adminGive(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing give <player> <item> [count]").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_give_player_item", "Usage: /fishing give <player> <item> [count]").color(NamedTextColor.RED));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
-        if (target == null) { player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED)); return; }
+        if (target == null) { player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED)); return; }
 
         String itemName = args[2].toLowerCase();
         org.bukkit.inventory.ItemStack item = plugin.getItemManager().getItem(itemName);
 
         if (item == null) {
-            player.sendMessage(Component.text("Unknown item. Use tab completion.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_item_use_tab_completion", "Unknown item. Use tab completion.").color(NamedTextColor.RED));
             return;
         }
 
@@ -763,13 +763,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             try {
                 count = Integer.parseInt(args[3]);
             } catch (NumberFormatException ignored) {
-                player.sendMessage(Component.text("Count must be a number.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.count_must_be_a_number", "Count must be a number.").color(NamedTextColor.RED));
                 return;
             }
         }
 
         if (count <= 0 || count > 10_000) {
-            player.sendMessage(Component.text("Count must be between 1 and 10,000.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.count_must_be_between_1", "Count must be between 1 and 10,000.").color(NamedTextColor.RED));
             return;
         }
 
@@ -790,14 +790,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private void adminSpawn(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage(Component.text("Usage: /fishing spawn <mob>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_spawn_mob", "Usage: /fishing spawn <mob>").color(NamedTextColor.RED));
             return;
         }
 
         String mobId = args[1].toLowerCase();
         com.fishrework.model.CustomMob mob = plugin.getMobRegistry().get(mobId);
         if (mob == null) {
-            player.sendMessage(Component.text("Unknown mob ID.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_mob_id", "Unknown mob ID.").color(NamedTextColor.RED));
             return;
         }
 
@@ -821,7 +821,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         plugin.getConfig().set("artifacts.chance", null);
         
         plugin.saveConfig();
-        player.sendMessage(Component.text("All mob chances, land mob bonus, and artifact chance reset to defaults!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.all_mob_chances_land_mob", "All mob chances, land mob bonus, and artifact chance reset to defaults!").color(NamedTextColor.GREEN));
     }
 
     private void adminChances(Player player, String[] args) {
@@ -832,11 +832,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         java.util.Map<String, Double> chances = snapshot.chances();
         java.util.Map<String, Double> rawWeights = snapshot.rawWeights();
 
-        player.sendMessage(Component.text("--- Fishing Spawn Chances ---").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_spawn_chances", "--- Fishing Spawn Chances ---").color(NamedTextColor.GOLD));
         player.sendMessage(Component.text("Biome: " + snapshot.biomeGroup().name()).color(NamedTextColor.GRAY));
 
         if (snapshot.activeBaitId() != null && !snapshot.baitAppliesToContext()) {
-            player.sendMessage(Component.text("Held bait is inactive in this dimension.")
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.held_bait_is_inactive_in", "Held bait is inactive in this dimension.")
                     .color(NamedTextColor.RED));
         }
 
@@ -878,13 +878,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private void adminFulfill(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing fulfill <player> <all|creatures|artifacts>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_fulfill_player_allcreaturesartifacts", "Usage: /fishing fulfill <player> <all|creatures|artifacts>").color(NamedTextColor.RED));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED));
             return;
         }
 
@@ -895,7 +895,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         boolean doArtifacts = type.equals("all") || type.equals("artifacts");
 
         if (!doCreatures && !doArtifacts) {
-            player.sendMessage(Component.text("Unknown type. Use all, creatures, or artifacts.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_type_use_all_creatures", "Unknown type. Use all, creatures, or artifacts.").color(NamedTextColor.RED));
             return;
         }
 
@@ -927,12 +927,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         Player target = player;
         if (args.length > 1) {
             if (!player.hasPermission("fishrework.admin")) {
-                player.sendMessage(Component.text("No permission.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.no_permission", "No permission.").color(NamedTextColor.RED));
                 return;
             }
             target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED));
                 return;
             }
         }
@@ -946,39 +946,39 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         double totalHeatResist = equipmentHeatResist + tempHeatResist;
 
         player.sendMessage(Component.text("--- Heat Debug (" + target.getName() + ") ---").color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text("Current Heat: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.current_heat", "Current Heat: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f / 100.0", data.getHeat())).color(NamedTextColor.RED)));
-        player.sendMessage(Component.text("Heat Tier: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.heat_tier", "Heat Tier: ").color(NamedTextColor.GRAY)
                 .append(Component.text(tier.name()).color(tier.getColor())));
-        player.sendMessage(Component.text("Equipment Heat Resist: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.equipment_heat_resist", "Equipment Heat Resist: ").color(NamedTextColor.GRAY)
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", equipmentHeatResist)).color(NamedTextColor.AQUA)));
-        player.sendMessage(Component.text("Magma Filter Resist: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.magma_filter_resist", "Magma Filter Resist: ").color(NamedTextColor.GRAY)
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", tempHeatResist)).color(NamedTextColor.AQUA))
             .append(Component.text(magmaFilterRemaining > 0 ? " (" + magmaFilterRemaining + "s left)" : " (inactive)")
                 .color(magmaFilterRemaining > 0 ? NamedTextColor.YELLOW : NamedTextColor.DARK_GRAY)));
-        player.sendMessage(Component.text("Total Heat Resist: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.total_heat_resist", "Total Heat Resist: ").color(NamedTextColor.GRAY)
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", totalHeatResist)).color(NamedTextColor.GREEN)));
-        player.sendMessage(Component.text("Peak Heat (Session): ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.peak_heat_session", "Peak Heat (Session): ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", data.getSession().getPeakHeat())).color(NamedTextColor.YELLOW)));
-        player.sendMessage(Component.text("Damage Taken: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.damage_taken", "Damage Taken: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", data.getSession().getHeatDamageTaken())).color(NamedTextColor.DARK_RED)));
     }
 
     private void adminSetHeat(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing setheat <player> <amount>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setheat_player_amount", "Usage: /fishing setheat <player> <amount>").color(NamedTextColor.RED));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendMessage(Component.text("Player not found.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED));
             return;
         }
 
         PlayerData data = plugin.getPlayerData(target.getUniqueId());
         if (data == null) {
-            player.sendMessage(Component.text("No player data found for that player.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.no_player_data_found_for", "No player data found for that player.").color(NamedTextColor.RED));
             return;
         }
 
@@ -1000,25 +1000,25 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             target.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Your lava heat was set to %.1f by an admin.", clampedHeat))
                     .color(NamedTextColor.GOLD));
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Invalid heat amount. Use a number from 0 to 100.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_heat_amount_use_a", "Invalid heat amount. Use a number from 0 to 100.").color(NamedTextColor.RED));
         }
     }
 
     private void adminSetCoins(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(Component.text("Usage: /fishing setcoins <player> <amount>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setcoins_player_amount", "Usage: /fishing setcoins <player> <amount>").color(NamedTextColor.RED));
             return;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            player.sendMessage(Component.text("Player not found online.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found_online", "Player not found online.").color(NamedTextColor.RED));
             return;
         }
 
         PlayerData data = plugin.getPlayerData(target.getUniqueId());
         if (data == null) {
-            player.sendMessage(Component.text("No player data found for that player.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.no_player_data_found_for", "No player data found for that player.").color(NamedTextColor.RED));
             return;
         }
 
@@ -1026,12 +1026,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         try {
             amount = Double.parseDouble(args[2]);
         } catch (NumberFormatException e) {
-            player.sendMessage(Component.text("Invalid amount.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_amount", "Invalid amount.").color(NamedTextColor.RED));
             return;
         }
 
         if (amount < 0) {
-            player.sendMessage(Component.text("Amount must be >= 0.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.amount_must_be__0", "Amount must be >= 0.").color(NamedTextColor.RED));
             return;
         }
 

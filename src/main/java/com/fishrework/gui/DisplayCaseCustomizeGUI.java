@@ -104,7 +104,7 @@ public class DisplayCaseCustomizeGUI extends BaseGUI {
         // --- Row 5: Close ---
         ItemStack close = new ItemStack(Material.BARRIER);
         ItemMeta closeMeta = close.getItemMeta();
-        closeMeta.displayName(Component.text("Close").color(NamedTextColor.RED));
+        closeMeta.displayName(plugin.getLanguageManager().getMessage("displaycasecustomizegui.close", "Close").color(NamedTextColor.RED));
         close.setItemMeta(closeMeta);
         inventory.setItem(49, close);
         

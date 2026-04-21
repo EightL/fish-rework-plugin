@@ -116,7 +116,7 @@ public class EnchantmentListener implements Listener {
         if (!isCustomTrident(held)) return;
         if (hasConflictingEnchant(held, enchantment)) {
             event.setCancelled(true);
-            player.sendMessage(Component.text("That trident already has a conflicting enchantment.")
+            player.sendMessage(plugin.getLanguageManager().getMessage("enchantmentlistener.that_trident_already_has_a", "That trident already has a conflicting enchantment.")
                     .color(NamedTextColor.RED));
             return;
         }
@@ -131,7 +131,7 @@ public class EnchantmentListener implements Listener {
         }
         if (level <= 0) {
             event.setCancelled(true);
-            player.sendMessage(Component.text("Enchant level must be at least 1.")
+            player.sendMessage(plugin.getLanguageManager().getMessage("enchantmentlistener.enchant_level_must_be_at", "Enchant level must be at least 1.")
                     .color(NamedTextColor.RED));
             return;
         }

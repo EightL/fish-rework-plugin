@@ -118,11 +118,11 @@ public class RecipeGuideGUI extends BaseGUI {
 
         List<Component> lore = new ArrayList<>();
         if (availability.canCraftNow()) {
-            lore.add(Component.text("Click to craft using your inventory, Fish Bag, and Magma Satchel.")
+            lore.add(plugin.getLanguageManager().getMessage("recipeguidegui.click_to_craft_using_your", "Click to craft using your inventory, Fish Bag, and Magma Satchel.")
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (availability.unlocked()) {
-            lore.add(Component.text("Missing ingredients in your inventory or bags.")
+            lore.add(plugin.getLanguageManager().getMessage("recipeguidegui.missing_ingredients_in_your_inventory", "Missing ingredients in your inventory or bags.")
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (recipe.hasLevelRequirement()) {
@@ -130,7 +130,7 @@ public class RecipeGuideGUI extends BaseGUI {
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (recipe.hasAdvancementRequirement()) {
-            lore.add(Component.text("Unlock the required advancement first.")
+            lore.add(plugin.getLanguageManager().getMessage("recipeguidegui.unlock_the_required_advancement_first", "Unlock the required advancement first.")
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -143,14 +143,14 @@ public class RecipeGuideGUI extends BaseGUI {
     private ItemStack createHintItem() {
         ItemStack hint = new ItemStack(Material.PAPER);
         ItemMeta meta = hint.getItemMeta();
-        meta.displayName(Component.text("Recipe Browser")
+        meta.displayName(plugin.getLanguageManager().getMessage("recipeguidegui.recipe_browser", "Recipe Browser")
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Use /fishing recipe while holding a custom item.")
+                plugin.getLanguageManager().getMessage("recipeguidegui.use_fishing_recipe_while_holding", "Use /fishing recipe while holding a custom item.")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Use the Recipe Browser in the Fishing menu to browse all recipes.")
+                plugin.getLanguageManager().getMessage("recipeguidegui.use_the_recipe_browser_in", "Use the Recipe Browser in the Fishing menu to browse all recipes.")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
@@ -161,7 +161,7 @@ public class RecipeGuideGUI extends BaseGUI {
     private ItemStack createArrowItem() {
         ItemStack arrow = new ItemStack(Material.SPECTRAL_ARROW);
         ItemMeta meta = arrow.getItemMeta();
-        meta.displayName(Component.text("Crafting Output")
+        meta.displayName(plugin.getLanguageManager().getMessage("recipeguidegui.crafting_output", "Crafting Output")
                 .color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         arrow.setItemMeta(meta);

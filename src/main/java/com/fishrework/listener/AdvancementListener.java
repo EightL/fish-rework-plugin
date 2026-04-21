@@ -40,7 +40,7 @@ public class AdvancementListener implements Listener {
             return;
         }
 
-        event.getPlayer().sendMessage(Component.text("   Recipes Unlocked:").color(NamedTextColor.LIGHT_PURPLE));
+        event.getPlayer().sendMessage(plugin.getLanguageManager().getMessage("advancementlistener.recipes_unlocked", "   Recipes Unlocked:").color(NamedTextColor.LIGHT_PURPLE));
         for (RecipeDefinition recipe : recipes) {
             ItemStack result = recipe.createResultItem(plugin.getItemManager());
             String name = result.hasItemMeta() && result.getItemMeta().hasDisplayName()
@@ -52,7 +52,7 @@ public class AdvancementListener implements Listener {
                     .color(NamedTextColor.LIGHT_PURPLE)
                     .decoration(TextDecoration.ITALIC, false)
                     .clickEvent(ClickEvent.runCommand("/fishing recipe " + recipe.getResultId()))
-                    .hoverEvent(Component.text("Click to open recipe").color(NamedTextColor.GREEN)));
+                    .hoverEvent(plugin.getLanguageManager().getMessage("advancementlistener.click_to_open_recipe", "Click to open recipe").color(NamedTextColor.GREEN)));
         }
     }
 }

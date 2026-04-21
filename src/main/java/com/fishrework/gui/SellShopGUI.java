@@ -230,7 +230,7 @@ public class SellShopGUI extends BaseGUI {
             lore.add(Component.text("Buy Price: " + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + " each")
                     .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (POTTERY_SHERD_WILDCARD_ID.equals(entry.customId)) {
-                lore.add(Component.text("Counts all pottery sherd variants")
+                lore.add(plugin.getLanguageManager().getMessage("sellshopgui.counts_all_pottery_sherd_variants", "Counts all pottery sherd variants")
                         .color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
             }
             lore.add(Component.text("You have: " + count).color(NamedTextColor.GRAY)
@@ -239,15 +239,15 @@ public class SellShopGUI extends BaseGUI {
                 lore.add(Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price * count) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
-                lore.add(Component.text("Left-Click: Sell all").color(NamedTextColor.YELLOW)
+                lore.add(plugin.getLanguageManager().getMessage("sellshopgui.leftclick_sell_all", "Left-Click: Sell all").color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("Right-Click: Buy 1").color(NamedTextColor.YELLOW)
+                lore.add(plugin.getLanguageManager().getMessage("sellshopgui.rightclick_buy_1", "Right-Click: Buy 1").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false));
             } else {
                 lore.add(Component.empty());
-                lore.add(Component.text("None in inventory").color(NamedTextColor.RED)
+                lore.add(plugin.getLanguageManager().getMessage("sellshopgui.none_in_inventory", "None in inventory").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("Right-Click: Buy 1").color(NamedTextColor.YELLOW)
+                lore.add(plugin.getLanguageManager().getMessage("sellshopgui.rightclick_buy_1", "Right-Click: Buy 1").color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
             }
 
@@ -275,14 +275,14 @@ public class SellShopGUI extends BaseGUI {
         // Sell All Fish button
         ItemStack sellAll = new ItemStack(Material.GOLD_INGOT);
         ItemMeta saMeta = sellAll.getItemMeta();
-        saMeta.displayName(Component.text("Sell All Fish").color(NamedTextColor.GOLD)
+        saMeta.displayName(plugin.getLanguageManager().getMessage("sellshopgui.sell_all_fish", "Sell All Fish").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         double totalValue = calculateTotalSellValue(player);
         saMeta.lore(List.of(
                 Component.empty(),
                 Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("Click to sell everything!").color(NamedTextColor.YELLOW)
+                plugin.getLanguageManager().getMessage("sellshopgui.click_to_sell_everything", "Click to sell everything!").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         sellAll.setItemMeta(saMeta);
@@ -291,7 +291,7 @@ public class SellShopGUI extends BaseGUI {
         // Dedicated Sell Other button (separate from Sell All to avoid accidental junk sales)
         ItemStack sellOther = new ItemStack(Material.DRIED_KELP);
         ItemMeta soMeta = sellOther.getItemMeta();
-        soMeta.displayName(Component.text("Sell Other").color(NamedTextColor.GOLD)
+        soMeta.displayName(plugin.getLanguageManager().getMessage("sellshopgui.sell_other", "Sell Other").color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
 
         List<ItemStack> otherItems = getOtherVendorItems(player);
@@ -304,7 +304,7 @@ public class SellShopGUI extends BaseGUI {
 
         List<Component> sellOtherLore = new ArrayList<>();
         sellOtherLore.add(Component.empty());
-        sellOtherLore.add(Component.text("Sells only 'other' vendor items").color(NamedTextColor.GRAY)
+        sellOtherLore.add(plugin.getLanguageManager().getMessage("sellshopgui.sells_only_other_vendor_items", "Sells only 'other' vendor items").color(NamedTextColor.GRAY)
             .decoration(TextDecoration.ITALIC, false));
         sellOtherLore.add(Component.text("Price: 1 " + currencyName + " each").color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false));
@@ -317,7 +317,7 @@ public class SellShopGUI extends BaseGUI {
         sellOtherLore.add(Component.empty());
 
         if (otherItems.isEmpty()) {
-            sellOtherLore.add(Component.text("No other items in inventory").color(NamedTextColor.RED)
+            sellOtherLore.add(plugin.getLanguageManager().getMessage("sellshopgui.no_other_items_in_inventory", "No other items in inventory").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         } else {
             Map<String, Integer> grouped = new LinkedHashMap<>();
@@ -341,7 +341,7 @@ public class SellShopGUI extends BaseGUI {
         }
 
         sellOtherLore.add(Component.empty());
-        sellOtherLore.add(Component.text("Click to open confirmation").color(NamedTextColor.YELLOW)
+        sellOtherLore.add(plugin.getLanguageManager().getMessage("sellshopgui.click_to_open_confirmation", "Click to open confirmation").color(NamedTextColor.YELLOW)
             .decoration(TextDecoration.ITALIC, false));
         soMeta.lore(sellOtherLore);
         sellOther.setItemMeta(soMeta);
@@ -354,7 +354,7 @@ public class SellShopGUI extends BaseGUI {
             .color(activeFilter.color())
             .decoration(TextDecoration.ITALIC, false));
         filterMeta.lore(List.of(
-            Component.text("Click to cycle filters").color(NamedTextColor.GRAY)
+            plugin.getLanguageManager().getMessage("sellshopgui.click_to_cycle_filters", "Click to cycle filters").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         filterItem.setItemMeta(filterMeta);
@@ -573,7 +573,7 @@ public class SellShopGUI extends BaseGUI {
         if (entry.customId != null) {
             ItemStack custom = plugin.getItemManager().getItem(entry.customId);
             if (custom == null) {
-                player.sendMessage(Component.text("This item cannot be bought right now.")
+                player.sendMessage(plugin.getLanguageManager().getMessage("sellshopgui.this_item_cannot_be_bought", "This item cannot be bought right now.")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
                 return;
@@ -586,7 +586,7 @@ public class SellShopGUI extends BaseGUI {
 
         Map<Integer, ItemStack> overflow = player.getInventory().addItem(bought);
         if (!overflow.isEmpty()) {
-            player.sendMessage(Component.text("You don't have enough inventory space to buy this item!")
+            player.sendMessage(plugin.getLanguageManager().getMessage("sellshopgui.you_dont_have_enough_inventory", "You don't have enough inventory space to buy this item!")
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
@@ -681,7 +681,7 @@ public class SellShopGUI extends BaseGUI {
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
             initializeItems();
         } else {
-            player.sendMessage(Component.text("You don't have anything to sell!")
+            player.sendMessage(plugin.getLanguageManager().getMessage("sellshopgui.you_dont_have_anything_to", "You don't have anything to sell!")
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
         }

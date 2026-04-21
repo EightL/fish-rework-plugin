@@ -345,6 +345,18 @@ enchanted_materials:
     rarity: EPIC
     description: "A tusk resonating with brute force."
 
+  enchanted_wither_bone:
+    material: WITHER_SKELETON_SKULL
+    display_name: "Enchanted Wither Bone"
+    rarity: EPIC
+    description: "A withered relic infused with soulfire decay."
+
+  enchanted_goblin_tusk:
+    material: BONE
+    display_name: "Enchanted Goblin Tusk"
+    rarity: EPIC
+    description: "A jagged tusk empowered by nether war magic."
+
   enchanted_soul_essence:
     material: SOUL_LANTERN
     display_name: "Enchanted Soul Essence"

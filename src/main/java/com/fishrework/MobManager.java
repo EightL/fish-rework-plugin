@@ -1458,7 +1458,7 @@ public class MobManager {
                 String displayName = (def != null) ? def.getDisplayName() : mobId;
                 player.sendMessage(net.kyori.adventure.text.Component.text(displayName + " added to encyclopedia!")
                     .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
-                    .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(net.kyori.adventure.text.Component.text("Click to view Encyclopedia!")))
+                    .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(plugin.getLanguageManager().getMessage("mobmanager.click_to_view_encyclopedia", "Click to view Encyclopedia!")))
                     .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/fishing encyclopedia")));
 
                 // ── QOL: Session discovery tracking ──
@@ -1476,7 +1476,7 @@ public class MobManager {
                             .color(net.kyori.adventure.text.format.NamedTextColor.LIGHT_PURPLE)
                             .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, true));
                 } else if (remaining == 0) {
-                    player.sendMessage(net.kyori.adventure.text.Component.text("   \u2B50 ENCYCLOPEDIA COMPLETE! Congratulations!")
+                    player.sendMessage(plugin.getLanguageManager().getMessage("mobmanager.u2b50_encyclopedia_complete_congratulations", "   \u2B50 ENCYCLOPEDIA COMPLETE! Congratulations!")
                             .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
                             .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
                 }

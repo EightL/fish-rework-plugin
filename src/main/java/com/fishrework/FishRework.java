@@ -12,6 +12,7 @@ import com.fishrework.manager.AdvancementManager;
 import com.fishrework.manager.ArtifactPassiveManager;
 import com.fishrework.manager.BossBarManager;
 import com.fishrework.manager.ItemManager;
+import com.fishrework.manager.LanguageManager;
 import com.fishrework.manager.LavaCreatureManager;
 import com.fishrework.manager.LavaRingManager;
 import com.fishrework.manager.RecipeCraftingManager;
@@ -59,6 +60,7 @@ public class FishRework extends JavaPlugin {
     private static FishRework instance;
 
     // Core systems
+    private LanguageManager languageManager;
     private DatabaseManager databaseManager;
     private LevelManager levelManager;
     private SkillManager skillManager;
@@ -108,6 +110,8 @@ public class FishRework extends JavaPlugin {
         extractFishingEnchantDatapack();
 
         // ── 1. Core systems (order matters) ──
+        languageManager = new LanguageManager(this);
+        languageManager.initialize();
         databaseManager = new DatabaseManager(this);
         levelManager = new LevelManager(this);
         bossBarManager = new BossBarManager(this);
@@ -413,6 +417,9 @@ public class FishRework extends JavaPlugin {
     public void reload() {
         reloadConfig();
         ensureConfigDefaults();
+        if (languageManager != null) {
+            languageManager.reload();
+        }
         loadFishingTipsFromConfig();
         getLogger().info("[Fish Rework] Configuration reloaded.");
     }
@@ -423,6 +430,7 @@ public class FishRework extends JavaPlugin {
 
     public static FishRework getInstance() { return instance; }
     public UpdateChecker getUpdateChecker() { return updateChecker; }
+    public LanguageManager getLanguageManager() { return languageManager; }
     public DatabaseManager getDatabaseManager() { return databaseManager; }
     public LevelManager getLevelManager() { return levelManager; }
     public SkillManager getSkillManager() { return skillManager; }

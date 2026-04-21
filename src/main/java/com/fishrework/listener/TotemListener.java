@@ -65,9 +65,9 @@ public class TotemListener implements Listener {
             player.getInventory().setItem(event.getHand(), null);
         }
 
-        player.sendMessage(Component.text("You placed a ").color(NamedTextColor.GRAY)
-                .append(Component.text("Treasure Totem").color(NamedTextColor.GOLD))
-                .append(Component.text("!").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_placed_a", "You placed a ").color(NamedTextColor.GRAY)
+                .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
+                .append(plugin.getLanguageManager().getMessage("totemlistener.", "!").color(NamedTextColor.GRAY)));
     }
 
     // ── Breaking (Interaction entity click) ───────────────────
@@ -103,9 +103,9 @@ public class TotemListener implements Listener {
 
     private void breakTotemForPlayer(Player player, Entity interactionEntity) {
         plugin.getTotemManager().breakTotem(interactionEntity.getUniqueId(), player);
-        player.sendMessage(Component.text("You broke a ").color(NamedTextColor.GRAY)
-                .append(Component.text("Treasure Totem").color(NamedTextColor.GOLD))
-                .append(Component.text("!").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_broke_a", "You broke a ").color(NamedTextColor.GRAY)
+                .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
+                .append(plugin.getLanguageManager().getMessage("totemlistener.", "!").color(NamedTextColor.GRAY)));
     }
 
     // ── Chunk Persistence ─────────────────────────────────────

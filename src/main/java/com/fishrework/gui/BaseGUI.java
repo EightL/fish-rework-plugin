@@ -79,7 +79,7 @@ public abstract class BaseGUI implements InventoryHolder {
     protected void setBackButton(int slot) {
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta meta = back.getItemMeta();
-        meta.displayName(Component.text("Back").color(NamedTextColor.RED)
+        meta.displayName(plugin.getLanguageManager().getMessage("basegui.back", "Back").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         back.setItemMeta(meta);
         inventory.setItem(slot, back);
@@ -93,7 +93,7 @@ public abstract class BaseGUI implements InventoryHolder {
         if (page > 0) {
             ItemStack prev = new ItemStack(Material.ARROW);
             ItemMeta meta = prev.getItemMeta();
-            meta.displayName(Component.text("Previous Page").color(NamedTextColor.GREEN)
+            meta.displayName(plugin.getLanguageManager().getMessage("basegui.previous_page", "Previous Page").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
             prev.setItemMeta(meta);
             inventory.setItem(prevSlot, prev);
@@ -101,7 +101,7 @@ public abstract class BaseGUI implements InventoryHolder {
         if (page < totalPages - 1) {
             ItemStack next = new ItemStack(Material.ARROW);
             ItemMeta meta = next.getItemMeta();
-            meta.displayName(Component.text("Next Page").color(NamedTextColor.GREEN)
+            meta.displayName(plugin.getLanguageManager().getMessage("basegui.next_page", "Next Page").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
             next.setItemMeta(meta);
             inventory.setItem(nextSlot, next);

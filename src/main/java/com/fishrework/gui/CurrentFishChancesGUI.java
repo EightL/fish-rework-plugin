@@ -67,23 +67,23 @@ public class CurrentFishChancesGUI extends BaseGUI {
 
         ItemStack summary = new ItemStack(Material.HEART_OF_THE_SEA);
         ItemMeta summaryMeta = summary.getItemMeta();
-        summaryMeta.displayName(Component.text("Current Context").color(NamedTextColor.AQUA)
+        summaryMeta.displayName(plugin.getLanguageManager().getMessage("currentfishchancesgui.current_context", "Current Context").color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> summaryLore = new ArrayList<>();
         summaryLore.add(Component.empty());
-        summaryLore.add(Component.text("Biome: ").color(NamedTextColor.GRAY)
+        summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.biome", "Biome: ").color(NamedTextColor.GRAY)
                 .append(Component.text(snapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
-        summaryLore.add(Component.text("Rare Bonus: ").color(NamedTextColor.GRAY)
+        summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.rare_bonus", "Rare Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", snapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
-        summaryLore.add(Component.text("Treasure Bonus: ").color(NamedTextColor.GRAY)
+        summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.treasure_bonus", "Treasure Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", snapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
         if (snapshot.activeBaitId() != null && snapshot.activeBaitDisplayName() != null) {
             NamedTextColor baitColor = snapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
             String suffix = snapshot.baitAppliesToContext() ? "" : " (inactive here)";
-            summaryLore.add(Component.text("Bait: ").color(NamedTextColor.GRAY)
+            summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.bait", "Bait: ").color(NamedTextColor.GRAY)
                     .append(Component.text(snapshot.activeBaitDisplayName() + suffix).color(baitColor))
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -129,21 +129,21 @@ public class CurrentFishChancesGUI extends BaseGUI {
                     .decoration(TextDecoration.ITALIC, false));
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("Chance: ").color(NamedTextColor.GRAY)
+            lore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.chance", "Chance: ").color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", chance)).color(NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
 
             if (!"land_mob_bonus".equals(id)) {
-                lore.add(Component.text("Weight: ").color(NamedTextColor.GRAY)
+                lore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.weight", "Weight: ").color(NamedTextColor.GRAY)
                         .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", weight)).color(NamedTextColor.AQUA))
                         .decoration(TextDecoration.ITALIC, false));
                 if (mob != null) {
-                    lore.add(Component.text("Required Level: ").color(NamedTextColor.GRAY)
+                    lore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.required_level", "Required Level: ").color(NamedTextColor.GRAY)
                             .append(Component.text(String.valueOf(mob.getRequiredLevel())).color(NamedTextColor.GREEN))
                             .decoration(TextDecoration.ITALIC, false));
                 }
             } else {
-                lore.add(Component.text("Extra chance for biome land mobs").color(NamedTextColor.DARK_GRAY)
+                lore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.extra_chance_for_biome_land", "Extra chance for biome land mobs").color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             }
 

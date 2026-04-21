@@ -60,7 +60,7 @@ public class SellConfirmGUI extends BaseGUI {
         // Info display (center)
         ItemStack info = new ItemStack(Material.PAPER);
         ItemMeta infoMeta = info.getItemMeta();
-        infoMeta.displayName(Component.text("Sale Summary").color(NamedTextColor.GOLD)
+        infoMeta.displayName(plugin.getLanguageManager().getMessage("sellconfirmgui.sale_summary", "Sale Summary").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         infoMeta.lore(List.of(
                 Component.empty(),
@@ -75,7 +75,7 @@ public class SellConfirmGUI extends BaseGUI {
         // Slot 11: Confirm
         ItemStack confirm = new ItemStack(Material.LIME_WOOL);
         ItemMeta confirmMeta = confirm.getItemMeta();
-        confirmMeta.displayName(Component.text("✔ Confirm Sale").color(NamedTextColor.GREEN)
+        confirmMeta.displayName(plugin.getLanguageManager().getMessage("sellconfirmgui.confirm_sale", "✔ Confirm Sale").color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         confirmMeta.lore(List.of(
                 Component.empty(),
@@ -90,7 +90,7 @@ public class SellConfirmGUI extends BaseGUI {
         // Slot 15: Cancel
         ItemStack cancel = new ItemStack(Material.RED_WOOL);
         ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(Component.text("✖ Cancel").color(NamedTextColor.RED)
+        cancelMeta.displayName(plugin.getLanguageManager().getMessage("sellconfirmgui.cancel", "✖ Cancel").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         cancelMeta.lore(List.of(
                 Component.empty(),
@@ -131,7 +131,7 @@ public class SellConfirmGUI extends BaseGUI {
                         .color(NamedTextColor.GREEN));
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
             } else {
-                player.sendMessage(Component.text("Nothing to sell!").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage("sellconfirmgui.nothing_to_sell", "Nothing to sell!").color(NamedTextColor.RED));
             }
 
             if (bagType == BagType.LAVA_BAG) {

@@ -53,7 +53,7 @@ public class CoolingItemListener implements Listener {
         }
 
         if (isFrostSalve && data.getHeat() <= 0) {
-            player.sendMessage(Component.text("You are not hot enough to use this item.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("coolingitemlistener.you_are_not_hot_enough", "You are not hot enough to use this item.").color(NamedTextColor.RED));
             return;
         }
 

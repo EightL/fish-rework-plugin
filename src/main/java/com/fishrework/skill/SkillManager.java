@@ -116,7 +116,7 @@ public class SkillManager {
     private void onLevelUp(Player player, Skill skill, int newLevel, LevelManager levelManager) {
         // Title
         Title title = Title.title(
-                Component.text("LEVEL UP!").color(NamedTextColor.AQUA),
+                plugin.getLanguageManager().getMessage("skillmanager.level_up", "LEVEL UP!").color(NamedTextColor.AQUA),
                 Component.text(skill.getDisplayName() + " Level " + newLevel).color(NamedTextColor.YELLOW),
                 Title.Times.times(
                         Duration.ofMillis(plugin.getConfig().getLong("gui.levelup_title_fade_in_ms", 500)),
@@ -129,7 +129,7 @@ public class SkillManager {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 
         // Chat messages
-        player.sendMessage(Component.text("--------------------------------").color(NamedTextColor.DARK_AQUA));
+        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.", "--------------------------------").color(NamedTextColor.DARK_AQUA));
         player.sendMessage(Component.text("   " + skill.getDisplayName().toUpperCase() + " LEVEL UP! "
                 + (newLevel - 1) + " ➜ " + newLevel).color(NamedTextColor.AQUA));
 
@@ -139,7 +139,7 @@ public class SkillManager {
         // Show unlocked creatures & recipes
         showUnlocks(player, skill, newLevel, levelManager);
 
-        player.sendMessage(Component.text("--------------------------------").color(NamedTextColor.DARK_AQUA));
+        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.", "--------------------------------").color(NamedTextColor.DARK_AQUA));
 
         // Sync advancements & recipes
         plugin.getAdvancementManager().syncAdvancements(player, newLevel);
@@ -168,7 +168,7 @@ public class SkillManager {
             for (org.bukkit.inventory.ItemStack drop : leftover.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation(), drop);
             }
-            player.sendMessage(Component.text("  \u2B50 You received a Fishing Journal!").color(NamedTextColor.GREEN)
+            player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.u2b50_you_received_a_fishing", "  \u2B50 You received a Fishing Journal!").color(NamedTextColor.GREEN)
                     .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
         }
     }
@@ -183,7 +183,7 @@ public class SkillManager {
         double xp = levelManager.getXpMultiplier(newLevel) - levelManager.getXpMultiplier(newLevel - 1);
 
         if (dc > 0 || tr > 0 || xp > 0) {
-            player.sendMessage(Component.text("   Attributes Gained:").color(NamedTextColor.GOLD));
+            player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.attributes_gained", "   Attributes Gained:").color(NamedTextColor.GOLD));
             if (dc > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", dc) + " Double Catch Chance").color(NamedTextColor.GREEN));
             if (tr > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", tr) + " Treasure Chance").color(NamedTextColor.GREEN));
             if (xp > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.2f", xp) + " XP Multiplier").color(NamedTextColor.GREEN));
@@ -194,18 +194,18 @@ public class SkillManager {
         java.util.List<LevelManager.UnlockInfo> unlocks = levelManager.getUnlocksForLevel(skill, newLevel);
         if (unlocks.isEmpty()) return;
 
-        player.sendMessage(Component.text("   Unlocked:").color(NamedTextColor.LIGHT_PURPLE));
+        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.unlocked", "   Unlocked:").color(NamedTextColor.LIGHT_PURPLE));
         for (LevelManager.UnlockInfo unlock : unlocks) {
-            Component icon = Component.text("    \u2605 ").color(NamedTextColor.LIGHT_PURPLE);
+            Component icon = plugin.getLanguageManager().getMessage("skillmanager.u2605", "    \u2605 ").color(NamedTextColor.LIGHT_PURPLE);
             if (unlock.mob() != null && unlock.mob().isHostile()) {
-                icon = Component.text("    \u2694 ").color(plugin.getAdvancementManager().getGroupColor(unlock.mob()));
+                icon = plugin.getLanguageManager().getMessage("skillmanager.u2694", "    \u2694 ").color(plugin.getAdvancementManager().getGroupColor(unlock.mob()));
             }
 
             Component message = icon.append(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().deserialize(unlock.text()));
             if (unlock.isRecipe() && unlock.recipe() != null && unlock.recipe().getResultId() != null) {
                 message = message
                         .clickEvent(ClickEvent.runCommand("/fishing recipe " + unlock.recipe().getResultId()))
-                        .hoverEvent(Component.text("Click to open recipe").color(NamedTextColor.GREEN))
+                        .hoverEvent(plugin.getLanguageManager().getMessage("skillmanager.click_to_open_recipe", "Click to open recipe").color(NamedTextColor.GREEN))
                         .decoration(TextDecoration.ITALIC, false);
             }
             player.sendMessage(message);

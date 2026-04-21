@@ -286,7 +286,7 @@ public class ItemManager {
         ItemStack skull = getCustomSkull(base64);
         ItemMeta meta = skull.getItemMeta();
         Rarity rarity = Rarity.EPIC;
-        meta.displayName(Component.text("Dead Rider's Head").color(rarity.getColor()).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.dead_riders_head", "Dead Rider's Head").color(rarity.getColor()).decoration(TextDecoration.ITALIC, false));
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "dead_rider_head");
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
         skull.setItemMeta(meta);
@@ -349,9 +349,9 @@ public class ItemManager {
         lore.add(Component.text(bait.getDescription()).color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Hold in offhand while fishing").color(NamedTextColor.YELLOW)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.hold_in_offhand_while_fishing", "Hold in offhand while fishing").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Consumed on successful catch").color(NamedTextColor.DARK_GRAY)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.consumed_on_successful_catch", "Consumed on successful catch").color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
@@ -380,16 +380,16 @@ public class ItemManager {
         lore.add(Component.text("Targets: " + mob.getDisplayName()).color(NamedTextColor.GRAY)
             .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Always adds this sea creature to the pool").color(NamedTextColor.AQUA)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.always_adds_this_sea_creature", "Always adds this sea creature to the pool").color(NamedTextColor.AQUA)
             .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("x2 weight outside native biome").color(NamedTextColor.AQUA)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.x2_weight_outside_native_biome", "x2 weight outside native biome").color(NamedTextColor.AQUA)
             .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("x4 weight in native biome").color(NamedTextColor.AQUA)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.x4_weight_in_native_biome", "x4 weight in native biome").color(NamedTextColor.AQUA)
             .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Hold in offhand while fishing").color(NamedTextColor.YELLOW)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.hold_in_offhand_while_fishing", "Hold in offhand while fishing").color(NamedTextColor.YELLOW)
             .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Consumed on successful catch").color(NamedTextColor.DARK_GRAY)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.consumed_on_successful_catch", "Consumed on successful catch").color(NamedTextColor.DARK_GRAY)
             .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
@@ -418,17 +418,17 @@ public class ItemManager {
             .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Targets unlocked creatures from these biomes")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.targets_unlocked_creatures_from_these", "Targets unlocked creatures from these biomes")
             .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Outside native biome: default weight")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.outside_native_biome_default_weight", "Outside native biome: default weight")
             .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Inside native biome: x2 weight")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.inside_native_biome_x2_weight", "Inside native biome: x2 weight")
             .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Hold in offhand while fishing")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.hold_in_offhand_while_fishing", "Hold in offhand while fishing")
             .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Consumed on successful catch")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.consumed_on_successful_catch", "Consumed on successful catch")
             .color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
@@ -580,16 +580,16 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.BUNDLE);
         ItemMeta meta = item.getItemMeta();
         com.fishrework.model.Rarity rarity = com.fishrework.model.Rarity.RARE;
-        meta.displayName(Component.text("Fish Bag").color(rarity.getColor())
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.fish_bag", "Fish Bag").color(rarity.getColor())
                 .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text("A portable bag for storing fish").color(NamedTextColor.GRAY)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.a_portable_bag_for_storing", "A portable bag for storing fish").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("and custom materials.").color(NamedTextColor.GRAY)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.and_custom_materials", "and custom materials.").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
-        lore.add(Component.text("Right-click to open!").color(NamedTextColor.YELLOW)
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.rightclick_to_open", "Right-click to open!").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
@@ -602,19 +602,19 @@ public class ItemManager {
     public ItemStack createLavaBagItem() {
         ItemStack item = new ItemStack(Material.BUNDLE);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("✦ Magma Satchel")
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.magma_satchel", "✦ Magma Satchel")
                 .color(net.kyori.adventure.text.format.TextColor.color(0xFF4500))
                 .decoration(TextDecoration.ITALIC, false)
                 .decoration(TextDecoration.BOLD, true));
         meta.lore(List.of(
-                Component.text("Forged from the depths of the Nether,").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                Component.text("this satchel hungers for lava drops.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                plugin.getLanguageManager().getMessage("itemmanager.forged_from_the_depths_of", "Forged from the depths of the Nether,").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                plugin.getLanguageManager().getMessage("itemmanager.this_satchel_hungers_for_lava", "this satchel hungers for lava drops.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("► Auto-collects drops from fished").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false),
-                Component.text("  mobs that die in lava.").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false),
+                plugin.getLanguageManager().getMessage("itemmanager.autocollects_drops_from_fished", "► Auto-collects drops from fished").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false),
+                plugin.getLanguageManager().getMessage("itemmanager.mobs_that_die_in_lava", "  mobs that die in lava.").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Right-click").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)
-                        .append(Component.text(" to open.").color(NamedTextColor.GRAY))
+                plugin.getLanguageManager().getMessage("itemmanager.rightclick", "Right-click").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)
+                        .append(plugin.getLanguageManager().getMessage("itemmanager.to_open", " to open.").color(NamedTextColor.GRAY))
         ));
         meta.getPersistentDataContainer().set(LAVA_BAG_KEY, PersistentDataType.BYTE, (byte) 1);
         meta.setFireResistant(true);
@@ -627,13 +627,13 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = Rarity.EPIC;
 
-        meta.displayName(Component.text("Lava Ring").color(rarity.getColor())
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.lava_ring", "Lava Ring").color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text("Carry in inventory to gain fire resistance.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.carry_in_inventory_to_gain", "Carry in inventory to gain fire resistance.")
             .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Forged to keep flames at bay.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.forged_to_keep_flames_at", "Forged to keep flames at bay.")
             .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
@@ -650,13 +650,13 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = Rarity.LEGENDARY;
 
-        meta.displayName(Component.text("Eruption Ring").color(rarity.getColor())
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.eruption_ring", "Eruption Ring").color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text("Carry in inventory to gain fire resistance.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.carry_in_inventory_to_gain", "Carry in inventory to gain fire resistance.")
             .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Grants free movement while swimming in lava.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.grants_free_movement_while_swimming", "Grants free movement while swimming in lava.")
             .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
@@ -826,7 +826,7 @@ public class ItemManager {
 
         // Add lore to explain usage
         meta.lore(java.util.Collections.singletonList(
-                Component.text("Right-click to open!").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                plugin.getLanguageManager().getMessage("itemmanager.rightclick_to_open", "Right-click to open!").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
         ));
 
         meta.getPersistentDataContainer().set(TREASURE_TYPE_KEY, PersistentDataType.STRING, rarity.name());
@@ -853,7 +853,7 @@ public class ItemManager {
         meta.displayName(Component.text(name).color(rarity.getColor()).decoration(TextDecoration.ITALIC, false));
 
         meta.lore(java.util.Collections.singletonList(
-                Component.text("Right-click to open!").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+                plugin.getLanguageManager().getMessage("itemmanager.rightclick_to_open", "Right-click to open!").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
         ));
 
         if (rarity == Rarity.MYTHIC || rarity == Rarity.SPECIAL) {
@@ -959,7 +959,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = Rarity.MYTHIC;
 
-        meta.displayName(Component.text("Gehenna")
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.gehenna", "Gehenna")
             .color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
@@ -978,10 +978,10 @@ public class ItemManager {
             EquipmentSlotGroup.MAINHAND));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Drawn from the molten pits of Gehenna.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.drawn_from_the_molten_pits", "Drawn from the molten pits of Gehenna.")
             .color(NamedTextColor.DARK_GRAY)
             .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.text("Its chains hunger for the damned.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.its_chains_hunger_for_the", "Its chains hunger for the damned.")
             .color(NamedTextColor.DARK_GRAY)
             .decoration(TextDecoration.ITALIC, true));
         lore.add(Component.empty());
@@ -1002,7 +1002,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = Rarity.SPECIAL;
 
-        meta.displayName(Component.text("Megalodon Tooth")
+        meta.displayName(plugin.getLanguageManager().getMessage("itemmanager.megalodon_tooth", "Megalodon Tooth")
             .color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
@@ -1020,10 +1020,10 @@ public class ItemManager {
             EquipmentSlotGroup.MAINHAND));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("A jagged relic carved from an apex hunter fang.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.a_jagged_relic_carved_from", "A jagged relic carved from an apex hunter fang.")
             .color(NamedTextColor.DARK_GRAY)
             .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.text("Cuts deep into sea creatures.")
+        lore.add(plugin.getLanguageManager().getMessage("itemmanager.cuts_deep_into_sea_creatures", "Cuts deep into sea creatures.")
             .color(NamedTextColor.DARK_GRAY)
             .decoration(TextDecoration.ITALIC, true));
         lore.add(Component.empty());

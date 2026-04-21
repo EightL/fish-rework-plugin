@@ -215,7 +215,7 @@ public class SpecialCraftingGUI extends BaseGUI {
 
     private void craftCurrentRecipe() {
         if (currentMatch == null) {
-            player.sendMessage(Component.text("No matching recipe.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("specialcraftinggui.no_matching_recipe", "No matching recipe.").color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             return;
         }
@@ -532,7 +532,7 @@ public class SpecialCraftingGUI extends BaseGUI {
     private ItemStack createArrowItem() {
         ItemStack arrow = new ItemStack(Material.SPECTRAL_ARROW);
         ItemMeta meta = arrow.getItemMeta();
-        meta.displayName(Component.text("Crafting Output")
+        meta.displayName(plugin.getLanguageManager().getMessage("specialcraftinggui.crafting_output", "Crafting Output")
                 .color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         arrow.setItemMeta(meta);
@@ -542,14 +542,14 @@ public class SpecialCraftingGUI extends BaseGUI {
     private ItemStack createDefaultInfoItem() {
         ItemStack info = new ItemStack(Material.CRAFTING_TABLE);
         ItemMeta meta = info.getItemMeta();
-        meta.displayName(Component.text("Special Crafting")
+        meta.displayName(plugin.getLanguageManager().getMessage("specialcraftinggui.special_crafting", "Special Crafting")
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Place items in the 3x3 grid.")
+                plugin.getLanguageManager().getMessage("specialcraftinggui.place_items_in_the_3x3", "Place items in the 3x3 grid.")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Matching custom recipes will appear.")
+                plugin.getLanguageManager().getMessage("specialcraftinggui.matching_custom_recipes_will_appear", "Matching custom recipes will appear.")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
@@ -570,7 +570,7 @@ public class SpecialCraftingGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
 
         if (unlocked) {
-            lore.add(Component.text("Recipe unlocked")
+            lore.add(plugin.getLanguageManager().getMessage("specialcraftinggui.recipe_unlocked", "Recipe unlocked")
                     .color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
         } else {
@@ -587,7 +587,7 @@ public class SpecialCraftingGUI extends BaseGUI {
     private ItemStack createNoRecipeResult() {
         ItemStack result = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = result.getItemMeta();
-        meta.displayName(Component.text("No Matching Recipe")
+        meta.displayName(plugin.getLanguageManager().getMessage("specialcraftinggui.no_matching_recipe", "No Matching Recipe")
                 .color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         result.setItemMeta(meta);
@@ -597,7 +597,7 @@ public class SpecialCraftingGUI extends BaseGUI {
     private ItemStack createLockedResult(RecipeDefinition recipe) {
         ItemStack result = new ItemStack(Material.BARRIER);
         ItemMeta meta = result.getItemMeta();
-        meta.displayName(Component.text("Recipe Locked")
+        meta.displayName(plugin.getLanguageManager().getMessage("specialcraftinggui.recipe_locked", "Recipe Locked")
                 .color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(Component.text(getLockMessage(recipe))
@@ -617,11 +617,11 @@ public class SpecialCraftingGUI extends BaseGUI {
 
         List<Component> lore = new ArrayList<>();
         if (recipe == null) {
-            lore.add(Component.text("Arrange items to match a recipe.")
+            lore.add(plugin.getLanguageManager().getMessage("specialcraftinggui.arrange_items_to_match_a", "Arrange items to match a recipe.")
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (unlocked) {
-            lore.add(Component.text("Click to craft from this grid.")
+            lore.add(plugin.getLanguageManager().getMessage("specialcraftinggui.click_to_craft_from_this", "Click to craft from this grid.")
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else {
@@ -638,11 +638,11 @@ public class SpecialCraftingGUI extends BaseGUI {
     private ItemStack createClearButton() {
         ItemStack clear = new ItemStack(Material.PAPER);
         ItemMeta meta = clear.getItemMeta();
-        meta.displayName(Component.text("Clear Grid")
+        meta.displayName(plugin.getLanguageManager().getMessage("specialcraftinggui.clear_grid", "Clear Grid")
                 .color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Returns all grid items to your inventory.")
+                plugin.getLanguageManager().getMessage("specialcraftinggui.returns_all_grid_items_to", "Returns all grid items to your inventory.")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));

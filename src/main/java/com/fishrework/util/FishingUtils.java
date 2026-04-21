@@ -62,19 +62,19 @@ public class FishingUtils {
         
         if (rarity == Rarity.LEGENDARY || rarity == Rarity.SPECIAL) {
             String rarityLabel = rarity == Rarity.SPECIAL ? "SPECIAL " : "LEGENDARY ";
-            message = Component.text("\u2728 ").color(NamedTextColor.GOLD)
+            message = plugin.getLanguageManager().getMessage("fishingutils.u2728", "\u2728 ").color(NamedTextColor.GOLD)
                     .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
                     .append(Component.text(actionText).color(NamedTextColor.GRAY))
                 .append(Component.text(rarityLabel).color(color).decoration(TextDecoration.BOLD, true))
                     .append(Component.text(mobName).color(color))
-                    .append(Component.text("!").color(NamedTextColor.GRAY))
-                    .append(Component.text(" \u2728").color(NamedTextColor.GOLD));
+                    .append(plugin.getLanguageManager().getMessage("fishingutils.", "!").color(NamedTextColor.GRAY))
+                    .append(plugin.getLanguageManager().getMessage("fishingutils.u2728", " \u2728").color(NamedTextColor.GOLD));
         } else {
             message = Component.text(player.getName()).color(NamedTextColor.WHITE)
                     .append(Component.text(actionAnText).color(NamedTextColor.GRAY))
                     .append(Component.text(rarity.name() + " ").color(color))
                     .append(Component.text(mobName).color(color))
-                    .append(Component.text("!").color(NamedTextColor.GRAY));
+                    .append(plugin.getLanguageManager().getMessage("fishingutils.", "!").color(NamedTextColor.GRAY));
         }
 
         for (Player online : plugin.getServer().getOnlinePlayers()) {

@@ -38,10 +38,10 @@ public class FishBagListener implements Listener {
 
             int recovered = BagUtils.recoverVanillaBundleContents(player, item);
             if (recovered > 0) {
-                player.sendMessage(Component.text("[Fish Bag] ").color(NamedTextColor.DARK_GRAY)
-                        .append(Component.text("Recovered ").color(NamedTextColor.GRAY))
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishbaglistener.fish_bag", "[Fish Bag] ").color(NamedTextColor.DARK_GRAY)
+                        .append(plugin.getLanguageManager().getMessage("fishbaglistener.recovered", "Recovered ").color(NamedTextColor.GRAY))
                         .append(Component.text(recovered).color(NamedTextColor.GOLD))
-                        .append(Component.text(" item(s) from vanilla bundle storage.").color(NamedTextColor.GRAY)));
+                        .append(plugin.getLanguageManager().getMessage("fishbaglistener.items_from_vanilla_bundle_storage", " item(s) from vanilla bundle storage.").color(NamedTextColor.GRAY)));
             }
 
             new FishBagGUI(plugin, player).open(player);

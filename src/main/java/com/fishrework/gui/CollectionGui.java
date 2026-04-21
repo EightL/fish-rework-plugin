@@ -172,7 +172,7 @@ public class CollectionGui extends BaseGUI {
                 Component displayName = Component.text(mob.getCollectionName()).color(nameColor)
                         .decoration(TextDecoration.ITALIC, false);
                 if (isNew) {
-                    displayName = Component.text("\u2B50 NEW! ").color(NamedTextColor.GREEN)
+                    displayName = plugin.getLanguageManager().getMessage("collectiongui.u2b50_new", "\u2B50 NEW! ").color(NamedTextColor.GREEN)
                             .decoration(TextDecoration.ITALIC, false)
                             .decoration(TextDecoration.BOLD, true)
                             .append(displayName);
@@ -200,7 +200,7 @@ public class CollectionGui extends BaseGUI {
                 // XP
                 double baseXp = mob.getXp();
                 double finalXp = baseXp * xpMulti;
-                Component xpLine = Component.text("XP: ").color(NamedTextColor.GRAY)
+                Component xpLine = plugin.getLanguageManager().getMessage("collectiongui.xp", "XP: ").color(NamedTextColor.GRAY)
                         .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
                 if (xpMulti > 1.0) {
                      xpLine = xpLine.append(Component.text(com.fishrework.util.FormatUtil.format(" (x%.2f = %.0f)", xpMulti, finalXp))
@@ -209,7 +209,7 @@ public class CollectionGui extends BaseGUI {
                 lore.add(xpLine.decoration(TextDecoration.ITALIC, false));
                 
                 // Chance
-                Component chanceLine = Component.text("Chance: ").color(NamedTextColor.GRAY);
+                Component chanceLine = plugin.getLanguageManager().getMessage("collectiongui.chance", "Chance: ").color(NamedTextColor.GRAY);
                 if (calculatePercents) {
                     // Use calculated percentage directly
                     double pct = mobChances.getOrDefault(mob.getId(), 0.0);
@@ -219,7 +219,7 @@ public class CollectionGui extends BaseGUI {
                     // Land Mob Special Case Indicator
                     com.fishrework.model.BiomeFishingProfile pf = plugin.getBiomeFishingRegistry().get(filter);
                     if (pf != null && pf.getLandMobs().contains(mob.getId())) {
-                        chanceLine = chanceLine.append(Component.text(" [Land Bonus]").color(NamedTextColor.GOLD));
+                        chanceLine = chanceLine.append(plugin.getLanguageManager().getMessage("collectiongui.land_bonus", " [Land Bonus]").color(NamedTextColor.GOLD));
                     }
                     
                 } else {
@@ -228,7 +228,7 @@ public class CollectionGui extends BaseGUI {
                     if (base > 0) {
                          chanceLine = chanceLine.append(Component.text("Base Weight " + base).color(NamedTextColor.DARK_GRAY));
                     } else {
-                         chanceLine = chanceLine.append(Component.text("Biome Specific").color(NamedTextColor.DARK_GRAY));
+                         chanceLine = chanceLine.append(plugin.getLanguageManager().getMessage("collectiongui.biome_specific", "Biome Specific").color(NamedTextColor.DARK_GRAY));
                     }
                 }
                 lore.add(chanceLine.decoration(TextDecoration.ITALIC, false));
@@ -245,7 +245,7 @@ public class CollectionGui extends BaseGUI {
                 if (plugin.getMobRegistry().get(mob.getId()) != null && !mob.getDrops().isEmpty()) {
                      List<Component> dropsLore = new ArrayList<>();
                      dropsLore.add(Component.empty());
-                     dropsLore.add(Component.text("Drops:").color(NamedTextColor.GOLD)
+                     dropsLore.add(plugin.getLanguageManager().getMessage("collectiongui.drops", "Drops:").color(NamedTextColor.GOLD)
                             .decoration(TextDecoration.ITALIC, false));
                     
                     boolean hasDrops = false;
@@ -296,7 +296,7 @@ public class CollectionGui extends BaseGUI {
             } else { // Locked text logic (remains the same)               // Locked
                 ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
                 ItemMeta meta = item.getItemMeta();
-                meta.displayName(Component.text("???").color(NamedTextColor.RED)
+                meta.displayName(plugin.getLanguageManager().getMessage("collectiongui.", "???").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
                 String hint = mob.isHostile() ? "Kill this creature to unlock!" : "Catch this fish to unlock!";
                 meta.lore(List.of(Component.text(hint).color(NamedTextColor.GRAY)
@@ -334,7 +334,7 @@ public class CollectionGui extends BaseGUI {
         typeFilterMeta.displayName(Component.text("Type: " + typeName).color(typeColor)
                 .decoration(TextDecoration.ITALIC, false));
         typeFilterMeta.lore(List.of(
-            Component.text("Click to filter by type").color(NamedTextColor.GRAY)
+            plugin.getLanguageManager().getMessage("collectiongui.click_to_filter_by_type", "Click to filter by type").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         typeFilterItem.setItemMeta(typeFilterMeta);
@@ -347,7 +347,7 @@ public class CollectionGui extends BaseGUI {
         filterMeta.displayName(Component.text("Filter: " + filterName).color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         filterMeta.lore(List.of(
-            Component.text("Click to change biome filter").color(NamedTextColor.GRAY)
+            plugin.getLanguageManager().getMessage("collectiongui.click_to_change_biome_filter", "Click to change biome filter").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         filterItem.setItemMeta(filterMeta);
@@ -359,7 +359,7 @@ public class CollectionGui extends BaseGUI {
         sortMeta.displayName(Component.text("Sort: " + sort.name()).color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         sortMeta.lore(List.of(
-            Component.text("Click to change sort order").color(NamedTextColor.GRAY)
+            plugin.getLanguageManager().getMessage("collectiongui.click_to_change_sort_order", "Click to change sort order").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false),
             Component.text("Current: " + sort.name().replace('_', ' ')).color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false)

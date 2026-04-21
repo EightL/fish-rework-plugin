@@ -153,7 +153,7 @@ public class RecipeBrowserGUI extends BaseGUI {
 
         List<Component> lore = new ArrayList<>();
         if (craftableNow) {
-            lore.add(Component.text("Craftable now")
+            lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.craftable_now", "Craftable now")
                     .color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -164,11 +164,11 @@ public class RecipeBrowserGUI extends BaseGUI {
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             } else if (primaryRecipe.hasAdvancementRequirement()) {
-                lore.add(Component.text("Advancement unlock")
+                lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.advancement_unlock", "Advancement unlock")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             } else {
-                lore.add(Component.text("No unlock requirement")
+                lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.no_unlock_requirement", "No unlock requirement")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             }
@@ -181,7 +181,7 @@ public class RecipeBrowserGUI extends BaseGUI {
         }
 
         lore.add(Component.empty());
-        lore.add(Component.text("Click to inspect recipe")
+        lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.click_to_inspect_recipe", "Click to inspect recipe")
                 .color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
 
@@ -193,12 +193,12 @@ public class RecipeBrowserGUI extends BaseGUI {
     private ItemStack createLockedRecipeEntry(RecipeDefinition primaryRecipe) {
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("???")
+        meta.displayName(plugin.getLanguageManager().getMessage("recipebrowsergui.", "???")
                 .color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Recipe not unlocked yet.")
+        lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.recipe_not_unlocked_yet", "Recipe not unlocked yet.")
                 .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
 
@@ -208,7 +208,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                         .color(NamedTextColor.DARK_RED)
                         .decoration(TextDecoration.ITALIC, false));
             } else if (primaryRecipe.hasAdvancementRequirement()) {
-                lore.add(Component.text("Requires a progression advancement.")
+                lore.add(plugin.getLanguageManager().getMessage("recipebrowsergui.requires_a_progression_advancement", "Requires a progression advancement.")
                         .color(NamedTextColor.DARK_RED)
                         .decoration(TextDecoration.ITALIC, false));
             }
@@ -252,7 +252,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Filter by gear type")
+                plugin.getLanguageManager().getMessage("recipebrowsergui.filter_by_gear_type", "Filter by gear type")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
@@ -268,7 +268,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                 .color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Cycle required fishing level")
+                plugin.getLanguageManager().getMessage("recipebrowsergui.cycle_required_fishing_level", "Cycle required fishing level")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
@@ -283,7 +283,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
-                Component.text("Show unlocked or locked recipes")
+                plugin.getLanguageManager().getMessage("recipebrowsergui.show_unlocked_or_locked_recipes", "Show unlocked or locked recipes")
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));

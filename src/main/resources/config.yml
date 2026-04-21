@@ -45,6 +45,8 @@ bonuses:
 messages:
   level_up: "&b&lLEVEL UP! &7You are now Fishing Level &e%level%&7!"
   action_bar: "&b+ %xp% XP &7(%current%/%needed%)"
+  lava_catch_escaped: "The catch escaped!"
+  lava_reel_now: "⚡ REEL IN NOW! ⚡"
 
 # Global settings
 general:

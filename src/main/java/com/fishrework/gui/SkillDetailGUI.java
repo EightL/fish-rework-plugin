@@ -100,13 +100,13 @@ public class SkillDetailGUI extends BaseGUI {
             int artCollected = artData != null ? artData.getCollectedArtifacts().size() : 0;
             int artTotal = plugin.getArtifactRegistry().size();
             
-            artMeta.displayName(Component.text("\u2B50 Artifact Collection").color(NamedTextColor.LIGHT_PURPLE)
+            artMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2b50_artifact_collection", "\u2B50 Artifact Collection").color(NamedTextColor.LIGHT_PURPLE)
                     .decoration(TextDecoration.ITALIC, false));
             artMeta.lore(List.of(
                     Component.text(""),
                     Component.text("Collected: " + artCollected + "/" + artTotal).color(NamedTextColor.GRAY)
                             .decoration(TextDecoration.ITALIC, false),
-                    Component.text("View rare artifact finds!").color(NamedTextColor.YELLOW)
+                    plugin.getLanguageManager().getMessage("skilldetailgui.view_rare_artifact_finds", "View rare artifact finds!").color(NamedTextColor.YELLOW)
                             .decoration(TextDecoration.ITALIC, false)
             ));
             artifactBtn.setItemMeta(artMeta);
@@ -124,10 +124,10 @@ public class SkillDetailGUI extends BaseGUI {
         if (skill == Skill.FISHING) {
             ItemStack collection = new ItemStack(Material.COD);
             ItemMeta colMeta = collection.getItemMeta();
-            colMeta.displayName(Component.text("\uD83C\uDFA3 Fishing Encyclopedia").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+            colMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.ud83cudfa3_fishing_encyclopedia", "\uD83C\uDFA3 Fishing Encyclopedia").color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             colMeta.lore(List.of(
                     Component.text(""),
-                    Component.text("View your caught fish!").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)
+                    plugin.getLanguageManager().getMessage("skilldetailgui.view_your_caught_fish", "View your caught fish!").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)
             ));
             collection.setItemMeta(colMeta);
             inventory.setItem(4, collection);
@@ -136,7 +136,7 @@ public class SkillDetailGUI extends BaseGUI {
         // Slot 8: Current Bonuses
         ItemStack bonus = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta bonusMeta = bonus.getItemMeta();
-        bonusMeta.displayName(Component.text("\u2B50 Current Bonuses").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+        bonusMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2b50_current_bonuses", "\u2B50 Current Bonuses").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         List<Component> bonusLore = new ArrayList<>();
         bonusLore.add(Component.text(""));
 
@@ -157,18 +157,18 @@ public class SkillDetailGUI extends BaseGUI {
         double flatAtk = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double flatDef = StatHelper.getEquipmentFlatSCBonus(player, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
 
-        bonusLore.add(Component.text("\u25B6 Double Catch: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+        bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_double_catch", "\u25B6 Double Catch: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", doubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
         if (equipDoubleCatch > 0) {
             bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipDoubleCatch) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
-        bonusLore.add(Component.text("\u25B6 Treasure Chance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+        bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_treasure_chance", "\u25B6 Treasure Chance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", treasure + totemBonus)).color(NamedTextColor.GREEN)));
         if (totemBonus > 0) {
             bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", totemBonus) + " from Treasure Totem)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         double combinedMulti = multi * (1.0 + fishingXpBonus / 100.0);
-        Component xpLine = Component.text("\u25B6 XP Multiplier ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
+        Component xpLine = plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_xp_multiplier", "\u25B6 XP Multiplier ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
         if (fishingXpBonus > 0) {
             xpLine = xpLine.append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.0f%%", fishingXpBonus) + " ").color(NamedTextColor.GREEN));
         }
@@ -176,31 +176,31 @@ public class SkillDetailGUI extends BaseGUI {
         if (fishingXpBonus > 0) {
             bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.0f%%", fishingXpBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
-        bonusLore.add(Component.text("\u25B6 Rare Creature: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+        bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_rare_creature", "\u25B6 Rare Creature: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", rareCreature + equipBonus)).color(NamedTextColor.GREEN)));
         if (equipBonus > 0) {
             bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
 
         int fishingSpeed = plugin.getMobManager().getEquipmentFishingSpeed(player);
-        bonusLore.add(Component.text("\u25B6 Fishing Speed: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+        bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_fishing_speed", "\u25B6 Fishing Speed: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text("+" + fishingSpeed).color(NamedTextColor.GREEN)));
         if (scd > 0 || flatDef > 0) {
             double effectiveFlat = flatDef > 0 ? flatDef : 1.0;
             double value = effectiveFlat * (1.0 + scd / 100.0);
-            bonusLore.add(Component.text("\u25B6 Sea Creature Defense: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_sea_creature_defense", "\u25B6 Sea Creature Defense: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
             bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (sca > 0 || flatAtk > 0) {
             double effectiveFlat = flatAtk > 0 ? flatAtk : 1.0;
             double value = effectiveFlat * (1.0 + sca / 100.0);
-            bonusLore.add(Component.text("\u25B6 Sea Creature Attack: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_sea_creature_attack", "\u25B6 Sea Creature Attack: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
             bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (currentLevel >= 27 || totalHeatResistance > 0.0) {
-            bonusLore.add(Component.text("\u25B6 Heat Resistance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_heat_resistance", "\u25B6 Heat Resistance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", totalHeatResistance)).color(NamedTextColor.GOLD)));
             if (magmaFilterHeatResistance > 0.0 && magmaFilterRemainingSeconds > 0) {
                 bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", magmaFilterHeatResistance) + "% from Magma Filter, " + magmaFilterRemainingSeconds + "s left)")
@@ -217,7 +217,7 @@ public class SkillDetailGUI extends BaseGUI {
                 com.fishrework.model.Bait activeBait = plugin.getBaitRegistry().get(baitId);
                 if (activeBait != null) {
                     bonusLore.add(Component.empty());
-                    bonusLore.add(Component.text("\uD83D\uDD17 Active Bait: ").color(NamedTextColor.YELLOW)
+                    bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.ud83dudd17_active_bait", "\uD83D\uDD17 Active Bait: ").color(NamedTextColor.YELLOW)
                             .append(Component.text(activeBait.getDisplayName()).color(NamedTextColor.WHITE))
                             .decoration(TextDecoration.ITALIC, false));
 
@@ -247,36 +247,36 @@ public class SkillDetailGUI extends BaseGUI {
 
             ItemStack chancesButton = new ItemStack(Material.HEART_OF_THE_SEA);
             ItemMeta chancesMeta = chancesButton.getItemMeta();
-            chancesMeta.displayName(Component.text("🐟 Current Fish Chances").color(NamedTextColor.AQUA)
+            chancesMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.current_fish_chances", "🐟 Current Fish Chances").color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
 
             List<Component> chancesLore = new ArrayList<>();
             chancesLore.add(Component.empty());
-            chancesLore.add(Component.text("Biome: ").color(NamedTextColor.GRAY)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.biome", "Biome: ").color(NamedTextColor.GRAY)
                 .append(Component.text(chanceSnapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
-            chancesLore.add(Component.text("Rare Bonus: ").color(NamedTextColor.GRAY)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.rare_bonus", "Rare Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", chanceSnapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
-            chancesLore.add(Component.text("Treasure Bonus: ").color(NamedTextColor.GRAY)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.treasure_bonus", "Treasure Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", chanceSnapshot.totalTreasureBonus())).color(NamedTextColor.GREEN))
                 .decoration(TextDecoration.ITALIC, false));
 
             if (chanceSnapshot.activeBaitId() != null && chanceSnapshot.activeBaitDisplayName() != null) {
             NamedTextColor baitColor = chanceSnapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
             String baitSuffix = chanceSnapshot.baitAppliesToContext() ? "" : " (inactive here)";
-            chancesLore.add(Component.text("Bait: ").color(NamedTextColor.GRAY)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait", "Bait: ").color(NamedTextColor.GRAY)
                 .append(Component.text(chanceSnapshot.activeBaitDisplayName() + baitSuffix).color(baitColor))
                 .decoration(TextDecoration.ITALIC, false));
             }
 
             chancesLore.add(Component.empty());
-            chancesLore.add(Component.text("Top chances right now:").color(NamedTextColor.GOLD)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.top_chances_right_now", "Top chances right now:").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
 
             int topCount = Math.min(5, sortedChances.size());
             if (topCount == 0) {
-            chancesLore.add(Component.text("• No eligible catches in this context").color(NamedTextColor.RED)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.no_eligible_catches_in_this", "• No eligible catches in this context").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
             } else {
             for (int i = 0; i < topCount; i++) {
@@ -301,7 +301,7 @@ public class SkillDetailGUI extends BaseGUI {
             }
 
             chancesLore.add(Component.empty());
-            chancesLore.add(Component.text("Click for full breakdown").color(NamedTextColor.GREEN)
+            chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.click_for_full_breakdown", "Click for full breakdown").color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
 
             chancesMeta.lore(chancesLore);
@@ -326,21 +326,21 @@ public class SkillDetailGUI extends BaseGUI {
             boolean shopEnabled = plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED);
             ItemStack shopBtn = new ItemStack(shopEnabled ? Material.EMERALD : Material.BARRIER);
             ItemMeta shopMeta = shopBtn.getItemMeta();
-            shopMeta.displayName(Component.text("⛁ Fishing Shop")
+            shopMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.fishing_shop", "⛁ Fishing Shop")
                     .color(shopEnabled ? NamedTextColor.GREEN : NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
             if (shopEnabled) {
                 shopMeta.lore(List.of(
                         Component.text(""),
-                        Component.text("Buy baits, sell fish,").color(NamedTextColor.GRAY)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.buy_baits_sell_fish", "Buy baits, sell fish,").color(NamedTextColor.GRAY)
                                 .decoration(TextDecoration.ITALIC, false),
-                        Component.text("and manage your Fish Bag!").color(NamedTextColor.GRAY)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.and_manage_your_fish_bag", "and manage your Fish Bag!").color(NamedTextColor.GRAY)
                                 .decoration(TextDecoration.ITALIC, false)
                 ));
             } else {
                 shopMeta.lore(List.of(
                         Component.text(""),
-                        Component.text("✖ Disabled by server admin").color(NamedTextColor.RED)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.disabled_by_server_admin", "✖ Disabled by server admin").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false)
                 ));
             }
@@ -359,33 +359,33 @@ public class SkillDetailGUI extends BaseGUI {
             if (!upgradeEnabled) {
                 upgradeBtn = new ItemStack(Material.BARRIER);
                 upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(Component.text("\u2694 Upgrade Gear").color(NamedTextColor.GRAY)
+                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
                 upgMeta.lore(List.of(
                         Component.text(""),
-                        Component.text("\u2716 Disabled by server admin").color(NamedTextColor.RED)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.u2716_disabled_by_server_admin", "\u2716 Disabled by server admin").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false)
                 ));
             } else if (unlocked) {
                 upgradeBtn = new ItemStack(Material.SMITHING_TABLE);
                 upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(Component.text("\u2694 Upgrade Gear").color(NamedTextColor.GREEN)
+                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false));
                 upgMeta.lore(List.of(
                         Component.text(""),
-                        Component.text("Upgrade weapons & armor with").color(NamedTextColor.GRAY)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.upgrade_weapons__armor_with", "Upgrade weapons & armor with").color(NamedTextColor.GRAY)
                                 .decoration(TextDecoration.ITALIC, false),
-                        Component.text("sea creature attack & defense!").color(NamedTextColor.GRAY)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.sea_creature_attack__defense", "sea creature attack & defense!").color(NamedTextColor.GRAY)
                                 .decoration(TextDecoration.ITALIC, false)
                 ));
             } else {
                 upgradeBtn = new ItemStack(Material.BARRIER);
                 upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(Component.text("\u2694 Upgrade Gear").color(NamedTextColor.RED)
+                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
                 upgMeta.lore(List.of(
                         Component.text(""),
-                        Component.text("\u2716 Requires Fishing Level 20").color(NamedTextColor.RED)
+                        plugin.getLanguageManager().getMessage("skilldetailgui.u2716_requires_fishing_level_20", "\u2716 Requires Fishing Level 20").color(NamedTextColor.RED)
                                 .decoration(TextDecoration.ITALIC, false)
                 ));
             }
@@ -471,13 +471,13 @@ public class SkillDetailGUI extends BaseGUI {
             double lvlTreasure = plugin.getLevelManager().getTreasureIncrease(level);
             double lvlMulti = plugin.getLevelManager().getXpMultiplier(level);
 
-            lore.add(Component.text("  Double Catch: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
+            lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.double_catch", "  Double Catch: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", lvlDoubleCatch))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
-            lore.add(Component.text("  Treasure: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
+            lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.treasure", "  Treasure: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", lvlTreasure))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
-            lore.add(Component.text("  XP Multi: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
+            lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.xp_multi", "  XP Multi: ").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("x%.2f", lvlMulti))
                             .color(unlocked ? NamedTextColor.GREEN : NamedTextColor.DARK_GRAY)));
 
@@ -486,14 +486,14 @@ public class SkillDetailGUI extends BaseGUI {
             boolean hasLevelRecipes = !plugin.getRecipeRegistry().getRecipesForLevel(skill, level).isEmpty();
             if (!unlocks.isEmpty()) {
                 lore.add(Component.text(""));
-                lore.add(Component.text("\u2192 Unlocks:")
+                lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u2192_unlocks", "\u2192 Unlocks:")
                         .color(NamedTextColor.GOLD)
                         .decoration(TextDecoration.ITALIC, false)
                         .decoration(TextDecoration.BOLD, true));
                 for (LevelManager.UnlockInfo unlock : unlocks) {
-                    Component icon = Component.text("  \u2022 ").color(NamedTextColor.YELLOW);
+                    Component icon = plugin.getLanguageManager().getMessage("skilldetailgui.u2022", "  \u2022 ").color(NamedTextColor.YELLOW);
                     if (unlock.mob() != null && unlock.mob().isHostile()) {
-                        icon = Component.text("  \u2694 ").color(plugin.getAdvancementManager().getGroupColor(unlock.mob()));
+                        icon = plugin.getLanguageManager().getMessage("skilldetailgui.u2694", "  \u2694 ").color(plugin.getAdvancementManager().getGroupColor(unlock.mob()));
                     }
 
                     lore.add(icon.append(net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().deserialize(unlock.text()))
@@ -503,17 +503,17 @@ public class SkillDetailGUI extends BaseGUI {
 
             lore.add(Component.text(""));
             if (unlocked) {
-                lore.add(Component.text("\u2714 UNLOCKED").color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+                lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u2714_unlocked", "\u2714 UNLOCKED").color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
                 if (hasLevelRecipes) {
-                    lore.add(Component.text("Click to view recipes!")
+                    lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.click_to_view_recipes", "Click to view recipes!")
                             .color(NamedTextColor.YELLOW)
                             .decoration(TextDecoration.ITALIC, false)
                             .decoration(TextDecoration.BOLD, true));
                 }
             } else {
-                lore.add(Component.text("\u2716 LOCKED").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u2716_locked", "\u2716 LOCKED").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
                 if (hasLevelRecipes) {
-                    lore.add(Component.text("Unlock this level to view recipes")
+                    lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.unlock_this_level_to_view", "Unlock this level to view recipes")
                             .color(NamedTextColor.DARK_GRAY)
                             .decoration(TextDecoration.ITALIC, false));
                 }
@@ -540,18 +540,18 @@ public class SkillDetailGUI extends BaseGUI {
         if (skill == Skill.FISHING) {
             ItemStack settingsBtn = new ItemStack(Material.COMPARATOR);
             ItemMeta settingsMeta = settingsBtn.getItemMeta();
-            settingsMeta.displayName(Component.text("Settings").color(NamedTextColor.AQUA)
+            settingsMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.settings", "Settings").color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
             settingsMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Manage your fishing QoL toggles").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("skilldetailgui.manage_your_fishing_qol_toggles", "Manage your fishing QoL toggles").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("for autosell, notifications,").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("skilldetailgui.for_autosell_notifications", "for autosell, notifications,").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("damage indicators, and particles.").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("skilldetailgui.damage_indicators_and_particles", "damage indicators, and particles.").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to open").color(NamedTextColor.GREEN)
+                plugin.getLanguageManager().getMessage("skilldetailgui.click_to_open", "Click to open").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false)
             ));
             settingsBtn.setItemMeta(settingsMeta);
@@ -559,16 +559,16 @@ public class SkillDetailGUI extends BaseGUI {
 
             ItemStack recipeBrowserBtn = new ItemStack(Material.KNOWLEDGE_BOOK);
             ItemMeta recipeMeta = recipeBrowserBtn.getItemMeta();
-            recipeMeta.displayName(Component.text("Recipe Browser").color(NamedTextColor.GOLD)
+            recipeMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.recipe_browser", "Recipe Browser").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
             recipeMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Browse every crafting recipe,").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("skilldetailgui.browse_every_crafting_recipe", "Browse every crafting recipe,").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("including level and advancement unlocks.").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("skilldetailgui.including_level_and_advancement_unlocks", "including level and advancement unlocks.").color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to open").color(NamedTextColor.GREEN)
+                plugin.getLanguageManager().getMessage("skilldetailgui.click_to_open", "Click to open").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false)
             ));
             recipeBrowserBtn.setItemMeta(recipeMeta);
@@ -576,16 +576,16 @@ public class SkillDetailGUI extends BaseGUI {
 
                 ItemStack specialCraftingBtn = new ItemStack(Material.CRAFTING_TABLE);
                 ItemMeta specialCraftingMeta = specialCraftingBtn.getItemMeta();
-                specialCraftingMeta.displayName(Component.text("Special Crafting").color(NamedTextColor.GREEN)
+                specialCraftingMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.special_crafting", "Special Crafting").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
                 specialCraftingMeta.lore(List.of(
                     Component.empty(),
-                    Component.text("Open a manual 3x3 crafting grid").color(NamedTextColor.GRAY)
+                    plugin.getLanguageManager().getMessage("skilldetailgui.open_a_manual_3x3_crafting", "Open a manual 3x3 crafting grid").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                    Component.text("for Fish Rework recipes.").color(NamedTextColor.GRAY)
+                    plugin.getLanguageManager().getMessage("skilldetailgui.for_fish_rework_recipes", "for Fish Rework recipes.").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
                     Component.empty(),
-                    Component.text("Click to open").color(NamedTextColor.GREEN)
+                    plugin.getLanguageManager().getMessage("skilldetailgui.click_to_open", "Click to open").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false)
                 ));
                 specialCraftingBtn.setItemMeta(specialCraftingMeta);
@@ -607,7 +607,7 @@ public class SkillDetailGUI extends BaseGUI {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 2 && skill == Skill.FISHING) {
             if (!plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED)) {
-                player.sendMessage(net.kyori.adventure.text.Component.text("The Upgrade Gear menu is disabled on this server.")
+                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.the_upgrade_gear_menu_is", "The Upgrade Gear menu is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
                 return;
@@ -617,13 +617,13 @@ public class SkillDetailGUI extends BaseGUI {
                 new SeaCreatureUpgradeGUI(plugin, player).open(player);
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             } else {
-                player.sendMessage(net.kyori.adventure.text.Component.text("You need Fishing Level 20 to unlock this!")
+                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.you_need_fishing_level_20", "You need Fishing Level 20 to unlock this!")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
             }
         } else if (event.getSlot() == 4 && skill == Skill.FISHING) {
             if (!plugin.isFeatureEnabled(FeatureKeys.ENCYCLOPEDIA_ENABLED)) {
-                player.sendMessage(net.kyori.adventure.text.Component.text("The Fishing Encyclopedia is disabled on this server.")
+                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.the_fishing_encyclopedia_is_disabled", "The Fishing Encyclopedia is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
                 return;
@@ -632,7 +632,7 @@ public class SkillDetailGUI extends BaseGUI {
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 6 && skill == Skill.FISHING) {
             if (!plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED)) {
-                player.sendMessage(net.kyori.adventure.text.Component.text("The shop is disabled on this server.")
+                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.the_shop_is_disabled_on", "The shop is disabled on this server.")
                         .color(net.kyori.adventure.text.format.NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
                 return;

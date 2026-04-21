@@ -43,16 +43,16 @@ public class ShopMenuGUI extends BaseGUI {
         // Slot 11: Fish Vendor
         ItemStack vendor = new ItemStack(Material.COD);
         ItemMeta vendorMeta = vendor.getItemMeta();
-        vendorMeta.displayName(Component.text("Fish Vendor").color(NamedTextColor.GOLD)
+        vendorMeta.displayName(plugin.getLanguageManager().getMessage("shopmenugui.fish_vendor", "Fish Vendor").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         vendorMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Sell fish & materials for").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("shopmenugui.sell_fish__materials_for", "Sell fish & materials for").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.text(currencyName + "!").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to browse!").color(NamedTextColor.GREEN)
+                plugin.getLanguageManager().getMessage("shopmenugui.click_to_browse", "Click to browse!").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         vendor.setItemMeta(vendorMeta);
@@ -61,16 +61,16 @@ public class ShopMenuGUI extends BaseGUI {
         // Slot 13: Fishing Shop
         ItemStack shop = new ItemStack(Material.EMERALD);
         ItemMeta shopMeta = shop.getItemMeta();
-        shopMeta.displayName(Component.text("Fishing Shop").color(NamedTextColor.GREEN)
+        shopMeta.displayName(plugin.getLanguageManager().getMessage("shopmenugui.fishing_shop", "Fishing Shop").color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
         shopMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Buy baits & special items").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("shopmenugui.buy_baits__special_items", "Buy baits & special items").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("to improve your fishing!").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("shopmenugui.to_improve_your_fishing", "to improve your fishing!").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to browse!").color(NamedTextColor.GREEN)
+                plugin.getLanguageManager().getMessage("shopmenugui.click_to_browse", "Click to browse!").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         shop.setItemMeta(shopMeta);
@@ -118,7 +118,7 @@ public class ShopMenuGUI extends BaseGUI {
         if (plugin.isFeatureEnabled(FeatureKeys.SHOP_ENABLED)) {
             return true;
         }
-        player.sendMessage(Component.text("The shop is currently disabled.").color(NamedTextColor.RED));
+        player.sendMessage(plugin.getLanguageManager().getMessage("shopmenugui.the_shop_is_currently_disabled", "The shop is currently disabled.").color(NamedTextColor.RED));
         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
         return false;
     }

@@ -36,10 +36,10 @@ public class LavaBagListener implements Listener {
 
             int recovered = BagUtils.recoverVanillaBundleContents(player, item);
             if (recovered > 0) {
-                player.sendMessage(Component.text("[Magma Satchel] ").color(NamedTextColor.DARK_GRAY)
-                        .append(Component.text("Recovered ").color(NamedTextColor.GRAY))
+                player.sendMessage(plugin.getLanguageManager().getMessage("lavabaglistener.magma_satchel", "[Magma Satchel] ").color(NamedTextColor.DARK_GRAY)
+                        .append(plugin.getLanguageManager().getMessage("lavabaglistener.recovered", "Recovered ").color(NamedTextColor.GRAY))
                         .append(Component.text(recovered).color(NamedTextColor.GOLD))
-                        .append(Component.text(" item(s) from vanilla bundle storage.").color(NamedTextColor.GRAY)));
+                        .append(plugin.getLanguageManager().getMessage("lavabaglistener.items_from_vanilla_bundle_storage", " item(s) from vanilla bundle storage.").color(NamedTextColor.GRAY)));
             }
 
             new LavaBagGUI(plugin, player).open(player);

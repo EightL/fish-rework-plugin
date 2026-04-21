@@ -173,21 +173,21 @@ public class HeatManager {
                 int ticks = Math.max(20, plugin.getConfig().getInt("heat.fishing_penalty_slowness_ticks", 100));
                 int amplifier = Math.max(0, plugin.getConfig().getInt("heat.fishing_penalty_slowness_amplifier", 1));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, amplifier, false, true, true));
-                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                        .append(Component.text("Due to heat, you got Slowness.").color(NamedTextColor.RED)));
+                player.sendMessage(plugin.getLanguageManager().getMessage("heatmanager.heat", "[Heat] ").color(NamedTextColor.DARK_GRAY)
+                        .append(plugin.getLanguageManager().getMessage("heatmanager.due_to_heat_you_got", "Due to heat, you got Slowness.").color(NamedTextColor.RED)));
             }
             case 1 -> {
                 int ticks = Math.max(20, plugin.getConfig().getInt("heat.fishing_penalty_weakness_ticks", 120));
                 int amplifier = Math.max(0, plugin.getConfig().getInt("heat.fishing_penalty_weakness_amplifier", 0));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, ticks, amplifier, false, true, true));
-                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                        .append(Component.text("Due to heat, you got Weakness.").color(NamedTextColor.RED)));
+                player.sendMessage(plugin.getLanguageManager().getMessage("heatmanager.heat", "[Heat] ").color(NamedTextColor.DARK_GRAY)
+                        .append(plugin.getLanguageManager().getMessage("heatmanager.due_to_heat_you_got", "Due to heat, you got Weakness.").color(NamedTextColor.RED)));
             }
             default -> {
                 double damage = Math.max(0.5, plugin.getConfig().getDouble("heat.fishing_penalty_raw_damage", 4.0));
                 player.damage(damage);
                 data.getSession().addHeatDamageTaken(damage);
-                player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
+                player.sendMessage(plugin.getLanguageManager().getMessage("heatmanager.heat", "[Heat] ").color(NamedTextColor.DARK_GRAY)
                         .append(Component.text("Due to heat, you took " + com.fishrework.util.FormatUtil.format("%.1f", damage) + " damage.")
                                 .color(NamedTextColor.RED)));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.75f, 0.8f);
@@ -235,8 +235,8 @@ public class HeatManager {
 
         player.getPersistentDataContainer().remove(magmaFilterResistanceUntilKey);
         if (notify) {
-            player.sendMessage(Component.text("[Heat] ").color(NamedTextColor.DARK_GRAY)
-                    .append(Component.text("Magma Filter wore off.").color(NamedTextColor.RED)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("heatmanager.heat", "[Heat] ").color(NamedTextColor.DARK_GRAY)
+                    .append(plugin.getLanguageManager().getMessage("heatmanager.magma_filter_wore_off", "Magma Filter wore off.").color(NamedTextColor.RED)));
         }
         return true;
     }
@@ -251,10 +251,10 @@ public class HeatManager {
         int filledBars = (int) (currentHeat / 5);
         int emptyBars = totalBars - filledBars;
 
-        Component gauge = Component.text(" HEAT [").color(NamedTextColor.GRAY)
+        Component gauge = plugin.getLanguageManager().getMessage("heatmanager.heat", " HEAT [").color(NamedTextColor.GRAY)
                 .append(Component.text("|".repeat(Math.max(0, filledBars))).color(tier.getColor()))
                 .append(Component.text("|".repeat(Math.max(0, emptyBars))).color(NamedTextColor.DARK_GRAY))
-                .append(Component.text("] ").color(NamedTextColor.GRAY))
+                .append(plugin.getLanguageManager().getMessage("heatmanager.", "] ").color(NamedTextColor.GRAY))
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", currentHeat) + "%").color(tier.getColor()));
 
         // Add SCC bonus indicator if any

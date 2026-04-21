@@ -248,9 +248,9 @@ public class BuyShopGUI extends BaseGUI {
                 lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
                     .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
-                lore.add(Component.text("Click to buy 1").color(NamedTextColor.GREEN)
+                lore.add(plugin.getLanguageManager().getMessage("buyshopgui.click_to_buy_1", "Click to buy 1").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
-                lore.add(Component.text("Shift-click to buy 4").color(NamedTextColor.GREEN)
+                lore.add(plugin.getLanguageManager().getMessage("buyshopgui.shiftclick_to_buy_4", "Shift-click to buy 4").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
 
                 meta.lore(lore);
@@ -278,7 +278,7 @@ public class BuyShopGUI extends BaseGUI {
                 lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
                         .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
-                lore.add(Component.text("Click to buy!").color(NamedTextColor.GREEN)
+                lore.add(plugin.getLanguageManager().getMessage("buyshopgui.click_to_buy", "Click to buy!").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false));
 
                 meta.lore(lore);

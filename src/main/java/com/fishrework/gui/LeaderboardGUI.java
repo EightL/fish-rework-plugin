@@ -80,7 +80,7 @@ public class LeaderboardGUI extends BaseGUI {
         if (topPlayers.isEmpty()) {
             ItemStack empty = new ItemStack(Material.BARRIER);
             ItemMeta meta = empty.getItemMeta();
-            meta.displayName(Component.text("No Data Yet").color(NamedTextColor.RED));
+            meta.displayName(plugin.getLanguageManager().getMessage("leaderboardgui.no_data_yet", "No Data Yet").color(NamedTextColor.RED));
             empty.setItemMeta(meta);
             inventory.setItem(22, empty);
         }

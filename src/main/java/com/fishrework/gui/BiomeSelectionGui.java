@@ -93,14 +93,14 @@ public class BiomeSelectionGui extends BaseGUI {
         // "ALL" Filter Option (Central functionality)
         ItemStack allItem = new ItemStack(Material.COMPASS);
         ItemMeta allMeta = allItem.getItemMeta();
-        allMeta.displayName(Component.text("ALL BIOMES").color(NamedTextColor.YELLOW)
+        allMeta.displayName(plugin.getLanguageManager().getMessage("biomeselectiongui.all_biomes", "ALL BIOMES").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.BOLD, true)
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> allLore = new ArrayList<>();
-        allLore.add(Component.text("Show all fish and mobs").color(NamedTextColor.GRAY)
+        allLore.add(plugin.getLanguageManager().getMessage("biomeselectiongui.show_all_fish_and_mobs", "Show all fish and mobs").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         if (currentFilter == null) {
-            allLore.add(Component.text("▶ CURRENTLY SELECTED ◀").color(NamedTextColor.GREEN)
+            allLore.add(plugin.getLanguageManager().getMessage("biomeselectiongui.currently_selected", "▶ CURRENTLY SELECTED ◀").color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false));
             allMeta.addEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING, 1, true);
@@ -115,7 +115,7 @@ public class BiomeSelectionGui extends BaseGUI {
         dimensionMeta.displayName(Component.text("Dimension: " + biomeDimension.name()).color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false));
         dimensionMeta.lore(List.of(
-            Component.text("Click to switch Overworld/Nether").color(NamedTextColor.GRAY)
+            plugin.getLanguageManager().getMessage("biomeselectiongui.click_to_switch_overworldnether", "Click to switch Overworld/Nether").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         dimensionItem.setItemMeta(dimensionMeta);
@@ -138,13 +138,13 @@ public class BiomeSelectionGui extends BaseGUI {
             
             List<Component> lore = new ArrayList<>();
             if (currentFilter == group) {
-                lore.add(Component.text("▶ CURRENTLY SELECTED ◀").color(NamedTextColor.GREEN)
+                lore.add(plugin.getLanguageManager().getMessage("biomeselectiongui.currently_selected", "▶ CURRENTLY SELECTED ◀").color(NamedTextColor.GREEN)
                         .decoration(TextDecoration.BOLD, true)
                         .decoration(TextDecoration.ITALIC, false));
                 meta.addEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING, 1, true);
                 meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
             } else {
-                 lore.add(Component.text("Click to filter").color(NamedTextColor.GRAY)
+                 lore.add(plugin.getLanguageManager().getMessage("biomeselectiongui.click_to_filter", "Click to filter").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             }
             meta.lore(lore);
@@ -155,7 +155,7 @@ public class BiomeSelectionGui extends BaseGUI {
         // Back Button
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta backMeta = back.getItemMeta();
-        backMeta.displayName(Component.text("Back").color(NamedTextColor.RED)
+        backMeta.displayName(plugin.getLanguageManager().getMessage("biomeselectiongui.back", "Back").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         back.setItemMeta(backMeta);
         inventory.setItem(49, back);

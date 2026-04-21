@@ -82,7 +82,7 @@ public class XpSourcesGUI extends BaseGUI {
             double chance = realChances.getOrDefault(mob.getId(), 0.0);
 
             // Chance component
-            Component chanceComp = Component.text("Spawn Chance: ").color(NamedTextColor.GRAY)
+            Component chanceComp = plugin.getLanguageManager().getMessage("xpsourcesgui.spawn_chance", "Spawn Chance: ").color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", chance))
                             .color(chance > 0 ? NamedTextColor.AQUA : NamedTextColor.DARK_GRAY));
 
@@ -93,13 +93,13 @@ public class XpSourcesGUI extends BaseGUI {
 
             // Biome-only indicator
             if (mob.getDefaultChance() <= 0 && chance <= 0) {
-                chanceComp = chanceComp.append(Component.text(" (Biome-specific)").color(NamedTextColor.DARK_GRAY));
+                chanceComp = chanceComp.append(plugin.getLanguageManager().getMessage("xpsourcesgui.biomespecific", " (Biome-specific)").color(NamedTextColor.DARK_GRAY));
             }
 
             // XP calculation
             double baseXp = mob.getXp();
             double finalXp = baseXp * xpMulti;
-            Component xpComp = Component.text("XP: ").color(NamedTextColor.GRAY)
+            Component xpComp = plugin.getLanguageManager().getMessage("xpsourcesgui.xp", "XP: ").color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", baseXp)).color(NamedTextColor.YELLOW));
             if (xpMulti > 1.0) {
                 xpComp = xpComp.append(Component.text(com.fishrework.util.FormatUtil.format(" (* %.2f = %.0f)", xpMulti, finalXp)).color(NamedTextColor.AQUA));
@@ -131,7 +131,7 @@ public class XpSourcesGUI extends BaseGUI {
         meta.displayName(Component.text(name).color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("XP: ").color(NamedTextColor.GRAY)
+        lore.add(plugin.getLanguageManager().getMessage("xpsourcesgui.xp", "XP: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", xp)).color(NamedTextColor.YELLOW)));
         meta.lore(lore);
         item.setItemMeta(meta);

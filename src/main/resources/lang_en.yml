@@ -1,0 +1,540 @@
+advancementlistener.click_to_open_recipe: Click to open recipe
+advancementlistener.recipes_unlocked: '   Recipes Unlocked:'
+artifactcollectiongui.: ???
+artifactcollectiongui.click_to_cycle_rarity: Click to cycle rarity
+artifactcollectiongui.filter: 'Filter: '
+artifactcollectiongui.keep_in_inventory_to_preserve: Keep in inventory to preserve
+  their effects.
+artifactcollectiongui.rare_collectibles_found_in: Rare collectibles found in
+artifactcollectiongui.rarity: 'Rarity: '
+artifactcollectiongui.stats: Stats
+artifactcollectiongui.treasure_chests_while_fishing: treasure chests while fishing.
+artifactcollectiongui.u2b50_artifact_collection: \u2B50 Artifact Collection
+artifactcollectiongui.undiscovered_artifact: Undiscovered Artifact
+basegui.back: Back
+basegui.next_page: Next Page
+basegui.previous_page: Previous Page
+biomeselectiongui.all_biomes: ALL BIOMES
+biomeselectiongui.back: Back
+biomeselectiongui.click_to_filter: Click to filter
+biomeselectiongui.click_to_switch_overworldnether: Click to switch Overworld/Nether
+biomeselectiongui.currently_selected: ▶ CURRENTLY SELECTED ◀
+biomeselectiongui.show_all_fish_and_mobs: Show all fish and mobs
+buyshopgui.click_to_buy: Click to buy!
+buyshopgui.click_to_buy_1: Click to buy 1
+buyshopgui.shiftclick_to_buy_4: Shift-click to buy 4
+collectiongui.: ???
+collectiongui.biome_specific: Biome Specific
+collectiongui.chance: 'Chance: '
+collectiongui.click_to_change_biome_filter: Click to change biome filter
+collectiongui.click_to_change_sort_order: Click to change sort order
+collectiongui.click_to_filter_by_type: Click to filter by type
+collectiongui.drops: 'Drops:'
+collectiongui.land_bonus: ' [Land Bonus]'
+collectiongui.u2b50_new: '\u2B50 NEW! '
+collectiongui.xp: 'XP: '
+coolingitemlistener.you_are_not_hot_enough: You are not hot enough to use this item.
+currentfishchancesgui.bait: 'Bait: '
+currentfishchancesgui.biome: 'Biome: '
+currentfishchancesgui.chance: 'Chance: '
+currentfishchancesgui.current_context: Current Context
+currentfishchancesgui.extra_chance_for_biome_land: Extra chance for biome land mobs
+currentfishchancesgui.rare_bonus: 'Rare Bonus: '
+currentfishchancesgui.required_level: 'Required Level: '
+currentfishchancesgui.treasure_bonus: 'Treasure Bonus: '
+currentfishchancesgui.weight: 'Weight: '
+displaycasecustomizegui.close: Close
+enchantmentlistener.enchant_level_must_be_at: Enchant level must be at least 1.
+enchantmentlistener.that_trident_already_has_a: That trident already has a conflicting
+  enchantment.
+fishbaggui.click_to_sell_all_bag: Click to sell all bag contents!
+fishbaggui.only_fish_and_custom_materials: Only fish and custom materials can go in
+  the Fish Bag!
+fishbaggui.sell_all: Sell All
+fishbaglistener.fish_bag: '[Fish Bag] '
+fishbaglistener.items_from_vanilla_bundle_storage: ' item(s) from vanilla bundle storage.'
+fishbaglistener.recovered: 'Recovered '
+fishbucketlistener.you_cannot_catch_monsters_with: You cannot catch monsters with
+  a bucket!
+fishbucketlistener.you_cannot_empty_the_fish: You cannot empty the Fish Bucket!
+fishingcommand.: '----------------------------'
+fishingcommand.admin_commands: '--- Admin Commands ---'
+fishingcommand.all_mob_chances_land_mob: All mob chances, land mob bonus, and artifact
+  chance reset to defaults!
+fishingcommand.amount_must_be__0: Amount must be >= 0.
+fishingcommand.amount_must_be_between_0: Amount must be between 0 and 1,000,000.
+fishingcommand.autosell: '  Auto-Sell: '
+fishingcommand.best_streak: '  Best Streak: '
+fishingcommand.chance_must_be_between_00: Chance must be between 0.0 and 100.0.
+fishingcommand.check_your_doubloons_balance: ' - Check your Doubloons balance'
+fishingcommand.common_fish_will_be_automatically: Common fish will be automatically
+  sold for Doubloons.
+fishingcommand.count_must_be_a_number: Count must be a number.
+fishingcommand.count_must_be_between_1: Count must be between 1 and 10,000.
+fishingcommand.current_heat: 'Current Heat: '
+fishingcommand.current_streak: '  Current Streak: '
+fishingcommand.damage_taken: 'Damage Taken: '
+fishingcommand.equipment_heat_resist: 'Equipment Heat Resist: '
+fishingcommand.fish_rework_config_reloaded_successfully: '[Fish Rework] Config reloaded
+  successfully!'
+fishingcommand.fishing: /fishing
+fishingcommand.fishing_addxp_player_amount: /fishing addxp <player> <amount>
+fishingcommand.fishing_artifacts: /fishing artifacts
+fishingcommand.fishing_autosell: /fishing autosell
+fishingcommand.fishing_bag: /fishing bag
+fishingcommand.fishing_balance: /fishing balance
+fishingcommand.fishing_chances: /fishing chances
+fishingcommand.fishing_dmgindicator_onoff: /fishing dmgindicator <on|off>
+fishingcommand.fishing_encyclopedia: /fishing encyclopedia
+fishingcommand.fishing_fulfill_player_allcreaturesartifacts: /fishing fulfill <player>
+  <all|creatures|artifacts>
+fishingcommand.fishing_give_player_item_count: /fishing give <player> <item> [count]
+fishingcommand.fishing_heat: /fishing heat
+fishingcommand.fishing_heat_player: /fishing heat <player>
+fishingcommand.fishing_info: /fishing info
+fishingcommand.fishing_notifications_onofftoggle: /fishing notifications [on|off|toggle]
+fishingcommand.fishing_particles_highmediumlow: /fishing particles [high|medium|low]
+fishingcommand.fishing_recipe_itemid: /fishing recipe [item_id]
+fishingcommand.fishing_reload: /fishing reload
+fishingcommand.fishing_reset_player: /fishing reset <player>
+fishingcommand.fishing_resetchances: /fishing resetchances
+fishingcommand.fishing_sell: /fishing sell
+fishingcommand.fishing_session_stats: '--- Fishing Session Stats ---'
+fishingcommand.fishing_setchance_mobartifact_chance: /fishing setchance <mob|artifact>
+  <chance>
+fishingcommand.fishing_setcoins_player_amount: /fishing setcoins <player> <amount>
+fishingcommand.fishing_setheat_player_amount: /fishing setheat <player> <amount>
+fishingcommand.fishing_setlevel_player_level: /fishing setlevel <player> <level>
+fishingcommand.fishing_settings: /fishing settings
+fishingcommand.fishing_shop: /fishing shop
+fishingcommand.fishing_spawn_chances: '--- Fishing Spawn Chances ---'
+fishingcommand.fishing_spawn_mob: /fishing spawn <mob>
+fishingcommand.fishing_stats: /fishing stats
+fishingcommand.fishing_sync: /fishing sync
+fishingcommand.fishing_top: /fishing top
+fishingcommand.fishing_xpmultiplier_value: /fishing xpmultiplier <value>
+fishingcommand.fishrework_help: '--- FishRework Help ---'
+fishingcommand.fix_missing_recipes: ' - Fix missing recipes'
+fishingcommand.fs_particles_highmediumlow: /fs particles <high|medium|low>
+fishingcommand.give_custom_item: ' - Give custom item'
+fishingcommand.give_xp_to_player: ' - Give XP to player'
+fishingcommand.heat_tier: 'Heat Tier: '
+fishingcommand.held_bait_is_inactive_in: Held bait is inactive in this dimension.
+fishingcommand.invalid_amount: Invalid amount.
+fishingcommand.invalid_heat_amount_use_a: Invalid heat amount. Use a number from 0
+  to 100.
+fishingcommand.invalid_number: Invalid number.
+fishingcommand.levels_gained: '  Levels Gained: '
+fishingcommand.magma_filter_resist: 'Magma Filter Resist: '
+fishingcommand.milestone_fishing_level_27: 'Milestone: Fishing Level 27'
+fishingcommand.mobs_killed: '  Mobs Killed: '
+fishingcommand.new_discoveries: '  New Discoveries: '
+fishingcommand.no_permission: No permission.
+fishingcommand.no_player_data_found_for: No player data found for that player.
+fishingcommand.only_players_can_use_this: Only players can use this command.
+fishingcommand.open_fishing_settings: ' - Open fishing settings'
+fishingcommand.open_main_menu: ' - Open main menu'
+fishingcommand.open_the_fishing_shop: ' - Open the fishing shop'
+fishingcommand.open_the_recipe_browser_for: ' - Open the recipe browser for a held/custom
+  item'
+fishingcommand.open_the_skills_overview_menu: ' - Open the skills overview menu'
+fishingcommand.open_your_fish_bag: ' - Open your fish bag'
+fishingcommand.peak_heat_session: 'Peak Heat (Session): '
+fishingcommand.player_not_found: Player not found.
+fishingcommand.player_not_found_online: Player not found online.
+fishingcommand.quick_particle_detail_shortcut: ' - Quick particle detail shortcut'
+fishingcommand.quick_sell_all_fish_from: ' - Quick sell all fish from inventory'
+fishingcommand.reload_configyml_without_restart: ' - Reload config.yml without restart'
+fishingcommand.reset_all_chances_to_defaults: ' - Reset all chances to defaults'
+fishingcommand.reset_player_data: ' - Reset player data'
+fishingcommand.set_doubloons_balance: ' - Set doubloons balance'
+fishingcommand.set_global_xp_multiplier: ' - Set global XP multiplier'
+fishingcommand.set_heat_clamped_to_0100: ' - Set heat (clamped to 0-100)'
+fishingcommand.set_mobartifact_spawn_chance: ' - Set mob/artifact spawn chance'
+fishingcommand.set_player_level: ' - Set player level'
+fishingcommand.set_sea_creature_effect_detail: ' - Set sea creature effect detail'
+fishingcommand.spawn_mob_at_location: ' - Spawn mob at location'
+fishingcommand.synced_your_recipes_and_advancements: Synced your recipes and advancements!
+fishingcommand.toggle_autosell_for_common_fish: ' - Toggle auto-sell for common fish'
+fishingcommand.toggle_damage_indicators: ' - Toggle damage indicators'
+fishingcommand.toggle_fishing_tip_notifications: ' - Toggle fishing tip notifications'
+fishingcommand.total_catches: '  Total Catches: '
+fishingcommand.total_heat_resist: 'Total Heat Resist: '
+fishingcommand.treasures_found: '  Treasures Found: '
+fishingcommand.unknown_item_use_tab_completion: Unknown item. Use tab completion.
+fishingcommand.unknown_mob_id: Unknown mob ID.
+fishingcommand.unknown_mode_use_high_medium: Unknown mode. Use high, medium, or low.
+fishingcommand.unknown_subcommand_use_fishing_help: Unknown subcommand. Use /fishing
+  help
+fishingcommand.unknown_type_use_all_creatures: Unknown type. Use all, creatures, or
+  artifacts.
+fishingcommand.unlock_all_creaturesartifacts_for_a: ' - Unlock all creatures/artifacts
+  for a player'
+fishingcommand.unlocks_lava_fishing__magma: ' unlocks Lava Fishing + Magma Satchel
+  in shop'
+fishingcommand.usage_fishing_addxp_player_amount: 'Usage: /fishing addxp <player>
+  <amount>'
+fishingcommand.usage_fishing_dmgindicator_onoff: 'Usage: /fishing dmgindicator <on|off>'
+fishingcommand.usage_fishing_fulfill_player_allcreaturesartifacts: 'Usage: /fishing
+  fulfill <player> <all|creatures|artifacts>'
+fishingcommand.usage_fishing_give_player_item: 'Usage: /fishing give <player> <item>
+  [count]'
+fishingcommand.usage_fishing_notifications_onofftoggle: 'Usage: /fishing notifications
+  [on|off|toggle]'
+fishingcommand.usage_fishing_particles_highmediumlow: 'Usage: /fishing particles <high|medium|low>'
+fishingcommand.usage_fishing_reset_player: 'Usage: /fishing reset <player>'
+fishingcommand.usage_fishing_setchance_mobartifact_chance: 'Usage: /fishing setchance
+  <mob|artifact> <chance>'
+fishingcommand.usage_fishing_setcoins_player_amount: 'Usage: /fishing setcoins <player>
+  <amount>'
+fishingcommand.usage_fishing_setheat_player_amount: 'Usage: /fishing setheat <player>
+  <amount>'
+fishingcommand.usage_fishing_setlevel_player_level: 'Usage: /fishing setlevel <player>
+  <level>'
+fishingcommand.usage_fishing_spawn_mob: 'Usage: /fishing spawn <mob>'
+fishingcommand.usage_fishing_xpmultiplier_value: 'Usage: /fishing xpmultiplier [value]'
+fishingcommand.use_fs_particles_highmediumlow_to: Use /fs particles <high|medium|low>
+  to change this later.
+fishingcommand.view_another_players_heat_stats: ' - View another player''s heat stats'
+fishingcommand.view_artifact_encyclopedia: ' - View artifact encyclopedia'
+fishingcommand.view_biome_spawn_chances_at: ' - View biome spawn chances at your location'
+fishingcommand.view_fish_encyclopedia: ' - View fish encyclopedia'
+fishingcommand.view_leaderboard: ' - View leaderboard'
+fishingcommand.view_session_statistics: ' - View session statistics'
+fishingcommand.view_your_lava_heat_stats: ' - View your lava heat stats'
+fishingcommand.viewset_global_xp_multiplier: ' - View/set global XP multiplier'
+fishingcommand.xp_earned: '  XP Earned: '
+fishingcommand.you_dont_have_anything_to: You don't have anything to sell!
+fishingcommand.you_dont_have_permission_to: You don't have permission to reload the
+  config.
+fishingcommand.you_leveled_up_from_admin: You leveled up from admin command!
+fishingcommand.your_skills_and_collection_have: Your skills and collection have been
+  reset.
+fishinglistener.catch_sent_to_fish_bag: Catch sent to Fish Bag!
+fishinglistener.double_catch: 🎣 DOUBLE CATCH!
+fishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
+fishinglistener.ud83cudfa3_double_catch: \uD83C\uDFA3 DOUBLE CATCH!
+fishinglistener.unlocked_recipe_fish_bucket: 'Unlocked Recipe: Fish Bucket!'
+fishinglistener.you_hooked_a_rare_sea: You hooked a rare sea creature!
+fishingsettingsgui.automatically_sells_common_fish: Automatically sells common fish.
+fishingsettingsgui.changes_how_intense_sea_creature: Changes how intense sea creature
+  effects look.
+fishingsettingsgui.click_to_cycle: Click to cycle.
+fishingsettingsgui.command_fish_autosell: 'Command: /fish autosell'
+fishingsettingsgui.command_fish_dmgindicator: 'Command: /fish dmgindicator'
+fishingsettingsgui.command_fish_notifications: 'Command: /fish notifications'
+fishingsettingsgui.command_fish_particles_highmediumlow: 'Command: /fish particles
+  <high|medium|low>'
+fishingsettingsgui.disabled_by_server_admin: Disabled by server admin.
+fishingsettingsgui.shows_floating_damage_numbers: Shows floating damage numbers.
+fishingsettingsgui.shows_occasional_fishing_tips: Shows occasional fishing tips.
+fishingutils.: '!'
+fishingutils.u2728: ' \u2728'
+heatmanager.: '] '
+heatmanager.due_to_heat_you_got: Due to heat, you got Weakness.
+heatmanager.heat: ' HEAT ['
+heatmanager.magma_filter_wore_off: Magma Filter wore off.
+itemmanager.a_jagged_relic_carved_from: A jagged relic carved from an apex hunter
+  fang.
+itemmanager.a_portable_bag_for_storing: A portable bag for storing fish
+itemmanager.always_adds_this_sea_creature: Always adds this sea creature to the pool
+itemmanager.and_custom_materials: and custom materials.
+itemmanager.autocollects_drops_from_fished: ► Auto-collects drops from fished
+itemmanager.carry_in_inventory_to_gain: Carry in inventory to gain fire resistance.
+itemmanager.consumed_on_successful_catch: Consumed on successful catch
+itemmanager.cuts_deep_into_sea_creatures: Cuts deep into sea creatures.
+itemmanager.dead_riders_head: Dead Rider's Head
+itemmanager.drawn_from_the_molten_pits: Drawn from the molten pits of Gehenna.
+itemmanager.eruption_ring: Eruption Ring
+itemmanager.fish_bag: Fish Bag
+itemmanager.forged_from_the_depths_of: Forged from the depths of the Nether,
+itemmanager.forged_to_keep_flames_at: Forged to keep flames at bay.
+itemmanager.gehenna: Gehenna
+itemmanager.grants_free_movement_while_swimming: Grants free movement while swimming
+  in lava.
+itemmanager.hold_in_offhand_while_fishing: Hold in offhand while fishing
+itemmanager.inside_native_biome_x2_weight: 'Inside native biome: x2 weight'
+itemmanager.its_chains_hunger_for_the: Its chains hunger for the damned.
+itemmanager.lava_ring: Lava Ring
+itemmanager.magma_satchel: ✦ Magma Satchel
+itemmanager.megalodon_tooth: Megalodon Tooth
+itemmanager.mobs_that_die_in_lava: '  mobs that die in lava.'
+itemmanager.outside_native_biome_default_weight: 'Outside native biome: default weight'
+itemmanager.rightclick: Right-click
+itemmanager.rightclick_to_open: Right-click to open!
+itemmanager.targets_unlocked_creatures_from_these: Targets unlocked creatures from
+  these biomes
+itemmanager.this_satchel_hungers_for_lava: this satchel hungers for lava drops.
+itemmanager.to_open: ' to open.'
+itemmanager.x2_weight_outside_native_biome: x2 weight outside native biome
+itemmanager.x4_weight_in_native_biome: x4 weight in native biome
+lavabaggui.click_to_sell_all_satchel: Click to sell all satchel contents!
+lavabaggui.only_registered_custom_creature_drops: Only registered custom creature
+  drops can go in the Magma Satchel!
+lavabaggui.sell_all: Sell All
+lavabaglistener.items_from_vanilla_bundle_storage: ' item(s) from vanilla bundle storage.'
+lavabaglistener.magma_satchel: '[Magma Satchel] '
+lavabaglistener.recovered: 'Recovered '
+lavafishinglistener.lava_fishing_cast_into_lava: 🔥 Lava fishing! Cast into lava...
+lavafishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
+lavafishinglistener.you_hooked_a_creature_from: 🔥 You hooked a creature from the lava!
+lavafishinglistener.you_hooked_a_nether_creature: 🔥 You hooked a nether creature!
+lavafishinglistener.you_pulled_up_some_lava: You pulled up some lava debris...
+leaderboardgui.no_data_yet: No Data Yet
+loremanager.bobber_damage: 'Bobber Damage: '
+loremanager.double_catch: 'Double Catch: '
+loremanager.fishing_speed: 'Fishing Speed: '
+loremanager.fishing_xp_bonus: 'Fishing XP Bonus: '
+loremanager.full_set_bonus: 'Full Set bonus:'
+loremanager.heat_resistance: 'Heat Resistance: '
+loremanager.passive_effect: 'Passive Effect: '
+loremanager.rare_creature_chance: 'Rare Creature Chance: '
+loremanager.sea_creature_attack: 'Sea Creature Attack: '
+loremanager.sea_creature_attack_modifier: 'Sea Creature Attack Modifier: '
+loremanager.sea_creature_defense: 'Sea Creature Defense: '
+loremanager.sea_creature_defense_modifier: 'Sea Creature Defense Modifier: '
+loremanager.stats_are_halved_outside_of: Stats are halved outside of Nether.
+loremanager.treasure_chance: 'Treasure Chance: '
+loremanager.u2b50_artifact: \u2B50 Artifact
+mobmanager.click_to_view_encyclopedia: Click to view Encyclopedia!
+mobmanager.u2b50_encyclopedia_complete_congratulations: '   \u2B50 ENCYCLOPEDIA COMPLETE!
+  Congratulations!'
+recipebrowsergui.: ???
+recipebrowsergui.advancement_unlock: Advancement unlock
+recipebrowsergui.click_to_inspect_recipe: Click to inspect recipe
+recipebrowsergui.craftable_now: Craftable now
+recipebrowsergui.cycle_required_fishing_level: Cycle required fishing level
+recipebrowsergui.filter_by_gear_type: Filter by gear type
+recipebrowsergui.no_unlock_requirement: No unlock requirement
+recipebrowsergui.recipe_not_unlocked_yet: Recipe not unlocked yet.
+recipebrowsergui.requires_a_progression_advancement: Requires a progression advancement.
+recipebrowsergui.show_unlocked_or_locked_recipes: Show unlocked or locked recipes
+recipedefinition.any_of: 'Any of:'
+recipeguidegui.click_to_craft_using_your: Click to craft using your inventory, Fish
+  Bag, and Magma Satchel.
+recipeguidegui.crafting_output: Crafting Output
+recipeguidegui.missing_ingredients_in_your_inventory: Missing ingredients in your
+  inventory or bags.
+recipeguidegui.recipe_browser: Recipe Browser
+recipeguidegui.unlock_the_required_advancement_first: Unlock the required advancement
+  first.
+recipeguidegui.use_fishing_recipe_while_holding: Use /fishing recipe while holding
+  a custom item.
+recipeguidegui.use_the_recipe_browser_in: Use the Recipe Browser in the Fishing menu
+  to browse all recipes.
+seacreatureupgradegui.: →
+seacreatureupgradegui.back: Back
+seacreatureupgradegui.cannot_downgrade: Cannot Downgrade!
+seacreatureupgradegui.enchants_fused: Enchants fused!
+seacreatureupgradegui.gear_upgraded: Gear upgraded!
+seacreatureupgradegui.not_enough_enchant_levels: Not enough enchant levels.
+seacreatureupgradegui.that_item_doesnt_go_in: That item doesn't go in this slot!
+seacreatureupgradegui.use_a_higher_tier_material: Use a higher tier material to upgrade.
+sellconfirmgui.cancel: ✖ Cancel
+sellconfirmgui.confirm_sale: ✔ Confirm Sale
+sellconfirmgui.nothing_to_sell: Nothing to sell!
+sellconfirmgui.sale_summary: Sale Summary
+sellotherconfirmgui.cancel: Cancel
+sellotherconfirmgui.confirm: Confirm
+sellotherconfirmgui.return_to_fish_vendor: Return to Fish Vendor
+sellotherconfirmgui.sell_all_other_items: Sell all Other items
+sellotherconfirmgui.sell_other_summary: Sell Other Summary
+sellotherconfirmgui.you_dont_have_any_other: You don't have any Other items to sell.
+sellshopgui.click_to_cycle_filters: Click to cycle filters
+sellshopgui.click_to_open_confirmation: Click to open confirmation
+sellshopgui.click_to_sell_everything: Click to sell everything!
+sellshopgui.counts_all_pottery_sherd_variants: Counts all pottery sherd variants
+sellshopgui.leftclick_sell_all: 'Left-Click: Sell all'
+sellshopgui.no_other_items_in_inventory: No other items in inventory
+sellshopgui.none_in_inventory: None in inventory
+sellshopgui.rightclick_buy_1: 'Right-Click: Buy 1'
+sellshopgui.sell_all_fish: Sell All Fish
+sellshopgui.sell_other: Sell Other
+sellshopgui.sells_only_other_vendor_items: Sells only 'other' vendor items
+sellshopgui.this_item_cannot_be_bought: This item cannot be bought right now.
+sellshopgui.you_dont_have_anything_to: You don't have anything to sell!
+sellshopgui.you_dont_have_enough_inventory: You don't have enough inventory space
+  to buy this item!
+shopmenugui.buy_baits__special_items: Buy baits & special items
+shopmenugui.click_to_browse: Click to browse!
+shopmenugui.fish_vendor: Fish Vendor
+shopmenugui.fishing_shop: Fishing Shop
+shopmenugui.sell_fish__materials_for: Sell fish & materials for
+shopmenugui.the_shop_is_currently_disabled: The shop is currently disabled.
+shopmenugui.to_improve_your_fishing: to improve your fishing!
+skilldetailgui.and_manage_your_fish_bag: and manage your Fish Bag!
+skilldetailgui.bait: 'Bait: '
+skilldetailgui.biome: 'Biome: '
+skilldetailgui.browse_every_crafting_recipe: Browse every crafting recipe,
+skilldetailgui.buy_baits_sell_fish: Buy baits, sell fish,
+skilldetailgui.click_for_full_breakdown: Click for full breakdown
+skilldetailgui.click_to_open: Click to open
+skilldetailgui.click_to_view_recipes: Click to view recipes!
+skilldetailgui.current_fish_chances: 🐟 Current Fish Chances
+skilldetailgui.damage_indicators_and_particles: damage indicators, and particles.
+skilldetailgui.disabled_by_server_admin: ✖ Disabled by server admin
+skilldetailgui.double_catch: '  Double Catch: '
+skilldetailgui.fishing_shop: ⛁ Fishing Shop
+skilldetailgui.for_autosell_notifications: for autosell, notifications,
+skilldetailgui.for_fish_rework_recipes: for Fish Rework recipes.
+skilldetailgui.including_level_and_advancement_unlocks: including level and advancement
+  unlocks.
+skilldetailgui.manage_your_fishing_qol_toggles: Manage your fishing QoL toggles
+skilldetailgui.no_eligible_catches_in_this: • No eligible catches in this context
+skilldetailgui.open_a_manual_3x3_crafting: Open a manual 3x3 crafting grid
+skilldetailgui.rare_bonus: 'Rare Bonus: '
+skilldetailgui.recipe_browser: Recipe Browser
+skilldetailgui.sea_creature_attack__defense: sea creature attack & defense!
+skilldetailgui.settings: Settings
+skilldetailgui.special_crafting: Special Crafting
+skilldetailgui.the_fishing_encyclopedia_is_disabled: The Fishing Encyclopedia is disabled
+  on this server.
+skilldetailgui.the_shop_is_disabled_on: The shop is disabled on this server.
+skilldetailgui.the_upgrade_gear_menu_is: The Upgrade Gear menu is disabled on this
+  server.
+skilldetailgui.top_chances_right_now: 'Top chances right now:'
+skilldetailgui.treasure: '  Treasure: '
+skilldetailgui.treasure_bonus: 'Treasure Bonus: '
+skilldetailgui.u2022: '  \u2022 '
+skilldetailgui.u2192_unlocks: '\u2192 Unlocks:'
+skilldetailgui.u25b6_double_catch: '\u25B6 Double Catch: '
+skilldetailgui.u25b6_fishing_speed: '\u25B6 Fishing Speed: '
+skilldetailgui.u25b6_heat_resistance: '\u25B6 Heat Resistance: '
+skilldetailgui.u25b6_rare_creature: '\u25B6 Rare Creature: '
+skilldetailgui.u25b6_sea_creature_attack: '\u25B6 Sea Creature Attack: '
+skilldetailgui.u25b6_sea_creature_defense: '\u25B6 Sea Creature Defense: '
+skilldetailgui.u25b6_treasure_chance: '\u25B6 Treasure Chance: '
+skilldetailgui.u25b6_xp_multiplier: '\u25B6 XP Multiplier '
+skilldetailgui.u2694: '  \u2694 '
+skilldetailgui.u2694_upgrade_gear: \u2694 Upgrade Gear
+skilldetailgui.u2714_unlocked: \u2714 UNLOCKED
+skilldetailgui.u2716_disabled_by_server_admin: \u2716 Disabled by server admin
+skilldetailgui.u2716_locked: \u2716 LOCKED
+skilldetailgui.u2716_requires_fishing_level_20: \u2716 Requires Fishing Level 20
+skilldetailgui.u2b50_artifact_collection: \u2B50 Artifact Collection
+skilldetailgui.u2b50_current_bonuses: \u2B50 Current Bonuses
+skilldetailgui.ud83cudfa3_fishing_encyclopedia: \uD83C\uDFA3 Fishing Encyclopedia
+skilldetailgui.ud83dudd17_active_bait: '\uD83D\uDD17 Active Bait: '
+skilldetailgui.unlock_this_level_to_view: Unlock this level to view recipes
+skilldetailgui.upgrade_weapons__armor_with: Upgrade weapons & armor with
+skilldetailgui.view_rare_artifact_finds: View rare artifact finds!
+skilldetailgui.view_your_caught_fish: View your caught fish!
+skilldetailgui.xp_multi: '  XP Multi: '
+skilldetailgui.you_need_fishing_level_20: You need Fishing Level 20 to unlock this!
+skillmanager.: '--------------------------------'
+skillmanager.attributes_gained: '   Attributes Gained:'
+skillmanager.click_to_open_recipe: Click to open recipe
+skillmanager.level_up: LEVEL UP!
+skillmanager.u2605: '    \u2605 '
+skillmanager.u2694: '    \u2694 '
+skillmanager.u2b50_you_received_a_fishing: '  \u2B50 You received a Fishing Journal!'
+skillmanager.unlocked: '   Unlocked:'
+skillsmenugui.close: Close
+skillsmenugui.double_catch: ' Double Catch: '
+skillsmenugui.fishing_speed: ' Fishing Speed: '
+skillsmenugui.fishing_xp_bonus: ' Fishing XP Bonus: '
+skillsmenugui.leftclick_to_view_details: Left-Click to view Details
+skillsmenugui.level: 'Level: '
+skillsmenugui.max_level: MAX LEVEL
+skillsmenugui.progress: 'Progress: '
+skillsmenugui.rightclick_for_leaderboard: Right-Click for Leaderboard
+skillsmenugui.sea_creature_attack: ' Sea Creature Attack: '
+skillsmenugui.sea_creature_chance: ' Sea Creature Chance: '
+skillsmenugui.sea_creature_defense: ' Sea Creature Defense: '
+skillsmenugui.stats: 'Stats:'
+skillsmenugui.treasure_chance: ' Treasure Chance: '
+specialcraftinggui.arrange_items_to_match_a: Arrange items to match a recipe.
+specialcraftinggui.clear_grid: Clear Grid
+specialcraftinggui.click_to_craft_from_this: Click to craft from this grid.
+specialcraftinggui.crafting_output: Crafting Output
+specialcraftinggui.matching_custom_recipes_will_appear: Matching custom recipes will
+  appear.
+specialcraftinggui.no_matching_recipe: No Matching Recipe
+specialcraftinggui.place_items_in_the_3x3: Place items in the 3x3 grid.
+specialcraftinggui.recipe_locked: Recipe Locked
+specialcraftinggui.recipe_unlocked: Recipe unlocked
+specialcraftinggui.returns_all_grid_items_to: Returns all grid items to your inventory.
+specialcraftinggui.special_crafting: Special Crafting
+totemlistener.: '!'
+totemlistener.treasure_totem: Treasure Totem
+totemlistener.you_broke_a: 'You broke a '
+totemlistener.you_placed_a: 'You placed a '
+totemmanager.treasure_totem: Treasure Totem
+treasuremanager.ancient_debris_netherite_ingot: '- Ancient Debris, Netherite Ingot'
+treasuremanager.apple_copperiron_ingot_bread: '- Apple, Copper/Iron Ingot, Bread'
+treasuremanager.artifact: '- ⭐ Artifact'
+treasuremanager.beast_scale_dread_soul: '- Beast Scale, Dread Soul'
+treasuremanager.beast_scale_ironclad_plate_ice: '- Beast Scale, Ironclad Plate, Ice
+  Wing'
+treasuremanager.blackstone_netherrack: '- Blackstone, Netherrack'
+treasuremanager.blaze_rod_ghast_tear_magma: '- Blaze Rod, Ghast Tear, Magma Cream'
+treasuremanager.click_to_view_artifact_collection: Click to view Artifact Collection!
+treasuremanager.cod_pufferfish_salmon_arrow: '- Cod, Pufferfish, Salmon, Arrow'
+treasuremanager.copper_nautilus_armor_candle: '- Copper Nautilus Armor, Candle'
+treasuremanager.corrupted_flesh_residue: '- Corrupted Flesh, Residue'
+treasuremanager.corrupted_flesh_residue_wet_bone: '- Corrupted Flesh, Residue, Wet
+  Bone'
+treasuremanager.diamond_emerald_golden_apple: '- Diamond, Emerald, Golden Apple'
+treasuremanager.diamond_nautilus_armor_enchanted_book: '- Diamond Nautilus Armor,
+  Enchanted Book'
+treasuremanager.dried_kelp_apple_wheat_stick: '- Dried Kelp, Apple, Wheat, Stick'
+treasuremanager.emerald_block_gold_block_netherite: '- Emerald Block, Gold Block,
+  Netherite Scrap'
+treasuremanager.enchanted_book_golden_apple: '- Enchanted Book, Golden Apple'
+treasuremanager.enchanted_corrupted_flesh: '- Enchanted Corrupted Flesh'
+treasuremanager.enchanted_corrupted_flesh_dread_soul: '- Enchanted Corrupted Flesh,
+  Dread Soul'
+treasuremanager.enchanted_corrupted_flesh_enchanted_wet: '- Enchanted Corrupted Flesh,
+  Enchanted Wet Bone'
+treasuremanager.enchanted_golden_apple_diamond: '- Enchanted Golden Apple, Diamond'
+treasuremanager.enchanted_golden_apple_diamond_block: '- Enchanted Golden Apple, Diamond
+  Block'
+treasuremanager.enchanted_soul_essence_beast_scale: '- Enchanted Soul Essence, Beast
+  Scale'
+treasuremanager.enchanted_soul_essence_ghast_membrane: '- Enchanted Soul Essence,
+  Ghast Membrane'
+treasuremanager.feather_cod_potato_beetroot: '- Feather, Cod, Potato, Beetroot'
+treasuremanager.ghast_tear: '- Ghast Tear'
+treasuremanager.gold_block_wither_skeleton_skull: '- Gold Block, Wither Skeleton Skull'
+treasuremanager.gold_ingot_crimson_fungus: '- Gold Ingot, Crimson Fungus'
+treasuremanager.golden_carrot_gold_ingot_arrow: '- Golden Carrot, Gold Ingot, Arrow'
+treasuremanager.golden_nautilus_armor_enchanted_book: '- Golden Nautilus Armor, Enchanted
+  Book'
+treasuremanager.guardian_scale_spider_silk_battle: '- Guardian Scale, Spider Silk,
+  Battle Scrap'
+treasuremanager.heart_of_the_sea_sniffer: '- Heart of the Sea, Sniffer Egg'
+treasuremanager.ice_wing_dread_soul_battle: '- Ice Wing, Dread Soul, Battle Scrap'
+treasuremanager.ice_wing_shark_tooth_dread: '- Ice Wing, Shark Tooth, Dread Soul'
+treasuremanager.iron_nautilus_armor_pottery_sherd: '- Iron Nautilus Armor, Pottery
+  Sherd'
+treasuremanager.ironclad_plate_battle_scrap: '- Ironclad Plate, Battle Scrap'
+treasuremanager.magma_block_ghast_tear: '- Magma Block, Ghast Tear'
+treasuremanager.melon_gunpowder_nautilus_shell: '- Melon, Gunpowder, Nautilus Shell'
+treasuremanager.nether_star_netherite_ingot: '- Nether Star, Netherite Ingot'
+treasuremanager.netherite_ingot_ancient_debris: '- Netherite Ingot, Ancient Debris'
+treasuremanager.netherite_nautilus_armor_trident: '- Netherite Nautilus Armor, Trident'
+treasuremanager.netherite_scrap: '- Netherite Scrap'
+treasuremanager.netherite_scrap_ancient_debris: '- Netherite Scrap, Ancient Debris'
+treasuremanager.netherite_scrap_wither_skeleton_skull: '- Netherite Scrap, Wither
+  Skeleton Skull'
+treasuremanager.netherite_upgrade_smithing_template: '- Netherite Upgrade Smithing
+  Template'
+treasuremanager.possible_loot: 'Possible Loot:'
+treasuremanager.quartz_magma_cream_soul_sand: '- Quartz, Magma Cream, Soul Sand'
+treasuremanager.redstone_lapis_lazuli_gunpowder: '- Redstone, Lapis Lazuli, Gunpowder'
+treasuremanager.rotten_flesh_bone_gold_nugget: '- Rotten Flesh, Bone, Gold Nugget'
+treasuremanager.salmon_gunpowder_copper_ingot: '- Salmon, Gunpowder, Copper Ingot'
+treasuremanager.slimy_chunk_polar_fur_ravager: '- Slimy Chunk, Polar Fur, Ravager
+  Scales'
+treasuremanager.slimy_chunk_ravager_scales_battle: '- Slimy Chunk, Ravager Scales,
+  Battle Scrap'
+treasuremanager.spider_silk_hyena_fur_battle: '- Spider Silk, Hyena Fur, Battle Scrap'
+treasuremanager.tide_armor_trim_ominous_bottle: '- Tide Armor Trim, Ominous Bottle'
+treasuremanager.volcanic_core_cinder_sigil: '- Volcanic Core, Cinder Sigil'
+treasuremanager.warped_fungus_blaze_powder: '- Warped Fungus, Blaze Powder'
+treasuremanager.wither_skeleton_skull_beast_scale: '- Wither Skeleton Skull, Beast
+  Scale'
+treasuremanager.wither_skeleton_skull_blaze_rod: '- Wither Skeleton Skull, Blaze Rod'
+xpsourcesgui.biomespecific: ' (Biome-specific)'
+xpsourcesgui.spawn_chance: 'Spawn Chance: '
+xpsourcesgui.xp: 'XP: '

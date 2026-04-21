@@ -91,7 +91,7 @@ public class RecipeDefinition {
             if (!lore.isEmpty()) {
                 lore.add(Component.empty());
             }
-            lore.add(Component.text("Any of:")
+            lore.add(com.fishrework.FishRework.getInstance().getLanguageManager().getMessage("recipedefinition.any_of", "Any of:")
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
             for (IngredientOption option : options) {

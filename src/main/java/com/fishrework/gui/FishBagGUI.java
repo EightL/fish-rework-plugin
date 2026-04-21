@@ -67,14 +67,14 @@ public class FishBagGUI extends BaseGUI {
 
         ItemStack sellAll = new ItemStack(Material.GOLD_INGOT);
         ItemMeta saMeta = sellAll.getItemMeta();
-        saMeta.displayName(Component.text("Sell All").color(NamedTextColor.GOLD)
+        saMeta.displayName(plugin.getLanguageManager().getMessage("fishbaggui.sell_all", "Sell All").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         saMeta.lore(List.of(
                 Component.empty(),
                 Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Click to sell all bag contents!").color(NamedTextColor.YELLOW)
+                plugin.getLanguageManager().getMessage("fishbaggui.click_to_sell_all_bag", "Click to sell all bag contents!").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         sellAll.setItemMeta(saMeta);
@@ -135,7 +135,7 @@ public class FishBagGUI extends BaseGUI {
             // Placing item into bag — validate
             if (!BagUtils.isAllowedInFishBag(plugin, cursorItem)) {
                 event.setCancelled(true);
-                player.sendMessage(Component.text("Only fish and custom materials can go in the Fish Bag!")
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishbaggui.only_fish_and_custom_materials", "Only fish and custom materials can go in the Fish Bag!")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             }
@@ -146,7 +146,7 @@ public class FishBagGUI extends BaseGUI {
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem != null && !BagUtils.isAllowedInFishBag(plugin, clickedItem)) {
                 event.setCancelled(true);
-                player.sendMessage(Component.text("Only fish and custom materials can go in the Fish Bag!")
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishbaggui.only_fish_and_custom_materials", "Only fish and custom materials can go in the Fish Bag!")
                         .color(NamedTextColor.RED));
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             }

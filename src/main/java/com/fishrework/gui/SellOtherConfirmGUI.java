@@ -44,7 +44,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
 
         ItemStack info = new ItemStack(Material.DRIED_KELP);
         ItemMeta infoMeta = info.getItemMeta();
-        infoMeta.displayName(Component.text("Sell Other Summary").color(NamedTextColor.GOLD)
+        infoMeta.displayName(plugin.getLanguageManager().getMessage("sellotherconfirmgui.sell_other_summary", "Sell Other Summary").color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         infoMeta.lore(List.of(
                 Component.empty(),
@@ -58,11 +58,11 @@ public class SellOtherConfirmGUI extends BaseGUI {
 
         ItemStack confirm = new ItemStack(Material.LIME_WOOL);
         ItemMeta confirmMeta = confirm.getItemMeta();
-        confirmMeta.displayName(Component.text("Confirm").color(NamedTextColor.GREEN)
+        confirmMeta.displayName(plugin.getLanguageManager().getMessage("sellotherconfirmgui.confirm", "Confirm").color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         confirmMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Sell all Other items").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("sellotherconfirmgui.sell_all_other_items", "Sell all Other items").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         confirm.setItemMeta(confirmMeta);
@@ -70,11 +70,11 @@ public class SellOtherConfirmGUI extends BaseGUI {
 
         ItemStack cancel = new ItemStack(Material.RED_WOOL);
         ItemMeta cancelMeta = cancel.getItemMeta();
-        cancelMeta.displayName(Component.text("Cancel").color(NamedTextColor.RED)
+        cancelMeta.displayName(plugin.getLanguageManager().getMessage("sellotherconfirmgui.cancel", "Cancel").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         cancelMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Return to Fish Vendor").color(NamedTextColor.GRAY)
+                plugin.getLanguageManager().getMessage("sellotherconfirmgui.return_to_fish_vendor", "Return to Fish Vendor").color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
         cancel.setItemMeta(cancelMeta);
@@ -112,7 +112,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
         }
 
         if (soldItems <= 0) {
-            player.sendMessage(Component.text("You don't have any Other items to sell.")
+            player.sendMessage(plugin.getLanguageManager().getMessage("sellotherconfirmgui.you_dont_have_any_other", "You don't have any Other items to sell.")
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
