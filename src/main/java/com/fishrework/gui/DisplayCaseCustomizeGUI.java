@@ -55,7 +55,7 @@ public class DisplayCaseCustomizeGUI extends BaseGUI {
     );
 
     public DisplayCaseCustomizeGUI(FishRework plugin, Player player, Block block) {
-        super(plugin, 6, "Customize Display Case");
+        super(plugin, 6, localizedTitle(plugin, "displaycasecustomizegui.title", "Customize Display Case"));
         this.player = player;
         this.displayCaseBlock = block;
         this.manager = plugin.getDisplayCaseManager();

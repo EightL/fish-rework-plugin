@@ -67,7 +67,7 @@ public class TotemListener implements Listener {
 
         player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_placed_a", "You placed a ").color(NamedTextColor.GRAY)
                 .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
-                .append(plugin.getLanguageManager().getMessage("totemlistener.", "!").color(NamedTextColor.GRAY)));
+            .append(plugin.getLanguageManager().getMessage("totemlistener.exclamation", "!").color(NamedTextColor.GRAY)));
     }
 
     // ── Breaking (Interaction entity click) ───────────────────
@@ -105,7 +105,7 @@ public class TotemListener implements Listener {
         plugin.getTotemManager().breakTotem(interactionEntity.getUniqueId(), player);
         player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_broke_a", "You broke a ").color(NamedTextColor.GRAY)
                 .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
-                .append(plugin.getLanguageManager().getMessage("totemlistener.", "!").color(NamedTextColor.GRAY)));
+            .append(plugin.getLanguageManager().getMessage("totemlistener.exclamation", "!").color(NamedTextColor.GRAY)));
     }
 
     // ── Chunk Persistence ─────────────────────────────────────

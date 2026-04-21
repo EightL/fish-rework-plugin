@@ -71,7 +71,7 @@ public class BiomeSelectionGui extends BaseGUI {
             com.fishrework.model.CustomMob.MobCategory typeFilter,
             CollectionGui.BiomeDimension biomeDimension
     ) {
-        super(plugin, 6, "Select Biome Filter"); // 6 rows to fit all biomes comfortably
+        super(plugin, 6, localizedTitle(plugin, "biomeselectiongui.title", "Select Biome Filter")); // 6 rows to fit all biomes comfortably
         this.player = player;
         this.currentFilter = currentFilter;
         this.sort = sort;

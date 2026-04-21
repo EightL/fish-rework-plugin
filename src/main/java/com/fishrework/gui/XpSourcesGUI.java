@@ -41,7 +41,7 @@ public class XpSourcesGUI extends BaseGUI {
     }
 
     public XpSourcesGUI(FishRework plugin, Player player, int page) {
-        super(plugin, 6, "XP Sources: Fishing");
+        super(plugin, 6, localizedTitle(plugin, "xpsourcesgui.title", "XP Sources: Fishing"));
         this.player = player;
         this.page = page;
         initializeItems();
@@ -107,7 +107,7 @@ public class XpSourcesGUI extends BaseGUI {
 
             ItemStack item = new ItemStack(mob.getCollectionIcon());
             ItemMeta meta = item.getItemMeta();
-            meta.displayName(Component.text("Fished " + mob.getDisplayName()).color(NamedTextColor.GREEN)
+            meta.displayName(Component.text("Fished " + mob.getLocalizedDisplayName(plugin.getLanguageManager())).color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
             List<Component> lore = new ArrayList<>();
             lore.add(xpComp);

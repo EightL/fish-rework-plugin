@@ -49,7 +49,7 @@ public class SpecialCraftingGUI extends BaseGUI {
     }
 
     public SpecialCraftingGUI(FishRework plugin, Player player, Consumer<Player> backAction) {
-        super(plugin, 6, "Special Crafting");
+        super(plugin, 6, localizedTitle(plugin, "specialcraftinggui.title", "Special Crafting"));
         this.player = player;
         this.backAction = backAction;
         initializeItems();

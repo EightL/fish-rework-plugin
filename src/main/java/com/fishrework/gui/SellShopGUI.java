@@ -76,7 +76,7 @@ public class SellShopGUI extends BaseGUI {
     private long lastResultClick = 0;
 
     public SellShopGUI(FishRework plugin, Player player) {
-        super(plugin, 6, "Fish Vendor");
+        super(plugin, 6, localizedTitle(plugin, "sellshopgui.title", "Fish Vendor"));
         this.player = player;
         rebuildCustomUnlockMap();
         buildSellEntries();

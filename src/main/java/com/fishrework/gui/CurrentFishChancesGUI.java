@@ -39,7 +39,7 @@ public class CurrentFishChancesGUI extends BaseGUI {
     }
 
     private CurrentFishChancesGUI(FishRework plugin, Player player, int returnSkillDetailPage, int page) {
-        super(plugin, 6, "Current Fish Chances");
+        super(plugin, 6, localizedTitle(plugin, "currentfishchancesgui.title", "Current Fish Chances"));
         this.player = player;
         this.returnSkillDetailPage = Math.max(0, returnSkillDetailPage);
         this.page = Math.max(0, page);

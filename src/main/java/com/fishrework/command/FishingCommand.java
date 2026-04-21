@@ -21,6 +21,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerCommand(this::handleNotifications, "notifications");
         registerCommand(this::handleSettings, "settings");
         registerCommand(this::handleXpMultiplier, "xpmultiplier");
+        registerCommand(this::handleLocale, "locale", "language");
         registerCommand(this::handleReload, "reload");
         registerCommand(this::handleHelp, "help");
         registerCommand(this::handleDamageIndicator, "dmgindicator");
@@ -130,7 +132,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleEncyclopedia(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.ENCYCLOPEDIA_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.ENCYCLOPEDIA_ENABLED,
+                "fishingcommand.feature_fishing_encyclopedia_disabled",
                 "The Fishing Encyclopedia is disabled on this server.")) {
             return true;
         }
@@ -139,7 +143,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleArtifacts(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.ARTIFACT_COLLECTION_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.ARTIFACT_COLLECTION_ENABLED,
+                "fishingcommand.feature_artifact_collection_disabled",
                 "Artifact collection is disabled on this server.")) {
             return true;
         }
@@ -148,7 +154,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleLeaderboard(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.LEADERBOARD_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.LEADERBOARD_ENABLED,
+                "fishingcommand.feature_leaderboard_disabled",
                 "The leaderboard is disabled on this server.")) {
             return true;
         }
@@ -157,7 +165,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleShop(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.SHOP_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.SHOP_ENABLED,
+                "fishingcommand.feature_shop_disabled",
                 "The shop is disabled on this server.")) {
             return true;
         }
@@ -166,7 +176,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleBag(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.FISH_BAG_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.FISH_BAG_ENABLED,
+                "fishingcommand.feature_fish_bag_disabled",
                 "Fish Bags are disabled on this server.")) {
             return true;
         }
@@ -175,7 +187,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleRecipe(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.RECIPE_BROWSER_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.RECIPE_BROWSER_ENABLED,
+                "fishingcommand.feature_recipe_browser_disabled",
                 "The recipe browser is disabled on this server.")) {
             return true;
         }
@@ -184,15 +198,21 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleBalance(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.ECONOMY_ENABLED,
+        if (!requireFeature(player,
+                FeatureKeys.ECONOMY_ENABLED,
+                "fishingcommand.feature_economy_disabled",
                 "The economy system is disabled on this server.")) {
             return true;
         }
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         double balance = data != null ? data.getBalance() : 0;
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        player.sendMessage(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
-                .color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.status_balance",
+                "Balance: %balance% %currency%",
+                "balance", com.fishrework.util.FormatUtil.format("%.0f", balance),
+                "currency", currencyName
+        ).color(NamedTextColor.GOLD));
         return true;
     }
 
@@ -218,8 +238,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleAutoSell(Player player, String[] args) {
-        if (!requireFeature(player, FeatureKeys.AUTO_SELL_ENABLED,
-                "Auto-sell is disabled on this server.")) {
+        if (!requireFeature(player,
+            FeatureKeys.AUTO_SELL_ENABLED,
+            "fishingcommand.feature_autosell_disabled",
+            "Auto-sell is disabled on this server.")) {
             return true;
         }
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
@@ -227,8 +249,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             boolean newState = !data.getSession().isAutoSellEnabled();
             data.getSession().setAutoSellEnabled(newState);
             plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell", String.valueOf(newState));
-            player.sendMessage(Component.text("Auto-sell is now " + (newState ? "ENABLED" : "DISABLED") + "!")
-                    .color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.status_autosell_now",
+                "Auto-sell is now %state%!",
+                "state", newState ? "ENABLED" : "DISABLED"
+            ).color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
             if (newState) {
                 player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.common_fish_will_be_automatically", "Common fish will be automatically sold for Doubloons.")
                         .color(NamedTextColor.GRAY));
@@ -257,8 +282,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
         data.setFishingTipsEnabled(enabled);
         plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "tips_notifications", String.valueOf(enabled));
-        player.sendMessage(Component.text("Fishing tip notifications are now " + (enabled ? "ENABLED" : "DISABLED") + ".")
-                .color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.status_notifications_now",
+            "Fishing tip notifications are now %state%.",
+            "state", enabled ? "ENABLED" : "DISABLED"
+        ).color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
         return true;
     }
 
@@ -272,8 +300,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     private boolean handleXpMultiplier(Player player, String[] args) {
         if (args.length == 1) {
             double current = plugin.getConfig().getDouble("general.xp_multiplier", 1.0);
-            player.sendMessage(Component.text("Global XP multiplier: x" + com.fishrework.util.FormatUtil.format("%.2f", current))
-                    .color(NamedTextColor.AQUA));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.status_xpmultiplier_current",
+                "Global XP multiplier: x%value%",
+                "value", com.fishrework.util.FormatUtil.format("%.2f", current)
+            ).color(NamedTextColor.AQUA));
             return true;
         }
 
@@ -285,19 +316,64 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             double requested = Double.parseDouble(args[1]);
             double maxMultiplier = plugin.getConfig().getDouble("general.xp_multiplier_max", 100.0);
             if (requested < 0.0 || requested > maxMultiplier) {
-                player.sendMessage(Component.text("Multiplier must be between 0.0 and " + com.fishrework.util.FormatUtil.format("%.1f", maxMultiplier) + ".")
-                        .color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.status_xpmultiplier_range",
+                    "Multiplier must be between 0.0 and %max%.",
+                    "max", com.fishrework.util.FormatUtil.format("%.1f", maxMultiplier)
+                ).color(NamedTextColor.RED));
                 return true;
             }
 
             plugin.getConfig().set("general.xp_multiplier", requested);
             plugin.saveConfig();
 
-            player.sendMessage(Component.text("Set global XP multiplier to x" + com.fishrework.util.FormatUtil.format("%.2f", requested))
-                    .color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.status_xpmultiplier_set",
+                    "Set global XP multiplier to x%value%",
+                    "value", com.fishrework.util.FormatUtil.format("%.2f", requested)
+            ).color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_xpmultiplier_value", "Usage: /fishing xpmultiplier [value]").color(NamedTextColor.RED));
         }
+        return true;
+    }
+
+    private boolean handleLocale(Player player, String[] args) {
+        if (!checkAdmin(player)) {
+            return true;
+        }
+
+        if (args.length < 2) {
+            String current = plugin.getConfig().getString("locale", "en");
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.locale_usage",
+                    "Usage: /fishing locale <code> (current: %locale%)",
+                    "locale", current
+            ).color(NamedTextColor.YELLOW));
+            return true;
+        }
+
+        String locale = args[1].toLowerCase();
+        String fileName = "lang_" + locale + ".yml";
+        File externalFile = new File(plugin.getDataFolder(), fileName);
+        boolean bundled = plugin.getResource(fileName) != null;
+        if (!externalFile.exists() && !bundled) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.locale_not_found",
+                    "Language file not found: %file%",
+                    "file", fileName
+            ).color(NamedTextColor.RED));
+            return true;
+        }
+
+        plugin.getConfig().set("locale", locale);
+        plugin.saveConfig();
+        plugin.reload();
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.locale_updated",
+                "Language updated to %locale%.",
+                "locale", locale
+        ).color(NamedTextColor.GREEN));
         return true;
     }
 
@@ -325,8 +401,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         data.setDamageIndicatorsEnabled(enabled);
         plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "dmg_indicator", String.valueOf(enabled));
-        player.sendMessage(Component.text("Damage indicators are now " + (enabled ? "enabled" : "disabled") + ".")
-                .color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.status_damage_indicators_now",
+            "Damage indicators are now %state%.",
+            "state", enabled ? "enabled" : "disabled"
+        ).color(enabled ? NamedTextColor.GREEN : NamedTextColor.RED));
         return true;
     }
 
@@ -431,6 +510,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_fishing_tip_notifications", " - Toggle fishing tip notifications").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier [value]").color(NamedTextColor.YELLOW)
             .append(plugin.getLanguageManager().getMessage("fishingcommand.viewset_global_xp_multiplier", " - View/set global XP multiplier").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_locale_code", "/fishing locale <code>").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.change_plugin_language", " - Change plugin language").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_dmgindicator_onoff", "/fishing dmgindicator <on|off>").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_damage_indicators", " - Toggle damage indicators").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_particles_highmediumlow", "/fishing particles [high|medium|low]").color(NamedTextColor.YELLOW)
@@ -470,6 +551,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_doubloons_balance", " - Set doubloons balance").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_global_xp_multiplier", " - Set global XP multiplier").color(NamedTextColor.GRAY)));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_locale_code", "/fishing locale <code>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_plugin_language", " - Set plugin language").color(NamedTextColor.GRAY)));
 
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_reload", "/fishing reload").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.reload_configyml_without_restart", " - Reload config.yml without restart").color(NamedTextColor.GRAY)));
@@ -500,8 +583,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             case LOW -> NamedTextColor.RED;
         };
 
-        player.sendMessage(Component.text("Sea creature particles set to " + mode.getId().toUpperCase() + ".")
-                .color(color));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.status_particles_set",
+            "Sea creature particles set to %mode%.",
+            "mode", mode.getId().toUpperCase()
+        ).color(color));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.use_fs_particles_highmediumlow_to", "Use /fs particles <high|medium|low> to change this later.")
                 .color(NamedTextColor.GRAY));
         return true;
@@ -522,7 +608,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 .append(Component.text(String.valueOf(session.getTreasuresFound())).color(NamedTextColor.GOLD)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.xp_earned", "  XP Earned: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getXpEarned())).color(NamedTextColor.AQUA)));
-        player.sendMessage(Component.text("  " + currencyName + " Earned: ").color(NamedTextColor.GRAY)
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.currency_earned",
+            "  %currency% Earned: ",
+            "currency", currencyName
+        ).color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.0f", session.getDoubloonsEarned())).color(NamedTextColor.GREEN)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.levels_gained", "  Levels Gained: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getLevelsGained())).color(NamedTextColor.YELLOW)));
@@ -541,7 +631,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.autosell", "  Auto-Sell: ").color(NamedTextColor.GRAY)
                 .append(Component.text(session.isAutoSellEnabled() ? "ON" : "OFF")
                         .color(session.isAutoSellEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED)));
-        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.", "----------------------------").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.separator", "----------------------------").color(NamedTextColor.GOLD));
     }
 
     private void openRecipeGuide(Player player, String[] args) {
@@ -550,7 +640,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if (args.length >= 2) {
             recipes = plugin.getRecipeRegistry().getRecipesForResultId(args[1].toLowerCase());
             if (recipes.isEmpty()) {
-                player.sendMessage(Component.text("No recipe GUI found for '" + args[1] + "'.").color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "fishingcommand.recipe_not_found_for",
+                        "No recipe GUI found for '%item%'.",
+                        "item", args[1]
+                ).color(NamedTextColor.RED));
                 return;
             }
         } else {
@@ -588,9 +682,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 data.getSession().addDoubloonsEarned(totalEarnings);
                 plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
             }
-            player.sendMessage(Component.text("Sold " + totalItems + " items for "
-                    + com.fishrework.util.FormatUtil.format("%.0f", totalEarnings) + " " + currencyName + "!")
-                    .color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.sold_items_for_currency",
+                    "Sold %count% items for %amount% %currency%!",
+                    "count", String.valueOf(totalItems),
+                    "amount", com.fishrework.util.FormatUtil.format("%.0f", totalEarnings),
+                    "currency", currencyName
+            ).color(NamedTextColor.GREEN));
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
         } else {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_dont_have_anything_to", "You don't have anything to sell!")
@@ -606,11 +704,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         return true;
     }
 
-    private boolean requireFeature(Player player, String featureKey, String disabledMessage) {
+    private boolean requireFeature(Player player, String featureKey, String disabledMessageKey, String disabledMessageFallback) {
         if (plugin.isFeatureEnabled(featureKey)) {
             return true;
         }
-        player.sendMessage(Component.text(disabledMessage).color(NamedTextColor.RED));
+        player.sendMessage(plugin.getLanguageManager().getMessage(disabledMessageKey, disabledMessageFallback).color(NamedTextColor.RED));
         return false;
     }
 
@@ -633,7 +731,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             }
 
             boolean levelUp = plugin.getSkillManager().grantRawXp(target, skill, amount);
-            player.sendMessage(Component.text("Added " + amount + " XP to " + target.getName()).color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.added_xp_to_player",
+                    "Added %amount% XP to %player%",
+                    "amount", com.fishrework.util.FormatUtil.format("%.0f", amount),
+                    "player", target.getName()
+            ).color(NamedTextColor.GREEN));
             if (levelUp) target.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_leveled_up_from_admin", "You leveled up from admin command!").color(NamedTextColor.GOLD));
         } catch (NumberFormatException e) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
@@ -653,7 +756,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             int level = Integer.parseInt(args[2]);
 
             if (level < 0 || level > plugin.getLevelManager().getMaxLevel()) {
-                player.sendMessage(Component.text("Level must be 0-" + plugin.getLevelManager().getMaxLevel()).color(NamedTextColor.RED));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "fishingcommand.level_must_be_between_0_max",
+                        "Level must be 0-%max%",
+                        "max", String.valueOf(plugin.getLevelManager().getMaxLevel())
+                ).color(NamedTextColor.RED));
                 return;
             }
 
@@ -661,8 +768,19 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             data.setLevel(skill, level);
             data.setXp(skill, 0); // Per-level XP: reset to 0 at the new level
 
-            player.sendMessage(Component.text("Set " + target.getName() + "'s " + skill.name() + " to level " + level).color(NamedTextColor.GREEN));
-            target.sendMessage(Component.text("Your " + skill.name() + " level was set to " + level).color(NamedTextColor.GOLD));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.set_player_skill_level",
+                    "Set %player%'s %skill% to level %level%",
+                    "player", target.getName(),
+                    "skill", skill.name(),
+                    "level", String.valueOf(level)
+                ).color(NamedTextColor.GREEN));
+                target.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.your_skill_level_set",
+                    "Your %skill% level was set to %level%",
+                    "skill", skill.name(),
+                    "level", String.valueOf(level)
+                ).color(NamedTextColor.GOLD));
 
             plugin.getAdvancementManager().syncAdvancements(target, level);
         } catch (NumberFormatException e) {
@@ -689,7 +807,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 double oldChance = plugin.getConfig().getDouble("artifacts.chance", 3.0);
                 plugin.getConfig().set("artifacts.chance", chance);
                 plugin.saveConfig();
-                player.sendMessage(Component.text("Updated artifact chance: " + oldChance + "% -> " + chance + "%").color(NamedTextColor.GREEN));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "fishingcommand.updated_artifact_chance",
+                        "Updated artifact chance: %old%% -> %new%%",
+                        "old", com.fishrework.util.FormatUtil.format("%.1f", oldChance),
+                        "new", com.fishrework.util.FormatUtil.format("%.1f", chance)
+                ).color(NamedTextColor.GREEN));
             } catch (NumberFormatException e) {
                 player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
             }
@@ -700,7 +823,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         known.add("land_mob_bonus");
         
         if (!known.contains(target)) {
-            player.sendMessage(Component.text("Unknown mob. Available: " + String.join(", ", known)).color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.unknown_mob_available_list",
+                    "Unknown mob. Available: %mobs%",
+                    "mobs", String.join(", ", known)
+            ).color(NamedTextColor.RED));
             return;
         }
 
@@ -713,7 +840,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             double oldChance = plugin.getMobManager().getMobChance(target, -1);
             
             plugin.getMobManager().setMobChance(target, chance);
-            player.sendMessage(Component.text("Updated " + target + " chance: " + oldChance + "% -> " + chance + "%").color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.updated_mob_chance",
+                    "Updated %mob% chance: %old%% -> %new%%",
+                    "mob", target,
+                    "old", com.fishrework.util.FormatUtil.format("%.1f", oldChance),
+                    "new", com.fishrework.util.FormatUtil.format("%.1f", chance)
+            ).color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
         }
@@ -737,7 +870,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         plugin.getRecipeRegistry().syncRecipes(target);
         target.closeInventory();
 
-        player.sendMessage(Component.text("Reset all data for " + target.getName()).color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.reset_all_data_for_player",
+            "Reset all data for %player%",
+            "player", target.getName()
+        ).color(NamedTextColor.GREEN));
         target.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.your_skills_and_collection_have", "Your skills and collection have been reset.").color(NamedTextColor.RED));
     }
 
@@ -785,7 +922,16 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             remaining -= amount;
         }
 
-        player.sendMessage(Component.text("Gave " + count + "x " + itemName + " to " + target.getName()).color(NamedTextColor.GREEN));
+        String displayItemName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ?
+                net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName()) : itemName;
+
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.gave_item_to_player",
+                "Gave %count%x %item% to %player%",
+                "count", String.valueOf(count),
+                "item", displayItemName,
+                "player", target.getName()
+        ).color(NamedTextColor.GREEN));
     }
 
     private void adminSpawn(Player player, String[] args) {
@@ -802,12 +948,20 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         if (mob.isTreasure()) {
-            player.sendMessage(Component.text("Treasure chests cannot be spawned. Use /fishing give <player> treasure_chest_" + mobId.replace("treasure_", "") + " instead.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.treasure_chest_spawn_denied",
+                    "Treasure chests cannot be spawned. Use /fishing give <player> treasure_chest_%id% instead.",
+                    "id", mobId.replace("treasure_", "")
+            ).color(NamedTextColor.RED));
             return;
         }
 
         plugin.getMobManager().spawnMob(player.getLocation(), mobId);
-        player.sendMessage(Component.text("Spawned " + mobId).color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.spawned_mob",
+                "Spawned %mob%",
+                "mob", mob.getLocalizedDisplayName(plugin.getLanguageManager())
+        ).color(NamedTextColor.GREEN));
     }
 
 
@@ -833,7 +987,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         java.util.Map<String, Double> rawWeights = snapshot.rawWeights();
 
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_spawn_chances", "--- Fishing Spawn Chances ---").color(NamedTextColor.GOLD));
-        player.sendMessage(Component.text("Biome: " + snapshot.biomeGroup().name()).color(NamedTextColor.GRAY));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.chances_biome",
+            "Biome: %biome%",
+            "biome", snapshot.biomeGroup().name()
+        ).color(NamedTextColor.GRAY));
 
         if (snapshot.activeBaitId() != null && !snapshot.baitAppliesToContext()) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.held_bait_is_inactive_in", "Held bait is inactive in this dimension.")
@@ -841,13 +999,19 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         if (snapshot.baitRareCreatureBonus() > 0 || snapshot.baitTreasureBonus() > 0) {
-            player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Active Bait Bonus: +%.1f%% Rare, +%.1f%% Treasure",
-                    snapshot.baitRareCreatureBonus(), snapshot.baitTreasureBonus()))
-                .color(NamedTextColor.AQUA));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.chances_active_bait_bonus",
+                "Active Bait Bonus: +%rare%% Rare, +%treasure%% Treasure",
+                "rare", com.fishrework.util.FormatUtil.format("%.1f", snapshot.baitRareCreatureBonus()),
+                "treasure", com.fishrework.util.FormatUtil.format("%.1f", snapshot.baitTreasureBonus())
+            ).color(NamedTextColor.AQUA));
         }
         if (!snapshot.baitTargetMobIds().isEmpty()) {
-            player.sendMessage(Component.text("Biome Bait Targets: " + String.join(", ", snapshot.baitTargetMobIds()))
-                .color(NamedTextColor.AQUA));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.chances_biome_bait_targets",
+                "Biome Bait Targets: %targets%",
+                "targets", String.join(", ", snapshot.baitTargetMobIds())
+            ).color(NamedTextColor.AQUA));
         }
 
         // Sort by chance descending
@@ -906,7 +1070,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     plugin.getDatabaseManager().updateCollection(target.getUniqueId(), mobId, 1.0);
                 }
             }
-            player.sendMessage(Component.text("Unlocked all creatures for " + target.getName()).color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.unlocked_all_creatures_for_player",
+                    "Unlocked all creatures for %player%",
+                    "player", target.getName()
+            ).color(NamedTextColor.GREEN));
         }
 
         if (doArtifacts) {
@@ -916,7 +1084,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     plugin.getDatabaseManager().saveArtifact(target.getUniqueId(), artId);
                 }
             }
-            player.sendMessage(Component.text("Unlocked all artifacts for " + target.getName()).color(NamedTextColor.GREEN));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.unlocked_all_artifacts_for_player",
+                    "Unlocked all artifacts for %player%",
+                    "player", target.getName()
+            ).color(NamedTextColor.GREEN));
         }
         
         // Sync to trigger advancements
@@ -945,7 +1117,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         long magmaFilterRemaining = heatManager.getMagmaFilterRemainingSeconds(target);
         double totalHeatResist = equipmentHeatResist + tempHeatResist;
 
-        player.sendMessage(Component.text("--- Heat Debug (" + target.getName() + ") ---").color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.heat_debug_header",
+            "--- Heat Debug (%player%) ---",
+            "player", target.getName()
+        ).color(NamedTextColor.GOLD));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.current_heat", "Current Heat: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f / 100.0", data.getHeat())).color(NamedTextColor.RED)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.heat_tier", "Heat Tier: ").color(NamedTextColor.GRAY)
@@ -954,7 +1130,13 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", equipmentHeatResist)).color(NamedTextColor.AQUA)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.magma_filter_resist", "Magma Filter Resist: ").color(NamedTextColor.GRAY)
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", tempHeatResist)).color(NamedTextColor.AQUA))
-            .append(Component.text(magmaFilterRemaining > 0 ? " (" + magmaFilterRemaining + "s left)" : " (inactive)")
+            .append(plugin.getLanguageManager().getMessage(
+                magmaFilterRemaining > 0
+                    ? "fishingcommand.magma_filter_time_left"
+                    : "fishingcommand.magma_filter_inactive",
+                magmaFilterRemaining > 0 ? " (%seconds%s left)" : " (inactive)",
+                "seconds", String.valueOf(magmaFilterRemaining)
+            )
                 .color(magmaFilterRemaining > 0 ? NamedTextColor.YELLOW : NamedTextColor.DARK_GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.total_heat_resist", "Total Heat Resist: ").color(NamedTextColor.GRAY)
             .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", totalHeatResist)).color(NamedTextColor.GREEN)));
@@ -990,15 +1172,27 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             plugin.getHeatManager().showHeatGauge(target, clampedHeat);
 
             if (requestedHeat != clampedHeat) {
-                player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Set %s's heat to %.1f (clamped from %.1f)", target.getName(), clampedHeat, requestedHeat))
-                        .color(NamedTextColor.YELLOW));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.set_player_heat_clamped",
+                    "Set %player%'s heat to %value% (clamped from %requested%)",
+                    "player", target.getName(),
+                    "value", com.fishrework.util.FormatUtil.format("%.1f", clampedHeat),
+                    "requested", com.fishrework.util.FormatUtil.format("%.1f", requestedHeat)
+                ).color(NamedTextColor.YELLOW));
             } else {
-                player.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Set %s's heat to %.1f", target.getName(), clampedHeat))
-                        .color(NamedTextColor.GREEN));
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.set_player_heat",
+                    "Set %player%'s heat to %value%",
+                    "player", target.getName(),
+                    "value", com.fishrework.util.FormatUtil.format("%.1f", clampedHeat)
+                ).color(NamedTextColor.GREEN));
             }
 
-            target.sendMessage(Component.text(com.fishrework.util.FormatUtil.format("Your lava heat was set to %.1f by an admin.", clampedHeat))
-                    .color(NamedTextColor.GOLD));
+                target.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.your_heat_set_by_admin",
+                    "Your lava heat was set to %value% by an admin.",
+                    "value", com.fishrework.util.FormatUtil.format("%.1f", clampedHeat)
+                ).color(NamedTextColor.GOLD));
         } catch (NumberFormatException e) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_heat_amount_use_a", "Invalid heat amount. Use a number from 0 to 100.").color(NamedTextColor.RED));
         }
@@ -1039,10 +1233,19 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         plugin.getDatabaseManager().saveBalance(target.getUniqueId(), amount);
 
         String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        player.sendMessage(Component.text("Set " + target.getName() + "'s balance to " + com.fishrework.util.FormatUtil.format("%.0f", amount) + " " + currencyName + ".")
-                .color(NamedTextColor.GREEN));
-        target.sendMessage(Component.text("Your balance was set to " + com.fishrework.util.FormatUtil.format("%.0f", amount) + " " + currencyName + " by an admin.")
-                .color(NamedTextColor.GOLD));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.set_player_balance",
+            "Set %player%'s balance to %amount% %currency%.",
+            "player", target.getName(),
+            "amount", com.fishrework.util.FormatUtil.format("%.0f", amount),
+            "currency", currencyName
+        ).color(NamedTextColor.GREEN));
+        target.sendMessage(plugin.getLanguageManager().getMessage(
+            "fishingcommand.your_balance_set_by_admin",
+            "Your balance was set to %amount% %currency% by an admin.",
+            "amount", com.fishrework.util.FormatUtil.format("%.0f", amount),
+            "currency", currencyName
+        ).color(NamedTextColor.GOLD));
     }
 
     @Override
@@ -1074,6 +1277,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("notifications");
             completions.add("particles");
             completions.add("xpmultiplier");
+            completions.add("locale");
             completions.add("help");
             completions.addAll(List.of("chances", "heat", "dmgindicator"));
             if (isAdmin) {
@@ -1091,6 +1295,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             } else if (args[0].equalsIgnoreCase("xpmultiplier")) {
                 if (isAdmin) {
                     completions.addAll(List.of("0.5", "1.0", "1.5", "2.0"));
+                }
+            } else if (args[0].equalsIgnoreCase("locale") || args[0].equalsIgnoreCase("language")) {
+                if (isAdmin) {
+                    completions.addAll(List.of("en", "es"));
                 }
             } else if (isAdmin) {
                 if (args[0].equalsIgnoreCase("setchance")) {

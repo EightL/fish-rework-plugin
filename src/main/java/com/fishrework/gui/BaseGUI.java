@@ -21,6 +21,11 @@ public abstract class BaseGUI implements InventoryHolder {
     protected final FishRework plugin;
     protected final Inventory inventory;
 
+    /** Helper: resolve a GUI title via LanguageManager before passing to super(). */
+    protected static String localizedTitle(FishRework plugin, String key, String fallback) {
+        return plugin.getLanguageManager().getString(key, fallback);
+    }
+
     public BaseGUI(FishRework plugin, int rows, String title) {
         this.plugin = plugin;
         this.inventory = Bukkit.createInventory(this, rows * 9, Component.text(title));

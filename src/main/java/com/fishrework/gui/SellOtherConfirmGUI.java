@@ -21,7 +21,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
     private final double totalValue;
 
     public SellOtherConfirmGUI(FishRework plugin, Player player) {
-        super(plugin, 3, "Confirm Sell Other");
+        super(plugin, 3, localizedTitle(plugin, "sellotherconfirmgui.title", "Confirm Sell Other"));
         this.player = player;
 
         double unitPrice = plugin.getConfig().getDouble("economy.other_vendor_price", 1.0);

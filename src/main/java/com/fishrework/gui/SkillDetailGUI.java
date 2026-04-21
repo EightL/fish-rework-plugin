@@ -48,7 +48,7 @@ public class SkillDetailGUI extends BaseGUI {
     private static final int LEVELS_PER_PAGE = ROADMAP_PATH.length; // 36
 
     public SkillDetailGUI(FishRework plugin, Player player, Skill skill) {
-        super(plugin, 6, "Skill Details: " + skill.getDisplayName());
+        super(plugin, 6, localizedTitle(plugin, "skilldetailgui.title_prefix", "Skill Details: ") + skill.getDisplayName());
         this.player = player;
         this.skill = skill;
 
@@ -104,8 +104,9 @@ public class SkillDetailGUI extends BaseGUI {
                     .decoration(TextDecoration.ITALIC, false));
             artMeta.lore(List.of(
                     Component.text(""),
-                    Component.text("Collected: " + artCollected + "/" + artTotal).color(NamedTextColor.GRAY)
-                            .decoration(TextDecoration.ITALIC, false),
+                    plugin.getLanguageManager().getMessage("skilldetailgui.collected", "Collected: %count%/%total%",
+                            "count", String.valueOf(artCollected), "total", String.valueOf(artTotal))
+                            .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                     plugin.getLanguageManager().getMessage("skilldetailgui.view_rare_artifact_finds", "View rare artifact finds!").color(NamedTextColor.YELLOW)
                             .decoration(TextDecoration.ITALIC, false)
             ));
@@ -160,12 +161,14 @@ public class SkillDetailGUI extends BaseGUI {
         bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_double_catch", "\u25B6 Double Catch: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f%%", doubleCatch + equipDoubleCatch)).color(NamedTextColor.GREEN)));
         if (equipDoubleCatch > 0) {
-            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipDoubleCatch) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.from_equipment_bonus", "  (+%amount%% from equipment)",
+                    "amount", com.fishrework.util.FormatUtil.format("%.1f", equipDoubleCatch)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_treasure_chance", "\u25B6 Treasure Chance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", treasure + totemBonus)).color(NamedTextColor.GREEN)));
         if (totemBonus > 0) {
-            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", totemBonus) + " from Treasure Totem)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.from_totem_bonus", "  (+%amount%% from Treasure Totem)",
+                    "amount", com.fishrework.util.FormatUtil.format("%.1f", totemBonus)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         double combinedMulti = multi * (1.0 + fishingXpBonus / 100.0);
         Component xpLine = plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_xp_multiplier", "\u25B6 XP Multiplier ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false);
@@ -174,12 +177,14 @@ public class SkillDetailGUI extends BaseGUI {
         }
         bonusLore.add(xpLine.append(Component.text(com.fishrework.util.FormatUtil.format("x%.2f", combinedMulti)).color(NamedTextColor.GREEN)));
         if (fishingXpBonus > 0) {
-            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.0f%%", fishingXpBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.from_equipment_bonus_pct", "  (+%amount%% from equipment)",
+                    "amount", com.fishrework.util.FormatUtil.format("%.0f", fishingXpBonus)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_rare_creature", "\u25B6 Rare Creature: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", rareCreature + equipBonus)).color(NamedTextColor.GREEN)));
         if (equipBonus > 0) {
-            bonusLore.add(Component.text("  (" + com.fishrework.util.FormatUtil.format("+%.1f%%", equipBonus) + " from equipment)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.from_equipment_bonus", "  (+%amount%% from equipment)",
+                    "amount", com.fishrework.util.FormatUtil.format("%.1f", equipBonus)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
 
         int fishingSpeed = plugin.getMobManager().getEquipmentFishingSpeed(player);
@@ -190,20 +195,26 @@ public class SkillDetailGUI extends BaseGUI {
             double value = effectiveFlat * (1.0 + scd / 100.0);
             bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_sea_creature_defense", "\u25B6 Sea Creature Defense: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.flat_multiplier_breakdown", "  (+%flat% flat * %pct%%)",
+                    "flat", com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat),
+                    "pct", com.fishrework.util.FormatUtil.format("%.1f", scd)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (sca > 0 || flatAtk > 0) {
             double effectiveFlat = flatAtk > 0 ? flatAtk : 1.0;
             double value = effectiveFlat * (1.0 + sca / 100.0);
             bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_sea_creature_attack", "\u25B6 Sea Creature Attack: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.flat_multiplier_breakdown", "  (+%flat% flat * %pct%%)",
+                    "flat", com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat),
+                    "pct", com.fishrework.util.FormatUtil.format("%.1f", sca)).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
         }
         if (currentLevel >= 27 || totalHeatResistance > 0.0) {
             bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.u25b6_heat_resistance", "\u25B6 Heat Resistance: ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", totalHeatResistance)).color(NamedTextColor.GOLD)));
             if (magmaFilterHeatResistance > 0.0 && magmaFilterRemainingSeconds > 0) {
-                bonusLore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", magmaFilterHeatResistance) + "% from Magma Filter, " + magmaFilterRemainingSeconds + "s left)")
+                bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.from_magma_filter_bonus", "  (+%amount%% from Magma Filter, %seconds%s left)",
+                        "amount", com.fishrework.util.FormatUtil.format("%.1f", magmaFilterHeatResistance),
+                        "seconds", String.valueOf(magmaFilterRemainingSeconds))
                         .color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             }
@@ -226,10 +237,10 @@ public class SkillDetailGUI extends BaseGUI {
                     double baitXpMulti = activeBait.getBonus(com.fishrework.model.Bait.XP_MULTIPLIER);
                     double baitRareChance = activeBait.getBonus(com.fishrework.model.Bait.RARE_CREATURE_CHANCE);
 
-                    if (baitDoubleCatch > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitDoubleCatch) + " Double Catch").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitTreasure > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitTreasure) + " Treasure Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitXpMulti > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.0f%%", baitXpMulti) + " XP Multiplier").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
-                    if (baitRareChance > 0) bonusLore.add(Component.text("  + " + com.fishrework.util.FormatUtil.format("%.1f%%", baitRareChance) + " Rare Creature Chance").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitDoubleCatch > 0) bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait_double_catch_bonus", "  + %amount%% Double Catch", "amount", com.fishrework.util.FormatUtil.format("%.1f", baitDoubleCatch)).color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitTreasure > 0) bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait_treasure_bonus", "  + %amount%% Treasure Chance", "amount", com.fishrework.util.FormatUtil.format("%.1f", baitTreasure)).color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitXpMulti > 0) bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait_xp_bonus", "  + %amount%% XP Multiplier", "amount", com.fishrework.util.FormatUtil.format("%.0f", baitXpMulti)).color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                    if (baitRareChance > 0) bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait_rare_bonus", "  + %amount%% Rare Creature Chance", "amount", com.fishrework.util.FormatUtil.format("%.1f", baitRareChance)).color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
                 }
             }
         }
@@ -436,7 +447,8 @@ public class SkillDetailGUI extends BaseGUI {
                     : (isNextLevel ? NamedTextColor.AQUA : NamedTextColor.GRAY);
             String prefix = isNextLevel ? "\u25B8 " : (isMilestone ? "\u2605 " : "  ");
             String suffix = isNextLevel ? " \u25C0 NEXT" : "";
-            meta.displayName(Component.text(prefix + "Level " + level + suffix)
+            meta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.level_title", "%prefix%Level %level%%suffix%",
+                    "prefix", prefix, "level", String.valueOf(level), "suffix", suffix)
                     .color(titleColor)
                     .decoration(TextDecoration.ITALIC, false)
                     .decoration(TextDecoration.BOLD, isMilestone || isNextLevel));
@@ -456,11 +468,14 @@ public class SkillDetailGUI extends BaseGUI {
                 for (int b = 0; b < bars; b++) bar.append(b < filled ? "\u2588" : "\u2591");
                 lore.add(Component.text(bar.toString()).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
                         .append(Component.text(com.fishrework.util.FormatUtil.format(" %.1f%%", progressPct * 100)).color(NamedTextColor.YELLOW)));
-                lore.add(Component.text(com.fishrework.util.FormatUtil.format("XP: %.0f / %.0f", currentXp, nextXp))
+                lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.xp_progress", "XP: %current% / %next%",
+                        "current", com.fishrework.util.FormatUtil.format("%.0f", currentXp),
+                        "next", com.fishrework.util.FormatUtil.format("%.0f", nextXp))
                         .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
             } else if (!unlocked) {
                 double xpRequired = plugin.getLevelManager().getXpForLevel(level);
-                lore.add(Component.text(com.fishrework.util.FormatUtil.format("Requires: %.0f XP", xpRequired))
+                lore.add(plugin.getLanguageManager().getMessage("skilldetailgui.requires_xp", "Requires: %xp% XP",
+                        "xp", com.fishrework.util.FormatUtil.format("%.0f", xpRequired))
                         .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
             }
 
@@ -724,7 +739,9 @@ public class SkillDetailGUI extends BaseGUI {
         }
 
         if (level > data.getLevel(skill)) {
-            player.sendMessage(Component.text("Reach " + skill.getDisplayName() + " Level " + level + " to view these recipes.")
+            player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.reach_level_to_view",
+                    "Reach %skill% Level %level% to view these recipes.",
+                    "skill", skill.getDisplayName(), "level", String.valueOf(level))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1.0f);
             return;

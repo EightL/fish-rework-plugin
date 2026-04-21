@@ -1,5 +1,6 @@
 package com.fishrework.model;
 
+import com.fishrework.manager.LanguageManager;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
@@ -63,6 +64,13 @@ public class CustomMob {
     public String getId() { return id; }
     public EntityType getEntityType() { return entityType; }
     public String getDisplayName() { return displayName; }
+    public String getLocalizedDisplayName(LanguageManager lm) {
+        return lm.getString("mob." + id + ".name", displayName);
+    }
+    public String getCollectionName() { return collectionName; }
+    public String getLocalizedCollectionName(LanguageManager lm) {
+        return lm.getString("mob." + id + ".collection_name", collectionName);
+    }
     public Skill getSkill() { return skill; }
     public double getXp() { return xp; }
     public double getBaseWeight() { return baseWeight; }
@@ -74,7 +82,6 @@ public class CustomMob {
     public boolean isBoostByRareCreature() { return boostByRareCreature; }
     public List<MobDrop> getDrops() { return drops; }
     public Material getCollectionIcon() { return collectionIcon; }
-    public String getCollectionName() { return collectionName; }
     public Rarity getRarity() { return rarity; }
     public SpawnConfig getSpawnConfig() { return spawnConfig; }
 

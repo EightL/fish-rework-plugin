@@ -28,7 +28,7 @@ public class FishBagGUI extends BaseGUI {
     private static final int CONTROL_ROW_START = 18;
 
     public FishBagGUI(FishRework plugin, Player player) {
-        super(plugin, 3, "Fish Bag");
+        super(plugin, 3, localizedTitle(plugin, "fishbaggui.title", "Fish Bag"));
         this.player = player;
         initializeItems();
     }

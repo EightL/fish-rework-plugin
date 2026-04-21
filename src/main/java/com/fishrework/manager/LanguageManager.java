@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class LanguageManager {
 
@@ -67,6 +68,27 @@ public class LanguageManager {
     
     public Component getMessage(String key, String fallback) {
         String text = langConfig.getString(key, fallback);
+        return parseString(text);
+    }
+
+    public Component getMessage(String key, String fallback, Map<String, String> placeholders) {
+        String text = langConfig.getString(key, fallback);
+        if (placeholders != null) {
+            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                text = text.replace("%" + entry.getKey() + "%", entry.getValue());
+            }
+        }
+        return parseString(text);
+    }
+
+    public Component getMessage(String key, String fallback, String... placeholders) {
+        String text = langConfig.getString(key, fallback);
+        if (placeholders != null) {
+            int pairCount = placeholders.length - (placeholders.length % 2);
+            for (int i = 0; i < pairCount; i += 2) {
+                text = text.replace("%" + placeholders[i] + "%", placeholders[i + 1]);
+            }
+        }
         return parseString(text);
     }
 

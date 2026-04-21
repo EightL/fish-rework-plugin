@@ -25,7 +25,7 @@ public class LavaBagGUI extends BaseGUI {
     private final Player player;
 
     public LavaBagGUI(FishRework plugin, Player player) {
-        super(plugin, 6, "🔥 Magma Satchel");
+        super(plugin, 6, localizedTitle(plugin, "lavabaggui.title", "🔥 Magma Satchel"));
         this.player = player;
         initializeItems();
     }

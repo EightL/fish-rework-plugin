@@ -85,7 +85,10 @@ public class YamlItemLoader {
             final Rarity fRarity = rarity;
             final String fDesc = description;
 
-            registry.put(id, () -> itemManager.createMaterial(fId, fMat, fName, fRarity, fDesc));
+            registry.put(id, () -> itemManager.createMaterial(fId, fMat,
+                    plugin.getLanguageManager().getString("item." + fId + ".name", fName),
+                    fRarity,
+                    plugin.getLanguageManager().getString("item." + fId + ".desc", fDesc)));
             count++;
         }
         return count;
@@ -115,7 +118,10 @@ public class YamlItemLoader {
             final Rarity fRarity = rarity;
             final String fDesc = description;
 
-            registry.put(id, () -> itemManager.createEnchantedMaterial(fId, fMat, fName, fRarity, fDesc));
+            registry.put(id, () -> itemManager.createEnchantedMaterial(fId, fMat,
+                    plugin.getLanguageManager().getString("item." + fId + ".name", fName),
+                    fRarity,
+                    plugin.getLanguageManager().getString("item." + fId + ".desc", fDesc)));
             count++;
         }
         return count;
@@ -234,7 +240,7 @@ public class YamlItemLoader {
 
                 String registryId = setId + "_" + pieceType;
                 registry.put(registryId, () -> buildArmorPiece(
-                    itemManager, registryId, fMat, fName, fRarity, fSetKey,
+                    itemManager, registryId, fMat, plugin.getLanguageManager().getString("item." + registryId + ".name", fName), fRarity, fSetKey,
                         fBonusKey, fBonusVal, fExtraPdc, fAttrBonuses,
                         fEnchants, fBaseItemId, fIsLeather, fLeatherColor, fArmor, fToughness, fDurability,
                         fLore, fLoreExtra, fLoreExtraColor, fTrimMaterialKey, fTrimPatternKey));
@@ -310,7 +316,7 @@ public class YamlItemLoader {
 
         // Equipment slot
         EquipmentSlotGroup slotGroup = itemManager.getEquipmentSlotGroup(material);
-        String key = name.toLowerCase().replace(" ", "_").replace("'", "");
+        String key = registryId.toLowerCase().replace(" ", "_").replace("'", "");
 
         // Armor attribute
         meta.addAttributeModifier(Attribute.ARMOR, new AttributeModifier(
@@ -420,7 +426,7 @@ public class YamlItemLoader {
             final List<String> fLore = new ArrayList<>(loreLines);
 
             registry.put(rodId, () -> buildFishingRod(
-                    itemManager, rodId, fName, fRarity, fPdcKey, fRcc, fSpeed, fSca, fBobberDmg,
+                    itemManager, rodId, plugin.getLanguageManager().getString("item." + rodId + ".name", fName), fRarity, fPdcKey, fRcc, fSpeed, fSca, fBobberDmg,
                     fIsLavaRod, fHeatResistance, fDurability, fLore));
             count++;
         }
@@ -560,7 +566,7 @@ public class YamlItemLoader {
             final Map<String, Double> fPdc = pdcDoubles;
 
             registry.put(id, () -> buildWeapon(
-                    itemManager, fId, fMat, fName, fRarity, fNameColor, fPdcKey,
+                    itemManager, fId, fMat, plugin.getLanguageManager().getString("item." + fId + ".name", fName), fRarity, fNameColor, fPdcKey,
                     fLoreEntries, fEnchants, fPdc, fUpgradeTier, fDurability));
             count++;
         }
@@ -684,7 +690,7 @@ public class YamlItemLoader {
             final List<Map<?, ?>> fLoreEntries = new ArrayList<>(loreEntries);
 
             registry.put(id, () -> buildUtilityItem(
-                    itemManager, fId, fMat, fName, fRarity, fPdcKey, fLoreEntries));
+                    itemManager, fId, fMat, plugin.getLanguageManager().getString("item." + fId + ".name", fName), fRarity, fPdcKey, fLoreEntries));
             count++;
         }
         return count;

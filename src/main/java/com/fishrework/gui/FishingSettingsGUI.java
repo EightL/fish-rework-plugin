@@ -23,7 +23,7 @@ public class FishingSettingsGUI extends BaseGUI {
     private final Consumer<Player> backAction;
 
     public FishingSettingsGUI(FishRework plugin, Player player, Consumer<Player> backAction) {
-        super(plugin, 3, "Fishing Settings");
+        super(plugin, 3, localizedTitle(plugin, "fishingsettingsgui.title", "Fishing Settings"));
         this.player = player;
         this.backAction = backAction;
         initializeItems();

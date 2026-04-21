@@ -20,7 +20,7 @@ public class SkillsMenuGUI extends BaseGUI {
     private final Player player;
 
     public SkillsMenuGUI(FishRework plugin, Player player) {
-        super(plugin, 3, "Skills Menu"); // 3 rows
+        super(plugin, 3, localizedTitle(plugin, "skillsmenugui.title", "Skills Menu")); // 3 rows
         this.player = player;
         initializeItems();
     }

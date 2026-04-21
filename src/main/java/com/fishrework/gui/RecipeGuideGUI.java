@@ -39,7 +39,7 @@ public class RecipeGuideGUI extends BaseGUI {
             List<RecipeDefinition> recipes,
             int recipeIndex,
             Consumer<Player> backAction) {
-        super(plugin, 6, "Recipe Guide");
+        super(plugin, 6, localizedTitle(plugin, "recipeguidegui.title", "Recipe Guide"));
         this.player = player;
         this.recipes = List.copyOf(recipes);
         this.recipeIndex = Math.max(0, Math.min(recipeIndex, Math.max(0, recipes.size() - 1)));

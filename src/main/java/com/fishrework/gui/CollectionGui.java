@@ -70,7 +70,7 @@ public class CollectionGui extends BaseGUI {
     }
 
     public CollectionGui(FishRework plugin, Player player, int page, BiomeGroup filter, SortType sort, MobCategory typeFilter, BiomeDimension biomeDimension) {
-        super(plugin, 6, "Fishing Encyclopedia");
+        super(plugin, 6, localizedTitle(plugin, "collectiongui.title", "Fishing Encyclopedia"));
         this.player = player;
         this.page = page;
         this.filter = filter;
@@ -169,7 +169,7 @@ public class CollectionGui extends BaseGUI {
                 ItemStack item = new ItemStack(mob.getCollectionIcon());
                 ItemMeta meta = item.getItemMeta();
                 NamedTextColor nameColor = mob.isHostile() ? NamedTextColor.RED : NamedTextColor.AQUA;
-                Component displayName = Component.text(mob.getCollectionName()).color(nameColor)
+                Component displayName = Component.text(mob.getLocalizedCollectionName(plugin.getLanguageManager())).color(nameColor)
                         .decoration(TextDecoration.ITALIC, false);
                 if (isNew) {
                     displayName = plugin.getLanguageManager().getMessage("collectiongui.u2b50_new", "\u2B50 NEW! ").color(NamedTextColor.GREEN)

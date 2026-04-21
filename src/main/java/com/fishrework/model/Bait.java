@@ -1,5 +1,6 @@
 package com.fishrework.model;
 
+import com.fishrework.manager.LanguageManager;
 import org.bukkit.Material;
 
 import java.util.Map;
@@ -34,6 +35,10 @@ public class Bait {
         return displayName;
     }
 
+    public String getLocalizedDisplayName(LanguageManager lm) {
+        return lm.getString("bait." + id + ".name", displayName);
+    }
+
     public Material getMaterial() {
         return material;
     }
@@ -44,6 +49,10 @@ public class Bait {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getLocalizedDescription(LanguageManager lm) {
+        return lm.getString("bait." + id + ".desc", description);
     }
 
     public Map<String, Double> getBonuses() {

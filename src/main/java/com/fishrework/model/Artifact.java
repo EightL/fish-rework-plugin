@@ -1,5 +1,6 @@
 package com.fishrework.model;
 
+import com.fishrework.manager.LanguageManager;
 import org.bukkit.Material;
 
 /**
@@ -48,7 +49,13 @@ public class Artifact {
 
     public String getId() { return id; }
     public String getDisplayName() { return displayName; }
+    public String getLocalizedDisplayName(LanguageManager lm) {
+        return lm.getString("artifact." + id + ".name", displayName);
+    }
     public String getDescription() { return description; }
+    public String getLocalizedDescription(LanguageManager lm) {
+        return lm.getString("artifact." + id + ".desc", description);
+    }
     public Rarity getRarity() { return rarity; }
     public String getTextureBase64() { return textureBase64; }
     public Material getMaterial() { return material; }

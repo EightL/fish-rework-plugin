@@ -79,7 +79,7 @@ public class LevelManager {
         for (CustomMob mob : plugin.getMobRegistry().getBySkill(skill)) {
             if (mob.getRequiredLevel() == level) {
                 String color = mob.isHostile() ? "§c" : "§b"; // Red for hostile, Aqua for passive
-                unlocks.add(new UnlockInfo(color + mob.getDisplayName() + "§r", mob, null));
+                unlocks.add(new UnlockInfo(color + mob.getLocalizedDisplayName(plugin.getLanguageManager()) + "§r", mob, null));
             }
         }
 
@@ -100,26 +100,26 @@ public class LevelManager {
                 }
                 name = sb.toString().trim();
             }
-            unlocks.add(new UnlockInfo("Recipe: " + name, null, def));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.recipe", "Recipe: ") + name, null, def));
         }
 
         // 3. Special level 20 bonus
         if (skill == Skill.FISHING && level == 20) {
-            unlocks.add(new UnlockInfo("Enchantment: Sea Creature Chance", null, null));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.enchantment_sea_creature", "Enchantment: Sea Creature Chance"), null, null));
         }
 
         // 4. Special level 27 unlocks
         if (skill == Skill.FISHING && level == 27) {
-            unlocks.add(new UnlockInfo("Feature: Lava Fishing", null, null));
-            unlocks.add(new UnlockInfo("Shop: Magma Satchel", null, null));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.feature_lava", "Feature: Lava Fishing"), null, null));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.shop_magma", "Shop: Magma Satchel"), null, null));
         }
 
         // 5. Double-spawn rarity unlock tiers
         if (skill == Skill.FISHING && level == 31) {
-            unlocks.add(new UnlockInfo("Double Catch: Sea Creature Double Spawn up to RARE", null, null));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.double_catch_rare", "Double Catch: Sea Creature Double Spawn up to RARE"), null, null));
         }
         if (skill == Skill.FISHING && level == 44) {
-            unlocks.add(new UnlockInfo("Double Catch: Sea Creature Double Spawn up to EPIC", null, null));
+            unlocks.add(new UnlockInfo(plugin.getLanguageManager().getString("levelmanager.double_catch_epic", "Double Catch: Sea Creature Double Spawn up to EPIC"), null, null));
         }
 
         return unlocks;
@@ -134,7 +134,7 @@ public class LevelManager {
         // 1. Mobs
         for (CustomMob mob : plugin.getMobRegistry().getBySkill(skill)) {
             if (mob.getRequiredLevel() == level) {
-                unlocks.add(mob.getDisplayName());
+                unlocks.add(mob.getLocalizedDisplayName(plugin.getLanguageManager()));
             }
         }
 
@@ -160,21 +160,21 @@ public class LevelManager {
 
         // 3. Special level 20 bonus
         if (skill == Skill.FISHING && level == 20) {
-            unlocks.add("Enchantment: Sea Creature Chance");
+            unlocks.add(plugin.getLanguageManager().getString("levelmanager.enchantment_sea_creature", "Enchantment: Sea Creature Chance"));
         }
 
         // 4. Special level 27 unlocks
         if (skill == Skill.FISHING && level == 27) {
-            unlocks.add("Feature: Lava Fishing");
-            unlocks.add("Shop: Magma Satchel");
+            unlocks.add(plugin.getLanguageManager().getString("levelmanager.feature_lava", "Feature: Lava Fishing"));
+            unlocks.add(plugin.getLanguageManager().getString("levelmanager.shop_magma", "Shop: Magma Satchel"));
         }
 
         // 5. Double-spawn rarity unlock tiers
         if (skill == Skill.FISHING && level == 31) {
-            unlocks.add("Double Catch: Sea Creature Double Spawn up to RARE");
+            unlocks.add(plugin.getLanguageManager().getString("levelmanager.double_catch_rare", "Double Catch: Sea Creature Double Spawn up to RARE"));
         }
         if (skill == Skill.FISHING && level == 44) {
-            unlocks.add("Double Catch: Sea Creature Double Spawn up to EPIC");
+            unlocks.add(plugin.getLanguageManager().getString("levelmanager.double_catch_epic", "Double Catch: Sea Creature Double Spawn up to EPIC"));
         }
 
         return unlocks;

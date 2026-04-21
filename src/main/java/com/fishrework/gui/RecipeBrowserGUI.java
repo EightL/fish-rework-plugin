@@ -43,7 +43,7 @@ public class RecipeBrowserGUI extends BaseGUI {
             UnlockFilter unlockFilter,
             Integer levelFilter,
             Consumer<Player> backAction) {
-        super(plugin, 6, "Recipe Browser");
+        super(plugin, 6, localizedTitle(plugin, "recipebrowsergui.title", "Recipe Browser"));
         this.player = player;
         this.page = page;
         this.typeFilter = typeFilter;

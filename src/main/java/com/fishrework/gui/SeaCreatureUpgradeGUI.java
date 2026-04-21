@@ -63,7 +63,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
     private long lastResultClick = 0;
 
     public SeaCreatureUpgradeGUI(FishRework plugin, Player player) {
-        super(plugin, 6, "⚒ Upgrade Gear");
+        super(plugin, 6, localizedTitle(plugin, "seacreatureupgradegui.title", "⚒ Upgrade Gear"));
         this.player = player;
         initializeItems();
     }

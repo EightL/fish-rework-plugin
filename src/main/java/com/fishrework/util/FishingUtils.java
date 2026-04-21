@@ -57,24 +57,30 @@ public class FishingUtils {
         TextColor color = rarity.getColor();
         Component message;
         
-        String actionText = isLava ? " lava-fished a " : " caught a ";
-        String actionAnText = isLava ? " lava-fished an " : " caught an ";
+        String actionText = isLava
+            ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_a", " lava-fished a ")
+            : plugin.getLanguageManager().getString("fishingutils.action_caught_a", " caught a ");
+        String actionAnText = isLava
+            ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_an", " lava-fished an ")
+            : plugin.getLanguageManager().getString("fishingutils.action_caught_an", " caught an ");
         
         if (rarity == Rarity.LEGENDARY || rarity == Rarity.SPECIAL) {
-            String rarityLabel = rarity == Rarity.SPECIAL ? "SPECIAL " : "LEGENDARY ";
+                String rarityLabel = rarity == Rarity.SPECIAL
+                    ? plugin.getLanguageManager().getString("fishingutils.special_label", "SPECIAL ")
+                    : plugin.getLanguageManager().getString("fishingutils.legendary_label", "LEGENDARY ");
             message = plugin.getLanguageManager().getMessage("fishingutils.u2728", "\u2728 ").color(NamedTextColor.GOLD)
                     .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
                     .append(Component.text(actionText).color(NamedTextColor.GRAY))
                 .append(Component.text(rarityLabel).color(color).decoration(TextDecoration.BOLD, true))
                     .append(Component.text(mobName).color(color))
-                    .append(plugin.getLanguageManager().getMessage("fishingutils.", "!").color(NamedTextColor.GRAY))
+                    .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY))
                     .append(plugin.getLanguageManager().getMessage("fishingutils.u2728", " \u2728").color(NamedTextColor.GOLD));
         } else {
             message = Component.text(player.getName()).color(NamedTextColor.WHITE)
                     .append(Component.text(actionAnText).color(NamedTextColor.GRAY))
                     .append(Component.text(rarity.name() + " ").color(color))
                     .append(Component.text(mobName).color(color))
-                    .append(plugin.getLanguageManager().getMessage("fishingutils.", "!").color(NamedTextColor.GRAY));
+                    .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY));
         }
 
         for (Player online : plugin.getServer().getOnlinePlayers()) {

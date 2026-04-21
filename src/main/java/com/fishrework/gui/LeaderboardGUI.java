@@ -26,7 +26,7 @@ public class LeaderboardGUI extends BaseGUI {
     private final Skill skill;
 
     public LeaderboardGUI(FishRework plugin, Player player, Skill skill) {
-        super(plugin, 6, "Leaderboard: " + skill.getDisplayName());
+        super(plugin, 6, localizedTitle(plugin, "leaderboardgui.title_prefix", "Leaderboard: ") + skill.getDisplayName());
         this.player = player;
         this.skill = skill;
         initializeItems();

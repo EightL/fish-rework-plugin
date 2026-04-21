@@ -65,7 +65,7 @@ public class BuyShopGUI extends BaseGUI {
                                        List<BiomeGroup> biomeGroups) {}
 
     public BuyShopGUI(FishRework plugin, Player player) {
-        super(plugin, 6, "Fishing Shop");
+        super(plugin, 6, localizedTitle(plugin, "buyshopgui.title", "Fishing Shop"));
         this.player = player;
         buildBuyEntries();
         initializeItems();
@@ -224,7 +224,7 @@ public class BuyShopGUI extends BaseGUI {
         if (price <= 0.0) return;
 
         ItemStack display = plugin.getItemManager().createBaitItem(bait);
-        buyEntries.add(new BuyEntry(baitId, bait.getDisplayName(), display, price, true));
+        buyEntries.add(new BuyEntry(baitId, bait.getLocalizedDisplayName(plugin.getLanguageManager()), display, price, true));
     }
 
     private void initializeItems() {

@@ -28,7 +28,7 @@ public class ShopMenuGUI extends BaseGUI {
     private final Player player;
 
     public ShopMenuGUI(FishRework plugin, Player player) {
-        super(plugin, 3, "⛁ Fishing Shop");
+        super(plugin, 3, localizedTitle(plugin, "shopmenugui.title", "⛁ Fishing Shop"));
         this.player = player;
         initializeItems();
     }

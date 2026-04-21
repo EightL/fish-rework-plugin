@@ -4,6 +4,9 @@
 # Increment this only when making backwards-incompatible config changes.
 config_version: 2
 
+# Language file to load (lang_<locale>.yml)
+locale: "zh_CN"
+
 # Update checker — pings Modrinth on startup and notifies admins on join
 update_checker:
   enabled: true

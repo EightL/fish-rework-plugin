@@ -39,7 +39,7 @@ public class ArtifactCollectionGUI extends BaseGUI {
     }
 
     public ArtifactCollectionGUI(FishRework plugin, Player player, Rarity filter) {
-        super(plugin, 6, "Artifact Collection");
+        super(plugin, 6, localizedTitle(plugin, "artifactcollectiongui.title", "Artifact Collection"));
         this.player = player;
         this.filter = filter;
         initializeItems();

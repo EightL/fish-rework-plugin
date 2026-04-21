@@ -68,7 +68,9 @@ public final class FishingChanceSnapshotHelper {
 
             if (activeBaitId != null) {
                 Bait bait = plugin.getBaitRegistry().get(activeBaitId);
-                activeBaitDisplayName = bait != null ? bait.getDisplayName() : RecipeDefinition.toFriendlyName(activeBaitId);
+                activeBaitDisplayName = bait != null
+                    ? bait.getLocalizedDisplayName(plugin.getLanguageManager())
+                    : RecipeDefinition.toFriendlyName(activeBaitId);
 
                 if (bait != null && baitAppliesToContext) {
                     baitRareCreatureBonus = bait.getBonus(Bait.RARE_CREATURE_CHANCE);
@@ -154,11 +156,11 @@ public final class FishingChanceSnapshotHelper {
 
     public static String displayNameForEntry(FishRework plugin, String entryId) {
         if ("land_mob_bonus".equals(entryId)) {
-            return "Land Mob Bonus";
+            return plugin.getLanguageManager().getString("mob.land_mob_bonus.name", "Land Mob Bonus");
         }
         com.fishrework.model.CustomMob mob = plugin.getMobRegistry().get(entryId);
         if (mob != null) {
-            return mob.getDisplayName();
+            return mob.getLocalizedDisplayName(plugin.getLanguageManager());
         }
         return RecipeDefinition.toFriendlyName(entryId);
     }

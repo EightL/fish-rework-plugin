@@ -1,6 +1,6 @@
 advancementlistener.click_to_open_recipe: Click to open recipe
 advancementlistener.recipes_unlocked: '   Recipes Unlocked:'
-artifactcollectiongui.: ???
+artifactcollectiongui: ???
 artifactcollectiongui.click_to_cycle_rarity: Click to cycle rarity
 artifactcollectiongui.filter: 'Filter: '
 artifactcollectiongui.keep_in_inventory_to_preserve: Keep in inventory to preserve
@@ -9,7 +9,7 @@ artifactcollectiongui.rare_collectibles_found_in: Rare collectibles found in
 artifactcollectiongui.rarity: 'Rarity: '
 artifactcollectiongui.stats: Stats
 artifactcollectiongui.treasure_chests_while_fishing: treasure chests while fishing.
-artifactcollectiongui.u2b50_artifact_collection: \u2B50 Artifact Collection
+artifactcollectiongui.u2b50_artifact_collection: ⭐ Artifact Collection
 artifactcollectiongui.undiscovered_artifact: Undiscovered Artifact
 basegui.back: Back
 basegui.next_page: Next Page
@@ -23,7 +23,7 @@ biomeselectiongui.show_all_fish_and_mobs: Show all fish and mobs
 buyshopgui.click_to_buy: Click to buy!
 buyshopgui.click_to_buy_1: Click to buy 1
 buyshopgui.shiftclick_to_buy_4: Shift-click to buy 4
-collectiongui.: ???
+collectiongui: ???
 collectiongui.biome_specific: Biome Specific
 collectiongui.chance: 'Chance: '
 collectiongui.click_to_change_biome_filter: Click to change biome filter
@@ -31,7 +31,7 @@ collectiongui.click_to_change_sort_order: Click to change sort order
 collectiongui.click_to_filter_by_type: Click to filter by type
 collectiongui.drops: 'Drops:'
 collectiongui.land_bonus: ' [Land Bonus]'
-collectiongui.u2b50_new: '\u2B50 NEW! '
+collectiongui.u2b50_new: '⭐ NEW! '
 collectiongui.xp: 'XP: '
 coolingitemlistener.you_are_not_hot_enough: You are not hot enough to use this item.
 currentfishchancesgui.bait: 'Bait: '
@@ -57,7 +57,7 @@ fishbaglistener.recovered: 'Recovered '
 fishbucketlistener.you_cannot_catch_monsters_with: You cannot catch monsters with
   a bucket!
 fishbucketlistener.you_cannot_empty_the_fish: You cannot empty the Fish Bucket!
-fishingcommand.: '----------------------------'
+fishingcommand: '----------------------------'
 fishingcommand.admin_commands: '--- Admin Commands ---'
 fishingcommand.all_mob_chances_land_mob: All mob chances, land mob bonus, and artifact
   chance reset to defaults!
@@ -210,10 +210,67 @@ fishingcommand.you_dont_have_permission_to: You don't have permission to reload 
 fishingcommand.you_leveled_up_from_admin: You leveled up from admin command!
 fishingcommand.your_skills_and_collection_have: Your skills and collection have been
   reset.
+fishingcommand.added_xp_to_player: 'Added %amount% XP to %player%'
+fishingcommand.change_plugin_language: ' - Change plugin language'
+fishingcommand.chances_active_bait_bonus: 'Active Bait Bonus: +%rare%% Rare, +%treasure%%
+  Treasure'
+fishingcommand.chances_biome: 'Biome: %biome%'
+fishingcommand.chances_biome_bait_targets: 'Biome Bait Targets: %targets%'
+fishingcommand.currency_earned: '  %currency% Earned: '
+fishingcommand.feature_artifact_collection_disabled: Artifact collection is disabled
+  on this server.
+fishingcommand.feature_autosell_disabled: Auto-sell is disabled on this server.
+fishingcommand.feature_economy_disabled: The economy system is disabled on this server.
+fishingcommand.feature_fish_bag_disabled: Fish Bags are disabled on this server.
+fishingcommand.feature_fishing_encyclopedia_disabled: The Fishing Encyclopedia is disabled
+  on this server.
+fishingcommand.feature_leaderboard_disabled: The leaderboard is disabled on this server.
+fishingcommand.feature_recipe_browser_disabled: The recipe browser is disabled on this
+  server.
+fishingcommand.feature_shop_disabled: The shop is disabled on this server.
+fishingcommand.fishing_locale_code: /fishing locale <code>
+fishingcommand.gave_item_to_player: 'Gave %count%x %item% to %player%'
+fishingcommand.heat_debug_header: '--- Heat Debug (%player%) ---'
+fishingcommand.level_must_be_between_0_max: 'Level must be 0-%max%'
+fishingcommand.locale_not_found: 'Language file not found: %file%'
+fishingcommand.locale_updated: 'Language updated to %locale%.'
+fishingcommand.locale_usage: 'Usage: /fishing locale <code> (current: %locale%)'
+fishingcommand.magma_filter_inactive: ' (inactive)'
+fishingcommand.magma_filter_time_left: ' (%seconds%s left)'
+fishingcommand.recipe_not_found_for: 'No recipe found for ''%item%''.'
+fishingcommand.reset_all_data_for_player: 'Reset all data for %player%'
+fishingcommand.separator: '----------------------------'
+fishingcommand.set_player_balance: 'Set %player%''s balance to %amount% %currency%.'
+fishingcommand.set_player_heat: 'Set %player%''s heat to %value%'
+fishingcommand.set_player_heat_clamped: 'Set %player%''s heat to %value% (clamped from
+  %requested%)'
+fishingcommand.set_player_skill_level: 'Set %player%''s %skill% to level %level%'
+fishingcommand.set_plugin_language: ' - Set plugin language'
+fishingcommand.sold_items_for_currency: 'Sold %count% items for %amount% %currency%!'
+fishingcommand.spawned_mob: 'Spawned %mob%'
+fishingcommand.status_autosell_now: 'Auto-sell is now %state%!'
+fishingcommand.status_balance: 'Balance: %balance% %currency%'
+fishingcommand.status_damage_indicators_now: 'Damage indicators are now %state%.'
+fishingcommand.status_notifications_now: 'Fishing tip notifications are now %state%.'
+fishingcommand.status_particles_set: 'Sea creature particles set to %mode%.'
+fishingcommand.status_xpmultiplier_current: 'Global XP multiplier: x%value%'
+fishingcommand.status_xpmultiplier_range: 'Multiplier must be between 0.0 and %max%.'
+fishingcommand.status_xpmultiplier_set: 'Set global XP multiplier to x%value%'
+fishingcommand.treasure_chest_spawn_denied: 'Treasure chests cannot be spawned. Use
+  /fishing give <player> treasure_chest_%id% instead.'
+fishingcommand.unknown_mob_available_list: 'Unknown mob. Available: %mobs%'
+fishingcommand.unlocked_all_artifacts_for_player: 'Unlocked all artifacts for %player%'
+fishingcommand.unlocked_all_creatures_for_player: 'Unlocked all creatures for %player%'
+fishingcommand.updated_artifact_chance: 'Updated artifact chance: %old%% -> %new%%'
+fishingcommand.updated_mob_chance: 'Updated %mob% chance: %old%% -> %new%%'
+fishingcommand.your_balance_set_by_admin: 'Your balance was set to %amount% %currency%
+  by an admin.'
+fishingcommand.your_heat_set_by_admin: 'Your lava heat was set to %value% by an admin.'
+fishingcommand.your_skill_level_set: 'Your %skill% level was set to %level%'
 fishinglistener.catch_sent_to_fish_bag: Catch sent to Fish Bag!
 fishinglistener.double_catch: 🎣 DOUBLE CATCH!
 fishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
-fishinglistener.ud83cudfa3_double_catch: \uD83C\uDFA3 DOUBLE CATCH!
+fishinglistener.ud83cudfa3_double_catch: 🎣 DOUBLE CATCH!
 fishinglistener.unlocked_recipe_fish_bucket: 'Unlocked Recipe: Fish Bucket!'
 fishinglistener.you_hooked_a_rare_sea: You hooked a rare sea creature!
 fishingsettingsgui.automatically_sells_common_fish: Automatically sells common fish.
@@ -228,9 +285,9 @@ fishingsettingsgui.command_fish_particles_highmediumlow: 'Command: /fish particl
 fishingsettingsgui.disabled_by_server_admin: Disabled by server admin.
 fishingsettingsgui.shows_floating_damage_numbers: Shows floating damage numbers.
 fishingsettingsgui.shows_occasional_fishing_tips: Shows occasional fishing tips.
-fishingutils.: '!'
-fishingutils.u2728: ' \u2728'
-heatmanager.: '] '
+fishingutils: '!'
+fishingutils.u2728: ' ✨'
+heatmanager: '] '
 heatmanager.due_to_heat_you_got: Due to heat, you got Weakness.
 heatmanager.heat: ' HEAT ['
 heatmanager.magma_filter_wore_off: Magma Filter wore off.
@@ -295,11 +352,11 @@ loremanager.sea_creature_defense: 'Sea Creature Defense: '
 loremanager.sea_creature_defense_modifier: 'Sea Creature Defense Modifier: '
 loremanager.stats_are_halved_outside_of: Stats are halved outside of Nether.
 loremanager.treasure_chance: 'Treasure Chance: '
-loremanager.u2b50_artifact: \u2B50 Artifact
+loremanager.u2b50_artifact: ⭐ Artifact
 mobmanager.click_to_view_encyclopedia: Click to view Encyclopedia!
-mobmanager.u2b50_encyclopedia_complete_congratulations: '   \u2B50 ENCYCLOPEDIA COMPLETE!
+mobmanager.u2b50_encyclopedia_complete_congratulations: '   ⭐ ENCYCLOPEDIA COMPLETE!
   Congratulations!'
-recipebrowsergui.: ???
+recipebrowsergui: ???
 recipebrowsergui.advancement_unlock: Advancement unlock
 recipebrowsergui.click_to_inspect_recipe: Click to inspect recipe
 recipebrowsergui.craftable_now: Craftable now
@@ -322,7 +379,7 @@ recipeguidegui.use_fishing_recipe_while_holding: Use /fishing recipe while holdi
   a custom item.
 recipeguidegui.use_the_recipe_browser_in: Use the Recipe Browser in the Fishing menu
   to browse all recipes.
-seacreatureupgradegui.: →
+seacreatureupgradegui: →
 seacreatureupgradegui.back: Back
 seacreatureupgradegui.cannot_downgrade: Cannot Downgrade!
 seacreatureupgradegui.enchants_fused: Enchants fused!
@@ -395,39 +452,39 @@ skilldetailgui.the_upgrade_gear_menu_is: The Upgrade Gear menu is disabled on th
 skilldetailgui.top_chances_right_now: 'Top chances right now:'
 skilldetailgui.treasure: '  Treasure: '
 skilldetailgui.treasure_bonus: 'Treasure Bonus: '
-skilldetailgui.u2022: '  \u2022 '
-skilldetailgui.u2192_unlocks: '\u2192 Unlocks:'
-skilldetailgui.u25b6_double_catch: '\u25B6 Double Catch: '
-skilldetailgui.u25b6_fishing_speed: '\u25B6 Fishing Speed: '
-skilldetailgui.u25b6_heat_resistance: '\u25B6 Heat Resistance: '
-skilldetailgui.u25b6_rare_creature: '\u25B6 Rare Creature: '
-skilldetailgui.u25b6_sea_creature_attack: '\u25B6 Sea Creature Attack: '
-skilldetailgui.u25b6_sea_creature_defense: '\u25B6 Sea Creature Defense: '
-skilldetailgui.u25b6_treasure_chance: '\u25B6 Treasure Chance: '
-skilldetailgui.u25b6_xp_multiplier: '\u25B6 XP Multiplier '
-skilldetailgui.u2694: '  \u2694 '
-skilldetailgui.u2694_upgrade_gear: \u2694 Upgrade Gear
-skilldetailgui.u2714_unlocked: \u2714 UNLOCKED
-skilldetailgui.u2716_disabled_by_server_admin: \u2716 Disabled by server admin
-skilldetailgui.u2716_locked: \u2716 LOCKED
-skilldetailgui.u2716_requires_fishing_level_20: \u2716 Requires Fishing Level 20
-skilldetailgui.u2b50_artifact_collection: \u2B50 Artifact Collection
-skilldetailgui.u2b50_current_bonuses: \u2B50 Current Bonuses
-skilldetailgui.ud83cudfa3_fishing_encyclopedia: \uD83C\uDFA3 Fishing Encyclopedia
-skilldetailgui.ud83dudd17_active_bait: '\uD83D\uDD17 Active Bait: '
+skilldetailgui.u2022: '  • '
+skilldetailgui.u2192_unlocks: '→ Unlocks:'
+skilldetailgui.u25b6_double_catch: '▶ Double Catch: '
+skilldetailgui.u25b6_fishing_speed: '▶ Fishing Speed: '
+skilldetailgui.u25b6_heat_resistance: '▶ Heat Resistance: '
+skilldetailgui.u25b6_rare_creature: '▶ Rare Creature: '
+skilldetailgui.u25b6_sea_creature_attack: '▶ Sea Creature Attack: '
+skilldetailgui.u25b6_sea_creature_defense: '▶ Sea Creature Defense: '
+skilldetailgui.u25b6_treasure_chance: '▶ Treasure Chance: '
+skilldetailgui.u25b6_xp_multiplier: '▶ XP Multiplier '
+skilldetailgui.u2694: '  ⚔ '
+skilldetailgui.u2694_upgrade_gear: ⚔ Upgrade Gear
+skilldetailgui.u2714_unlocked: ✔ UNLOCKED
+skilldetailgui.u2716_disabled_by_server_admin: ✖ Disabled by server admin
+skilldetailgui.u2716_locked: ✖ LOCKED
+skilldetailgui.u2716_requires_fishing_level_20: ✖ Requires Fishing Level 20
+skilldetailgui.u2b50_artifact_collection: ⭐ Artifact Collection
+skilldetailgui.u2b50_current_bonuses: ⭐ Current Bonuses
+skilldetailgui.ud83cudfa3_fishing_encyclopedia: 🎣 Fishing Encyclopedia
+skilldetailgui.ud83dudd17_active_bait: '🔗 Active Bait: '
 skilldetailgui.unlock_this_level_to_view: Unlock this level to view recipes
 skilldetailgui.upgrade_weapons__armor_with: Upgrade weapons & armor with
 skilldetailgui.view_rare_artifact_finds: View rare artifact finds!
 skilldetailgui.view_your_caught_fish: View your caught fish!
 skilldetailgui.xp_multi: '  XP Multi: '
 skilldetailgui.you_need_fishing_level_20: You need Fishing Level 20 to unlock this!
-skillmanager.: '--------------------------------'
+skillmanager: '--------------------------------'
 skillmanager.attributes_gained: '   Attributes Gained:'
 skillmanager.click_to_open_recipe: Click to open recipe
 skillmanager.level_up: LEVEL UP!
-skillmanager.u2605: '    \u2605 '
-skillmanager.u2694: '    \u2694 '
-skillmanager.u2b50_you_received_a_fishing: '  \u2B50 You received a Fishing Journal!'
+skillmanager.u2605: '    ★ '
+skillmanager.u2694: '    ⚔ '
+skillmanager.u2b50_you_received_a_fishing: '  ⭐ You received a Fishing Journal!'
 skillmanager.unlocked: '   Unlocked:'
 skillsmenugui.close: Close
 skillsmenugui.double_catch: ' Double Catch: '
@@ -455,7 +512,7 @@ specialcraftinggui.recipe_locked: Recipe Locked
 specialcraftinggui.recipe_unlocked: Recipe unlocked
 specialcraftinggui.returns_all_grid_items_to: Returns all grid items to your inventory.
 specialcraftinggui.special_crafting: Special Crafting
-totemlistener.: '!'
+totemlistener: '!'
 totemlistener.treasure_totem: Treasure Totem
 totemlistener.you_broke_a: 'You broke a '
 totemlistener.you_placed_a: 'You placed a '
@@ -538,3 +595,483 @@ treasuremanager.wither_skeleton_skull_blaze_rod: '- Wither Skeleton Skull, Blaze
 xpsourcesgui.biomespecific: ' (Biome-specific)'
 xpsourcesgui.spawn_chance: 'Spawn Chance: '
 xpsourcesgui.xp: 'XP: '
+skilldetailgui.bait_double_catch_bonus: '  + %amount%% Double Catch'
+skilldetailgui.bait_rare_bonus: '  + %amount%% Rare Creature Chance'
+skilldetailgui.bait_treasure_bonus: '  + %amount%% Treasure Chance'
+skilldetailgui.bait_xp_bonus: '  + %amount%% XP Multiplier'
+skilldetailgui.collected: 'Collected: %count%/%total%'
+skilldetailgui.flat_multiplier_breakdown: '  (+%flat% flat * %pct%%)'
+skilldetailgui.from_equipment_bonus: '  (+%amount%% from equipment)'
+skilldetailgui.from_equipment_bonus_pct: '  (+%amount%% from equipment)'
+skilldetailgui.from_magma_filter_bonus: '  (+%amount%% from Magma Filter, %seconds%s left)'
+skilldetailgui.from_totem_bonus: '  (+%amount%% from Treasure Totem)'
+skilldetailgui.level_title: '%prefix%Level %level%%suffix%'
+skilldetailgui.reach_level_to_view: 'Reach %skill% Level %level% to view these recipes.'
+skilldetailgui.requires_xp: 'Requires: %xp% XP'
+skilldetailgui.xp_progress: 'XP: %current% / %next%'
+
+
+# ==============================================================
+# CONFIG-DRIVEN CONTENT — generated from config files
+# ==============================================================
+
+# --- Mobs ---
+mob.cod.name: "Cod"
+mob.cod.collection_name: "Common Cod"
+mob.salmon.name: "Salmon"
+mob.salmon.collection_name: "Slippery Salmon"
+mob.squid.name: "Squid"
+mob.squid.collection_name: "Inky Squid"
+mob.pufferfish.name: "Pufferfish"
+mob.pufferfish.collection_name: "Spiky Pufferfish"
+mob.drowned.name: "Drowned"
+mob.drowned.collection_name: "Undead Drowned"
+mob.guardian.name: "Guardian"
+mob.guardian.collection_name: "Prismarine Guardian"
+mob.elder_guardian.name: "Elder Guardian"
+mob.elder_guardian.collection_name: "Ancient Elder"
+mob.dead_rider.name: "Dead Rider"
+mob.dead_rider.collection_name: "Dead Rider"
+mob.iron_golem_aggro.name: "Rusted Sentinel"
+mob.iron_golem_aggro.collection_name: "Rusted Sentinel"
+mob.pillager_trio.name: "Raider Patrol"
+mob.pillager_trio.collection_name: "Raider Patrol"
+mob.pillager_quartet.name: "Illager War Party"
+mob.pillager_quartet.collection_name: "Illager War Party"
+mob.pillager_quintet.name: "Illager Warband"
+mob.pillager_quintet.collection_name: "Illager Warband"
+mob.husk.name: "Dune Shambler"
+mob.husk.collection_name: "Dune Shambler"
+mob.parched.name: "Scorched Wanderer"
+mob.parched.collection_name: "Scorched Wanderer"
+mob.dune_rider.name: "Dune Rider"
+mob.dune_rider.collection_name: "Dune Rider"
+mob.bogged.name: "Mire Lurker"
+mob.bogged.collection_name: "Mire Lurker"
+mob.slime.name: "Bog Blob"
+mob.slime.collection_name: "Bog Blob"
+mob.witch.name: "Swamp Hag"
+mob.witch.collection_name: "Swamp Hag"
+mob.king_slime.name: "King Slime"
+mob.king_slime.collection_name: "King Slime"
+mob.hyena.name: "Savanna Hyena"
+mob.hyena.collection_name: "Savanna Hyena"
+mob.stampede_bull.name: "Stampede Bull"
+mob.stampede_bull.collection_name: "Stampede Bull"
+mob.vulture_king.name: "Vulture King"
+mob.vulture_king.collection_name: "Vulture King"
+mob.jungle_spider.name: "Venomfang Crawler"
+mob.jungle_spider.collection_name: "Venomfang Crawler"
+mob.vine_strangler.name: "Vine Strangler"
+mob.vine_strangler.collection_name: "Vine Strangler"
+mob.temple_guardian.name: "Temple Guardian"
+mob.temple_guardian.collection_name: "Temple Guardian"
+mob.zombie_nautilus.name: "Zombie Nautilus"
+mob.zombie_nautilus.collection_name: "Zombie Nautilus"
+mob.great_white.name: "Great White Shark"
+mob.great_white.collection_name: "Great White Shark"
+mob.megalodon.name: "Megalodon"
+mob.megalodon.collection_name: "Megalodon"
+mob.poseidon.name: "Poseidon"
+mob.poseidon.collection_name: "Poseidon"
+mob.stray.name: "Frostbitten Archer"
+mob.stray.collection_name: "Frostbitten Archer"
+mob.angry_polar_bear.name: "Glacial Mauler"
+mob.angry_polar_bear.collection_name: "Glacial Mauler"
+mob.frost_phantom.name: "Frost Wraith"
+mob.frost_phantom.collection_name: "Frost Wraith"
+mob.glow_squid_of_death.name: "Abyssal Lantern"
+mob.glow_squid_of_death.collection_name: "Abyssal Lantern"
+mob.silverfish.name: "Tunnel Borer"
+mob.silverfish.collection_name: "Tunnel Borer"
+mob.cave_spider.name: "Venomous Creep"
+mob.cave_spider.collection_name: "Venomous Creep"
+mob.spider_jockey.name: "Arachne Knight"
+mob.spider_jockey.collection_name: "Arachne Knight"
+mob.mooshroom_angry.name: "Fungal Behemoth"
+mob.mooshroom_angry.collection_name: "Fungal Behemoth"
+mob.warden.name: "The Warden"
+mob.warden.collection_name: "The Warden"
+mob.creaking.name: "The Creaking"
+mob.creaking.collection_name: "The Creaking"
+mob.creaking_gang.name: "Pale Convergence"
+mob.creaking_gang.collection_name: "Pale Convergence"
+mob.treasure_common.name: "Common Treasure Chest"
+mob.treasure_common.collection_name: "Common Treasure"
+mob.treasure_uncommon.name: "Uncommon Treasure Chest"
+mob.treasure_uncommon.collection_name: "Uncommon Treasure"
+mob.treasure_rare.name: "Rare Treasure Chest"
+mob.treasure_rare.collection_name: "Rare Treasure"
+mob.treasure_epic.name: "Epic Treasure Chest"
+mob.treasure_epic.collection_name: "Epic Treasure"
+mob.treasure_legendary.name: "Legendary Treasure Chest"
+mob.treasure_legendary.collection_name: "Legendary Treasure"
+mob.tropical_fish.name: "Tropical Fish"
+mob.tropical_fish.collection_name: "Tropical Fish"
+mob.glow_squid.name: "Glow Squid"
+mob.glow_squid.collection_name: "Luminous Squid"
+mob.dolphin.name: "Dolphin"
+mob.dolphin.collection_name: "Playful Dolphin"
+mob.frog.name: "Frog"
+mob.frog.collection_name: "Swamp Frog"
+mob.axolotl.name: "Axolotl"
+mob.axolotl.collection_name: "Cave Axolotl"
+mob.turtle.name: "Turtle"
+mob.turtle.collection_name: "Beach Turtle"
+mob.nautilus.name: "Nautilus"
+mob.nautilus.collection_name: "Ocean Nautilus"
+mob.chicken.name: "Chicken"
+mob.chicken.collection_name: "Wild Chicken"
+mob.cow.name: "Cow"
+mob.cow.collection_name: "Wild Cow"
+mob.pig.name: "Pig"
+mob.pig.collection_name: "Wild Pig"
+mob.sheep.name: "Sheep"
+mob.sheep.collection_name: "Wild Sheep"
+mob.wolf.name: "Wolf"
+mob.wolf.collection_name: "Wild Wolf"
+mob.fox.name: "Fox"
+mob.fox.collection_name: "Sly Fox"
+mob.rabbit.name: "Rabbit"
+mob.rabbit.collection_name: "Wild Rabbit"
+mob.polar_bear.name: "Polar Bear"
+mob.polar_bear.collection_name: "Icy Polar Bear"
+mob.ocelot.name: "Ocelot"
+mob.ocelot.collection_name: "Jungle Ocelot"
+mob.goat.name: "Goat"
+mob.goat.collection_name: "Mountain Goat"
+mob.llama.name: "Llama"
+mob.llama.collection_name: "Wandering Llama"
+mob.panda.name: "Panda"
+mob.panda.collection_name: "Bamboo Panda"
+mob.parrot.name: "Parrot"
+mob.parrot.collection_name: "Tropical Parrot"
+mob.mooshroom.name: "Mooshroom"
+mob.mooshroom.collection_name: "Fungal Mooshroom"
+mob.armadillo.name: "Armadillo"
+mob.armadillo.collection_name: "Savanna Armadillo"
+mob.magma_tadpole.name: "Magma Tadpole"
+mob.magma_tadpole.collection_name: "Magma Tadpole"
+mob.lava_cod.name: "Lava Cod"
+mob.lava_cod.collection_name: "Lava Cod"
+mob.blaze_fisher.name: "Blaze Fisher"
+mob.blaze_fisher.collection_name: "Blaze Fisher"
+mob.magma_swimmer.name: "Magma Swimmer"
+mob.magma_swimmer.collection_name: "Magma Swimmer"
+mob.ghastling.name: "Ghastling"
+mob.ghastling.collection_name: "Baby Ghastling"
+mob.piglin_floater.name: "Piglin Floater"
+mob.piglin_floater.collection_name: "Piglin Floater"
+mob.wither_angler.name: "Wither Angler"
+mob.wither_angler.collection_name: "Wither Angler"
+mob.ghast_broodmother.name: "Ghast Broodmother"
+mob.ghast_broodmother.collection_name: "Ghast Broodmother"
+mob.crimson_minnow.name: "Crimson Minnow"
+mob.crimson_minnow.collection_name: "Crimson Minnow"
+mob.fungal_strider.name: "Fungal Strider"
+mob.fungal_strider.collection_name: "Fungal Strider"
+mob.hoglin_brute.name: "Hoglin Brute"
+mob.hoglin_brute.collection_name: "Hoglin Brute"
+mob.piglin_war_party.name: "Piglin War Party"
+mob.piglin_war_party.collection_name: "Piglin War Party"
+mob.crimson_abomination.name: "Crimson Abomination"
+mob.crimson_abomination.collection_name: "Crimson Abomination"
+mob.warped_jellyfish.name: "Warped Jellyfish"
+mob.warped_jellyfish.collection_name: "Warped Jellyfish"
+mob.ender_minnow.name: "Ender Minnow"
+mob.ender_minnow.collection_name: "Ender Minnow"
+mob.warped_enderman.name: "Warped Enderman"
+mob.warped_enderman.collection_name: "Warped Enderman"
+mob.ender_angler.name: "Riftbound Colossus"
+mob.ender_angler.collection_name: "Riftbound Colossus"
+mob.lost_soul.name: "Lost Soul"
+mob.lost_soul.collection_name: "Lost Soul"
+mob.soul_warden.name: "Soul Warden"
+mob.soul_warden.collection_name: "Soul Warden"
+mob.wailing_ghast_duo.name: "Wailing Ghast Duo"
+mob.wailing_ghast_duo.collection_name: "Wailing Ghast Duo"
+mob.basalt_crab.name: "Basalt Crab"
+mob.basalt_crab.collection_name: "Basalt Crab"
+mob.magma_golem.name: "Magma Golem"
+mob.magma_golem.collection_name: "Magma Golem"
+mob.the_wither.name: "The Cinder Eclipse"
+mob.the_wither.collection_name: "The Cinder Eclipse"
+mob.nether_lord.name: "Nether Lord"
+mob.nether_lord.collection_name: "Nether Lord"
+
+# --- Items: Materials ---
+item.corrupted_flesh.name: "Corrupted Flesh"
+item.corrupted_flesh.desc: "Putrid flesh from the undead."
+item.wet_bone.name: "Wet Bone"
+item.wet_bone.desc: "A waterlogged bone."
+item.polar_fur.name: "Polar Fur"
+item.polar_fur.desc: "Thick fur from a glacial beast."
+item.ice_wing.name: "Ice Wing"
+item.ice_wing.desc: "A frozen wing fragment."
+item.spider_silk.name: "Spider Silk"
+item.spider_silk.desc: "Fine silk from spiders."
+item.residue.name: "Residue"
+item.residue.desc: "Glowing residue from the depths."
+item.shark_tooth.name: "Shark Tooth"
+item.shark_tooth.desc: "A razor-sharp tooth."
+item.beast_scale.name: "Beast Scale"
+item.beast_scale.desc: "A massive tooth from an ancient predator."
+item.poseidons_crown.name: "Poseidon's Crown"
+item.poseidons_crown.desc: "The crown of the ocean's ruler."
+item.poseidons_tear.name: "Poseidon's Tear"
+item.poseidons_tear.desc: "A crystallized tear of the sea god."
+item.wardens_echo.name: "Warden's Echo"
+item.wardens_echo.desc: "Reverberations of the deep dark."
+item.dread_soul.name: "Dread Soul"
+item.dread_soul.desc: "A tormented soul from the pale garden."
+item.battle_scrap.name: "Battle Scrap"
+item.battle_scrap.desc: "Scrap metal from a skirmish."
+item.ironclad_plate.name: "Ironclad Plate"
+item.ironclad_plate.desc: "A dense plate of hardened iron."
+item.hyena_fur.name: "Hyena Fur"
+item.hyena_fur.desc: "Coarse fur from a savanna hunter."
+item.ravager_scales.name: "Ravager Scales"
+item.ravager_scales.desc: "Tough scales from a stampeding beast."
+item.phantoms_eye.name: "Phantom's Eye"
+item.phantoms_eye.desc: "A glowing eye from a massive phantom."
+item.dune_spice.name: "Dune Spice"
+item.dune_spice.desc: "Rare spice from the scorched sands."
+item.slimy_chunk.name: "Slimy Chunk"
+item.slimy_chunk.desc: "A sticky lump from a slime."
+item.kings_crown.name: "King's Crown"
+item.kings_crown.desc: "Crown of the King Slime."
+item.mossy_vine.name: "Mossy Vine"
+item.mossy_vine.desc: "A moss-covered vine, dripping with jungle humidity."
+item.temple_slab.name: "Temple Slab"
+item.temple_slab.desc: "A heavy mossy stone slab from an ancient jungle temple."
+item.weird_material.name: "Weird Material"
+item.weird_material.desc: "A strange substance of unknown origin."
+item.guardian_scale.name: "Guardian Scale"
+item.guardian_scale.desc: "A tough scale from a guardian."
+item.magma_residue.name: "Magma Residue"
+item.magma_residue.desc: "Molten residue from the lava depths."
+item.molten_fin.name: "Molten Fin"
+item.molten_fin.desc: "A heatproof fin linked to effortless movement through lava."
+item.lava_fish.name: "Lava Fish"
+item.lava_fish.desc: "A charred fish pulled from molten lava."
+item.crimson_scale.name: "Crimson Scale"
+item.crimson_scale.desc: "A blood-red scale from crimson waters."
+item.smoldering_rod.name: "Smoldering Rod"
+item.smoldering_rod.desc: "A rod still radiating infernal heat."
+item.corrupted_gold.name: "Corrupted Gold"
+item.corrupted_gold.desc: "Gold tainted by nether corruption."
+item.ghast_membrane.name: "Ghast Membrane"
+item.ghast_membrane.desc: "A translucent membrane from a ghast."
+item.strider_hide.name: "Strider Hide"
+item.strider_hide.desc: "Heat-resistant hide from a strider."
+item.warped_tendril.name: "Warped Tendril"
+item.warped_tendril.desc: "A twisted tendril from the warped forest."
+item.basalt_shell.name: "Basalt Shell"
+item.basalt_shell.desc: "A hardened shell formed from volcanic basalt."
+item.hoglin_tusk.name: "Hoglin Tusk"
+item.hoglin_tusk.desc: "A massive tusk from a hoglin brute."
+item.ender_fragment.name: "Ender Fragment"
+item.ender_fragment.desc: "A shard of ender energy found in the nether."
+item.soul_essence.name: "Soul Essence"
+item.soul_essence.desc: "Concentrated soul energy from the valley."
+item.wither_bone.name: "Wither Bone"
+item.wither_bone.desc: "A blackened bone radiating decay."
+item.crimson_heart.name: "Crimson Heart"
+item.crimson_heart.desc: "The pulsing heart of a crimson abomination."
+item.volcanic_core.name: "Volcanic Core"
+item.volcanic_core.desc: "A molten core from the depths of the basalt deltas."
+item.cinder_sigil.name: "Cinder Sigil"
+item.cinder_sigil.desc: "A legendary sigil forged from the Wither's cinder eclipse."
+
+# --- Items: Enchanted Materials ---
+item.enchanted_corrupted_flesh.name: "Enchanted Corrupted Flesh"
+item.enchanted_corrupted_flesh.desc: "Empowered putrid flesh."
+item.enchanted_wet_bone.name: "Enchanted Wet Bone"
+item.enchanted_wet_bone.desc: "An enchanted waterlogged bone."
+item.enchanted_polar_fur.name: "Enchanted Polar Fur"
+item.enchanted_polar_fur.desc: "Magically enhanced polar fur."
+item.enchanted_ice_wing.name: "Enchanted Ice Wing"
+item.enchanted_ice_wing.desc: "A frigid wing pulsing with power."
+item.enchanted_hyena_fur.name: "Enchanted Hyena Fur"
+item.enchanted_hyena_fur.desc: "Magically enhanced hyena fur."
+item.enchanted_dread_soul.name: "Enchanted Dread Soul"
+item.enchanted_dread_soul.desc: "A soul amplified by dark magic."
+item.enchanted_guardian_scale.name: "Enchanted Guardian Scale"
+item.enchanted_guardian_scale.desc: "A magically hardened guardian scale."
+item.enchanted_mossy_vine.name: "Enchanted Mossy Vine"
+item.enchanted_mossy_vine.desc: "A pulsing mossy vine from the jungle depths."
+item.enchanted_magma_residue.name: "Enchanted Magma Residue"
+item.enchanted_magma_residue.desc: "Empowered molten residue."
+item.enchanted_smoldering_rod.name: "Enchanted Smoldering Rod"
+item.enchanted_smoldering_rod.desc: "A rod pulsing with concentrated flame."
+item.enchanted_corrupted_gold.name: "Enchanted Corrupted Gold"
+item.enchanted_corrupted_gold.desc: "Gold refined by nether corruption."
+item.enchanted_ghast_membrane.name: "Enchanted Ghast Membrane"
+item.enchanted_ghast_membrane.desc: "A membrane shimmering with spectral energy."
+item.enchanted_crimson_scale.name: "Enchanted Crimson Scale"
+item.enchanted_crimson_scale.desc: "A scale infused with crimson power."
+item.enchanted_hoglin_tusk.name: "Enchanted Hoglin Tusk"
+item.enchanted_hoglin_tusk.desc: "A tusk resonating with brute force."
+item.enchanted_wither_bone.name: "Enchanted Wither Bone"
+item.enchanted_wither_bone.desc: "A withered relic infused with soulfire decay."
+item.enchanted_goblin_tusk.name: "Enchanted Goblin Tusk"
+item.enchanted_goblin_tusk.desc: "A jagged tusk empowered by nether war magic."
+item.enchanted_soul_essence.name: "Enchanted Soul Essence"
+item.enchanted_soul_essence.desc: "A soul fragment amplified by dark magic."
+item.enchanted_basalt_shell.name: "Enchanted Basalt Shell"
+item.enchanted_basalt_shell.desc: "A shell hardened by volcanic enchantment."
+
+# --- Items: Armor Sets ---
+item.scale_helmet.name: "Scale Helmet"
+item.scale_chestplate.name: "Scale Chestplate"
+item.scale_leggings.name: "Scale Leggings"
+item.scale_boots.name: "Scale Boots"
+item.ironclad_helmet.name: "Ironclad Helmet"
+item.ironclad_chestplate.name: "Ironclad Chestplate"
+item.ironclad_leggings.name: "Ironclad Leggings"
+item.ironclad_boots.name: "Ironclad Boots"
+item.dreadplate_helmet.name: "Dreadplate Helmet"
+item.dreadplate_chestplate.name: "Dreadplate Chestplate"
+item.dreadplate_leggings.name: "Dreadplate Leggings"
+item.dreadplate_boots.name: "Dreadplate Boots"
+item.deadman_helmet.name: "Dead Rider's Head"
+item.deadman_chestplate.name: "Deadman Chestplate"
+item.deadman_leggings.name: "Deadman Leggings"
+item.deadman_boots.name: "Deadman Boots"
+item.hyena_pants_leggings.name: "Hyena Pants"
+item.piglin_crown_helmet.name: "Piglin Crown"
+item.magma_scale_helmet.name: "Magma Scale Helmet"
+item.magma_scale_chestplate.name: "Magma Scale Chestplate"
+item.magma_scale_leggings.name: "Magma Scale Leggings"
+item.magma_scale_boots.name: "Magma Scale Boots"
+item.infernal_plate_helmet.name: "Infernal Plate Helmet"
+item.infernal_plate_chestplate.name: "Infernal Plate Chestplate"
+item.infernal_plate_leggings.name: "Infernal Plate Leggings"
+item.infernal_plate_boots.name: "Infernal Plate Boots"
+item.volcanic_dreadplate_helmet.name: "Volcanic Dreadplate Helmet"
+item.volcanic_dreadplate_chestplate.name: "Volcanic Dreadplate Chestplate"
+item.volcanic_dreadplate_leggings.name: "Volcanic Dreadplate Leggings"
+item.volcanic_dreadplate_boots.name: "Volcanic Dreadplate Boots"
+
+# --- Items: Fishing Rods ---
+item.neptunes_rod.name: "Neptune's Rod"
+item.neptunes_rod.lore.0: "Attracts rare sea creatures."
+item.shredder.name: "Shredder"
+item.shredder.lore.0: "An epic rod forged from the depths."
+item.leviathan.name: "Leviathan"
+item.leviathan.lore.0: "The ultimate rod, forged from beasts of legend."
+item.harmony_rod.name: "Harmony Rod"
+item.harmony_rod.lore.0: "Scares away hostile creatures."
+item.harmony_rod.lore.1: "Attracts more passive creatures."
+item.ember_rod.name: "Ember Rod"
+item.ember_rod.lore.0: "A lava fishing rod forged from nether embers."
+item.inferno_rod.name: "Inferno Rod"
+item.inferno_rod.lore.0: "An infernal rod for lava fishing."
+item.hellfire_rod.name: "Hellfire Rod"
+item.hellfire_rod.lore.0: "A blazing rod balanced between power and control."
+item.volcanic_rod.name: "Volcanic Rod"
+item.volcanic_rod.lore.0: "Forged from the volcanic core itself."
+
+# --- Items: Weapons ---
+item.beginner_trident_1.name: "Novice Trident"
+item.beginner_trident_2.name: "Adept Trident"
+item.trident_1.name: "Prismarine Harpoon"
+item.trident_2.name: "Tidesplitter"
+item.trident_3.name: "Dreadspear"
+item.poseidons_trident.name: "Poseidon's Trident"
+item.hephaestean_trident.name: "Hephaestean Poseidon's Trident"
+item.quickcharge_repeater_1.name: "Swiftload Crossbow I"
+item.quickcharge_repeater_2.name: "Swiftload Crossbow II"
+item.quickcharge_repeater_3.name: "Swiftload Crossbow III"
+item.quickcharge_repeater_4.name: "Swiftload Crossbow IV"
+item.quickcharge_repeater_5.name: "Swiftload Crossbow V"
+item.multishot_volley_1.name: "Volley Crossbow I"
+item.multishot_volley_2.name: "Volley Crossbow II"
+item.multishot_volley_3.name: "Volley Crossbow III"
+item.multishot_volley_4.name: "Volley Crossbow IV"
+item.multishot_volley_5.name: "Volley Crossbow V"
+item.megalodon_tooth.name: "Megalodon Tooth"
+
+# --- Items: Utility Items ---
+item.fish_bucket.name: "Fish Bucket"
+item.treasure_totem.name: "Treasure Totem"
+item.display_case.name: "Display Case"
+item.netherite_relic.name: "Netherite Gladiator Statue"
+item.fishing_journal.name: "Fishing Journal"
+item.frost_salve.name: "Frost Salve"
+item.magma_filter.name: "Magma Filter"
+
+# --- Artifacts ---
+artifact.clover.name: "Four-Leaf Clover"
+artifact.clover.desc: "A symbol of luck, though it hasn't helped you much yet."
+artifact.beach_ball.name: "Deflated Beach Ball"
+artifact.beach_ball.desc: "Evidence of a summer vacation gone wrong."
+artifact.eraser.name: "Ancient Eraser"
+artifact.eraser.desc: "Used to correct the mistakes of the past. It's mostly worn down."
+artifact.book.name: "Soggy Tome"
+artifact.book.desc: "The ink has run, but the knowledge within feels heavy."
+artifact.rubiks.name: "Impossible Puzzle"
+artifact.rubiks.desc: "A colorful cube fused in a solved state. Or is it?"
+artifact.monster_plushie.name: "Weird Cute Doll"
+artifact.monster_plushie.desc: "A strange little doll. It's kinda cute, in a weird way."
+artifact.skull.name: "Pirate's Remnant"
+artifact.skull.desc: "Alas, poor Yorick! He probably shouldn't have sailed here."
+artifact.evoker_plushie.name: "Voodoo Poupée"
+artifact.evoker_plushie.desc: "It feels warm to the touch. Best not to poke it."
+artifact.ring.name: "Rusted Signet Ring"
+artifact.ring.desc: "The seal is worn, but the gold still glimmers beneath the grime."
+artifact.trial_vault.name: "Locked Strongbox"
+artifact.trial_vault.desc: "Rattles when shaken. Sadly, you left the key at home."
+artifact.ruby_gem.name: "Ruby Gem"
+artifact.ruby_gem.desc: "A gem pulsating with the heat of the earth."
+artifact.amber_gem.name: "Amber Gem"
+artifact.amber_gem.desc: "Trapped time within a golden cage."
+artifact.citrine_gem.name: "Citrine Gem"
+artifact.citrine_gem.desc: "A fragment of light, solid and warm."
+artifact.sapphire_gem.name: "Sapphire Gem"
+artifact.sapphire_gem.desc: "Cold deeper than the abyss from which it came."
+artifact.jasper_gem.name: "Jasper Gem"
+artifact.jasper_gem.desc: "Rough and unrefined, yet unmistakably powerful."
+artifact.onyx.name: "Onyx"
+artifact.onyx.desc: "It seems to absorb the light around it."
+artifact.sunstone.name: "Radiant Sunstone"
+artifact.sunstone.desc: "It burns with an eternal, smokeless fire."
+artifact.moonlight_crystal.name: "Lunar Prism"
+artifact.moonlight_crystal.desc: "Captures the ghost of a moonbeam in solid form."
+artifact.companion_cube.name: "Weighted Companion"
+artifact.companion_cube.desc: "It will never threaten to stab you, and in fact, cannot speak."
+artifact.kirby.name: "Kirby"
+artifact.kirby.desc: "Poyo!"
+
+# --- Misc mob-related ---
+mob.land_mob_bonus.name: "Land Mob Bonus"
+# --- GUI Titles ---
+collectiongui.title: "Fishing Encyclopedia"
+artifactcollectiongui.title: "⭐ Artifact Collection"
+buyshopgui.title: "Fishing Shop"
+shopmenugui.title: "⛁ Fishing Shop"
+sellshopgui.title: "Fish Vendor"
+sellconfirmgui.title: "Confirm Sale"
+sellotherconfirmgui.title: "Confirm Sell Other"
+fishbaggui.title: "Fish Bag"
+lavabaggui.title: "🔥 Magma Satchel"
+fishingsettingsgui.title: "Fishing Settings"
+recipebrowsergui.title: "Recipe Browser"
+recipeguidegui.title: "Recipe Guide"
+specialcraftinggui.title: "Special Crafting"
+seacreatureupgradegui.title: "⚒ Upgrade Gear"
+displaycasecustomizegui.title: "Customize Display Case"
+currentfishchancesgui.title: "Current Fish Chances"
+xpsourcesgui.title: "XP Sources: Fishing"
+
+# --- Level Manager ---
+levelmanager.recipe: "Recipe: "
+levelmanager.enchantment_sea_creature: "Enchantment: Sea Creature Chance"
+levelmanager.feature_lava: "Feature: Lava Fishing"
+levelmanager.shop_magma: "Shop: Magma Satchel"
+levelmanager.double_catch_rare: "Double Catch: Sea Creature Double Spawn up to RARE"
+levelmanager.double_catch_epic: "Double Catch: Sea Creature Double Spawn up to EPIC"
+gui.title.skilldetailgui.title_prefix: "Skill Details: "
+gui.title.biomeselectiongui.title: "Select Biome Filter"
+gui.title.skillsmenugui.title: "Skills Menu"
+gui.title.leaderboardgui.title_prefix: "Leaderboard: "

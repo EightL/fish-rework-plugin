@@ -34,7 +34,7 @@ public class SellConfirmGUI extends BaseGUI {
     private final ItemStack[] remainingContents;
 
     public SellConfirmGUI(FishRework plugin, Player player, BagType bagType) {
-        super(plugin, 3, "Confirm Sale");
+        super(plugin, 3, localizedTitle(plugin, "sellconfirmgui.title", "Confirm Sale"));
         this.player = player;
         this.bagType = bagType;
 
