@@ -1090,7 +1090,8 @@ artifact.kirby.name: "Kirby"
 artifact.kirby.desc: "¡Poyo!"
 
 # --- Misc mob-related ---
-mob.land_mob_bonus.name: "Bono de Criatura Terrestre"gui.title.skilldetailgui.title_prefix: "Detalles de Habilidad: "
+mob.land_mob_bonus.name: "Bono de Criatura Terrestre"
+gui.title.skilldetailgui.title_prefix: "Detalles de Habilidad: "
 gui.title.biomeselectiongui.title: "Seleccionar Filtro de Bioma"
 gui.title.skillsmenugui.title: "Menú de Habilidades"
 gui.title.leaderboardgui.title_prefix: "Tabla de Líderes: "
