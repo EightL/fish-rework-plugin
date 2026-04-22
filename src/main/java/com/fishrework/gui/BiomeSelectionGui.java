@@ -112,7 +112,15 @@ public class BiomeSelectionGui extends BaseGUI {
 
         ItemStack dimensionItem = new ItemStack(biomeDimension == CollectionGui.BiomeDimension.OVERWORLD ? Material.GRASS_BLOCK : Material.NETHERRACK);
         ItemMeta dimensionMeta = dimensionItem.getItemMeta();
-        dimensionMeta.displayName(Component.text("Dimension: " + biomeDimension.name()).color(NamedTextColor.GOLD)
+        String dimensionName = plugin.getLanguageManager().getString(
+                biomeDimension == CollectionGui.BiomeDimension.OVERWORLD
+                        ? "biomeselectiongui.dimension.overworld"
+                        : "biomeselectiongui.dimension.nether",
+                biomeDimension == CollectionGui.BiomeDimension.OVERWORLD ? "Overworld" : "Nether");
+        dimensionMeta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "biomeselectiongui.dimension_prefix",
+                        "Dimension: %dimension%",
+                        "dimension", dimensionName)).color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false));
         dimensionMeta.lore(List.of(
             plugin.getLanguageManager().getMessage("biomeselectiongui.click_to_switch_overworldnether", "Click to switch Overworld/Nether").color(NamedTextColor.GRAY)
@@ -131,7 +139,7 @@ public class BiomeSelectionGui extends BaseGUI {
 
             ItemStack item = new ItemStack(getIconForBiome(group));
             ItemMeta meta = item.getItemMeta();
-            String name = formatBiomeName(group);
+            String name = group.getLocalizedName(plugin.getLanguageManager());
             
             meta.displayName(Component.text(name).color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
@@ -194,15 +202,6 @@ public class BiomeSelectionGui extends BaseGUI {
         }
     }
     
-    private String formatBiomeName(BiomeGroup group) {
-        String name = group.name().toLowerCase().replace('_', ' ');
-        StringBuilder sb = new StringBuilder();
-        for (String word : name.split(" ")) {
-            sb.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1)).append(" ");
-        }
-        return sb.toString().trim();
-    }
-
     @Override
     public void onClick(InventoryClickEvent event) {
         event.setCancelled(true);

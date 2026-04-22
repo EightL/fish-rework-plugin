@@ -78,7 +78,7 @@ public class FishingUtils {
         } else {
             message = Component.text(player.getName()).color(NamedTextColor.WHITE)
                     .append(Component.text(actionAnText).color(NamedTextColor.GRAY))
-                    .append(Component.text(rarity.name() + " ").color(color))
+                    .append(Component.text(rarity.getLocalizedName(plugin.getLanguageManager()) + " ").color(color))
                     .append(Component.text(mobName).color(color))
                     .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY));
         }

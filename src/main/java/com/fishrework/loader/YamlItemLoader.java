@@ -293,12 +293,19 @@ public class YamlItemLoader {
                 .decoration(TextDecoration.ITALIC, false));
 
         // Lore
-        if (loreLine != null || loreExtra != null) {
+        String localizedLoreLine = loreLine != null
+                ? resolveLocalizedLoreLine(registryId, 0, loreLine)
+                : null;
+        int loreExtraIndex = loreLine != null ? 1 : 0;
+        String localizedLoreExtra = loreExtra != null
+                ? resolveLocalizedLoreLine(registryId, loreExtraIndex, loreExtra)
+                : null;
+        if (localizedLoreLine != null || localizedLoreExtra != null) {
             List<Component> lore = new ArrayList<>();
-            if (loreLine != null) {
-                lore.add(Component.text(loreLine).color(NamedTextColor.GRAY));
+            if (localizedLoreLine != null) {
+                lore.add(Component.text(localizedLoreLine).color(NamedTextColor.GRAY));
             }
-            if (loreExtra != null) {
+            if (localizedLoreExtra != null) {
                 NamedTextColor extraColor = NamedTextColor.GRAY;
                 if (loreExtraColor != null) {
                     try {
@@ -308,7 +315,7 @@ public class YamlItemLoader {
                         extraColor = NamedTextColor.GRAY;
                     }
                 }
-                lore.add(Component.text(loreExtra).color(extraColor)
+                lore.add(Component.text(localizedLoreExtra).color(extraColor)
                         .decoration(TextDecoration.ITALIC, false));
             }
             meta.lore(lore);
@@ -448,9 +455,10 @@ public class YamlItemLoader {
 
         meta.displayName(Component.text(name).color(rarity.getColor()));
 
-        if (!loreLines.isEmpty()) {
+        List<String> localizedLoreLines = resolveLocalizedLoreLines(registryId, loreLines);
+        if (!localizedLoreLines.isEmpty()) {
             List<Component> lore = new ArrayList<>();
-            for (String line : loreLines) {
+            for (String line : localizedLoreLines) {
                 lore.add(Component.text(line).color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false));
             }
@@ -592,9 +600,10 @@ public class YamlItemLoader {
                 .decoration(TextDecoration.ITALIC, false));
 
         // Lore
-        if (!loreEntries.isEmpty()) {
+        List<Map<?, ?>> localizedLoreEntries = resolveLocalizedLoreEntries(id, loreEntries);
+        if (!localizedLoreEntries.isEmpty()) {
             List<Component> lore = new ArrayList<>();
-            for (Map<?, ?> entry : loreEntries) {
+            for (Map<?, ?> entry : localizedLoreEntries) {
                 String text = entry.containsKey("text") ? String.valueOf(entry.get("text")) : "";
                 if (text.isEmpty()) {
                     lore.add(Component.empty());
@@ -707,10 +716,15 @@ public class YamlItemLoader {
                 .decoration(TextDecoration.ITALIC, false));
 
         // Lore
-        if (!loreEntries.isEmpty()) {
+        List<Map<?, ?>> localizedLoreEntries = resolveLocalizedLoreEntries(id, loreEntries);
+        if (!localizedLoreEntries.isEmpty()) {
             List<Component> lore = new ArrayList<>();
-            for (Map<?, ?> entry : loreEntries) {
+            for (Map<?, ?> entry : localizedLoreEntries) {
                 String text = entry.containsKey("text") ? String.valueOf(entry.get("text")) : "";
+                if (text.isEmpty()) {
+                    lore.add(Component.empty());
+                    continue;
+                }
                 String colorName = entry.containsKey("color") ? String.valueOf(entry.get("color")) : "GRAY";
                 NamedTextColor loreColor = NamedTextColor.NAMES.value(colorName.toLowerCase());
                 if (loreColor == null) loreColor = NamedTextColor.GRAY;
@@ -723,6 +737,8 @@ public class YamlItemLoader {
         // PDC: identifier byte key
         NamespacedKey pdcKey = new NamespacedKey(plugin, pdcKeyStr);
         meta.getPersistentDataContainer().set(pdcKey, PersistentDataType.BYTE, (byte) 1);
+        meta.getPersistentDataContainer().set(itemManager.CUSTOM_ITEM_KEY, PersistentDataType.STRING, id);
+        itemManager.setVanillaFallbackMaterial(meta, material);
 
         // PDC: rarity
         meta.getPersistentDataContainer().set(itemManager.RARITY_KEY,
@@ -731,6 +747,40 @@ public class YamlItemLoader {
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
         return item;
+    }
+
+    private String resolveLocalizedLoreLine(String itemId, int index, String fallback) {
+        return plugin.getLanguageManager().getString(
+                "item." + itemId + ".lore." + index,
+                fallback
+        );
+    }
+
+    private List<String> resolveLocalizedLoreLines(String itemId, List<String> fallbackLines) {
+        List<String> localized = new ArrayList<>();
+        for (int i = 0; i < fallbackLines.size(); i++) {
+            localized.add(resolveLocalizedLoreLine(itemId, i, fallbackLines.get(i)));
+        }
+        return localized;
+    }
+
+    private List<Map<?, ?>> resolveLocalizedLoreEntries(String itemId, List<Map<?, ?>> fallbackEntries) {
+        List<Map<?, ?>> localized = new ArrayList<>();
+        for (int i = 0; i < fallbackEntries.size(); i++) {
+            Map<?, ?> fallbackEntry = fallbackEntries.get(i);
+            Map<String, Object> localizedEntry = new LinkedHashMap<>();
+            if (fallbackEntry != null) {
+                for (Map.Entry<?, ?> entry : fallbackEntry.entrySet()) {
+                    localizedEntry.put(String.valueOf(entry.getKey()), entry.getValue());
+                }
+            }
+            String fallbackText = localizedEntry.containsKey("text")
+                    ? String.valueOf(localizedEntry.get("text"))
+                    : "";
+            localizedEntry.put("text", resolveLocalizedLoreLine(itemId, i, fallbackText));
+            localized.add(localizedEntry);
+        }
+        return localized;
     }
 
     // ── Utilities ───────────────────────────────────────────

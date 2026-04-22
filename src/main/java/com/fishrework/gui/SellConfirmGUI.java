@@ -55,7 +55,7 @@ public class SellConfirmGUI extends BaseGUI {
     private void initializeItems() {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
 
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Info display (center)
         ItemStack info = new ItemStack(Material.PAPER);
@@ -64,9 +64,16 @@ public class SellConfirmGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         infoMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Items: " + totalItems).color(NamedTextColor.GRAY)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellconfirmgui.items_count",
+                        "Items: %count%",
+                        "count", String.valueOf(totalItems))).color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellconfirmgui.total_value",
+                        "Total: %value% %currency%",
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", totalValue),
+                        "currency", currencyName))
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
         ));
         info.setItemMeta(infoMeta);
@@ -79,7 +86,10 @@ public class SellConfirmGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         confirmMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Sell " + totalItems + " items for").color(NamedTextColor.GRAY)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellconfirmgui.sell_items_for",
+                        "Sell %count% items for",
+                        "count", String.valueOf(totalItems))).color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.text(com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
@@ -94,7 +104,9 @@ public class SellConfirmGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         cancelMeta.lore(List.of(
                 Component.empty(),
-            Component.text(bagType == BagType.LAVA_BAG ? "Return to Magma Satchel" : "Return to Fish Bag")
+            plugin.getLanguageManager().getMessage(
+                    bagType == BagType.LAVA_BAG ? "sellconfirmgui.return_to_lava_bag" : "sellconfirmgui.return_to_fish_bag",
+                    bagType == BagType.LAVA_BAG ? "Return to Magma Satchel" : "Return to Fish Bag")
                 .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false)
         ));
@@ -107,7 +119,7 @@ public class SellConfirmGUI extends BaseGUI {
         if (event.getCurrentItem() == null) return;
 
         int slot = event.getSlot();
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         if (slot == 11) {
             // Confirm — process sale
@@ -126,8 +138,12 @@ public class SellConfirmGUI extends BaseGUI {
                     plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
                 }
 
-                player.sendMessage(Component.text("Sold " + totalItems + " items for "
-                        + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName + "!")
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                                "sellconfirmgui.sold_items_for_currency",
+                                "Sold %count% items for %value% %currency%!",
+                                "count", String.valueOf(totalItems),
+                                "value", com.fishrework.util.FormatUtil.format("%.0f", totalValue),
+                                "currency", currencyName)
                         .color(NamedTextColor.GREEN));
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
             } else {

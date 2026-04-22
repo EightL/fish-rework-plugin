@@ -82,19 +82,29 @@ public class RecipeGuideGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Recipe " + (recipeIndex + 1) + "/" + recipes.size())
+        lore.add(Component.text(plugin.getLanguageManager().getString(
+                        "recipeguidegui.recipe_index",
+                        "Recipe %current%/%total%",
+                        "current", String.valueOf(recipeIndex + 1),
+                        "total", String.valueOf(recipes.size())))
                 .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Type: " + formatDisplayType(recipe.getDisplayType()))
+        lore.add(Component.text(plugin.getLanguageManager().getString("recipeguidegui.type_prefix", "Type: ") + formatDisplayType(recipe.getDisplayType()))
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
 
         if (recipe.hasLevelRequirement()) {
-            lore.add(Component.text("Requires Fishing Level " + recipe.getRequiredLevel())
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "recipeguidegui.requires_fishing_level",
+                            "Requires Fishing Level %level%",
+                            "level", String.valueOf(recipe.getRequiredLevel())))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (recipe.hasAdvancementRequirement()) {
-            lore.add(Component.text("Requires " + RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey()))
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "recipeguidegui.requires_advancement",
+                            "Requires %advancement%",
+                            "advancement", RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey())))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -112,7 +122,9 @@ public class RecipeGuideGUI extends BaseGUI {
         Material material = availability.canCraftNow() ? Material.LIME_WOOL : Material.GRAY_WOOL;
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(availability.canCraftNow() ? "Craft" : availability.message())
+        meta.displayName(Component.text(availability.canCraftNow()
+                        ? plugin.getLanguageManager().getString("recipeguidegui.craft", "Craft")
+                        : availability.message())
                 .color(availability.canCraftNow() ? NamedTextColor.GREEN : NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
 
@@ -126,7 +138,10 @@ public class RecipeGuideGUI extends BaseGUI {
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (recipe.hasLevelRequirement()) {
-            lore.add(Component.text("Reach Fishing Level " + recipe.getRequiredLevel() + " to unlock it.")
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "recipeguidegui.reach_level_to_unlock",
+                            "Reach Fishing Level %level% to unlock it.",
+                            "level", String.valueOf(recipe.getRequiredLevel())))
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         } else if (recipe.hasAdvancementRequirement()) {

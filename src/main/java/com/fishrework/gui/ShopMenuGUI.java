@@ -38,7 +38,7 @@ public class ShopMenuGUI extends BaseGUI {
 
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         double balance = data != null ? data.getBalance() : 0;
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Slot 11: Fish Vendor
         ItemStack vendor = new ItemStack(Material.COD);
@@ -82,7 +82,11 @@ public class ShopMenuGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "shopmenugui.balance_prefix",
+                        "Balance: %balance% %currency%",
+                        "balance", com.fishrework.util.FormatUtil.format("%.0f", balance),
+                        "currency", currencyName))
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
                 inventory.setItem(26, balanceItem);

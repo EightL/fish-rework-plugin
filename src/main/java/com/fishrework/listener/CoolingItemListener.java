@@ -77,10 +77,17 @@ public class CoolingItemListener implements Listener {
         if (isMagmaFilter) {
             double resistancePercent = plugin.getConfig().getDouble("heat.magma_filter_resistance_percent", 50.0);
             int durationSeconds = plugin.getConfig().getInt("heat.magma_filter_duration_seconds", 300);
-            player.sendMessage(Component.text("Magma Filter active: -" + (int) resistancePercent + "% heat gain for " + durationSeconds + "s!")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "coolingitemlistener.magma_filter_active",
+                            "Magma Filter active: -%resistance%% heat gain for %duration%s!",
+                            "resistance", String.valueOf((int) resistancePercent),
+                            "duration", String.valueOf(durationSeconds)))
                 .color(NamedTextColor.AQUA));
         } else {
-            player.sendMessage(Component.text("You used a cooling item and reduced your heat by " + (int)heatReduction + "%!")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "coolingitemlistener.heat_reduced",
+                            "You used a cooling item and reduced your heat by %amount%%!",
+                            "amount", String.valueOf((int) heatReduction)))
                 .color(NamedTextColor.AQUA));
         }
                 

@@ -9,6 +9,7 @@ import com.fishrework.model.Rarity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -54,7 +55,7 @@ public class LoreManager {
 
         if (oldLore != null) {
             for (Component line : oldLore) {
-                String plain = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(line);
+                String plain = PlainTextComponentSerializer.plainText().serialize(line);
                 // Stop at stats section or empty line that precedes stats
                 if (plain.trim().isEmpty()) {
                    // Check if next lines look like stats, if so break.
@@ -64,29 +65,7 @@ public class LoreManager {
                    continue; // Skip empty lines for now, we add them back later
                 }
 
-                if (isArtifactItem && isArtifactMarkerLine(plain)) {
-                    continue;
-                }
-
-                if (plain.contains("Rare Creature Chance:") ||
-                    plain.contains("Fishing Speed:") ||
-                    plain.contains("Treasure Chance:") ||
-                    plain.contains("Fishing XP Bonus:") ||
-                    plain.contains("Treasure Find:") ||
-                    plain.contains("Stats double in Nether.") ||
-                    plain.contains("Stats are halved outside of Nether.") ||
-                    plain.contains("Heat Resistance:") ||
-                    plain.contains("Sea Creature Defense:") ||
-                    plain.contains("Sea Creature Defense Modifier:") ||
-                    plain.contains("Sea Creature Attack:") ||
-                    plain.contains("Sea Creature Attack Modifier:") ||
-                    plain.contains("SC Flat Attack:") ||
-                    plain.contains("SC Flat Defense:") ||
-                    plain.contains("Double Catch:") ||
-                    plain.contains("Bobber Damage:") ||
-                    plain.contains("Passive Effect:") ||
-                    plain.contains("Full Set bonus") ||
-                    isRarityLine(plain)) {
+                if (isGeneratedLoreLine(plain, isArtifactItem)) {
                     break;
                 }
                 newLore.add(line);
@@ -244,18 +223,19 @@ public class LoreManager {
 
     private boolean isRarityLine(String plain) {
         for (Rarity r : Rarity.values()) {
-            if (plain.contains(r.name())) return true;
+            if (matchesLocalizedLine(plain, "rarity." + r.name().toLowerCase(Locale.ROOT) + ".name", r.name())) {
+                return true;
+            }
         }
         return false;
     }
 
     private boolean isArtifactMarkerLine(String plain) {
-        String normalized = plain.replace("\u2B50", "").trim();
-        return normalized.equalsIgnoreCase("Artifact");
+        return matchesLocalizedLine(plain, "loremanager.u2b50_artifact", "\u2B50 Artifact");
     }
 
     private boolean isBlankComponent(Component component) {
-        String plain = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(component);
+        String plain = PlainTextComponentSerializer.plainText().serialize(component);
         return plain.trim().isEmpty();
     }
 
@@ -269,6 +249,51 @@ public class LoreManager {
     private static Component statLine(String label, String value) {
         return Component.text(label).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(value).color(NamedTextColor.GREEN));
+    }
+
+    private boolean isGeneratedLoreLine(String plain, boolean isArtifactItem) {
+        if (startsWithLocalizedPrefix(plain, "loremanager.rare_creature_chance", "Rare Creature Chance: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.fishing_speed", "Fishing Speed: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.treasure_chance", "Treasure Chance: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.fishing_xp_bonus", "Fishing XP Bonus: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.heat_resistance", "Heat Resistance: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.sea_creature_defense", "Sea Creature Defense: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.sea_creature_defense_modifier", "Sea Creature Defense Modifier: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.sea_creature_attack", "Sea Creature Attack: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.sea_creature_attack_modifier", "Sea Creature Attack Modifier: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.double_catch", "Double Catch: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.bobber_damage", "Bobber Damage: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.passive_effect", "Passive Effect: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.full_set_bonus", "Full Set bonus:")
+                || startsWithLocalizedPrefix(plain, "loremanager.water_movement", "Water Movement: ")
+                || startsWithLocalizedPrefix(plain, "loremanager.night_multiplier", "Night multiplier: ")
+                || matchesLocalizedLine(plain, "loremanager.stats_are_halved_outside_of", "Stats are halved outside of Nether.")
+                || matchesLocalizedLine(plain, "loremanager.stats_double_in_nether", "Stats double in Nether.")
+                || isRarityLine(plain)) {
+            return true;
+        }
+        return isArtifactItem && isArtifactMarkerLine(plain);
+    }
+
+    private boolean startsWithLocalizedPrefix(String plain, String key, String fallback) {
+        String normalized = plain.trim();
+        String localized = localizedPlain(key, fallback);
+        return normalized.startsWith(localized) || normalized.startsWith(fallback.trim());
+    }
+
+    private boolean matchesLocalizedLine(String plain, String key, String fallback) {
+        String normalized = plain.trim();
+        String localized = localizedPlain(key, fallback);
+        return normalized.equalsIgnoreCase(localized)
+                || normalized.equalsIgnoreCase(fallback.trim())
+                || normalized.equalsIgnoreCase(localized.replace("\u2B50", "").trim())
+                || normalized.equalsIgnoreCase(fallback.replace("\u2B50", "").trim());
+    }
+
+    private String localizedPlain(String key, String fallback) {
+        return PlainTextComponentSerializer.plainText()
+                .serialize(plugin.getLanguageManager().getMessage(key, fallback))
+                .trim();
     }
 
     private String formatPotionName(String key) {
@@ -306,16 +331,16 @@ public class LoreManager {
 
         if (pdc.has(im.SCALE_ARMOR_KEY, PersistentDataType.BYTE)) {
             lines.add(plugin.getLanguageManager().getMessage("loremanager.full_set_bonus", "Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Water Movement: ", "+0.15"));
+            lines.add(statLine(localizedPlain("loremanager.water_movement", "Water Movement: "), "+0.15"));
         } else if (pdc.has(im.IRONCLAD_ARMOR_KEY, PersistentDataType.BYTE)) {
             lines.add(plugin.getLanguageManager().getMessage("loremanager.full_set_bonus", "Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Water Movement: ", "+0.5"));
+            lines.add(statLine(localizedPlain("loremanager.water_movement", "Water Movement: "), "+0.5"));
         } else if (pdc.has(im.DREADPLATE_ARMOR_KEY, PersistentDataType.BYTE)) {
             lines.add(plugin.getLanguageManager().getMessage("loremanager.full_set_bonus", "Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Water Movement: ", "+0.7"));
+            lines.add(statLine(localizedPlain("loremanager.water_movement", "Water Movement: "), "+0.7"));
         } else if (pdc.has(im.DEADMAN_ARMOR_KEY, PersistentDataType.BYTE)) {
             lines.add(plugin.getLanguageManager().getMessage("loremanager.full_set_bonus", "Full Set bonus:").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            lines.add(statLine("Night multiplier: ", "2×"));
+            lines.add(statLine(localizedPlain("loremanager.night_multiplier", "Night multiplier: "), "2×"));
         }
         return lines;
     }

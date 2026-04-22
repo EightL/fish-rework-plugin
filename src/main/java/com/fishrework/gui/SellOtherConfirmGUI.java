@@ -40,7 +40,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
     private void initializeItems() {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
 
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         ItemStack info = new ItemStack(Material.DRIED_KELP);
         ItemMeta infoMeta = info.getItemMeta();
@@ -48,9 +48,16 @@ public class SellOtherConfirmGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         infoMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Items: " + totalItems).color(NamedTextColor.GRAY)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellotherconfirmgui.items_count",
+                        "Items: %count%",
+                        "count", String.valueOf(totalItems))).color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false),
-                Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellotherconfirmgui.total_value",
+                        "Total: %value% %currency%",
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", totalValue),
+                        "currency", currencyName))
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
         ));
         info.setItemMeta(infoMeta);
@@ -98,7 +105,7 @@ public class SellOtherConfirmGUI extends BaseGUI {
     }
 
     private void sellOtherItems() {
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         double unitPrice = plugin.getConfig().getDouble("economy.other_vendor_price", 1.0);
 
         int soldItems = 0;
@@ -126,8 +133,12 @@ public class SellOtherConfirmGUI extends BaseGUI {
             plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
         }
 
-        player.sendMessage(Component.text("Sold " + soldItems + " Other items for "
-                + com.fishrework.util.FormatUtil.format("%.0f", earnings) + " " + currencyName + "!")
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "sellotherconfirmgui.sold_other_items",
+                        "Sold %count% Other items for %value% %currency%!",
+                        "count", String.valueOf(soldItems),
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", earnings),
+                        "currency", currencyName)
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
     }

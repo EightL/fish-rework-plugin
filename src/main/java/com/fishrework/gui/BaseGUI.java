@@ -123,7 +123,7 @@ public abstract class BaseGUI implements InventoryHolder {
     protected ItemStack createPageInfo(int page, int totalPages, String subtitle) {
         ItemStack item = new ItemStack(Material.BOOK);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("Page " + (page + 1) + "/" + totalPages).color(NamedTextColor.YELLOW)
+        meta.displayName(Component.text(plugin.getLanguageManager().getString("pagination.page", "Page ") + (page + 1) + "/" + totalPages).color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         if (subtitle != null) {
             meta.lore(List.of(Component.text(subtitle).color(NamedTextColor.GRAY)

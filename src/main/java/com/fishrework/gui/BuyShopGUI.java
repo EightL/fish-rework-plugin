@@ -98,6 +98,10 @@ public class BuyShopGUI extends BaseGUI {
             if (price <= 0) continue;
 
             Rarity rarity = Rarity.UNCOMMON;
+            String localizedName = plugin.getLanguageManager().getString(
+                "bait." + definition.key() + ".name",
+                definition.displayName()
+            );
 
             ItemStack display = plugin.getItemManager().createBiomeBaitItem(
                 definition.key(),
@@ -110,10 +114,10 @@ public class BuyShopGUI extends BaseGUI {
 
             buyEntries.add(new BuyEntry(
                 "biome_bait:" + definition.key(),
-                definition.displayName(),
-                    display,
-                    price,
-                    true
+                localizedName,
+                display,
+                price,
+                true
             ));
         }
 
@@ -122,7 +126,13 @@ public class BuyShopGUI extends BaseGUI {
         if (fishBagPrice > 0) {
             ItemStack fishBag = plugin.getItemManager().getItem("fish_bag");
             if (fishBag != null) {
-                buyEntries.add(new BuyEntry("fish_bag", "Fish Bag", fishBag, fishBagPrice, false));
+                buyEntries.add(new BuyEntry(
+                    "fish_bag",
+                    extractDisplayName(fishBag, "Fish Bag"),
+                    fishBag,
+                    fishBagPrice,
+                    false
+                ));
             }
         }
 
@@ -130,7 +140,13 @@ public class BuyShopGUI extends BaseGUI {
         if (lavaBagPrice > 0 && fishingLevel >= MAGMA_SATCHEL_REQUIRED_LEVEL) {
             ItemStack lavaBag = plugin.getItemManager().getItem("lava_bag");
             if (lavaBag != null) {
-                buyEntries.add(new BuyEntry("lava_bag", "Magma Satchel", lavaBag, lavaBagPrice, false));
+                buyEntries.add(new BuyEntry(
+                    "lava_bag",
+                    extractDisplayName(lavaBag, "Magma Satchel"),
+                    lavaBag,
+                    lavaBagPrice,
+                    false
+                ));
             }
         }
 
@@ -233,7 +249,7 @@ public class BuyShopGUI extends BaseGUI {
 
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         double balance = data != null ? data.getBalance() : 0;
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Place bait items in rows 0-4 (slots 0-44)
         int baitSlot = 0;
@@ -245,7 +261,11 @@ public class BuyShopGUI extends BaseGUI {
                 // Add price lore
                 List<Component> lore = meta.lore() != null ? new ArrayList<>(meta.lore()) : new ArrayList<>();
                 lore.add(Component.empty());
-                lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "buyshopgui.price",
+                                "Price: %price% %currency%",
+                                "price", com.fishrework.util.FormatUtil.format("%.0f", entry.price),
+                                "currency", currencyName))
                     .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(plugin.getLanguageManager().getMessage("buyshopgui.click_to_buy_1", "Click to buy 1").color(NamedTextColor.GREEN)
@@ -275,7 +295,11 @@ public class BuyShopGUI extends BaseGUI {
 
                 List<Component> lore = meta.lore() != null ? new ArrayList<>(meta.lore()) : new ArrayList<>();
                 lore.add(Component.empty());
-                lore.add(Component.text("Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName)
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "buyshopgui.price",
+                                "Price: %price% %currency%",
+                                "price", com.fishrework.util.FormatUtil.format("%.0f", entry.price),
+                                "currency", currencyName))
                         .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(plugin.getLanguageManager().getMessage("buyshopgui.click_to_buy", "Click to buy!").color(NamedTextColor.GREEN)
@@ -294,7 +318,11 @@ public class BuyShopGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "buyshopgui.balance_prefix",
+                        "Balance: %balance% %currency%",
+                        "balance", com.fishrework.util.FormatUtil.format("%.0f", balance),
+                        "currency", currencyName))
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
             inventory.setItem(BALANCE_SLOT, balanceItem);
@@ -305,7 +333,7 @@ public class BuyShopGUI extends BaseGUI {
         if (event.getCurrentItem() == null) return;
 
         int slot = event.getSlot();
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Back button
         if (slot == BACK_SLOT) {
@@ -342,8 +370,11 @@ public class BuyShopGUI extends BaseGUI {
 
         if ("lava_bag".equalsIgnoreCase(clickedEntry.id)
             && data.getLevel(Skill.FISHING) < MAGMA_SATCHEL_REQUIRED_LEVEL) {
-            player.sendMessage(Component.text("Magma Satchel unlocks at Fishing level " + MAGMA_SATCHEL_REQUIRED_LEVEL + ".")
-                .color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "buyshopgui.magma_satchel_unlocks_at",
+                            "Magma Satchel unlocks at Fishing level %level%.",
+                            "level", String.valueOf(MAGMA_SATCHEL_REQUIRED_LEVEL))
+                    .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
         }
@@ -351,8 +382,12 @@ public class BuyShopGUI extends BaseGUI {
         int outputQuantity = 1;
 
         if (data.getBalance() < totalCost) {
-            player.sendMessage(Component.text("Not enough " + currencyName + "! Need "
-                    + com.fishrework.util.FormatUtil.format("%.0f", totalCost) + " but have " + com.fishrework.util.FormatUtil.format("%.0f", data.getBalance()))
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "buyshopgui.not_enough_currency",
+                            "Not enough %currency%! Need %required% but have %current%",
+                            "currency", currencyName,
+                            "required", com.fishrework.util.FormatUtil.format("%.0f", totalCost),
+                            "current", com.fishrework.util.FormatUtil.format("%.0f", data.getBalance()))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
@@ -378,9 +413,13 @@ public class BuyShopGUI extends BaseGUI {
             player.getWorld().dropItemNaturally(player.getLocation(), drop);
         }
 
-        player.sendMessage(Component.text("Bought " + totalBaits + "x " + clickedEntry.displayName + " for "
-                + com.fishrework.util.FormatUtil.format("%.0f", totalCost) + " " + currencyName
-                + "!")
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "buyshopgui.bought_item",
+                        "Bought %count%x %item% for %cost% %currency%!",
+                        "count", String.valueOf(totalBaits),
+                        "item", clickedEntry.displayName,
+                        "cost", com.fishrework.util.FormatUtil.format("%.0f", totalCost),
+                        "currency", currencyName)
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         initializeItems(); // Refresh balance display
@@ -391,6 +430,14 @@ public class BuyShopGUI extends BaseGUI {
                 && (entryId.startsWith("biome_bait:")
                 || "treasure_bait".equals(entryId)
                 || "xp_bait".equals(entryId));
+    }
+
+    private String extractDisplayName(ItemStack item, String fallback) {
+        if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            return net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                .serialize(item.getItemMeta().displayName());
+        }
+        return fallback;
     }
 
     private List<BiomeBaitDefinition> getConfiguredBiomeBaits() {

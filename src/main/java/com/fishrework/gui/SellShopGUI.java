@@ -203,7 +203,7 @@ public class SellShopGUI extends BaseGUI {
 
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         double balance = data != null ? data.getBalance() : 0;
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         List<SellEntry> filteredEntries = getFilteredEntries();
 
         int totalPages = Math.max(1, (int) Math.ceil((double) filteredEntries.size() / ITEMS_PER_PAGE));
@@ -225,18 +225,33 @@ public class SellShopGUI extends BaseGUI {
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.empty());
-            lore.add(Component.text("Sell Price: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price) + " " + currencyName + " each")
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.sell_price_each",
+                            "Sell Price: %price% %currency% each",
+                            "price", com.fishrework.util.FormatUtil.format("%.0f", entry.price),
+                            "currency", currencyName))
                     .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Buy Price: " + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + " each")
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.buy_price_each",
+                            "Buy Price: %price% %currency% each",
+                            "price", com.fishrework.util.FormatUtil.format("%.0f", buyPrice),
+                            "currency", currencyName))
                     .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (POTTERY_SHERD_WILDCARD_ID.equals(entry.customId)) {
                 lore.add(plugin.getLanguageManager().getMessage("sellshopgui.counts_all_pottery_sherd_variants", "Counts all pottery sherd variants")
                         .color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
             }
-            lore.add(Component.text("You have: " + count).color(NamedTextColor.GRAY)
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.you_have_count",
+                            "You have: %count%",
+                            "count", String.valueOf(count))).color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
             if (count > 0) {
-                lore.add(Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", entry.price * count) + " " + currencyName)
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "sellshopgui.total_value",
+                                "Total: %value% %currency%",
+                                "value", com.fishrework.util.FormatUtil.format("%.0f", entry.price * count),
+                                "currency", currencyName))
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
                 lore.add(Component.empty());
                 lore.add(plugin.getLanguageManager().getMessage("sellshopgui.leftclick_sell_all", "Left-Click: Sell all").color(NamedTextColor.YELLOW)
@@ -280,7 +295,11 @@ public class SellShopGUI extends BaseGUI {
         double totalValue = calculateTotalSellValue(player);
         saMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
+                Component.text(plugin.getLanguageManager().getString(
+                        "sellshopgui.total_value_long",
+                        "Total value: %value% %currency%",
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", totalValue),
+                        "currency", currencyName))
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 plugin.getLanguageManager().getMessage("sellshopgui.click_to_sell_everything", "Click to sell everything!").color(NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false)
@@ -306,12 +325,22 @@ public class SellShopGUI extends BaseGUI {
         sellOtherLore.add(Component.empty());
         sellOtherLore.add(plugin.getLanguageManager().getMessage("sellshopgui.sells_only_other_vendor_items", "Sells only 'other' vendor items").color(NamedTextColor.GRAY)
             .decoration(TextDecoration.ITALIC, false));
-        sellOtherLore.add(Component.text("Price: 1 " + currencyName + " each").color(NamedTextColor.GOLD)
+        sellOtherLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "sellshopgui.other_price_each",
+                        "Price: 1 %currency% each",
+                        "currency", currencyName)).color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false));
-        sellOtherLore.add(Component.text("Found: " + otherCount).color(NamedTextColor.AQUA)
+        sellOtherLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "sellshopgui.other_found_count",
+                        "Found: %count%",
+                        "count", String.valueOf(otherCount))).color(NamedTextColor.AQUA)
             .decoration(TextDecoration.ITALIC, false));
         if (otherCount > 0) {
-            sellOtherLore.add(Component.text("Total: " + com.fishrework.util.FormatUtil.format("%.0f", otherTotal) + " " + currencyName)
+            sellOtherLore.add(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.total_value",
+                            "Total: %value% %currency%",
+                            "value", com.fishrework.util.FormatUtil.format("%.0f", otherTotal),
+                            "currency", currencyName))
                 .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
         }
         sellOtherLore.add(Component.empty());
@@ -335,7 +364,10 @@ public class SellShopGUI extends BaseGUI {
             }
             int hidden = grouped.size() - shown;
             if (hidden > 0) {
-            sellOtherLore.add(Component.text("... and " + hidden + " more").color(NamedTextColor.DARK_GRAY)
+            sellOtherLore.add(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.and_more",
+                            "... and %count% more",
+                            "count", String.valueOf(hidden))).color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
             }
         }
@@ -350,7 +382,7 @@ public class SellShopGUI extends BaseGUI {
         // Filter toggle
         ItemStack filterItem = new ItemStack(activeFilter.icon());
         ItemMeta filterMeta = filterItem.getItemMeta();
-        filterMeta.displayName(Component.text("Filter: " + activeFilter.displayName())
+        filterMeta.displayName(Component.text(plugin.getLanguageManager().getString("sellshopgui.filter_prefix", "Filter: ") + activeFilter.displayName())
             .color(activeFilter.color())
             .decoration(TextDecoration.ITALIC, false));
         filterMeta.lore(List.of(
@@ -363,7 +395,11 @@ public class SellShopGUI extends BaseGUI {
         // Balance display
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "sellshopgui.balance_prefix",
+                        "Balance: %balance% %currency%",
+                        "balance", com.fishrework.util.FormatUtil.format("%.0f", balance),
+                        "currency", currencyName))
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
         inventory.setItem(53, balanceItem);
@@ -450,7 +486,7 @@ public class SellShopGUI extends BaseGUI {
         if (event.getCurrentItem() == null) return;
 
         int slot = event.getSlot();
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Navigation
         if (slot == 45) {
@@ -515,13 +551,21 @@ public class SellShopGUI extends BaseGUI {
                         data.getSession().addDoubloonsEarned(earnings);
                         plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
                     }
-                    player.sendMessage(Component.text("Sold " + sold + "x " + entry.displayName + " for "
-                            + com.fishrework.util.FormatUtil.format("%.0f", earnings) + " " + currencyName + "!")
+                    player.sendMessage(plugin.getLanguageManager().getMessage(
+                                    "sellshopgui.sold_entry",
+                                    "Sold %count%x %item% for %value% %currency%!",
+                                    "count", String.valueOf(sold),
+                                    "item", entry.displayName,
+                                    "value", com.fishrework.util.FormatUtil.format("%.0f", earnings),
+                                    "currency", currencyName)
                             .color(NamedTextColor.GREEN));
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     initializeItems(); // Refresh
                 } else {
-                    player.sendMessage(Component.text("You don't have any " + entry.displayName + " to sell!")
+                    player.sendMessage(plugin.getLanguageManager().getMessage(
+                                    "sellshopgui.no_item_to_sell",
+                                    "You don't have any %item% to sell!",
+                                    "item", entry.displayName)
                             .color(NamedTextColor.RED));
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
                 }
@@ -557,14 +601,18 @@ public class SellShopGUI extends BaseGUI {
         if (now - lastResultClick < 150) return;
         lastResultClick = now;
 
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         double buyPrice = entry.price * 5.0;
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return;
 
         if (data.getBalance() < buyPrice) {
-            player.sendMessage(Component.text("You need " + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + " to buy "
-                    + entry.displayName + "!").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "sellshopgui.need_currency_to_buy",
+                            "You need %value% %currency% to buy %item%!",
+                            "value", com.fishrework.util.FormatUtil.format("%.0f", buyPrice),
+                            "currency", currencyName,
+                            "item", entry.displayName).color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
         }
@@ -596,15 +644,22 @@ public class SellShopGUI extends BaseGUI {
         // and here (e.g. rapid double-click), so roll back the item and abort.
         if (!data.deductBalance(buyPrice)) {
             player.getInventory().removeItem(bought);
-            player.sendMessage(Component.text("You don't have enough " + currencyName + " to buy this!")
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "sellshopgui.not_enough_currency",
+                            "You don't have enough %currency% to buy this!",
+                            "currency", currencyName)
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
         }
         plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
 
-        player.sendMessage(Component.text("Bought 1x " + entry.displayName + " for "
-                + com.fishrework.util.FormatUtil.format("%.0f", buyPrice) + " " + currencyName + "!")
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "sellshopgui.bought_entry",
+                        "Bought 1x %item% for %value% %currency%!",
+                        "item", entry.displayName,
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", buyPrice),
+                        "currency", currencyName)
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.15f);
         initializeItems();
@@ -640,7 +695,7 @@ public class SellShopGUI extends BaseGUI {
     }
 
     private void sellAllFromInventory(Player player) {
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         double totalEarnings = 0;
         int totalItems = 0;
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
@@ -675,8 +730,12 @@ public class SellShopGUI extends BaseGUI {
                 data.getSession().addDoubloonsEarned(totalEarnings);
                 plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
             }
-            player.sendMessage(Component.text("Sold " + totalItems + " items for "
-                    + com.fishrework.util.FormatUtil.format("%.0f", totalEarnings) + " " + currencyName + "!")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "sellshopgui.sold_items_summary",
+                            "Sold %count% items for %value% %currency%!",
+                            "count", String.valueOf(totalItems),
+                            "value", com.fishrework.util.FormatUtil.format("%.0f", totalEarnings),
+                            "currency", currencyName))
                     .color(NamedTextColor.GREEN));
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.2f);
             initializeItems();

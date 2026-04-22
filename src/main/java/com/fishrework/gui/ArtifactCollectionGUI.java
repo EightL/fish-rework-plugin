@@ -97,10 +97,13 @@ public class ArtifactCollectionGUI extends BaseGUI {
                 lore.add(Component.empty());
                 lore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.rarity", "Rarity: ").color(NamedTextColor.DARK_GRAY)
                         .decoration(TextDecoration.ITALIC, false)
-                        .append(Component.text(artifact.getRarity().name()).color(artifact.getRarity().getColor())
+                        .append(Component.text(artifact.getRarity().getLocalizedName(plugin.getLanguageManager())).color(artifact.getRarity().getColor())
                                 .decoration(TextDecoration.BOLD, true)));
                 lore.add(Component.empty());
-                lore.add(Component.text("Found in " + artifact.getRarity().name() + " Treasure Chests")
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "artifactcollectiongui.found_in_treasure_chests",
+                                "Found in %rarity% Treasure Chests",
+                                "rarity", artifact.getRarity().getLocalizedName(plugin.getLanguageManager())))
                         .color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
                 meta.lore(lore);
                 item.setItemMeta(meta);
@@ -116,9 +119,17 @@ public class ArtifactCollectionGUI extends BaseGUI {
                 .decoration(TextDecoration.BOLD, true));
         List<Component> headerLore = new ArrayList<>();
         headerLore.add(Component.empty());
-        headerLore.add(Component.text("Collected: " + collected + "/" + total).color(NamedTextColor.YELLOW)
+        headerLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "artifactcollectiongui.collected_count",
+                        "Collected: %collected%/%total%",
+                        "collected", String.valueOf(collected),
+                        "total", String.valueOf(total)))
+                .color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
-        headerLore.add(Component.text("Artifact Chance: " + com.fishrework.util.FormatUtil.format("%.1f%%", artifactChance))
+        headerLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "artifactcollectiongui.artifact_chance",
+                        "Artifact Chance: %chance%",
+                        "chance", com.fishrework.util.FormatUtil.format("%.1f%%", artifactChance)))
                 .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
         headerLore.add(Component.empty());
         headerLore.add(plugin.getLanguageManager().getMessage("artifactcollectiongui.rare_collectibles_found_in", "Rare collectibles found in").color(NamedTextColor.GRAY)
@@ -148,7 +159,9 @@ public class ArtifactCollectionGUI extends BaseGUI {
         // Filter Button (Slot 50)
         ItemStack filterItem = new ItemStack(Material.HOPPER);
         ItemMeta filterMeta = filterItem.getItemMeta();
-        String filterName = (filter == null) ? "ALL" : filter.name();
+        String filterName = (filter == null)
+                ? plugin.getLanguageManager().getString("artifactcollectiongui.all", "ALL")
+                : filter.getLocalizedName(plugin.getLanguageManager());
         net.kyori.adventure.text.format.TextColor filterColor = (filter == null) ? NamedTextColor.WHITE : filter.getColor();
         
         filterMeta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.filter", "Filter: ").color(NamedTextColor.GOLD)
@@ -168,9 +181,15 @@ public class ArtifactCollectionGUI extends BaseGUI {
         pageMeta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.stats", "Stats").color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> pageLore = new ArrayList<>();
-        pageLore.add(Component.text("Showing: " + filterName).color(NamedTextColor.GRAY)
+        pageLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "artifactcollectiongui.showing_filter",
+                        "Showing: %filter%",
+                        "filter", filterName)).color(NamedTextColor.GRAY)
                  .decoration(TextDecoration.ITALIC, false));
-        pageLore.add(Component.text("Count: " + displayArtifacts.size()).color(NamedTextColor.GRAY)
+        pageLore.add(Component.text(plugin.getLanguageManager().getString(
+                        "artifactcollectiongui.count",
+                        "Count: %count%",
+                        "count", String.valueOf(displayArtifacts.size()))).color(NamedTextColor.GRAY)
                  .decoration(TextDecoration.ITALIC, false));
         pageMeta.lore(pageLore);
         pageInfo.setItemMeta(pageMeta);

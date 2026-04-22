@@ -26,7 +26,8 @@ public class LeaderboardGUI extends BaseGUI {
     private final Skill skill;
 
     public LeaderboardGUI(FishRework plugin, Player player, Skill skill) {
-        super(plugin, 6, localizedTitle(plugin, "leaderboardgui.title_prefix", "Leaderboard: ") + skill.getDisplayName());
+        super(plugin, 6, localizedTitle(plugin, "leaderboardgui.title_prefix", "Leaderboard: ")
+                + skill.getLocalizedDisplayName(plugin.getLanguageManager()));
         this.player = player;
         this.skill = skill;
         initializeItems();
@@ -63,10 +64,19 @@ public class LeaderboardGUI extends BaseGUI {
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) head.getItemMeta();
             meta.setOwningPlayer(offlinePlayer);
-            meta.displayName(Component.text("#" + rank + " " + name).color(NamedTextColor.GOLD));
+            meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                            "leaderboardgui.rank_prefix",
+                            "#%rank% %name%",
+                            "rank", String.valueOf(rank),
+                            "name", name))
+                    .color(NamedTextColor.GOLD));
             
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("Level: " + level).color(NamedTextColor.YELLOW));
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "leaderboardgui.level_prefix",
+                            "Level: %level%",
+                            "level", String.valueOf(level)))
+                    .color(NamedTextColor.YELLOW));
             meta.lore(lore);
             head.setItemMeta(meta);
             

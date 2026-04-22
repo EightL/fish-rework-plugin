@@ -125,7 +125,10 @@ public class LavaFishingListener implements Listener {
         int fishingLevel = data != null ? data.getLevel(Skill.FISHING) : 0;
         if (fishingLevel < LAVA_FISHING_REQUIRED_LEVEL) {
             event.setCancelled(true);
-            player.sendMessage(Component.text("You need Fishing level " + LAVA_FISHING_REQUIRED_LEVEL + " to lava fish.")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "lavafishinglistener.required_level",
+                            "You need Fishing level %level% to lava fish.",
+                            "level", String.valueOf(LAVA_FISHING_REQUIRED_LEVEL)))
                 .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1.0f);
             return;
@@ -348,7 +351,10 @@ public class LavaFishingListener implements Listener {
                 itemEntity.setInvulnerable(true);
             }
 
-            player.sendMessage(Component.text("You pulled up a " + mobDef.getDisplayName() + "!")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "lavafishinglistener.you_pulled_up",
+                            "You pulled up a %mob%!",
+                            "mob", mobDef.getLocalizedDisplayName(plugin.getLanguageManager())))
                     .color(mobDef.getRarity().getColor()));
 
             plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitContext.xpMultiplier);
@@ -356,7 +362,7 @@ public class LavaFishingListener implements Listener {
             session.recordCatch();
             session.recordTreasure();
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
             return;
         }
 
@@ -374,7 +380,7 @@ public class LavaFishingListener implements Listener {
 
         if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), true);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
         }
     }
 
@@ -384,7 +390,7 @@ public class LavaFishingListener implements Listener {
             baseXp *= (1.0 + baitXpMultiplier / 100.0);
         }
         baseXp *= session.getStreakMultiplier();
-        plugin.getSkillManager().grantXp(player, Skill.FISHING, baseXp, "Lava Fishing");
+        plugin.getSkillManager().grantXp(player, Skill.FISHING, baseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
     }
 
     private void consumeLavaRodDurability(Player player) {

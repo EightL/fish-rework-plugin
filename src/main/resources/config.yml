@@ -45,12 +45,6 @@ bonuses:
   xp_multiplier_per_level: 0.02       # At lvl 50 = +1.0x (total 2.0x)
   rare_creature_chance_per_level: 0.0  # Not scaled by level, boosted by equipment only
 
-messages:
-  level_up: "&b&lLEVEL UP! &7You are now Fishing Level &e%level%&7!"
-  action_bar: "&b+ %xp% XP &7(%current%/%needed%)"
-  lava_catch_escaped: "The catch escaped!"
-  lava_reel_now: "⚡ REEL IN NOW! ⚡"
-
 # Global settings
 general:
   xp_multiplier: 1.2   # Multiplies all normal earned XP (40% lower than 2.0 baseline)
@@ -68,14 +62,6 @@ fishing_tips:
   min_delay_seconds: 180
   max_delay_seconds: 420
   wiki_url: "https://eightl-projects.vercel.app"  # Used in tips that reference the wiki
-  tips:
-    - "Use /fish or /fishing to open your fishing progression GUI."
-    - "Use /fish help to list all available commands."
-    - "Visit the wiki for recipes, exact sea creature info, and custom item details: https://eightl-projects.vercel.app"
-    - "Struggling against sea creatures? Craft custom gear and visit the wiki for builds: https://eightl-projects.vercel.app"
-    - "Use /fish bag to store catches and keep your inventory clean."
-    - "Use /fish autosell to auto-sell common fish while you grind."
-    - "Use /fish notifications to toggle these tip notifications."
 
 # Mob Spawn Weights
 # ─────────────────────────────────────────────────────────────
@@ -836,4 +822,3 @@ features:
   fishing_tips_enabled: true         # Periodic fishing tips (overrides fishing_tips.enabled)
   catch_streak_enabled: true         # Catch streak XP multiplier system
   double_catch_enabled: true         # Double catch chance mechanic
-

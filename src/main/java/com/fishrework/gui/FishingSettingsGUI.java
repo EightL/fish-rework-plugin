@@ -44,7 +44,7 @@ public class FishingSettingsGUI extends BaseGUI {
         boolean featureEnabled = plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED);
         return createToggleItem(
                 featureEnabled ? Material.GOLD_INGOT : Material.BARRIER,
-                "Auto-Sell",
+                plugin.getLanguageManager().getString("fishingsettingsgui.autosell", "Auto-Sell"),
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
@@ -64,7 +64,7 @@ public class FishingSettingsGUI extends BaseGUI {
         boolean featureEnabled = plugin.isFeatureEnabled(FeatureKeys.FISHING_TIPS_ENABLED);
         return createToggleItem(
                 featureEnabled ? Material.BELL : Material.BARRIER,
-                "Tip Notifications",
+                plugin.getLanguageManager().getString("fishingsettingsgui.tip_notifications", "Tip Notifications"),
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
@@ -84,7 +84,7 @@ public class FishingSettingsGUI extends BaseGUI {
         boolean featureEnabled = plugin.isFeatureEnabled(FeatureKeys.DAMAGE_INDICATORS_ENABLED);
         return createToggleItem(
                 featureEnabled ? Material.REDSTONE : Material.BARRIER,
-                "Damage Indicators",
+                plugin.getLanguageManager().getString("fishingsettingsgui.damage_indicators", "Damage Indicators"),
                 featureEnabled ? enabled : null,
                 featureEnabled
                         ? List.of(
@@ -108,7 +108,9 @@ public class FishingSettingsGUI extends BaseGUI {
             case LOW -> Material.GUNPOWDER;
         });
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("Sea Creature Particles: " + mode.getId().toUpperCase())
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "fishingsettingsgui.particles_prefix",
+                        "Sea Creature Particles: ") + mode.getId().toUpperCase())
                 .color(switch (mode) {
                     case HIGH -> NamedTextColor.GREEN;
                     case MEDIUM -> NamedTextColor.YELLOW;
@@ -137,10 +139,10 @@ public class FishingSettingsGUI extends BaseGUI {
         String suffix;
         if (enabled == null) {
             color = NamedTextColor.GRAY;
-            suffix = "DISABLED";
+            suffix = plugin.getLanguageManager().getString("common.disabled", "DISABLED");
         } else {
             color = enabled ? NamedTextColor.GREEN : NamedTextColor.RED;
-            suffix = enabled ? "ON" : "OFF";
+            suffix = plugin.getLanguageManager().getString(enabled ? "common.on" : "common.off", enabled ? "ON" : "OFF");
         }
 
         meta.displayName(Component.text(label + ": " + suffix)

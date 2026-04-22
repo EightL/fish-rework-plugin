@@ -72,7 +72,7 @@ public class CurrentFishChancesGUI extends BaseGUI {
         List<Component> summaryLore = new ArrayList<>();
         summaryLore.add(Component.empty());
         summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.biome", "Biome: ").color(NamedTextColor.GRAY)
-                .append(Component.text(snapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
+                .append(Component.text(snapshot.biomeGroup().getLocalizedName(plugin.getLanguageManager())).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
         summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.rare_bonus", "Rare Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", snapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
@@ -82,7 +82,9 @@ public class CurrentFishChancesGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
         if (snapshot.activeBaitId() != null && snapshot.activeBaitDisplayName() != null) {
             NamedTextColor baitColor = snapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
-            String suffix = snapshot.baitAppliesToContext() ? "" : " (inactive here)";
+            String suffix = snapshot.baitAppliesToContext()
+                    ? ""
+                    : plugin.getLanguageManager().getString("currentfishchancesgui.bait_inactive_suffix", " (inactive here)");
             summaryLore.add(plugin.getLanguageManager().getMessage("currentfishchancesgui.bait", "Bait: ").color(NamedTextColor.GRAY)
                     .append(Component.text(snapshot.activeBaitDisplayName() + suffix).color(baitColor))
                     .decoration(TextDecoration.ITALIC, false));
@@ -163,7 +165,8 @@ public class CurrentFishChancesGUI extends BaseGUI {
 
         setPaginationControls(45, 53, page, totalPages);
         setBackButton(49);
-        inventory.setItem(50, createPageInfo(page, totalPages, "Sorted by highest chance"));
+        inventory.setItem(50, createPageInfo(page, totalPages,
+                plugin.getLanguageManager().getString("currentfishchancesgui.page_sort", "Sorted by highest chance")));
     }
 
     @Override

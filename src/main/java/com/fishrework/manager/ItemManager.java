@@ -342,11 +342,11 @@ public class ItemManager {
     public ItemStack createBaitItem(com.fishrework.model.Bait bait) {
         ItemStack item = new ItemStack(bait.getMaterial());
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(bait.getDisplayName()).color(bait.getRarity().getColor())
+        meta.displayName(Component.text(bait.getLocalizedDisplayName(plugin.getLanguageManager())).color(bait.getRarity().getColor())
                 .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text(bait.getDescription()).color(NamedTextColor.GRAY)
+        lore.add(Component.text(bait.getLocalizedDescription(plugin.getLanguageManager())).color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
         lore.add(plugin.getLanguageManager().getMessage("itemmanager.hold_in_offhand_while_fishing", "Hold in offhand while fishing").color(NamedTextColor.YELLOW)
@@ -356,7 +356,9 @@ public class ItemManager {
 
         meta.lore(lore);
         meta.getPersistentDataContainer().set(BAIT_KEY, PersistentDataType.STRING, bait.getId());
+        meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, bait.getId());
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, bait.getRarity().name());
+        setVanillaFallbackMaterial(meta, bait.getMaterial());
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
         return item;
@@ -372,12 +374,18 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = mob.getRarity() != null ? mob.getRarity() : Rarity.COMMON;
 
-        meta.displayName(Component.text(mob.getCollectionName() + " Bait")
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "itemmanager.bait_name",
+                        "%name% Bait",
+                        "name", mob.getLocalizedCollectionName(plugin.getLanguageManager())))
             .color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Targets: " + mob.getDisplayName()).color(NamedTextColor.GRAY)
+        lore.add(Component.text(plugin.getLanguageManager().getString(
+                        "itemmanager.targets_prefix",
+                        "Targets: %target%",
+                        "target", mob.getLocalizedDisplayName(plugin.getLanguageManager()))).color(NamedTextColor.GRAY)
             .decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
         lore.add(plugin.getLanguageManager().getMessage("itemmanager.always_adds_this_sea_creature", "Always adds this sea creature to the pool").color(NamedTextColor.AQUA)
@@ -413,7 +421,9 @@ public class ItemManager {
 
         ItemStack item = new ItemStack(resolvedIcon);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(displayName)
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                "bait." + baitId + ".name",
+                displayName))
             .color(resolvedRarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
@@ -437,6 +447,7 @@ public class ItemManager {
         meta.getPersistentDataContainer().set(BAIT_NATIVE_BIOME_GROUPS_KEY, PersistentDataType.STRING, encodeBiomeCsv(nativeBiomeGroups));
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "biome_bait_" + baitId);
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, resolvedRarity.name());
+        setVanillaFallbackMaterial(meta, resolvedIcon);
         item.setItemMeta(meta);
         plugin.getLoreManager().updateLore(item);
         return item;
@@ -593,8 +604,10 @@ public class ItemManager {
                 .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
+        meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "fish_bag");
         meta.getPersistentDataContainer().set(FISH_BAG_KEY, PersistentDataType.BYTE, (byte) 1);
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
+        setVanillaFallbackMaterial(meta, item.getType());
         item.setItemMeta(meta);
         return item;
     }
@@ -616,7 +629,10 @@ public class ItemManager {
                 plugin.getLanguageManager().getMessage("itemmanager.rightclick", "Right-click").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)
                         .append(plugin.getLanguageManager().getMessage("itemmanager.to_open", " to open.").color(NamedTextColor.GRAY))
         ));
+        meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "lava_bag");
         meta.getPersistentDataContainer().set(LAVA_BAG_KEY, PersistentDataType.BYTE, (byte) 1);
+        meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, Rarity.RARE.name());
+        setVanillaFallbackMaterial(meta, item.getType());
         meta.setFireResistant(true);
         item.setItemMeta(meta);
         return item;
@@ -766,11 +782,11 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         Rarity rarity = artifact.getRarity();
 
-        meta.displayName(Component.text(artifact.getDisplayName()).color(rarity.getColor())
+        meta.displayName(Component.text(artifact.getLocalizedDisplayName(plugin.getLanguageManager())).color(rarity.getColor())
                 .decoration(TextDecoration.ITALIC, false));
 
         java.util.List<Component> lore = new java.util.ArrayList<>();
-        lore.add(Component.text(artifact.getDescription()).color(NamedTextColor.DARK_GRAY)
+        lore.add(Component.text(artifact.getLocalizedDescription(plugin.getLanguageManager())).color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
 
         meta.lore(lore);
@@ -786,38 +802,38 @@ public class ItemManager {
 
     public ItemStack getTreasure(Rarity rarity) {
         Material mat = Material.CHEST;
-        String name = "Treasure Chest";
+        String name = plugin.getLanguageManager().getString("itemmanager.treasure.default_name", "Treasure Chest");
         switch (rarity) {
             case COMMON:
                 mat = Material.CHEST;
-                name = "Common Treasure Chest";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.common_name", "Common Treasure Chest");
                 break;
             case UNCOMMON:
                 mat = Material.getMaterial("COPPER_CHEST");
                 if (mat == null) mat = Material.CHEST;
-                name = "Uncommon Treasure Chest";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.uncommon_name", "Uncommon Treasure Chest");
                 break;
             case RARE:
                 mat = Material.getMaterial("WEATHERED_COPPER_CHEST");
                 if (mat == null) mat = Material.CHEST;
-                name = "Rare Treasure Chest";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.rare_name", "Rare Treasure Chest");
                 break;
             case EPIC:
                 mat = Material.getMaterial("OXIDIZED_COPPER_CHEST");
                 if (mat == null) mat = Material.CHEST;
-                name = "Epic Treasure Chest";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.epic_name", "Epic Treasure Chest");
                 break;
             case LEGENDARY:
                 mat = Material.ENDER_CHEST;
-                name = "Legendary Treasure Chest";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.legendary_name", "Legendary Treasure Chest");
                 break;
             case MYTHIC:
                 mat = Material.REINFORCED_DEEPSLATE;
-                name = "Mythic Treasure Vault";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.mythic_name", "Mythic Treasure Vault");
                 break;
             case SPECIAL:
                 mat = Material.REINFORCED_DEEPSLATE;
-                name = "Special Treasure Vault";
+                name = plugin.getLanguageManager().getString("itemmanager.treasure.special_name", "Special Treasure Vault");
                 break;
         }
         ItemStack item = new ItemStack(mat);
@@ -846,7 +862,10 @@ public class ItemManager {
             case SPECIAL -> Material.CRYING_OBSIDIAN;
         };
 
-        String name = "Nether " + rarity.name().substring(0, 1) + rarity.name().substring(1).toLowerCase() + " Treasure";
+        String name = plugin.getLanguageManager().getString(
+                "itemmanager.treasure.nether_name",
+                "Nether %rarity% Treasure",
+                "rarity", rarity.getLocalizedName(plugin.getLanguageManager()));
 
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();

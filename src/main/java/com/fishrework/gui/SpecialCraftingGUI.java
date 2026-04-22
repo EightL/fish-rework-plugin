@@ -235,7 +235,11 @@ public class SpecialCraftingGUI extends BaseGUI {
             player.getWorld().dropItemNaturally(player.getLocation(), leftover);
         }
 
-        player.sendMessage(Component.text("Crafted " + getDisplayName(result) + ".").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "specialcraftinggui.crafted_result",
+                        "Crafted %item%.",
+                        "item", getDisplayName(result))
+                .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
         refreshRecipePreview();
     }
@@ -565,7 +569,9 @@ public class SpecialCraftingGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false));
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Type: " + formatDisplayType(recipe.getDisplayType()))
+        lore.add(Component.text(plugin.getLanguageManager().getString(
+                        "specialcraftinggui.type_prefix",
+                        "Type: ") + formatDisplayType(recipe.getDisplayType()))
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
 
@@ -611,7 +617,9 @@ public class SpecialCraftingGUI extends BaseGUI {
         boolean canCraft = recipe != null && unlocked;
         ItemStack button = new ItemStack(canCraft ? Material.LIME_WOOL : Material.GRAY_WOOL);
         ItemMeta meta = button.getItemMeta();
-        meta.displayName(Component.text(canCraft ? "Craft" : "Cannot Craft")
+        meta.displayName(plugin.getLanguageManager().getMessage(
+                        canCraft ? "specialcraftinggui.craft" : "specialcraftinggui.cannot_craft",
+                        canCraft ? "Craft" : "Cannot Craft")
                 .color(canCraft ? NamedTextColor.GREEN : NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
 
@@ -652,12 +660,18 @@ public class SpecialCraftingGUI extends BaseGUI {
 
     private String getLockMessage(RecipeDefinition recipe) {
         if (recipe.hasLevelRequirement()) {
-            return "Requires Fishing Level " + recipe.getRequiredLevel();
+            return plugin.getLanguageManager().getString(
+                    "specialcraftinggui.requires_fishing_level",
+                    "Requires Fishing Level %level%",
+                    "level", String.valueOf(recipe.getRequiredLevel()));
         }
         if (recipe.hasAdvancementRequirement()) {
-            return "Requires advancement: " + RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey());
+            return plugin.getLanguageManager().getString(
+                    "specialcraftinggui.requires_advancement",
+                    "Requires advancement: %advancement%",
+                    "advancement", RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey()));
         }
-        return "Recipe locked";
+        return plugin.getLanguageManager().getString("specialcraftinggui.recipe_locked_message", "Recipe locked");
     }
 
     private String getResultName(RecipeDefinition recipe) {
@@ -673,7 +687,7 @@ public class SpecialCraftingGUI extends BaseGUI {
             return PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName());
         }
         if (item == null) {
-            return "item";
+            return plugin.getLanguageManager().getString("specialcraftinggui.generic_item", "item");
         }
         return RecipeDefinition.toFriendlyName(item.getType().name());
     }

@@ -88,17 +88,17 @@ public class DisplayCaseCustomizeGUI extends BaseGUI {
 
         // --- Row 0: Slabs ---
         for (int i = 0; i < SLABS.size(); i++) {
-            inventory.setItem(i, createOptionItem(SLABS.get(i), "Base", currentSlab));
+            inventory.setItem(i, createOptionItem(SLABS.get(i), "base", "Base", currentSlab));
         }
 
         // --- Row 1-2: Glass ---
         for (int i = 0; i < GLASS.size(); i++) {
-            inventory.setItem(9 + i, createOptionItem(GLASS.get(i), "Glass", currentGlass));
+            inventory.setItem(9 + i, createOptionItem(GLASS.get(i), "glass", "Glass", currentGlass));
         }
 
         // --- Row 3-4: Carpets ---
         for (int i = 0; i < CARPETS.size(); i++) {
-            inventory.setItem(27 + i, createOptionItem(CARPETS.get(i), "Cushion", currentCarpet));
+            inventory.setItem(27 + i, createOptionItem(CARPETS.get(i), "cushion", "Cushion", currentCarpet));
         }
 
         // --- Row 5: Close ---
@@ -121,19 +121,32 @@ public class DisplayCaseCustomizeGUI extends BaseGUI {
         }
     }
 
-    private ItemStack createOptionItem(Material mat, String type, Material current) {
+    private ItemStack createOptionItem(Material mat, String typeKey, String fallbackType, Material current) {
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         boolean isSelected = (mat == current);
+        String typeLabel = plugin.getLanguageManager().getString("displaycasecustomizegui.type." + typeKey, fallbackType);
         
         if (isSelected) {
-            meta.displayName(Component.text("Selected: " + formatName(mat)).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+            meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                            "displaycasecustomizegui.selected_prefix",
+                            "Selected: %name%",
+                            "name", formatName(mat)))
+                    .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            meta.lore(List.of(Component.text("Currently applied " + type).color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)));
+            meta.lore(List.of(Component.text(plugin.getLanguageManager().getString(
+                            "displaycasecustomizegui.currently_applied",
+                            "Currently applied %type%",
+                            "type", typeLabel))
+                    .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false)));
         } else {
             meta.displayName(Component.text(formatName(mat)).color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
-            meta.lore(List.of(Component.text("Click to apply " + type).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+            meta.lore(List.of(Component.text(plugin.getLanguageManager().getString(
+                            "displaycasecustomizegui.click_to_apply",
+                            "Click to apply %type%",
+                            "type", typeLabel))
+                    .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
         }
         
         item.setItemMeta(meta);

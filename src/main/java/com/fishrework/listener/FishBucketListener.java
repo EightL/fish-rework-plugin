@@ -66,7 +66,13 @@ public class FishBucketListener implements Listener {
                         
                         // Effects
                         player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);
-                        player.sendMessage(Component.text("You caught a " + (def != null ? def.getDisplayName() : "Creature") + "!").color(NamedTextColor.GREEN));
+                        player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                                        "fishbucketlistener.you_caught",
+                                        "You caught a %mob%!",
+                                        "mob", def != null
+                                                ? def.getLocalizedDisplayName(plugin.getLanguageManager())
+                                                : plugin.getLanguageManager().getString("fishbucketlistener.creature", "Creature")))
+                                .color(NamedTextColor.GREEN));
 
                         // Advancement & Recipe
                         plugin.getAdvancementManager().grantAdvancement(player, plugin.getAdvancementManager().BUCKET_CATCHER_KEY);
@@ -89,7 +95,11 @@ public class FishBucketListener implements Listener {
                     // Effects
                     player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);
                     String weightStr = com.fishrework.util.FormatUtil.format("%.2f", weight);
-                    player.sendMessage(Component.text("You caught the fish! (" + weightStr + "kg)").color(NamedTextColor.GREEN));
+                    player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                                    "fishbucketlistener.you_caught_fish_weight",
+                                    "You caught the fish! (%weight%kg)",
+                                    "weight", weightStr))
+                            .color(NamedTextColor.GREEN));
                     
                     // Advancement & Recipe
                     plugin.getAdvancementManager().grantAdvancement(player, plugin.getAdvancementManager().BUCKET_CATCHER_KEY);

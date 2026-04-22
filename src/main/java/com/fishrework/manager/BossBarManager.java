@@ -81,8 +81,14 @@ public class BossBarManager {
         if (progress < 0) progress = 0;
         if (progress > 1) progress = 1;
 
-        String title = com.fishrework.util.FormatUtil.format("§b%s Level %d §7(%.1f/%.1f)",
-                skill.getDisplayName(), data.getLevel(skill), currentXp, nextXp);
+        String title = plugin.getLanguageManager().getString(
+                "bossbarmanager.progress_title",
+                "%skill% Level %level% (%current%/%next%)",
+                "skill", skill.getLocalizedDisplayName(plugin.getLanguageManager()),
+                "level", String.valueOf(data.getLevel(skill)),
+                "current", com.fishrework.util.FormatUtil.format("%.1f", currentXp),
+                "next", com.fishrework.util.FormatUtil.format("%.1f", nextXp));
+        title = org.bukkit.ChatColor.AQUA + title;
 
         BossBarData barData = activeBossBars.get(uuid);
 
@@ -229,7 +235,7 @@ public class BossBarManager {
 
         CustomMob mob = plugin.getMobRegistry().get(mobId);
         if (mob != null && mob.getDisplayName() != null && !mob.getDisplayName().isBlank()) {
-            return mob.getDisplayName();
+            return mob.getLocalizedDisplayName(plugin.getLanguageManager());
         }
 
         return toFriendlyName(mobId);

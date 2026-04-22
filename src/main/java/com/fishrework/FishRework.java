@@ -242,7 +242,7 @@ public class FishRework extends JavaPlugin {
         getCommand("fishing").setTabCompleter(fishingCommand);
 
         // ── 7b. Fishing tip notifications ──
-        loadFishingTipsFromConfig();
+        loadFishingTipsFromLang();
         startFishingTipsTask();
 
         // ── 8. Load online players (reload safety) ──
@@ -420,7 +420,7 @@ public class FishRework extends JavaPlugin {
         if (languageManager != null) {
             languageManager.reload();
         }
-        loadFishingTipsFromConfig();
+        loadFishingTipsFromLang();
         getLogger().info("[Fish Rework] Configuration reloaded.");
     }
 
@@ -495,31 +495,27 @@ public class FishRework extends JavaPlugin {
         nextFishingTipAtMs.remove(uuid);
     }
 
-    private void loadFishingTipsFromConfig() {
-        List<String> configuredTips = getConfig().getStringList("fishing_tips.tips");
-        if (configuredTips == null || configuredTips.isEmpty()) {
-            this.fishingTips = defaultFishingTips();
-            return;
+    private void loadFishingTipsFromLang() {
+        List<String> localizedTips = new ArrayList<>();
+        for (int i = 1; ; i++) {
+            String tip = languageManager.getConfig().getString("fishingtip.tip_" + i);
+            if (tip == null || tip.isBlank()) {
+                break;
+            }
+            localizedTips.add(tip.trim());
         }
-
-        List<String> sanitized = new ArrayList<>();
-        for (String tip : configuredTips) {
-            if (tip == null) continue;
-            String trimmed = tip.trim();
-            if (!trimmed.isEmpty()) sanitized.add(trimmed);
-        }
-        this.fishingTips = sanitized.isEmpty() ? defaultFishingTips() : List.copyOf(sanitized);
+        this.fishingTips = localizedTips.isEmpty() ? defaultFishingTips() : List.copyOf(localizedTips);
     }
 
     private List<String> defaultFishingTips() {
         return List.of(
-                "Use /fish or /fishing to open your fishing progression GUI.",
-                "Use /fish help to list all available fishing commands.",
-                "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}",
-                "Struggling against sea creatures? Craft custom gear and check the wiki for builds: {wiki}",
-                "Use /fish bag to store catches and keep your inventory clean.",
-                "Use /fish autosell to auto-sell common fish while you grind.",
-                "Use /fish notifications to toggle these tips anytime."
+                languageManager.getString("fishingtip.tip_1", "Use /fish or /fishing to open your fishing progression GUI."),
+                languageManager.getString("fishingtip.tip_2", "Use /fish help to list all available fishing commands."),
+                languageManager.getString("fishingtip.tip_3", "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}"),
+                languageManager.getString("fishingtip.tip_4", "Struggling against sea creatures? Craft custom gear and check the wiki for builds: {wiki}"),
+                languageManager.getString("fishingtip.tip_5", "Use /fish bag to store catches and keep your inventory clean."),
+                languageManager.getString("fishingtip.tip_6", "Use /fish autosell to auto-sell common fish while you grind."),
+                languageManager.getString("fishingtip.tip_7", "Use /fish notifications to toggle these tips anytime.")
         );
     }
 
@@ -545,14 +541,14 @@ public class FishRework extends JavaPlugin {
                 if (tip != null && !tip.isBlank()) {
                     String wikiUrl = getConfig().getString("fishing_tips.wiki_url", "");
                     if (wikiUrl == null) wikiUrl = "";
-                    Component prefix = Component.text("[Fishing Tip] ").color(NamedTextColor.AQUA);
+                    Component prefix = languageManager.getMessage("fishingtip.prefix", "[Fishing Tip] ").color(NamedTextColor.AQUA);
                     Component body;
                     if (!wikiUrl.isBlank() && tip.contains("{wiki}")) {
                         String[] parts = tip.split("\\{wiki\\}", 2);
                         Component link = Component.text(wikiUrl).color(NamedTextColor.AQUA)
                                 .decorate(TextDecoration.UNDERLINED)
                                 .clickEvent(ClickEvent.openUrl(wikiUrl))
-                                .hoverEvent(Component.text("Click to open").color(NamedTextColor.GREEN));
+                                .hoverEvent(languageManager.getMessage("fishingtip.click_to_open", "Click to open").color(NamedTextColor.GREEN));
                         body = Component.text(parts[0]).color(NamedTextColor.GRAY).append(link);
                         if (parts.length > 1 && !parts[1].isEmpty()) {
                             body = body.append(Component.text(parts[1]).color(NamedTextColor.GRAY));
