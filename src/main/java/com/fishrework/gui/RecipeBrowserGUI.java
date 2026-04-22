@@ -193,7 +193,7 @@ public class RecipeBrowserGUI extends BaseGUI {
     private ItemStack createLockedRecipeEntry(RecipeDefinition primaryRecipe) {
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(plugin.getLanguageManager().getMessage("recipebrowsergui.", "???")
+        meta.displayName(plugin.getLanguageManager().getMessage("recipebrowsergui", "???")
                 .color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
 
