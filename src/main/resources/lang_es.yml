@@ -1,6 +1,6 @@
 advancementlistener.click_to_open_recipe: Haz clic para abrir receta
 advancementlistener.recipes_unlocked: '   Recetas desbloqueadas:'
-artifactcollectiongui: ???
+artifactcollectiongui.locked_item_name: ???
 artifactcollectiongui.click_to_cycle_rarity: Haz clic para cambiar la rareza
 artifactcollectiongui.filter: 'Filtro: '
 artifactcollectiongui.keep_in_inventory_to_preserve: Mantén en el inventario para conservar
@@ -23,7 +23,7 @@ biomeselectiongui.show_all_fish_and_mobs: Mostrar todos los peces y mobs
 buyshopgui.click_to_buy: ¡Haz clic para comprar!
 buyshopgui.click_to_buy_1: Haz clic para comprar 1
 buyshopgui.shiftclick_to_buy_4: Shift-clic para comprar 4
-collectiongui: ???
+collectiongui.locked_item_name: ???
 collectiongui.biome_specific: Específico del bioma
 collectiongui.chance: 'Probabilidad: '
 collectiongui.click_to_change_biome_filter: Haz clic para cambiar el filtro de bioma
@@ -384,7 +384,7 @@ loremanager.u2b50_artifact: ⭐ Artefacto
 mobmanager.click_to_view_encyclopedia: ¡Haz clic para ver la enciclopedia!
 mobmanager.u2b50_encyclopedia_complete_congratulations: '   ⭐ ¡ENCICLOPEDIA COMPLETA!
   ¡Felicidades!'
-recipebrowsergui: ???
+recipebrowsergui.locked_item_name: ???
 recipebrowsergui.advancement_unlock: Desbloqueo por avance
 recipebrowsergui.click_to_inspect_recipe: Haz clic para inspeccionar la receta
 recipebrowsergui.craftable_now: Fabricable ahora
@@ -407,7 +407,7 @@ recipeguidegui.use_fishing_recipe_while_holding: Usa /fishing recipe mientras so
   un objeto personalizado.
 recipeguidegui.use_the_recipe_browser_in: Usa el Explorador de recetas en el menú de
   Pesca para navegar todas las recetas.
-seacreatureupgradegui: →
+seacreatureupgradegui.arrow_indicator: →
 seacreatureupgradegui.back: Atrás
 seacreatureupgradegui.cannot_downgrade: ¡No se puede degradar!
 seacreatureupgradegui.enchants_fused: ¡Encantamientos fusionados!
@@ -510,7 +510,7 @@ skilldetailgui.view_your_caught_fish: ¡Ve tus peces capturados!
 skilldetailgui.xp_multi: '  Multi XP: '
 skilldetailgui.you_need_fishing_level_20: ¡Necesitas nivel de pesca 20 para desbloquear
   esto!
-skillmanager: '--------------------------------'
+skillmanager.divider: '--------------------------------'
 skillmanager.attributes_gained: '   Atributos ganados:'
 skillmanager.click_to_open_recipe: Haz clic para abrir receta
 skillmanager.level_up: ¡SUBIDA DE NIVEL!

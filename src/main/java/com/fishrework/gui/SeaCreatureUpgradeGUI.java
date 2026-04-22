@@ -94,7 +94,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         // Arrow indicator
         ItemStack arrow = new ItemStack(Material.ARROW);
         ItemMeta am = arrow.getItemMeta();
-        am.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+        am.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.arrow_indicator", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
         arrow.setItemMeta(am);
         inventory.setItem(ARROW_SLOT, arrow);
 
@@ -108,7 +108,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         inventory.setItem(COMBINE_MIDDLE_SLOT, createBlankSlot(Material.LIME_STAINED_GLASS_PANE));
         ItemStack combineArrow = new ItemStack(Material.ARROW);
         ItemMeta cam = combineArrow.getItemMeta();
-        cam.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+        cam.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.arrow_indicator", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
         combineArrow.setItemMeta(cam);
         inventory.setItem(COMBINE_ARROW_SLOT, combineArrow);
         inventory.setItem(COMBINE_RESULT_SLOT, createPlaceholder(Material.BLACK_STAINED_GLASS_PANE,

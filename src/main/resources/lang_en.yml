@@ -1,6 +1,6 @@
 advancementlistener.click_to_open_recipe: Click to open recipe
 advancementlistener.recipes_unlocked: '   Recipes Unlocked:'
-artifactcollectiongui: ???
+artifactcollectiongui.locked_item_name: ???
 artifactcollectiongui.click_to_cycle_rarity: Click to cycle rarity
 artifactcollectiongui.filter: 'Filter: '
 artifactcollectiongui.keep_in_inventory_to_preserve: Keep in inventory to preserve
@@ -23,7 +23,7 @@ biomeselectiongui.show_all_fish_and_mobs: Show all fish and mobs
 buyshopgui.click_to_buy: Click to buy!
 buyshopgui.click_to_buy_1: Click to buy 1
 buyshopgui.shiftclick_to_buy_4: Shift-click to buy 4
-collectiongui: ???
+collectiongui.locked_item_name: ???
 collectiongui.biome_specific: Biome Specific
 collectiongui.chance: 'Chance: '
 collectiongui.click_to_change_biome_filter: Click to change biome filter
@@ -356,7 +356,7 @@ loremanager.u2b50_artifact: ⭐ Artifact
 mobmanager.click_to_view_encyclopedia: Click to view Encyclopedia!
 mobmanager.u2b50_encyclopedia_complete_congratulations: '   ⭐ ENCYCLOPEDIA COMPLETE!
   Congratulations!'
-recipebrowsergui: ???
+recipebrowsergui.locked_item_name: ???
 recipebrowsergui.advancement_unlock: Advancement unlock
 recipebrowsergui.click_to_inspect_recipe: Click to inspect recipe
 recipebrowsergui.craftable_now: Craftable now
@@ -379,7 +379,7 @@ recipeguidegui.use_fishing_recipe_while_holding: Use /fishing recipe while holdi
   a custom item.
 recipeguidegui.use_the_recipe_browser_in: Use the Recipe Browser in the Fishing menu
   to browse all recipes.
-seacreatureupgradegui: →
+seacreatureupgradegui.arrow_indicator: →
 seacreatureupgradegui.back: Back
 seacreatureupgradegui.cannot_downgrade: Cannot Downgrade!
 seacreatureupgradegui.enchants_fused: Enchants fused!
@@ -478,7 +478,7 @@ skilldetailgui.view_rare_artifact_finds: View rare artifact finds!
 skilldetailgui.view_your_caught_fish: View your caught fish!
 skilldetailgui.xp_multi: '  XP Multi: '
 skilldetailgui.you_need_fishing_level_20: You need Fishing Level 20 to unlock this!
-skillmanager: '--------------------------------'
+skillmanager.divider: '--------------------------------'
 skillmanager.attributes_gained: '   Attributes Gained:'
 skillmanager.click_to_open_recipe: Click to open recipe
 skillmanager.level_up: LEVEL UP!

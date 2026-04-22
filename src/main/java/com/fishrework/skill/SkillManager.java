@@ -129,7 +129,7 @@ public class SkillManager {
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 
         // Chat messages
-        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.", "--------------------------------").color(NamedTextColor.DARK_AQUA));
+        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.divider", "--------------------------------").color(NamedTextColor.DARK_AQUA));
         player.sendMessage(Component.text("   " + skill.getDisplayName().toUpperCase() + " LEVEL UP! "
                 + (newLevel - 1) + " ➜ " + newLevel).color(NamedTextColor.AQUA));
 
@@ -139,7 +139,7 @@ public class SkillManager {
         // Show unlocked creatures & recipes
         showUnlocks(player, skill, newLevel, levelManager);
 
-        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.", "--------------------------------").color(NamedTextColor.DARK_AQUA));
+        player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.divider", "--------------------------------").color(NamedTextColor.DARK_AQUA));
 
         // Sync advancements & recipes
         plugin.getAdvancementManager().syncAdvancements(player, newLevel);

@@ -88,7 +88,7 @@ public class ArtifactCollectionGUI extends BaseGUI {
                 // Mystery pane
                 ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
                 ItemMeta meta = item.getItemMeta();
-                meta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.", "???").color(NamedTextColor.RED)
+                meta.displayName(plugin.getLanguageManager().getMessage("artifactcollectiongui.locked_item_name", "???").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
 
                 List<Component> lore = new ArrayList<>();

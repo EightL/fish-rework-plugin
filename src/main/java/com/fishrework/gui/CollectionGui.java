@@ -296,7 +296,7 @@ public class CollectionGui extends BaseGUI {
             } else { // Locked text logic (remains the same)               // Locked
                 ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
                 ItemMeta meta = item.getItemMeta();
-                meta.displayName(plugin.getLanguageManager().getMessage("collectiongui.", "???").color(NamedTextColor.RED)
+                meta.displayName(plugin.getLanguageManager().getMessage("collectiongui.locked_item_name", "???").color(NamedTextColor.RED)
                         .decoration(TextDecoration.ITALIC, false));
                 String hint = mob.isHostile() ? "Kill this creature to unlock!" : "Catch this fish to unlock!";
                 meta.lore(List.of(Component.text(hint).color(NamedTextColor.GRAY)
