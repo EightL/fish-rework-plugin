@@ -188,7 +188,10 @@ public class CollectionGui extends BaseGUI {
                 // Treasures and land mobs (Pigs, etc) don't have "Max Weight" logic that makes sense to users
                 boolean isAquatic = plugin.getMobManager().isAquatic(mob.getEntityType());
                 if (!mob.isTreasure() && isAquatic) {
-                    lore.add(Component.text("Max Weight: " + com.fishrework.util.FormatUtil.format("%.2f", maxWeight) + "kg")
+                    lore.add(Component.text(plugin.getLanguageManager().getString(
+                                    "collectiongui.max_weight",
+                                    "Max Weight: %weight%kg",
+                                    "weight", com.fishrework.util.FormatUtil.format("%.2f", maxWeight)))
                             .color(NamedTextColor.YELLOW)
                             .decoration(TextDecoration.ITALIC, false));
                 }
@@ -213,7 +216,11 @@ public class CollectionGui extends BaseGUI {
                 if (calculatePercents) {
                     // Use calculated percentage directly
                     double pct = mobChances.getOrDefault(mob.getId(), 0.0);
-                    chanceLine = chanceLine.append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%% (in %s)", pct, filter.name().replace('_', ' ')))
+                    chanceLine = chanceLine.append(Component.text(plugin.getLanguageManager().getString(
+                                    "collectiongui.chance_in_biome",
+                                    "%chance% (in %biome%)",
+                                    "chance", com.fishrework.util.FormatUtil.format("%.2f%%", pct),
+                                    "biome", filter.getLocalizedName(plugin.getLanguageManager())))
                             .color(NamedTextColor.GREEN));
                             
                     // Land Mob Special Case Indicator
@@ -226,7 +233,11 @@ public class CollectionGui extends BaseGUI {
                     // Global view -> Show Base Weight
                     double base = mob.getDefaultChance();
                     if (base > 0) {
-                         chanceLine = chanceLine.append(Component.text("Base Weight " + base).color(NamedTextColor.DARK_GRAY));
+                         chanceLine = chanceLine.append(Component.text(plugin.getLanguageManager().getString(
+                                         "collectiongui.base_weight",
+                                         "Base Weight %weight%",
+                                         "weight", String.valueOf(base)))
+                                 .color(NamedTextColor.DARK_GRAY));
                     } else {
                          chanceLine = chanceLine.append(plugin.getLanguageManager().getMessage("collectiongui.biome_specific", "Biome Specific").color(NamedTextColor.DARK_GRAY));
                     }
@@ -310,9 +321,13 @@ public class CollectionGui extends BaseGUI {
         int caught = (int) filteredMobs.stream().filter(m -> collection.containsKey(m.getId())).count();
         ItemStack pageInfo = new ItemStack(Material.BOOK);
         ItemMeta pageMeta = pageInfo.getItemMeta();
-        pageMeta.displayName(Component.text("Page " + (page + 1) + "/" + totalPages).color(NamedTextColor.YELLOW)
+        pageMeta.displayName(Component.text(plugin.getLanguageManager().getString("pagination.page", "Page ") + (page + 1) + "/" + totalPages).color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false));
-        pageMeta.lore(List.of(Component.text("Collected: " + caught + "/" + filteredMobs.size()).color(NamedTextColor.GRAY)
+        pageMeta.lore(List.of(Component.text(plugin.getLanguageManager().getString(
+                        "collectiongui.collected_count",
+                        "Collected: %count%/%total%",
+                        "count", String.valueOf(caught),
+                        "total", String.valueOf(filteredMobs.size()))).color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false)));
         pageInfo.setItemMeta(pageMeta);
         inventory.setItem(49, pageInfo);
@@ -326,12 +341,14 @@ public class CollectionGui extends BaseGUI {
         // Type Filter Button (Slot 47)
         ItemStack typeFilterItem = new ItemStack(Material.SPYGLASS);
         ItemMeta typeFilterMeta = typeFilterItem.getItemMeta();
-        String typeName = (typeFilter == null) ? "ALL" : typeFilter.name();
+        String typeName = (typeFilter == null)
+                ? plugin.getLanguageManager().getString("collectiongui.all", "ALL")
+                : localizedTypeName(typeFilter);
         NamedTextColor typeColor = typeFilter == null ? NamedTextColor.WHITE
                 : (typeFilter == MobCategory.HOSTILE ? NamedTextColor.RED
                 : (typeFilter == MobCategory.TREASURE ? NamedTextColor.GOLD
                 : NamedTextColor.AQUA));
-        typeFilterMeta.displayName(Component.text("Type: " + typeName).color(typeColor)
+        typeFilterMeta.displayName(Component.text(plugin.getLanguageManager().getString("collectiongui.type_prefix", "Type: ") + typeName).color(typeColor)
                 .decoration(TextDecoration.ITALIC, false));
         typeFilterMeta.lore(List.of(
             plugin.getLanguageManager().getMessage("collectiongui.click_to_filter_by_type", "Click to filter by type").color(NamedTextColor.GRAY)
@@ -343,8 +360,10 @@ public class CollectionGui extends BaseGUI {
         // Filter Button (Slot 50)
         ItemStack filterItem = new ItemStack(Material.HOPPER);
         ItemMeta filterMeta = filterItem.getItemMeta();
-        String filterName = (filter == null) ? "ALL" : filter.name().replace('_', ' ');
-        filterMeta.displayName(Component.text("Filter: " + filterName).color(NamedTextColor.GOLD)
+        String filterName = (filter == null)
+                ? plugin.getLanguageManager().getString("collectiongui.all", "ALL")
+                : filter.getLocalizedName(plugin.getLanguageManager());
+        filterMeta.displayName(Component.text(plugin.getLanguageManager().getString("collectiongui.filter_prefix", "Filter: ") + filterName).color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         filterMeta.lore(List.of(
             plugin.getLanguageManager().getMessage("collectiongui.click_to_change_biome_filter", "Click to change biome filter").color(NamedTextColor.GRAY)
@@ -356,12 +375,13 @@ public class CollectionGui extends BaseGUI {
         // Sort Button (Slot 51)
         ItemStack sortItem = new ItemStack(Material.COMPARATOR);
         ItemMeta sortMeta = sortItem.getItemMeta();
-        sortMeta.displayName(Component.text("Sort: " + sort.name()).color(NamedTextColor.AQUA)
+        String sortName = localizedSortName(sort);
+        sortMeta.displayName(Component.text(plugin.getLanguageManager().getString("collectiongui.sort_prefix", "Sort: ") + sortName).color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         sortMeta.lore(List.of(
             plugin.getLanguageManager().getMessage("collectiongui.click_to_change_sort_order", "Click to change sort order").color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false),
-            Component.text("Current: " + sort.name().replace('_', ' ')).color(NamedTextColor.YELLOW)
+            Component.text(plugin.getLanguageManager().getString("collectiongui.current_sort_prefix", "Current: ") + sortName).color(NamedTextColor.YELLOW)
                 .decoration(TextDecoration.ITALIC, false)
         ));
         sortItem.setItemMeta(sortMeta);
@@ -558,6 +578,25 @@ public class CollectionGui extends BaseGUI {
         }
         
         return chances;
+    }
+
+    private String localizedTypeName(MobCategory category) {
+        return plugin.getLanguageManager().getString(
+                "collectiongui.type." + category.name().toLowerCase(),
+                formatEnumLabel(category.name()));
+    }
+
+    private String localizedSortName(SortType sortType) {
+        return plugin.getLanguageManager().getString(
+                "collectiongui.sort." + sortType.name().toLowerCase(),
+                formatEnumLabel(sortType.name()));
+    }
+
+    private String formatEnumLabel(String rawName) {
+        return Arrays.stream(rawName.toLowerCase().split("_"))
+                .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1))
+                .reduce((left, right) -> left + " " + right)
+                .orElse(rawName);
     }
 
     private String formatDropChance(double chance) {

@@ -163,9 +163,6 @@ public class LoreUpdateListener implements Listener {
             }
 
             ItemMeta freshMeta = fresh.getItemMeta();
-            if (oldMeta.hasDisplayName()) {
-                freshMeta.displayName(oldMeta.displayName());
-            }
             if (oldMeta instanceof Damageable oldDamageable && freshMeta instanceof Damageable freshDamageable) {
                 freshDamageable.setDamage(oldDamageable.getDamage());
             }

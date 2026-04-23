@@ -62,7 +62,7 @@ public class FishBagGUI extends BaseGUI {
         setBackButton(18);
 
         // Slot 22: Sell All button
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         double totalValue = calculateBagValue();
 
         ItemStack sellAll = new ItemStack(Material.GOLD_INGOT);
@@ -71,7 +71,11 @@ public class FishBagGUI extends BaseGUI {
                 .decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true));
         saMeta.lore(List.of(
                 Component.empty(),
-                Component.text("Total value: " + com.fishrework.util.FormatUtil.format("%.0f", totalValue) + " " + currencyName)
+                Component.text(plugin.getLanguageManager().getString(
+                        "fishbaggui.total_value",
+                        "Total value: %value% %currency%",
+                        "value", com.fishrework.util.FormatUtil.format("%.0f", totalValue),
+                        "currency", currencyName))
                         .color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
                 plugin.getLanguageManager().getMessage("fishbaggui.click_to_sell_all_bag", "Click to sell all bag contents!").color(NamedTextColor.YELLOW)
@@ -84,7 +88,11 @@ public class FishBagGUI extends BaseGUI {
         double balance = data != null ? data.getBalance() : 0;
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
-        balMeta.displayName(Component.text("Balance: " + com.fishrework.util.FormatUtil.format("%.0f", balance) + " " + currencyName)
+        balMeta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "fishbaggui.balance_prefix",
+                        "Balance: %balance% %currency%",
+                        "balance", com.fishrework.util.FormatUtil.format("%.0f", balance),
+                        "currency", currencyName))
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         balanceItem.setItemMeta(balMeta);
         inventory.setItem(26, balanceItem);

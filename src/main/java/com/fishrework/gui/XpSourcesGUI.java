@@ -88,7 +88,11 @@ public class XpSourcesGUI extends BaseGUI {
 
             if (mob.getRequiredLevel() > 0) {
                 NamedTextColor reqColor = level >= mob.getRequiredLevel() ? NamedTextColor.GREEN : NamedTextColor.RED;
-                chanceComp = chanceComp.append(Component.text(" | Req. Lvl " + mob.getRequiredLevel()).color(reqColor));
+                chanceComp = chanceComp.append(Component.text(plugin.getLanguageManager().getString(
+                                "xpsourcesgui.required_level_short",
+                                " | Req. Lvl %level%",
+                                "level", String.valueOf(mob.getRequiredLevel())))
+                        .color(reqColor));
             }
 
             // Biome-only indicator
@@ -107,7 +111,11 @@ public class XpSourcesGUI extends BaseGUI {
 
             ItemStack item = new ItemStack(mob.getCollectionIcon());
             ItemMeta meta = item.getItemMeta();
-            meta.displayName(Component.text("Fished " + mob.getLocalizedDisplayName(plugin.getLanguageManager())).color(NamedTextColor.GREEN)
+            meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                            "xpsourcesgui.fished_prefix",
+                            "Fished %mob%",
+                            "mob", mob.getLocalizedDisplayName(plugin.getLanguageManager())))
+                    .color(NamedTextColor.GREEN)
                     .decoration(TextDecoration.ITALIC, false));
             List<Component> lore = new ArrayList<>();
             lore.add(xpComp);

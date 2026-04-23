@@ -141,7 +141,11 @@ public class EnchantmentListener implements Listener {
         player.getInventory().setItemInMainHand(held);
 
         event.setCancelled(true);
-        player.sendMessage(Component.text("Applied " + formatEnchantName(enchantment) + " " + level + " to your trident.")
+        player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                        "enchantmentlistener.applied_to_trident",
+                        "Applied %enchant% %level% to your trident.",
+                        "enchant", formatEnchantName(enchantment),
+                        "level", String.valueOf(level)))
                 .color(NamedTextColor.GREEN));
     }
 

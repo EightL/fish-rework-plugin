@@ -1,7 +1,10 @@
 package com.fishrework.model;
 
+import com.fishrework.manager.LanguageManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+
+import java.util.Locale;
 
 public enum Rarity {
     COMMON(NamedTextColor.WHITE),
@@ -20,5 +23,16 @@ public enum Rarity {
 
     public TextColor getColor() {
         return color;
+    }
+
+    public String getLocalizedName(LanguageManager languageManager) {
+        return languageManager.getString(
+                "rarity." + name().toLowerCase(Locale.ROOT) + ".name",
+                toFriendlyName());
+    }
+
+    private String toFriendlyName() {
+        String lower = name().toLowerCase(Locale.ROOT);
+        return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
     }
 }

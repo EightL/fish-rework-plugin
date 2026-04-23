@@ -97,6 +97,32 @@ public class LanguageManager {
         return text.replace('&', '§');
     }
 
+    public String getString(String key, String fallback, Map<String, String> placeholders) {
+        String text = langConfig.getString(key, fallback);
+        if (placeholders != null) {
+            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                text = text.replace("%" + entry.getKey() + "%", entry.getValue());
+            }
+        }
+        return text.replace('&', '§');
+    }
+
+    public String getString(String key, String fallback, String... placeholders) {
+        String text = langConfig.getString(key, fallback);
+        if (placeholders != null) {
+            int pairCount = placeholders.length - (placeholders.length % 2);
+            for (int i = 0; i < pairCount; i += 2) {
+                text = text.replace("%" + placeholders[i] + "%", placeholders[i + 1]);
+            }
+        }
+        return text.replace('&', '§');
+    }
+
+    public String getCurrencyName() {
+        String fallback = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        return getString("common.currency_name", fallback);
+    }
+
     private Component parseString(String text) {
         if (text.contains("<") && text.contains(">")) {
             try {

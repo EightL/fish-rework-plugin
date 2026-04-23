@@ -164,10 +164,11 @@ public class MobManager {
 
         // Name with optional color
         net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
+        String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         if (nameColor != null) {
-            entity.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()).color(nameColor));
+            entity.customName(net.kyori.adventure.text.Component.text(localizedName).color(nameColor));
         } else {
-            entity.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()));
+            entity.customName(net.kyori.adventure.text.Component.text(localizedName));
         }
         entity.setCustomNameVisible(true);
 
@@ -245,7 +246,9 @@ public class MobManager {
 
         // ── Spawn mount ──
         LivingEntity mount = (LivingEntity) location.getWorld().spawnEntity(location, mountConfig.getEntityType());
-        String mountName = mountConfig.getDisplayName() != null ? mountConfig.getDisplayName() : "Mount";
+        String mountName = mountConfig.getDisplayName() != null
+                ? mountConfig.getDisplayName()
+                : plugin.getLanguageManager().getString("mobmanager.mount", "Mount");
         mount.customName(net.kyori.adventure.text.Component.text(mountName));
         mount.setCustomNameVisible(mountConfig.isShowName());
         tagEntity(mount, mobId, catchXpMultiplierPercent);
@@ -280,10 +283,11 @@ public class MobManager {
         LivingEntity rider = (LivingEntity) location.getWorld().spawnEntity(location, riderType);
 
         net.kyori.adventure.text.format.NamedTextColor riderColor = resolveNameColor(config, def);
+        String localizedRiderName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         if (riderColor != null) {
-            rider.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()).color(riderColor));
+            rider.customName(net.kyori.adventure.text.Component.text(localizedRiderName).color(riderColor));
         } else {
-            rider.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()));
+            rider.customName(net.kyori.adventure.text.Component.text(localizedRiderName));
         }
         rider.setCustomNameVisible(true);
         tagEntity(rider, mobId, catchXpMultiplierPercent);
@@ -354,7 +358,9 @@ public class MobManager {
                 if (firstEntity == null) firstEntity = entity;
 
                 // Name
-                String memberName = member.getDisplayName() != null ? member.getDisplayName() : def.getDisplayName();
+                String memberName = member.getDisplayName() != null
+                        ? member.getDisplayName()
+                        : def.getLocalizedDisplayName(plugin.getLanguageManager());
                 if (nameColor != null) {
                     entity.customName(net.kyori.adventure.text.Component.text(memberName).color(nameColor));
                 } else {
@@ -392,7 +398,9 @@ public class MobManager {
                 if (member.hasRider()) {
                     SpawnConfig.GroupMemberConfig riderConfig = member.getRider();
                     LivingEntity riderEntity = (LivingEntity) location.getWorld().spawnEntity(offset, riderConfig.getEntityType());
-                    String riderName = riderConfig.getDisplayName() != null ? riderConfig.getDisplayName() : def.getDisplayName();
+                    String riderName = riderConfig.getDisplayName() != null
+                            ? riderConfig.getDisplayName()
+                            : def.getLocalizedDisplayName(plugin.getLanguageManager());
                     if (nameColor != null) {
                         riderEntity.customName(net.kyori.adventure.text.Component.text(riderName).color(nameColor));
                     } else {
@@ -427,10 +435,11 @@ public class MobManager {
 
         // Name with color
         net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
+        String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         if (nameColor != null) {
-            entity.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()).color(nameColor));
+            entity.customName(net.kyori.adventure.text.Component.text(localizedName).color(nameColor));
         } else {
-            entity.customName(net.kyori.adventure.text.Component.text(def.getDisplayName()));
+            entity.customName(net.kyori.adventure.text.Component.text(localizedName));
         }
         entity.setCustomNameVisible(true);
         applyGlowColor(entity, config);
@@ -1456,7 +1465,13 @@ public class MobManager {
             if (!playerData.hasCaughtMob(mobId)) {
                 // First catch!
                 String displayName = (def != null) ? def.getDisplayName() : mobId;
-                player.sendMessage(net.kyori.adventure.text.Component.text(displayName + " added to encyclopedia!")
+                if (def != null) {
+                    displayName = def.getLocalizedDisplayName(plugin.getLanguageManager());
+                }
+                player.sendMessage(net.kyori.adventure.text.Component.text(plugin.getLanguageManager().getString(
+                                "mobmanager.added_to_encyclopedia",
+                                "%mob% added to encyclopedia!",
+                                "mob", displayName))
                     .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
                     .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(plugin.getLanguageManager().getMessage("mobmanager.click_to_view_encyclopedia", "Click to view Encyclopedia!")))
                     .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/fishing encyclopedia")));
@@ -1467,12 +1482,19 @@ public class MobManager {
                 // ── QOL: Collection progress notification ──
                 int totalMobs = plugin.getMobRegistry().getAllIds().size();
                 int caughtCount = playerData.getCaughtMobs().size() + 1; // +1 for the one we're about to add
-                player.sendMessage(net.kyori.adventure.text.Component.text("   Encyclopedia Progress: " + caughtCount + "/" + totalMobs)
+                player.sendMessage(net.kyori.adventure.text.Component.text(plugin.getLanguageManager().getString(
+                                "mobmanager.encyclopedia_progress",
+                                "   Encyclopedia Progress: %caught%/%total%",
+                                "caught", String.valueOf(caughtCount),
+                                "total", String.valueOf(totalMobs)))
                         .color(net.kyori.adventure.text.format.NamedTextColor.AQUA)
                         .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, true));
                 int remaining = totalMobs - caughtCount;
                 if (remaining <= 5 && remaining > 0) {
-                    player.sendMessage(net.kyori.adventure.text.Component.text("   Only " + remaining + " more to complete the encyclopedia!")
+                    player.sendMessage(net.kyori.adventure.text.Component.text(plugin.getLanguageManager().getString(
+                                    "mobmanager.only_remaining_to_complete",
+                                    "   Only %remaining% more to complete the encyclopedia!",
+                                    "remaining", String.valueOf(remaining)))
                             .color(net.kyori.adventure.text.format.NamedTextColor.LIGHT_PURPLE)
                             .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, true));
                 } else if (remaining == 0) {
@@ -1488,7 +1510,7 @@ public class MobManager {
         // XP via SkillManager (only if def is present and has XP)
         if (def != null && def.getXp() > 0) {
             double finalXp = def.getXp() * (1.0 + Math.max(0.0, catchXpMultiplierPercent) / 100.0);
-            plugin.getSkillManager().grantXp(player, def.getSkill(), finalXp, def.getSkill().getDisplayName() + " Mob");
+            plugin.getSkillManager().grantXp(player, def.getSkill(), finalXp, def.getSkill().getLocalizedMobSource(plugin.getLanguageManager()));
         }
     }
 

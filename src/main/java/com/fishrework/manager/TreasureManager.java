@@ -93,7 +93,10 @@ public class TreasureManager {
             if (data != null && !data.hasArtifact(artifact.getId())) {
                 data.addArtifact(artifact.getId());
                 plugin.getDatabaseManager().saveArtifact(player.getUniqueId(), artifact.getId());
-                player.sendMessage(Component.text(artifact.getDisplayName() + " added to Collection!")
+                player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                                "treasuremanager.artifact_added_to_collection",
+                                "%artifact% added to Collection!",
+                                "artifact", artifact.getLocalizedDisplayName(plugin.getLanguageManager())))
                         .color(artifact.getRarity().getColor())
                         .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
                                 plugin.getLanguageManager().getMessage("treasuremanager.click_to_view_artifact_collection", "Click to view Artifact Collection!")))

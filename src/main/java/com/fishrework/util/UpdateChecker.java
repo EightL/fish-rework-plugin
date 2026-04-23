@@ -74,11 +74,14 @@ public class UpdateChecker {
     public void notifyPlayer(Player player) {
         if (!updateAvailable || latestVersion == null) return;
         player.sendMessage(
-            Component.text("[FishRework] ", NamedTextColor.AQUA)
-                .append(Component.text("Update available: ", NamedTextColor.YELLOW))
-                .append(Component.text("v" + latestVersion, NamedTextColor.GREEN)
+            plugin.getLanguageManager().getMessage("updatechecker.prefix", "[FishRework] ").color(NamedTextColor.AQUA)
+                .append(plugin.getLanguageManager().getMessage("updatechecker.update_available", "Update available: ").color(NamedTextColor.YELLOW))
+                .append(Component.text(plugin.getLanguageManager().getString(
+                                "updatechecker.version_label",
+                                "v%version%",
+                                "version", latestVersion), NamedTextColor.GREEN)
                     .decorate(TextDecoration.BOLD))
-                .append(Component.text("  Click to download", NamedTextColor.GRAY)
+                .append(plugin.getLanguageManager().getMessage("updatechecker.click_to_download", "  Click to download").color(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.openUrl(com.fishrework.util.FormatUtil.format(MODRINTH_PAGE, projectId))))
         );
     }

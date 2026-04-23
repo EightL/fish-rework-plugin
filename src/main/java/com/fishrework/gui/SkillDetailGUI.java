@@ -48,7 +48,8 @@ public class SkillDetailGUI extends BaseGUI {
     private static final int LEVELS_PER_PAGE = ROADMAP_PATH.length; // 36
 
     public SkillDetailGUI(FishRework plugin, Player player, Skill skill) {
-        super(plugin, 6, localizedTitle(plugin, "skilldetailgui.title_prefix", "Skill Details: ") + skill.getDisplayName());
+        super(plugin, 6, localizedTitle(plugin, "skilldetailgui.title_prefix", "Skill Details: ")
+                + skill.getLocalizedDisplayName(plugin.getLanguageManager()));
         this.player = player;
         this.skill = skill;
 
@@ -65,7 +66,12 @@ public class SkillDetailGUI extends BaseGUI {
         if (progress < 0.0) progress = 0.0;
 
         this.bossBar = org.bukkit.Bukkit.createBossBar(
-                org.bukkit.ChatColor.GREEN + "Level Progress: " + com.fishrework.util.FormatUtil.format("%.1f", currentXp) + " / " + com.fishrework.util.FormatUtil.format("%.0f", nextXp),
+                org.bukkit.ChatColor.GREEN + plugin.getLanguageManager().getString(
+                        "skilldetailgui.level_progress",
+                        "%skill% Level Progress: %current% / %next%",
+                        "skill", skill.getLocalizedDisplayName(plugin.getLanguageManager()),
+                        "current", com.fishrework.util.FormatUtil.format("%.1f", currentXp),
+                        "next", com.fishrework.util.FormatUtil.format("%.0f", nextXp)),
                 org.bukkit.boss.BarColor.GREEN,
                 org.bukkit.boss.BarStyle.SOLID
         );
@@ -229,7 +235,7 @@ public class SkillDetailGUI extends BaseGUI {
                 if (activeBait != null) {
                     bonusLore.add(Component.empty());
                     bonusLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.ud83dudd17_active_bait", "\uD83D\uDD17 Active Bait: ").color(NamedTextColor.YELLOW)
-                            .append(Component.text(activeBait.getDisplayName()).color(NamedTextColor.WHITE))
+                            .append(Component.text(activeBait.getLocalizedDisplayName(plugin.getLanguageManager())).color(NamedTextColor.WHITE))
                             .decoration(TextDecoration.ITALIC, false));
 
                     double baitDoubleCatch = activeBait.getBonus(com.fishrework.model.Bait.DOUBLE_CATCH_CHANCE);
@@ -264,7 +270,7 @@ public class SkillDetailGUI extends BaseGUI {
             List<Component> chancesLore = new ArrayList<>();
             chancesLore.add(Component.empty());
             chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.biome", "Biome: ").color(NamedTextColor.GRAY)
-                .append(Component.text(chanceSnapshot.biomeGroup().name()).color(NamedTextColor.YELLOW))
+                .append(Component.text(chanceSnapshot.biomeGroup().getLocalizedName(plugin.getLanguageManager())).color(NamedTextColor.YELLOW))
                 .decoration(TextDecoration.ITALIC, false));
             chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.rare_bonus", "Rare Bonus: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("+%.1f%%", chanceSnapshot.totalRareCreatureBonus())).color(NamedTextColor.GREEN))
@@ -275,7 +281,9 @@ public class SkillDetailGUI extends BaseGUI {
 
             if (chanceSnapshot.activeBaitId() != null && chanceSnapshot.activeBaitDisplayName() != null) {
             NamedTextColor baitColor = chanceSnapshot.baitAppliesToContext() ? NamedTextColor.AQUA : NamedTextColor.RED;
-            String baitSuffix = chanceSnapshot.baitAppliesToContext() ? "" : " (inactive here)";
+            String baitSuffix = chanceSnapshot.baitAppliesToContext()
+                    ? ""
+                    : plugin.getLanguageManager().getString("skilldetailgui.bait_inactive_suffix", " (inactive here)");
             chancesLore.add(plugin.getLanguageManager().getMessage("skilldetailgui.bait", "Bait: ").color(NamedTextColor.GRAY)
                 .append(Component.text(chanceSnapshot.activeBaitDisplayName() + baitSuffix).color(baitColor))
                 .decoration(TextDecoration.ITALIC, false));
@@ -305,7 +313,11 @@ public class SkillDetailGUI extends BaseGUI {
                 }
                 }
 
-                chancesLore.add(Component.text("• " + label + ": ").color(NamedTextColor.GRAY)
+                chancesLore.add(Component.text(plugin.getLanguageManager().getString(
+                                "skilldetailgui.top_chance_entry",
+                                "• %label%: ",
+                                "label", label))
+                                .color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.2f%%", entry.getValue())).color(lineColor))
                     .decoration(TextDecoration.ITALIC, false));
             }
@@ -741,7 +753,7 @@ public class SkillDetailGUI extends BaseGUI {
         if (level > data.getLevel(skill)) {
             player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.reach_level_to_view",
                     "Reach %skill% Level %level% to view these recipes.",
-                    "skill", skill.getDisplayName(), "level", String.valueOf(level))
+                    "skill", skill.getLocalizedDisplayName(plugin.getLanguageManager()), "level", String.valueOf(level))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1.0f);
             return;

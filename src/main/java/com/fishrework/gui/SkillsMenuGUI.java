@@ -35,11 +35,11 @@ public class SkillsMenuGUI extends BaseGUI {
         Skill fishing = Skill.FISHING;
         ItemStack fishingItem = new ItemStack(fishing.getIcon());
         ItemMeta meta = fishingItem.getItemMeta();
-        meta.displayName(Component.text(fishing.getDisplayName()).color(NamedTextColor.AQUA));
+        meta.displayName(Component.text(fishing.getLocalizedDisplayName(plugin.getLanguageManager())).color(NamedTextColor.AQUA));
         
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
-        lore.add(Component.text(fishing.getDescription()).color(NamedTextColor.GRAY));
+        lore.add(Component.text(fishing.getLocalizedDescription(plugin.getLanguageManager())).color(NamedTextColor.GRAY));
         lore.add(Component.text(""));
         
         int level = data.getLevel(fishing);
@@ -52,7 +52,10 @@ public class SkillsMenuGUI extends BaseGUI {
         if (level < plugin.getLevelManager().getMaxLevel()) {
              lore.add(plugin.getLanguageManager().getMessage("skillsmenugui.progress", "Progress: ").color(NamedTextColor.GRAY)
                 .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", xp)).color(NamedTextColor.GREEN)) // Show total XP? Or relative?
-                .append(Component.text(" / " + com.fishrework.util.FormatUtil.format("%.0f", nextXp)).color(NamedTextColor.GREEN)));
+                .append(Component.text(plugin.getLanguageManager().getString(
+                        "skillsmenugui.progress_value",
+                        " / %next%",
+                        "next", com.fishrework.util.FormatUtil.format("%.0f", nextXp))).color(NamedTextColor.GREEN)));
              
              // Simple progress bar
              // [======....]
@@ -95,14 +98,22 @@ public class SkillsMenuGUI extends BaseGUI {
             double value = effectiveFlat * (1.0 + scd / 100.0);
             lore.add(plugin.getLanguageManager().getMessage("skillsmenugui.sea_creature_defense", " Sea Creature Defense: ").color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            lore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", scd) + "%)").color(NamedTextColor.DARK_GRAY));
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                    "skillsmenugui.flat_multiplier_breakdown",
+                    "  (+%flat% flat * %pct%%)",
+                    "flat", com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat),
+                    "pct", com.fishrework.util.FormatUtil.format("%.1f", scd))).color(NamedTextColor.DARK_GRAY));
         }
         if (sca > 0 || flatAtk > 0) {
             double effectiveFlat = flatAtk > 0 ? flatAtk : 1.0;
             double value = effectiveFlat * (1.0 + sca / 100.0);
             lore.add(plugin.getLanguageManager().getMessage("skillsmenugui.sea_creature_attack", " Sea Creature Attack: ").color(NamedTextColor.GRAY)
                     .append(Component.text(com.fishrework.util.FormatUtil.format("%.1f", value)).color(NamedTextColor.AQUA)));
-            lore.add(Component.text("  (+" + com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat) + " flat * " + com.fishrework.util.FormatUtil.format("%.1f", sca) + "%)").color(NamedTextColor.DARK_GRAY));
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                    "skillsmenugui.flat_multiplier_breakdown",
+                    "  (+%flat% flat * %pct%%)",
+                    "flat", com.fishrework.util.FormatUtil.format("%.1f", effectiveFlat),
+                    "pct", com.fishrework.util.FormatUtil.format("%.1f", sca))).color(NamedTextColor.DARK_GRAY));
         }
         if (fishingXpBonus > 0) {
             lore.add(plugin.getLanguageManager().getMessage("skillsmenugui.fishing_xp_bonus", " Fishing XP Bonus: ").color(NamedTextColor.GRAY)

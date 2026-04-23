@@ -1,8 +1,10 @@
 package com.fishrework.model;
 
+import com.fishrework.manager.LanguageManager;
 import org.bukkit.block.Biome;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -335,5 +337,27 @@ public enum BiomeGroup {
      */
     public static BiomeGroup fromBiomeKey(String key) {
         return KEY_MAPPING.getOrDefault(key, OTHER);
+    }
+
+    public String getLocalizedName(LanguageManager languageManager) {
+        return languageManager.getString(
+                "biomegroup." + name().toLowerCase(Locale.ROOT) + ".name",
+                toFriendlyName());
+    }
+
+    private String toFriendlyName() {
+        String[] words = name().toLowerCase(Locale.ROOT).split("_");
+        StringBuilder builder = new StringBuilder();
+        for (String word : words) {
+            if (word.isEmpty()) {
+                continue;
+            }
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+            builder.append(Character.toUpperCase(word.charAt(0)));
+            builder.append(word.substring(1));
+        }
+        return builder.toString();
     }
 }

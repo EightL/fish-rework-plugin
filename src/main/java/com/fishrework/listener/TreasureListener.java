@@ -35,7 +35,9 @@ public class TreasureListener implements Listener {
 
         if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED) && mainIsTreasure) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage("Treasure chests are currently disabled on this server.");
+            event.getPlayer().sendMessage(plugin.getLanguageManager().getString(
+                    "treasurelistener.disabled_on_server",
+                    "Treasure chests are currently disabled on this server."));
             return;
         }
 
@@ -57,7 +59,9 @@ public class TreasureListener implements Listener {
             if (isTreasure(offItem)) {
                 if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_CHESTS_ENABLED)) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage("Treasure chests are currently disabled on this server.");
+                    event.getPlayer().sendMessage(plugin.getLanguageManager().getString(
+                            "treasurelistener.disabled_on_server",
+                            "Treasure chests are currently disabled on this server."));
                     return;
                 }
                 event.setCancelled(true);

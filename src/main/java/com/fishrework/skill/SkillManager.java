@@ -13,6 +13,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
+import java.util.Locale;
 
 /**
  * Centralized XP granting and level-up ceremony.
@@ -117,7 +118,12 @@ public class SkillManager {
         // Title
         Title title = Title.title(
                 plugin.getLanguageManager().getMessage("skillmanager.level_up", "LEVEL UP!").color(NamedTextColor.AQUA),
-                Component.text(skill.getDisplayName() + " Level " + newLevel).color(NamedTextColor.YELLOW),
+                Component.text(plugin.getLanguageManager().getString(
+                                "skillmanager.title_subtitle",
+                                "%skill% Level %level%",
+                                "skill", skill.getLocalizedDisplayName(plugin.getLanguageManager()),
+                                "level", String.valueOf(newLevel)))
+                        .color(NamedTextColor.YELLOW),
                 Title.Times.times(
                         Duration.ofMillis(plugin.getConfig().getLong("gui.levelup_title_fade_in_ms", 500)),
                         Duration.ofMillis(plugin.getConfig().getLong("gui.levelup_title_stay_ms", 3000)),
@@ -130,8 +136,13 @@ public class SkillManager {
 
         // Chat messages
         player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.divider", "--------------------------------").color(NamedTextColor.DARK_AQUA));
-        player.sendMessage(Component.text("   " + skill.getDisplayName().toUpperCase() + " LEVEL UP! "
-                + (newLevel - 1) + " ➜ " + newLevel).color(NamedTextColor.AQUA));
+        player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                        "skillmanager.chat_level_up",
+                        "   %skill% LEVEL UP! %from% ➜ %to%",
+                        "skill", skill.getLocalizedDisplayName(plugin.getLanguageManager()).toUpperCase(Locale.ROOT),
+                        "from", String.valueOf(newLevel - 1),
+                        "to", String.valueOf(newLevel)))
+                .color(NamedTextColor.AQUA));
 
         // Show stat gains (fishing-specific for now, extensible per-skill later)
         showStatGains(player, skill, newLevel, levelManager);
@@ -153,8 +164,12 @@ public class SkillManager {
             if (pd != null) {
                 pd.addBalance(milestoneReward);
                 pd.getSession().addDoubloonsEarned(milestoneReward);
-                String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-                player.sendMessage(Component.text("  \uD83C\uDFC6 Milestone Reward: " + com.fishrework.util.FormatUtil.format("%.0f", milestoneReward) + " " + currencyName + "!")
+                String currencyName = plugin.getLanguageManager().getCurrencyName();
+                player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                                "skillmanager.milestone_reward",
+                                "  \uD83C\uDFC6 Milestone Reward: %amount% %currency%!",
+                                "amount", com.fishrework.util.FormatUtil.format("%.0f", milestoneReward),
+                                "currency", currencyName))
                         .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
                         .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
@@ -184,9 +199,21 @@ public class SkillManager {
 
         if (dc > 0 || tr > 0 || xp > 0) {
             player.sendMessage(plugin.getLanguageManager().getMessage("skillmanager.attributes_gained", "   Attributes Gained:").color(NamedTextColor.GOLD));
-            if (dc > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", dc) + " Double Catch Chance").color(NamedTextColor.GREEN));
-            if (tr > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.1f%%", tr) + " Treasure Chance").color(NamedTextColor.GREEN));
-            if (xp > 0) player.sendMessage(Component.text("    + " + com.fishrework.util.FormatUtil.format("%.2f", xp) + " XP Multiplier").color(NamedTextColor.GREEN));
+            if (dc > 0) player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "skillmanager.double_catch_gain",
+                            "    + %amount% Double Catch Chance",
+                            "amount", com.fishrework.util.FormatUtil.format("%.1f%%", dc)))
+                    .color(NamedTextColor.GREEN));
+            if (tr > 0) player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "skillmanager.treasure_chance_gain",
+                            "    + %amount% Treasure Chance",
+                            "amount", com.fishrework.util.FormatUtil.format("%.1f%%", tr)))
+                    .color(NamedTextColor.GREEN));
+            if (xp > 0) player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "skillmanager.xp_multiplier_gain",
+                            "    + %amount% XP Multiplier",
+                            "amount", com.fishrework.util.FormatUtil.format("%.2f", xp)))
+                    .color(NamedTextColor.GREEN));
         }
     }
 

@@ -118,7 +118,7 @@ public class FishingListener implements Listener {
         tryDoubleCatchDrop(player, itemStack, doubleCatchChance);
 
         double finalBaseXp = applyXpMultipliers(baseXp, baitContext.xpMultiplier, streakMultiplier);
-        plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, "Fishing");
+        plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
     }
 
     private BaitContext resolveBaitContext(Player player) {
@@ -231,7 +231,10 @@ public class FishingListener implements Listener {
                 caughtItem.setItemStack(treasureItem);
             }
 
-            player.sendMessage(Component.text("You caught a " + mobDef.getDisplayName() + "!")
+            player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "fishinglistener.you_caught",
+                            "You caught a %mob%!",
+                            "mob", mobDef.getLocalizedDisplayName(plugin.getLanguageManager())))
                     .color(mobDef.getRarity().getColor()));
 
             plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitXpMultiplier);
@@ -239,7 +242,7 @@ public class FishingListener implements Listener {
             session.recordCatch();
             session.recordTreasure();
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), caughtItem.getLocation());
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), false);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
 
             return new MobCatchResult(false, resultingItemStack);
         }
@@ -274,7 +277,7 @@ public class FishingListener implements Listener {
         session.recordCatch();
         if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), caughtItem.getLocation());
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getDisplayName(), mobDef.getRarity(), false);
+            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
         }
 
         return new MobCatchResult(true, currentItemStack);
@@ -290,8 +293,12 @@ public class FishingListener implements Listener {
         if (streakTier > 0) {
             String streakText = "\u2B50".repeat(Math.min(streakTier, 5));
             double bonus = (streakMultiplier - 1.0) * 100;
-            player.sendActionBar(Component.text(streakText + " Streak x" + session.getCurrentStreak()
-                    + " (+" + com.fishrework.util.FormatUtil.format("%.0f", bonus) + "% Bonus) " + streakText)
+            player.sendActionBar(Component.text(plugin.getLanguageManager().getString(
+                            "fishinglistener.streak_actionbar",
+                            "%stars% Streak x%streak% (+%bonus%% Bonus) %stars%",
+                            "stars", streakText,
+                            "streak", String.valueOf(session.getCurrentStreak()),
+                            "bonus", com.fishrework.util.FormatUtil.format("%.0f", bonus)))
                     .color(NamedTextColor.GOLD));
         }
         return streakMultiplier;
@@ -323,13 +330,17 @@ public class FishingListener implements Listener {
         total *= streakMultiplier;
         data.addBalance(total);
         session.addDoubloonsEarned(total);
-        String currencyName = plugin.getConfig().getString("economy.currency_name", "Doubloons");
+        String currencyName = plugin.getLanguageManager().getCurrencyName();
         caughtItem.remove();
-        player.sendActionBar(Component.text("Auto-sold for " + com.fishrework.util.FormatUtil.format("%.0f", total) + " " + currencyName)
+        player.sendActionBar(Component.text(plugin.getLanguageManager().getString(
+                        "fishinglistener.auto_sold_for",
+                        "Auto-sold for %total% %currency%",
+                        "total", com.fishrework.util.FormatUtil.format("%.0f", total),
+                        "currency", currencyName))
                 .color(NamedTextColor.GREEN));
 
         double finalBaseXp = applyXpMultipliers(baseXp, baitXpMultiplier, streakMultiplier);
-        plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, "Fishing");
+        plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
         return true;
     }
 

@@ -468,7 +468,11 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                                 em.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.cannot_downgrade", "Cannot Downgrade!").color(NamedTextColor.RED)
                                         .decoration(TextDecoration.ITALIC, false));
                                 em.lore(List.of(
-                                        Component.text("This gear already has " + type + " +" + existingTier)
+                                        Component.text(plugin.getLanguageManager().getString(
+                                                        "seacreatureupgradegui.existing_upgrade",
+                                                        "This gear already has %type% +%tier%",
+                                                        "type", type,
+                                                        "tier", String.valueOf(existingTier)))
                                                 .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                         plugin.getLanguageManager().getMessage("seacreatureupgradegui.use_a_higher_tier_material", "Use a higher tier material to upgrade.")
                                                 .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)

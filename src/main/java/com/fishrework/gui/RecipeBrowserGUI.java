@@ -77,7 +77,13 @@ public class RecipeBrowserGUI extends BaseGUI {
         setPaginationControls(45, 53, page, totalPages);
         setBackButton(48);
         inventory.setItem(47, createTypeFilterItem());
-        inventory.setItem(49, createPageInfo(page, totalPages, "Recipes: " + resultIds.size()));
+        inventory.setItem(49, createPageInfo(
+                page,
+                totalPages,
+                plugin.getLanguageManager().getString(
+                        "recipebrowsergui.recipes_count",
+                        "Recipes: %count%",
+                        "count", String.valueOf(resultIds.size()))));
         inventory.setItem(50, createLevelFilterItem());
         inventory.setItem(51, createUnlockFilterItem());
     }
@@ -160,7 +166,10 @@ public class RecipeBrowserGUI extends BaseGUI {
 
         if (primaryRecipe != null) {
             if (primaryRecipe.getRequiredLevel() > 0) {
-                lore.add(Component.text("Fishing Level " + primaryRecipe.getRequiredLevel())
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "recipebrowsergui.fishing_level",
+                                "Fishing Level %level%",
+                                "level", String.valueOf(primaryRecipe.getRequiredLevel())))
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
             } else if (primaryRecipe.hasAdvancementRequirement()) {
@@ -175,7 +184,10 @@ public class RecipeBrowserGUI extends BaseGUI {
         }
 
         if (recipes.size() > 1) {
-            lore.add(Component.text("Recipes: " + recipes.size())
+            lore.add(Component.text(plugin.getLanguageManager().getString(
+                            "recipebrowsergui.recipes_count",
+                            "Recipes: %count%",
+                            "count", String.valueOf(recipes.size())))
                     .color(NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -204,7 +216,10 @@ public class RecipeBrowserGUI extends BaseGUI {
 
         if (primaryRecipe != null) {
             if (primaryRecipe.getRequiredLevel() > 0) {
-                lore.add(Component.text("Requires Fishing Level " + primaryRecipe.getRequiredLevel())
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "recipebrowsergui.requires_fishing_level",
+                                "Requires Fishing Level %level%",
+                                "level", String.valueOf(primaryRecipe.getRequiredLevel())))
                         .color(NamedTextColor.DARK_RED)
                         .decoration(TextDecoration.ITALIC, false));
             } else if (primaryRecipe.hasAdvancementRequirement()) {
@@ -248,7 +263,10 @@ public class RecipeBrowserGUI extends BaseGUI {
     private ItemStack createTypeFilterItem() {
         ItemStack item = new ItemStack(Material.SPYGLASS);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("Type: " + typeFilter.label)
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "recipebrowsergui.type_prefix",
+                        "Type: %type%",
+                        "type", getTypeFilterLabel(typeFilter)))
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
@@ -263,8 +281,10 @@ public class RecipeBrowserGUI extends BaseGUI {
     private ItemStack createLevelFilterItem() {
         ItemStack item = new ItemStack(Material.EXPERIENCE_BOTTLE);
         ItemMeta meta = item.getItemMeta();
-        String label = levelFilter == null ? "All" : (levelFilter == 0 ? "No Level" : "Level " + levelFilter);
-        meta.displayName(Component.text("Level: " + label)
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "recipebrowsergui.level_prefix",
+                        "Level: %level%",
+                        "level", getLevelFilterLabel(levelFilter)))
                 .color(NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
@@ -279,7 +299,10 @@ public class RecipeBrowserGUI extends BaseGUI {
     private ItemStack createUnlockFilterItem() {
         ItemStack item = new ItemStack(Material.COMPARATOR);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text("State: " + unlockFilter.label)
+        meta.displayName(Component.text(plugin.getLanguageManager().getString(
+                        "recipebrowsergui.state_prefix",
+                        "State: %state%",
+                        "state", getUnlockFilterLabel(unlockFilter)))
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(List.of(
@@ -289,6 +312,36 @@ public class RecipeBrowserGUI extends BaseGUI {
         ));
         item.setItemMeta(meta);
         return item;
+    }
+
+    private String getTypeFilterLabel(TypeFilter filter) {
+        return switch (filter) {
+            case ALL -> plugin.getLanguageManager().getString("recipebrowsergui.type.all", "All");
+            case RODS -> plugin.getLanguageManager().getString("recipebrowsergui.type.rods", "Rods");
+            case ARMOR -> plugin.getLanguageManager().getString("recipebrowsergui.type.armor", "Armor");
+            case WEAPONS -> plugin.getLanguageManager().getString("recipebrowsergui.type.weapons", "Weapons");
+            case MATERIALS -> plugin.getLanguageManager().getString("recipebrowsergui.type.materials", "Materials");
+            case BAITS -> plugin.getLanguageManager().getString("recipebrowsergui.type.baits", "Baits");
+            case UTILITIES -> plugin.getLanguageManager().getString("recipebrowsergui.type.utilities", "Utilities");
+        };
+    }
+
+    private String getLevelFilterLabel(Integer value) {
+        if (value == null) {
+            return plugin.getLanguageManager().getString("recipebrowsergui.level.all", "All");
+        }
+        if (value == 0) {
+            return plugin.getLanguageManager().getString("recipebrowsergui.level.none", "No Level");
+        }
+        return String.valueOf(value);
+    }
+
+    private String getUnlockFilterLabel(UnlockFilter filter) {
+        return switch (filter) {
+            case ALL -> plugin.getLanguageManager().getString("recipebrowsergui.state.all", "All");
+            case UNLOCKED -> plugin.getLanguageManager().getString("recipebrowsergui.state.unlocked", "Unlocked");
+            case LOCKED -> plugin.getLanguageManager().getString("recipebrowsergui.state.locked", "Locked");
+        };
     }
 
     private List<Integer> getLevelOptions() {
@@ -389,15 +442,9 @@ public class RecipeBrowserGUI extends BaseGUI {
     }
 
     public enum UnlockFilter {
-        ALL("All"),
-        UNLOCKED("Unlocked"),
-        LOCKED("Locked");
-
-        private final String label;
-
-        UnlockFilter(String label) {
-            this.label = label;
-        }
+        ALL,
+        UNLOCKED,
+        LOCKED;
 
         public UnlockFilter next() {
             UnlockFilter[] values = values();
@@ -406,19 +453,13 @@ public class RecipeBrowserGUI extends BaseGUI {
     }
 
     public enum TypeFilter {
-        ALL("All"),
-        RODS("Rods"),
-        ARMOR("Armor"),
-        WEAPONS("Weapons"),
-        MATERIALS("Materials"),
-        BAITS("Baits"),
-        UTILITIES("Utilities");
-
-        private final String label;
-
-        TypeFilter(String label) {
-            this.label = label;
-        }
+        ALL,
+        RODS,
+        ARMOR,
+        WEAPONS,
+        MATERIALS,
+        BAITS,
+        UTILITIES;
 
         public TypeFilter next() {
             TypeFilter[] values = values();

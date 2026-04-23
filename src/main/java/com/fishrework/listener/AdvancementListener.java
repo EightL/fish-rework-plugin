@@ -48,7 +48,10 @@ public class AdvancementListener implements Listener {
                         .serialize(result.getItemMeta().displayName())
                     : RecipeDefinition.toFriendlyName(result.getType().name());
 
-            event.getPlayer().sendMessage(Component.text("    ★ Recipe: " + name)
+            event.getPlayer().sendMessage(Component.text(plugin.getLanguageManager().getString(
+                            "advancementlistener.recipe_entry",
+                            "    ★ Recipe: %name%",
+                            "name", name))
                     .color(NamedTextColor.LIGHT_PURPLE)
                     .decoration(TextDecoration.ITALIC, false)
                     .clickEvent(ClickEvent.runCommand("/fishing recipe " + recipe.getResultId()))

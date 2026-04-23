@@ -13,6 +13,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -79,6 +80,9 @@ public class HeatManager {
 
         public TextColor getColor() { return color; }
         public String getDisplayName() { return displayName; }
+        public String getLocalizedDisplayName(LanguageManager languageManager) {
+            return languageManager.getString("heattier." + name().toLowerCase(Locale.ROOT) + ".name", displayName);
+        }
     }
 
     /**
@@ -263,7 +267,11 @@ public class HeatManager {
         // Add SCC bonus indicator if any
         double sccBonus = getHeatSccBonus(player);
         if (sccBonus > 0) {
-            gauge = gauge.append(Component.text(" (+" + com.fishrework.util.FormatUtil.format("%.0f", sccBonus) + "% SCC)").color(NamedTextColor.AQUA));
+            gauge = gauge.append(Component.text(plugin.getLanguageManager().getString(
+                            "heatmanager.scc_bonus_suffix",
+                            " (+%amount%% SCC)",
+                            "amount", com.fishrework.util.FormatUtil.format("%.0f", sccBonus)))
+                    .color(NamedTextColor.AQUA));
         }
 
         player.sendActionBar(gauge);
