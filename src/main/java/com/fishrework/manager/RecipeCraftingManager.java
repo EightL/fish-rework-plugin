@@ -46,8 +46,10 @@ public class RecipeCraftingManager {
         }
 
         return findRemovalPlan(player, recipe) != null
-                ? new RecipeAvailability(true, true, "Craft")
-                : new RecipeAvailability(true, false, "Cannot craft, insufficient ingredients");
+                ? new RecipeAvailability(true, true, plugin.getLanguageManager().getString("recipeguidegui.craft", "Craft"))
+                : new RecipeAvailability(true, false, plugin.getLanguageManager().getString(
+                        "recipecraftingmanager.cannot_craft_insufficient_ingredients",
+                        "Cannot craft, insufficient ingredients"));
     }
 
     public CraftAttempt craft(Player player, RecipeDefinition recipe) {
@@ -58,7 +60,9 @@ public class RecipeCraftingManager {
 
         Map<Integer, Integer> removalPlan = findRemovalPlan(player, recipe);
         if (removalPlan == null) {
-            return new CraftAttempt(false, "Cannot craft, insufficient ingredients", null);
+            return new CraftAttempt(false, plugin.getLanguageManager().getString(
+                    "recipecraftingmanager.cannot_craft_insufficient_ingredients",
+                    "Cannot craft, insufficient ingredients"), null);
         }
 
         ItemStack craftedItem = buildCraftResult(player, recipe, removalPlan);
@@ -69,7 +73,10 @@ public class RecipeCraftingManager {
             player.getWorld().dropItemNaturally(player.getLocation(), leftover);
         }
 
-        return new CraftAttempt(true, "Crafted " + getDisplayName(craftedItem) + ".", craftedItem);
+        return new CraftAttempt(true, plugin.getLanguageManager().getString(
+                "recipecraftingmanager.crafted_item",
+                "Crafted %item%.",
+                "item", getDisplayName(craftedItem)), craftedItem);
     }
 
     public ItemStack applySpecialCraftingResult(String recipeKey, ItemStack baseResult, List<ItemStack> sourceIngredients) {
@@ -243,12 +250,18 @@ public class RecipeCraftingManager {
 
     private String getLockMessage(RecipeDefinition recipe) {
         if (recipe.hasLevelRequirement()) {
-            return "Requires Fishing Level " + recipe.getRequiredLevel();
+            return plugin.getLanguageManager().getString(
+                    "recipeguidegui.requires_fishing_level",
+                    "Requires Fishing Level %level%",
+                    "level", String.valueOf(recipe.getRequiredLevel()));
         }
         if (recipe.hasAdvancementRequirement()) {
-            return "Requires advancement: " + RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey());
+            return plugin.getLanguageManager().getString(
+                    "recipeguidegui.requires_advancement",
+                    "Requires %advancement%",
+                    "advancement", RecipeDefinition.toFriendlyName(recipe.getRequiredAdvancement().getKey()));
         }
-        return "Recipe locked";
+        return plugin.getLanguageManager().getString("recipecraftingmanager.recipe_locked", "Recipe locked");
     }
 
     private boolean isTridentUpgradeRecipe(String recipeKey) {

@@ -15,6 +15,7 @@ public class PlayerData {
     private final java.util.Set<String> collectedArtifacts = new java.util.HashSet<>();
     private boolean damageIndicatorsEnabled = true;
     private boolean fishingTipsEnabled = true;
+    private String languageLocale = null;
     private ParticleDetailMode particleDetailMode = ParticleDetailMode.HIGH;
     /** Maximum doubloon balance a player can hold. Configurable in config.yml under economy.max_balance. */
     public static final double DEFAULT_MAX_BALANCE = 10_000_000.0;
@@ -190,6 +191,14 @@ public class PlayerData {
 
     public void setFishingTipsEnabled(boolean enabled) {
         this.fishingTipsEnabled = enabled;
+    }
+
+    public String getLanguageLocale() {
+        return languageLocale;
+    }
+
+    public void setLanguageLocale(String languageLocale) {
+        this.languageLocale = languageLocale == null || languageLocale.isBlank() ? null : languageLocale;
     }
 
     public ParticleDetailMode getParticleDetailMode() {

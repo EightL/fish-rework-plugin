@@ -194,9 +194,9 @@ public class RecipeGuideGUI extends BaseGUI {
 
     private String formatDisplayType(RecipeDefinition.DisplayType displayType) {
         return switch (displayType) {
-            case SHAPED -> "Shaped";
-            case SHAPELESS -> "Shapeless";
-            case ENCHANTED_MATERIAL -> "Enchanted Material";
+            case SHAPED -> plugin.getLanguageManager().getString("recipeguidegui.type_shaped", "Shaped");
+            case SHAPELESS -> plugin.getLanguageManager().getString("recipeguidegui.type_shapeless", "Shapeless");
+            case ENCHANTED_MATERIAL -> plugin.getLanguageManager().getString("recipeguidegui.type_enchanted_material", "Enchanted Material");
         };
     }
 

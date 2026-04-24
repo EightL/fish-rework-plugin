@@ -48,6 +48,10 @@ public class FishingListener implements Listener {
 
     @EventHandler
     public void onFish(PlayerFishEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleFish(event));
+    }
+
+    private void handleFish(PlayerFishEvent event) {
         PlayerFishEvent.State state = event.getState();
         if (state == PlayerFishEvent.State.FISHING
                 || state == PlayerFishEvent.State.CAUGHT_FISH

@@ -4,6 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.entity.Player;
 
 public class GuiListener implements Listener {
 
@@ -24,7 +25,11 @@ public class GuiListener implements Listener {
             }
 
             event.setCancelled(true); // Default to cancelled
-            gui.onClick(event);
+            if (event.getWhoClicked() instanceof Player player) {
+                gui.plugin.getLanguageManager().withPlayer(player, () -> gui.onClick(event));
+            } else {
+                gui.onClick(event);
+            }
         }
     }
 
@@ -32,7 +37,11 @@ public class GuiListener implements Listener {
     public void onClose(org.bukkit.event.inventory.InventoryCloseEvent event) {
         if (event.getInventory().getHolder() instanceof BaseGUI) {
             BaseGUI gui = (BaseGUI) event.getInventory().getHolder();
-            gui.onClose(event);
+            if (event.getPlayer() instanceof Player player) {
+                gui.plugin.getLanguageManager().withPlayer(player, () -> gui.onClose(event));
+            } else {
+                gui.onClose(event);
+            }
         }
     }
 
@@ -43,7 +52,11 @@ public class GuiListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            gui.onDrag(event);
+            if (event.getWhoClicked() instanceof Player player) {
+                gui.plugin.getLanguageManager().withPlayer(player, () -> gui.onDrag(event));
+            } else {
+                gui.onDrag(event);
+            }
         }
     }
 }

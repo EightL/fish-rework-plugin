@@ -21,7 +21,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,6 +106,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
+        return plugin.getLanguageManager().withPlayer(player, () -> handlePlayerCommand(player, args));
+    }
+
+    private boolean handlePlayerCommand(Player player, String[] args) {
         if (args.length == 0) {
             new com.fishrework.gui.SkillDetailGUI(plugin, player, Skill.FISHING).open(player);
             return true;
@@ -343,13 +346,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     }
 
     private boolean handleLocale(Player player, String[] args) {
-        if (!checkAdmin(player)) {
-            return true;
-        }
-
         if (args.length < 2) {
-            String current = plugin.getConfig().getString("locale", "en");
-            player.sendMessage(plugin.getLanguageManager().getMessage(
+            String current = plugin.getLanguageManager().getPlayerLocale(player);
+            player.sendMessage(plugin.getLanguageManager().getMessage(player,
                     "fishingcommand.locale_usage",
                     "Usage: /fishing locale <code> (current: %locale%)",
                     "locale", current
@@ -357,26 +356,26 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        String locale = args[1].toLowerCase();
-        String fileName = "lang_" + locale + ".yml";
-        File externalFile = new File(plugin.getDataFolder(), fileName);
-        boolean bundled = plugin.getResource(fileName) != null;
-        if (!externalFile.exists() && !bundled) {
-            player.sendMessage(plugin.getLanguageManager().getMessage(
+        String locale = plugin.getLanguageManager().normalizeLocale(args[1]);
+        if (locale == null || !plugin.getLanguageManager().isLocaleAvailable(locale)) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(player,
                     "fishingcommand.locale_not_found",
                     "Language file not found: %file%",
-                    "file", fileName
+                    "file", "lang_" + args[1] + ".yml"
             ).color(NamedTextColor.RED));
             return true;
         }
 
-        plugin.getConfig().set("locale", locale);
-        plugin.saveConfig();
-        plugin.reload();
-        player.sendMessage(plugin.getLanguageManager().getMessage(
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        if (data != null) {
+            data.setLanguageLocale(locale);
+        }
+        plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "language", locale);
+        plugin.refreshPlayerCustomItems(player);
+        player.sendMessage(plugin.getLanguageManager().getMessage(player,
                 "fishingcommand.locale_updated",
                 "Language updated to %locale%.",
-                "locale", locale
+                "locale", plugin.getLanguageManager().getLocaleDisplayName(player, locale)
         ).color(NamedTextColor.GREEN));
         return true;
     }
@@ -514,8 +513,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_fishing_tip_notifications", " - Toggle fishing tip notifications").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier [value]").color(NamedTextColor.YELLOW)
             .append(plugin.getLanguageManager().getMessage("fishingcommand.viewset_global_xp_multiplier", " - View/set global XP multiplier").color(NamedTextColor.GRAY)));
-        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_locale_code", "/fishing locale <code>").color(NamedTextColor.YELLOW)
-            .append(plugin.getLanguageManager().getMessage("fishingcommand.change_plugin_language", " - Change plugin language").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_language_code", "/fs language <code>").color(NamedTextColor.YELLOW)
+            .append(plugin.getLanguageManager().getMessage("fishingcommand.change_plugin_language", " - Change your language").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_dmgindicator_onoff", "/fishing dmgindicator <on|off>").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.toggle_damage_indicators", " - Toggle damage indicators").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_particles_highmediumlow", "/fishing particles [high|medium|low]").color(NamedTextColor.YELLOW)
@@ -555,8 +554,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_doubloons_balance", " - Set doubloons balance").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_global_xp_multiplier", " - Set global XP multiplier").color(NamedTextColor.GRAY)));
-                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_locale_code", "/fishing locale <code>").color(NamedTextColor.YELLOW)
-                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_plugin_language", " - Set plugin language").color(NamedTextColor.GRAY)));
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_language_code", "/fs language <code>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_plugin_language", " - Set your language").color(NamedTextColor.GRAY)));
 
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_reload", "/fishing reload").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.reload_configyml_without_restart", " - Reload config.yml without restart").color(NamedTextColor.GRAY)));
@@ -894,7 +893,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if (target == null) { player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.player_not_found", "Player not found.").color(NamedTextColor.RED)); return; }
 
         String itemName = args[2].toLowerCase();
-        org.bukkit.inventory.ItemStack item = plugin.getItemManager().getItem(itemName);
+        org.bukkit.inventory.ItemStack item = plugin.getLanguageManager()
+                .withPlayer(target, () -> plugin.getItemManager().getItem(itemName));
 
         if (item == null) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.unknown_item_use_tab_completion", "Unknown item. Use tab completion.").color(NamedTextColor.RED));
@@ -1262,8 +1262,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         if ("fs".equalsIgnoreCase(label)) {
             if (args.length == 1) {
                 completions.add("particles");
+                completions.add("language");
             } else if (args.length == 2 && args[0].equalsIgnoreCase("particles")) {
                 completions.addAll(List.of("high", "medium", "low"));
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("language")) {
+                completions.addAll(plugin.getLanguageManager().getAvailableLocales());
             }
         }
 
@@ -1284,6 +1287,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("particles");
             completions.add("xpmultiplier");
             completions.add("locale");
+            completions.add("language");
             completions.add("help");
             completions.addAll(List.of("chances", "heat", "dmgindicator"));
             if (isAdmin) {
@@ -1303,9 +1307,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     completions.addAll(List.of("0.5", "1.0", "1.5", "2.0"));
                 }
             } else if (args[0].equalsIgnoreCase("locale") || args[0].equalsIgnoreCase("language")) {
-                if (isAdmin) {
-                    completions.addAll(List.of("en", "es"));
-                }
+                completions.addAll(plugin.getLanguageManager().getAvailableLocales());
             } else if (isAdmin) {
                 if (args[0].equalsIgnoreCase("setchance")) {
                     completions.addAll(plugin.getMobRegistry().getAllIds());

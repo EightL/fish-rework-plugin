@@ -102,6 +102,10 @@ public class MobListener implements Listener {
         plugin.getBossBarManager().removeMobBossBar(entity.getUniqueId());
         plugin.getMobManager().removeGlowColorEntry(entity.getUniqueId());
 
+        if (plugin.getBroodmotherCosmetics() != null) {
+            plugin.getBroodmotherCosmetics().cleanup(entity);
+        }
+
         if (plugin.getMobManager().hasSharedMountedHp(entity)) {
             LivingEntity sibling = findSharedMountedSibling(entity);
             if (sibling != null && sibling.isValid() && !sibling.isDead()) {

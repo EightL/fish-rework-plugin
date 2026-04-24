@@ -86,7 +86,7 @@ public class LevelManager {
         // 2. Recipes
         List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForLevel(skill, level);
         for (RecipeDefinition def : recipes) {
-            org.bukkit.inventory.ItemStack result = def.getRecipe().getResult();
+            org.bukkit.inventory.ItemStack result = def.createResultItem(plugin.getItemManager());
             String name;
             if (result.hasItemMeta() && result.getItemMeta().hasDisplayName()) {
                 name = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(result.getItemMeta().displayName());
@@ -141,7 +141,7 @@ public class LevelManager {
         // 2. Recipes
         List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForLevel(skill, level);
         for (RecipeDefinition def : recipes) {
-            org.bukkit.inventory.ItemStack result = def.getRecipe().getResult();
+            org.bukkit.inventory.ItemStack result = def.createResultItem(plugin.getItemManager());
             String name;
             if (result.hasItemMeta() && result.getItemMeta().hasDisplayName()) {
                 name = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(result.getItemMeta().displayName());

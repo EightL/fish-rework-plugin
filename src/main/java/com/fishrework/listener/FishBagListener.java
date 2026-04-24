@@ -27,6 +27,10 @@ public class FishBagListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handlePlayerInteract(event));
+    }
+
+    private void handlePlayerInteract(PlayerInteractEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.FISH_BAG_ENABLED)) return;
         if (!event.getAction().isRightClick()) return;
 

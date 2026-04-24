@@ -27,6 +27,10 @@ public class BlockPlaceListener implements Listener {
         ItemStack item = event.getItemInHand();
         if (item == null || !item.hasItemMeta()) return;
 
+        if (isPlaceableCustomUtility(item)) {
+            return;
+        }
+
         // 1. Check for Custom Materials (e.g., Dread Soul, Ironclad Plate)
         if (item.getItemMeta().getPersistentDataContainer().has(plugin.getItemManager().CUSTOM_ITEM_KEY, PersistentDataType.STRING)) {
             event.setCancelled(true);
@@ -110,5 +114,11 @@ public class BlockPlaceListener implements Listener {
 
         return plugin.getItemManager().isBait(item)
                 || plugin.getItemManager().getCustomItemId(item) != null;
+    }
+
+    private boolean isPlaceableCustomUtility(ItemStack item) {
+        return plugin.getTotemManager().getTotemType(item) != null
+                || plugin.getItemManager().isDisplayCase(item)
+                || plugin.getItemManager().isNetheriteRelic(item);
     }
 }

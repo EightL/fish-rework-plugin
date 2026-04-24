@@ -5,7 +5,7 @@
 config_version: 2
 
 # Language file to load (lang_<locale>.yml)
-locale: "zh_CN"
+locale: "en"
 
 # Update checker — pings Modrinth on startup and notifies admins on join
 update_checker:
@@ -544,6 +544,9 @@ treasure_balance:
 totems:
   buff_radius: 10.0                 # Totem buff range in blocks
   treasure_bonus: 5.0               # Treasure chance bonus % for nearby players
+  battle_totem_1_attack_modifier: 1.0 # Sea creature attack modifier from Battle Totem I
+  battle_totem_2_attack_modifier: 2.0 # Sea creature attack modifier from Battle Totem II
+  battle_totem_3_attack_modifier: 3.0 # Sea creature attack modifier from Battle Totem III
   rotation_speed: 0.1               # Totem spin speed multiplier
   bob_frequency: 0.08               # Vertical bobbing frequency
   bob_amplitude: 0.15               # Vertical bobbing amplitude (blocks)

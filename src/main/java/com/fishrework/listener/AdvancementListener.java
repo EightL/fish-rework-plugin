@@ -24,6 +24,10 @@ public class AdvancementListener implements Listener {
 
     @EventHandler
     public void onAdvancementDone(PlayerAdvancementDoneEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleAdvancementDone(event));
+    }
+
+    private void handleAdvancementDone(PlayerAdvancementDoneEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return;
 
         // Sync recipes whenever ANY advancement is completed

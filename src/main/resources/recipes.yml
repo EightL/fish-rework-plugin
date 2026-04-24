@@ -37,12 +37,49 @@ shaped:
     result: treasure_totem
     level: 40
     pattern:
-      - "GGG"
+      - "TGT"
       - "GCG"
-      - "GGG"
+      - "TGT"
     ingredients:
       C: CONDUIT
-      G: GOLD_BLOCK
+      T: enchanted_table_slab
+      G: enchanted_corrupted_gold
+
+  # Battle Totem I — Level 13
+  battle_totem_1_recipe:
+    result: battle_totem_1
+    level: 13
+    pattern:
+      - "BBB"
+      - "BCB"
+      - "BBB"
+    ingredients:
+      C: CONDUIT
+      B: battle_scrap
+
+  # Battle Totem II — Level 26
+  battle_totem_2_recipe:
+    result: battle_totem_2
+    level: 26
+    pattern:
+      - "EEE"
+      - "ETE"
+      - "EEE"
+    ingredients:
+      T: battle_totem_1
+      E: enchanted_battle_scrap
+
+  # Battle Totem III — Level 39
+  battle_totem_3_recipe:
+    result: battle_totem_3
+    level: 39
+    pattern:
+      - "SSS"
+      - "STS"
+      - "SSS"
+    ingredients:
+      T: battle_totem_2
+      S: super_enchanted_battle_scrap
 
   # Display Case — Level 15
   display_case_recipe:
@@ -143,28 +180,31 @@ shaped:
     result: trident_2
     level: 19
     pattern:
-      - " VP"
-      - "VTV"
-      - "DV "
+      - "HSP"
+      - "VTS"
+      - "IVH"
     ingredients:
       V: enchanted_mossy_vine
-      P: enchanted_ice_wing
+      P: ice_wing
       T: trident_1
-      D: DIAMOND_BLOCK
+      I: ironclad_plate
+      S: enchanted_slime_chunk
+      H: enchanted_hyena_fur
 
   # Trident Tier 3: Dreadspear — Level 33
   trident_3_recipe:
     result: trident_3
     level: 28
     pattern:
-      - " SE"
+      - "RSE"
       - "STS"
-      - "nS "
+      - "GSR"
     ingredients:
       S: enchanted_dread_soul
       E: phantoms_eye
       T: trident_2
-      n: NETHERITE_INGOT
+      G: shark_tooth
+      R: enchanted_ravager_scales
 
   # Gehenna — gated behind lava mastery advancement
   gehenna_recipe:
@@ -210,13 +250,15 @@ shapeless:
     result: shredder
     level: 19
     pattern:
-      - "  S"
-      - " R "
-      - "H  "
+      - " GS"
+      - "PRG"
+      - "HP "
     ingredients:
       R: neptunes_rod
       H: HEART_OF_THE_SEA
-      S: shark_tooth
+      G: enchanted_guardian_scale
+      P: enchanted_polar_fur
+      S: ravager_scales
 
   # Fishing Journal — requires "Root" advancement
   fishing_journal_recipe:
@@ -333,6 +375,41 @@ enchanted_material:
     base: mossy_vine
     level: 10
 
+  enchanted_spider_silk_recipe:
+    result: enchanted_spider_silk
+    base: spider_silk
+    level: 10
+
+  enchanted_slime_chunk_recipe:
+    result: enchanted_slime_chunk
+    base: slimy_chunk
+    level: 10
+
+  enchanted_battle_scrap_recipe:
+    result: enchanted_battle_scrap
+    base: battle_scrap
+    level: 10
+
+  super_enchanted_battle_scrap_recipe:
+    result: super_enchanted_battle_scrap
+    base: enchanted_battle_scrap
+    level: 39
+
+  enchanted_ironclad_plate_recipe:
+    result: enchanted_ironclad_plate
+    base: ironclad_plate
+    level: 10
+
+  enchanted_ravager_scales_recipe:
+    result: enchanted_ravager_scales
+    base: ravager_scales
+    level: 10
+
+  enchanted_table_slab_recipe:
+    result: enchanted_table_slab
+    base: temple_slab
+    level: 10
+
   # ── Enchanted Nether Materials ────────────────────────────
   # 9× base material in a 3×3 grid → enchanted result
   # All require Fishing Level 32
@@ -447,12 +524,13 @@ upgrade:
     pattern:
       - "DSD"
       - "PHP"
-      - "   "
+      - " W "
     ingredients:
       H: ironclad_helmet
       P: enchanted_dread_soul
       D: NETHERITE_INGOT
       S: dune_spice
+      W: enchanted_wet_bone
 
   dreadplate_chestplate_recipe:
     result: dreadplate_chestplate
@@ -460,25 +538,27 @@ upgrade:
     pattern:
       - "D D"
       - "PHP"
-      - "PSP"
+      - "WSW"
     ingredients:
       H: ironclad_chestplate
       P: enchanted_dread_soul
       D: NETHERITE_INGOT
       S: dune_spice
+      W: enchanted_wet_bone
 
   dreadplate_leggings_recipe:
     result: dreadplate_leggings
     level: 30
     pattern:
       - "PSP"
-      - "PHP"
+      - "WHW"
       - "D D"
     ingredients:
       H: ironclad_leggings
       P: enchanted_dread_soul
       D: NETHERITE_INGOT
       S: dune_spice
+      W: enchanted_wet_bone
 
   dreadplate_boots_recipe:
     result: dreadplate_boots
@@ -486,25 +566,27 @@ upgrade:
     pattern:
       - "DHD"
       - "PSP"
-      - "   "
+      - " W "
     ingredients:
       H: ironclad_boots
       P: enchanted_dread_soul
       D: NETHERITE_INGOT
       S: dune_spice
+      W: enchanted_wet_bone
 
   # Leviathan Rod — Level 35
   leviathan_recipe:
     result: leviathan
     level: 35
     pattern:
-      - "P T"
-      - "PH "
-      - "PPP"
+      - "PIT"
+      - " HI"
+      - "P P"
     ingredients:
       H: shredder
       P: beast_scale
       T: kings_crown
+      I: enchanted_ironclad_plate
 
   # ── Nether Armor — Magma Scale (Level 27) ────────────────
   magma_scale_helmet_recipe:
@@ -727,27 +809,27 @@ upgrade:
     result: quickcharge_repeater_2
     level: 14
     pattern:
-      - "HCH"
-      - "SBS"
-      - "H H"
+      - "HPH"
+      - "SCS"
+      - "HPH"
     ingredients:
       C: CROSSBOW
       H: hyena_fur
       S: spider_silk
-      B: BOW
+      P: polar_fur
 
   quickcharge_repeater_3_recipe:
     result: quickcharge_repeater_3
     level: 23
     pattern:
-      - "RCR"
-      - "HBH"
-      - "R R"
+      - "R T"
+      - "HC "
+      - "RHR"
     ingredients:
       C: quickcharge_repeater_2
       R: ravager_scales
       H: enchanted_hyena_fur
-      B: BASALT
+      T: temple_slab
 
   quickcharge_repeater_4_recipe:
     result: quickcharge_repeater_4
@@ -782,27 +864,27 @@ upgrade:
     result: multishot_volley_2
     level: 16
     pattern:
-      - "PCP"
-      - "WBW"
-      - "PPP"
+      - "VDV"
+      - "WCW"
+      - "VDV"
     ingredients:
       C: CROSSBOW
-      P: polar_fur
       W: enchanted_wet_bone
-      B: BLAZE_ROD
+      V: enchanted_mossy_vine
+      D: dread_soul
 
   multishot_volley_3_recipe:
     result: multishot_volley_3
     level: 25
     pattern:
-      - "ICI"
-      - "PBP"
-      - "I I"
+      - "IEI"
+      - " CE"
+      - "S I"
     ingredients:
       C: multishot_volley_2
-      I: ice_wing
-      P: enchanted_polar_fur
-      B: BOW
+      I: enchanted_ice_wing
+      S: enchanted_slime_chunk
+      E: enchanted_spider_silk
 
   multishot_volley_4_recipe:
     result: multishot_volley_4

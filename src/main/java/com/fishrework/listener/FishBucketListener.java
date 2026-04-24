@@ -28,6 +28,10 @@ public class FishBucketListener implements Listener {
 
     @EventHandler
     public void onBucketMob(PlayerInteractEntityEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleBucketMob(event));
+    }
+
+    private void handleBucketMob(PlayerInteractEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
@@ -118,6 +122,10 @@ public class FishBucketListener implements Listener {
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleBucketEmpty(event));
+    }
+
+    private void handleBucketEmpty(PlayerBucketEmptyEvent event) {
         ItemStack item = event.getPlayer().getInventory().getItem(event.getHand());
         
         if (plugin.getItemManager().isFishBucket(item)) {

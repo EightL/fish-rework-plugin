@@ -27,6 +27,10 @@ public class CoolingItemListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleInteract(event));
+    }
+
+    private void handleInteract(PlayerInteractEvent event) {
         // Only trigger on right clicks
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;

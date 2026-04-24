@@ -75,10 +75,12 @@ public class FishRework extends JavaPlugin {
     private com.fishrework.manager.NetheriteRelicManager netheriteRelicManager;
     private com.fishrework.manager.HeatManager heatManager;
     private LavaFishingListener lavaFishingListener;
+    private LoreUpdateListener loreUpdateListener;
     private LavaCreatureManager lavaCreatureManager;
     private LavaRingManager lavaRingManager;
     private ArtifactPassiveManager artifactPassiveManager;
     private RecipeCraftingManager recipeCraftingManager;
+    private com.fishrework.task.BroodmotherCosmetics broodmotherCosmetics;
 
     // Registries
     private MobRegistry mobRegistry;
@@ -174,7 +176,8 @@ public class FishRework extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EnchantmentListener(this), this);
         getServer().getPluginManager().registerEvents(new HephaesteanTridentListener(this), this);
         getServer().getPluginManager().registerEvents(new FishHookLureListener(this), this);
-        getServer().getPluginManager().registerEvents(new LoreUpdateListener(this), this);
+        loreUpdateListener = new LoreUpdateListener(this);
+        getServer().getPluginManager().registerEvents(loreUpdateListener, this);
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.TreasureListener(this), this);
         if (isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) {
             getServer().getPluginManager().registerEvents(new com.fishrework.listener.TotemListener(this), this);
@@ -228,6 +231,13 @@ public class FishRework extends JavaPlugin {
             getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.BossAbilityTask(this), 20L, 20L);
         }
 
+        // ── 5e2. Broodmother cosmetic animation task ──
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
+            broodmotherCosmetics = new com.fishrework.task.BroodmotherCosmetics(this);
+            getServer().getScheduler().runTaskTimer(this, broodmotherCosmetics,
+                    broodmotherCosmetics.getTickPeriod(), broodmotherCosmetics.getTickPeriod());
+        }
+
         // ── 5f. Start armor full-set cosmetic trails ──
         getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorSetTrailTask(this), 10L, 4L);
 
@@ -271,6 +281,7 @@ public class FishRework extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (broodmotherCosmetics != null) broodmotherCosmetics.cleanupAll();
         getServer().getScheduler().cancelTasks(this);
         if (totemManager != null) totemManager.stop();
         if (lavaRingManager != null) lavaRingManager.shutdown();
@@ -441,6 +452,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.manager.TreasureManager getTreasureManager() { return treasureManager; }
     public TotemManager getTotemManager() { return totemManager; }
     public com.fishrework.manager.DisplayCaseManager getDisplayCaseManager() { return displayCaseManager; }
+    public com.fishrework.task.BroodmotherCosmetics getBroodmotherCosmetics() { return broodmotherCosmetics; }
 
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }
@@ -471,6 +483,12 @@ public class FishRework extends JavaPlugin {
 
     public LavaFishingListener getLavaFishingListener() {
         return lavaFishingListener;
+    }
+
+    public void refreshPlayerCustomItems(org.bukkit.entity.Player player) {
+        if (loreUpdateListener != null && player != null) {
+            languageManager.withPlayer(player, () -> loreUpdateListener.refreshPlayerCustomItems(player));
+        }
     }
 
     public LavaCreatureManager getLavaCreatureManager() {

@@ -286,6 +286,11 @@ public class DatabaseManager {
         if (settings.containsKey("tips_notifications")) {
             data.setFishingTipsEnabled(Boolean.parseBoolean(settings.get("tips_notifications")));
         }
+        if (settings.containsKey("language")) {
+            data.setLanguageLocale(settings.get("language"));
+        } else if (settings.containsKey("locale")) {
+            data.setLanguageLocale(settings.get("locale"));
+        }
         if (settings.containsKey("particle_mode")) {
             ParticleDetailMode mode = ParticleDetailMode.fromInput(settings.get("particle_mode"));
             if (mode != null) {

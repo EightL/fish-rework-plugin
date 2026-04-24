@@ -308,6 +308,48 @@ enchanted_materials:
     rarity: RARE
     description: "A pulsing mossy vine from the jungle depths."
 
+  enchanted_spider_silk:
+    material: STRING
+    display_name: "Enchanted Spider Silk"
+    rarity: RARE
+    description: "Fine spider silk woven through with magic."
+
+  enchanted_slime_chunk:
+    material: SLIME_BALL
+    display_name: "Enchanted Slime Chunk"
+    rarity: EPIC
+    description: "A sticky slime chunk saturated with magic."
+
+  enchanted_battle_scrap:
+    material: IRON_NUGGET
+    display_name: "Enchanted Battle Scrap"
+    rarity: RARE
+    description: "Battle scrap reinforced with enchantment."
+
+  super_enchanted_battle_scrap:
+    material: IRON_NUGGET
+    display_name: "Super Enchanted Battle Scrap"
+    rarity: EPIC
+    description: "A compact mass of battle scrap humming with war magic."
+
+  enchanted_ironclad_plate:
+    material: HEAVY_CORE
+    display_name: "Enchanted Ironclad Plate"
+    rarity: EPIC
+    description: "A dense ironclad plate strengthened by enchantment."
+
+  enchanted_ravager_scales:
+    material: ARMADILLO_SCUTE
+    display_name: "Enchanted Ravager Scales"
+    rarity: EPIC
+    description: "Ravager scales hardened with battle magic."
+
+  enchanted_table_slab:
+    material: MOSSY_COBBLESTONE_SLAB
+    display_name: "Enchanted Table Slab"
+    rarity: LEGENDARY
+    description: "A mossy slab humming with stored magic."
+
   # ── Enchanted Nether Materials ────────────────────────────
   enchanted_magma_residue:
     material: MAGMA_CREAM
@@ -1152,6 +1194,39 @@ utility_items:
       - text: "Place to grant nearby players"
         color: YELLOW
       - text: "+5 Treasure Chance within 10 blocks."
+        color: YELLOW
+
+  battle_totem_1:
+    material: CONDUIT
+    display_name: "Battle Totem I"
+    rarity: RARE
+    pdc_key: battle_totem_1
+    lore:
+      - text: "Place to grant nearby players"
+        color: RED
+      - text: "+1 Sea Creature Attack Modifier within 10 blocks."
+        color: YELLOW
+
+  battle_totem_2:
+    material: CONDUIT
+    display_name: "Battle Totem II"
+    rarity: EPIC
+    pdc_key: battle_totem_2
+    lore:
+      - text: "Place to grant nearby players"
+        color: RED
+      - text: "+2 Sea Creature Attack Modifier within 10 blocks."
+        color: YELLOW
+
+  battle_totem_3:
+    material: CONDUIT
+    display_name: "Battle Totem III"
+    rarity: LEGENDARY
+    pdc_key: battle_totem_3
+    lore:
+      - text: "Place to grant nearby players"
+        color: LIGHT_PURPLE
+      - text: "+3 Sea Creature Attack Modifier within 10 blocks."
         color: YELLOW
 
   display_case:

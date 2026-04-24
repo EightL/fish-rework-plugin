@@ -26,6 +26,10 @@ public class LavaBagListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handlePlayerInteract(event));
+    }
+
+    private void handlePlayerInteract(PlayerInteractEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.LAVA_BAG)) return;
         if (!event.getAction().isRightClick()) return;
 

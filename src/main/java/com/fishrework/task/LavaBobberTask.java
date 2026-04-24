@@ -77,13 +77,16 @@ public class LavaBobberTask extends BukkitRunnable {
             hookLoc = hook.getLocation();
         }
 
-        switch (state.getPhase()) {
-            case FLYING -> handleFlying(hookLoc);
-            case IN_LAVA -> handleInLava(hookLoc, player);
-            case NIBBLE -> handleNibble(hookLoc, player);
-            case BITE -> handleBite(hookLoc, player);
-            case EXPIRED -> cleanup();
-        }
+        Location currentHookLoc = hookLoc;
+        plugin.getLanguageManager().withPlayer(player, () -> {
+            switch (state.getPhase()) {
+                case FLYING -> handleFlying(currentHookLoc);
+                case IN_LAVA -> handleInLava(currentHookLoc, player);
+                case NIBBLE -> handleNibble(currentHookLoc, player);
+                case BITE -> handleBite(currentHookLoc, player);
+                case EXPIRED -> cleanup();
+            }
+        });
     }
 
     private void handleFlying(Location hookLoc) {

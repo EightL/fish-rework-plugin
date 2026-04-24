@@ -107,6 +107,11 @@ public class LavaFishingListener implements Listener {
         if (!(event.getEntity() instanceof FishHook hook)) return;
         if (!(hook.getShooter() instanceof Player player)) return;
 
+        plugin.getLanguageManager().withPlayer(player, () -> handleProjectileLaunch(event, hook, player));
+    }
+
+    private void handleProjectileLaunch(ProjectileLaunchEvent event, FishHook hook, Player player) {
+
         // Only in Nether
         if (player.getWorld().getEnvironment() != World.Environment.NETHER) return;
 
@@ -194,6 +199,10 @@ public class LavaFishingListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
+        plugin.getLanguageManager().withPlayer(player, () -> handleFish(event, player));
+    }
+
+    private void handleFish(PlayerFishEvent event, Player player) {
         UUID uuid = player.getUniqueId();
 
         if (!activeSessions.containsKey(uuid)) return;

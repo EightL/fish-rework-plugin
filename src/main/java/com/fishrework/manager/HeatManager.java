@@ -285,7 +285,7 @@ public class HeatManager {
         long decayMillis = decayIntervalSeconds * 1000L;
         
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            expireMagmaFilterIfNeeded(player, now, true);
+            plugin.getLanguageManager().withPlayer(player, () -> expireMagmaFilterIfNeeded(player, now, true));
 
             PlayerData data = plugin.getPlayerData(player.getUniqueId());
             if (data == null || data.getHeat() <= 0) continue;

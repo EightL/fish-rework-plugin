@@ -1,9 +1,8 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
-import com.fishrework.manager.TotemManager;
+import com.fishrework.manager.TotemManager.TotemType;
 import com.fishrework.util.FeatureKeys;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -19,10 +18,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 /**
- * Handles Treasure Totem placement, breaking, and chunk persistence.
+ * Handles totem placement, breaking, and chunk persistence.
  */
 public class TotemListener implements Listener {
 
@@ -35,20 +33,22 @@ public class TotemListener implements Listener {
     // ── Placement ─────────────────────────────────────────────
 
     /**
-     * Detects when a player places a Conduit that is actually a Treasure Totem.
+     * Detects when a player places a Conduit that is actually a custom totem.
      * Cancels the vanilla block place and spawns the custom totem entities instead.
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleBlockPlace(event));
+    }
+
+    private void handleBlockPlace(BlockPlaceEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         ItemStack item = event.getItemInHand();
         if (item.getType() != Material.CONDUIT) return;
         if (!item.hasItemMeta()) return;
 
-        if (!item.getItemMeta().getPersistentDataContainer()
-                .has(plugin.getItemManager().TREASURE_TOTEM_KEY, PersistentDataType.BYTE)) {
-            return;
-        }
+        TotemType type = plugin.getTotemManager().getTotemType(item);
+        if (type == null) return;
 
         // Cancel vanilla conduit placement
         event.setCancelled(true);
@@ -56,7 +56,7 @@ public class TotemListener implements Listener {
         Player player = event.getPlayer();
 
         // Spawn totem at the block location
-        plugin.getTotemManager().spawnTotem(event.getBlock().getLocation(), player);
+        plugin.getTotemManager().spawnTotem(event.getBlock().getLocation(), player, type);
 
         // Consume the item
         if (item.getAmount() > 1) {
@@ -66,7 +66,7 @@ public class TotemListener implements Listener {
         }
 
         player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_placed_a", "You placed a ").color(NamedTextColor.GRAY)
-                .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
+                .append(plugin.getTotemManager().getTotemDisplayName(type))
             .append(plugin.getLanguageManager().getMessage("totemlistener.exclamation", "!").color(NamedTextColor.GRAY)));
     }
 
@@ -77,6 +77,10 @@ public class TotemListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInteractEntity(PlayerInteractEntityEvent event) {
+        plugin.getLanguageManager().withPlayer(event.getPlayer(), () -> handleInteractEntity(event));
+    }
+
+    private void handleInteractEntity(PlayerInteractEntityEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         Entity clicked = event.getRightClicked();
         if (!plugin.getTotemManager().isTotemInteraction(clicked)) return;
@@ -97,14 +101,15 @@ public class TotemListener implements Listener {
         event.setCancelled(true);
 
         if (event.getDamager() instanceof Player player) {
-            breakTotemForPlayer(player, target);
+            plugin.getLanguageManager().withPlayer(player, () -> breakTotemForPlayer(player, target));
         }
     }
 
     private void breakTotemForPlayer(Player player, Entity interactionEntity) {
+        TotemType type = plugin.getTotemManager().getTotemType(interactionEntity);
         plugin.getTotemManager().breakTotem(interactionEntity.getUniqueId(), player);
         player.sendMessage(plugin.getLanguageManager().getMessage("totemlistener.you_broke_a", "You broke a ").color(NamedTextColor.GRAY)
-                .append(plugin.getLanguageManager().getMessage("totemlistener.treasure_totem", "Treasure Totem").color(NamedTextColor.GOLD))
+                .append(plugin.getTotemManager().getTotemDisplayName(type))
             .append(plugin.getLanguageManager().getMessage("totemlistener.exclamation", "!").color(NamedTextColor.GRAY)));
     }
 

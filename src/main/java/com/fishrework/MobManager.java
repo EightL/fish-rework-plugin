@@ -231,6 +231,11 @@ public class MobManager {
 
         markLavaCreatureIfNeeded(entity, location);
 
+        // Decorative netherrack tentacles for bosses
+        if ("ghast_broodmother".equals(mobId) && plugin.getBroodmotherCosmetics() != null) {
+            plugin.getBroodmotherCosmetics().attach(entity);
+        }
+
         return entity;
     }
 

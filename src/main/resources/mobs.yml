@@ -824,11 +824,12 @@ mobs:
       max: 1
     spawn:
       type: MOUNTED
+      scale: 2.0
       mount:
         entity_type: DOLPHIN
         display_name: "Poseidon's Steed"
         show_name: false
-        scale: 3.0
+        scale: 6.0
         aggro:
           speed: 1.6
           damage: 8.925

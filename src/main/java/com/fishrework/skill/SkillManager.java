@@ -41,6 +41,10 @@ public class SkillManager {
      * @return true if the player leveled up
      */
     public boolean grantXp(Player player, Skill skill, double baseXp, String source) {
+        return plugin.getLanguageManager().withPlayer(player, () -> grantXpLocalized(player, skill, baseXp, source));
+    }
+
+    private boolean grantXpLocalized(Player player, Skill skill, double baseXp, String source) {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return false;
 
@@ -93,6 +97,10 @@ public class SkillManager {
      * Useful for admin commands or fixed XP rewards.
      */
     public boolean grantRawXp(Player player, Skill skill, double xp) {
+        return plugin.getLanguageManager().withPlayer(player, () -> grantRawXpLocalized(player, skill, xp));
+    }
+
+    private boolean grantRawXpLocalized(Player player, Skill skill, double xp) {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return false;
 

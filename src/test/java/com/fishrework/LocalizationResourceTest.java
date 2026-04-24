@@ -97,6 +97,16 @@ class LocalizationResourceTest {
                 "LoreUpdateListener should not restore stale display names after localized rebuilds");
     }
 
+    @Test
+    void refreshedItemsPreservePlayerPersistentDataWithoutOverwritingRegistryDefaults() throws IOException {
+        String loreUpdateListener = Files.readString(Path.of("src/main/java/com/fishrework/listener/LoreUpdateListener.java"));
+
+        assertTrue(loreUpdateListener.contains("copyTo(freshMeta.getPersistentDataContainer(), false)"),
+                "Refreshed items should keep player-applied PDC tags such as sea creature upgrade stats");
+        assertFalse(loreUpdateListener.contains("copyTo(freshMeta.getPersistentDataContainer(), true)"),
+                "Registry rebuilds should not overwrite fresh configured item defaults with stale PDC values");
+    }
+
     private Set<String> extractYamlKeys(String file) throws IOException {
         Pattern keyPattern = Pattern.compile("^([A-Za-z0-9_.-]+):", Pattern.MULTILINE);
         Matcher matcher = keyPattern.matcher(Files.readString(Path.of(file)));

@@ -513,10 +513,17 @@ specialcraftinggui.recipe_unlocked: Recipe unlocked
 specialcraftinggui.returns_all_grid_items_to: Returns all grid items to your inventory.
 specialcraftinggui.special_crafting: Special Crafting
 totemlistener: '!'
+totemlistener.exclamation: '!'
 totemlistener.treasure_totem: Treasure Totem
+totemlistener.battle_totem_1: Battle Totem I
+totemlistener.battle_totem_2: Battle Totem II
+totemlistener.battle_totem_3: Battle Totem III
 totemlistener.you_broke_a: 'You broke a '
 totemlistener.you_placed_a: 'You placed a '
 totemmanager.treasure_totem: Treasure Totem
+totemmanager.battle_totem_1: Battle Totem I
+totemmanager.battle_totem_2: Battle Totem II
+totemmanager.battle_totem_3: Battle Totem III
 treasuremanager.ancient_debris_netherite_ingot: '- Ancient Debris, Netherite Ingot'
 treasuremanager.apple_copperiron_ingot_bread: '- Apple, Copper/Iron Ingot, Bread'
 treasuremanager.artifact: '- ⭐ Artifact'
@@ -900,6 +907,20 @@ item.enchanted_guardian_scale.name: "Enchanted Guardian Scale"
 item.enchanted_guardian_scale.desc: "A magically hardened guardian scale."
 item.enchanted_mossy_vine.name: "Enchanted Mossy Vine"
 item.enchanted_mossy_vine.desc: "A pulsing mossy vine from the jungle depths."
+item.enchanted_spider_silk.name: "Enchanted Spider Silk"
+item.enchanted_spider_silk.desc: "Fine spider silk woven through with magic."
+item.enchanted_slime_chunk.name: "Enchanted Slime Chunk"
+item.enchanted_slime_chunk.desc: "A sticky slime chunk saturated with magic."
+item.enchanted_battle_scrap.name: "Enchanted Battle Scrap"
+item.enchanted_battle_scrap.desc: "Battle scrap reinforced with enchantment."
+item.super_enchanted_battle_scrap.name: "Super Enchanted Battle Scrap"
+item.super_enchanted_battle_scrap.desc: "A compact mass of battle scrap humming with war magic."
+item.enchanted_ironclad_plate.name: "Enchanted Ironclad Plate"
+item.enchanted_ironclad_plate.desc: "A dense ironclad plate strengthened by enchantment."
+item.enchanted_ravager_scales.name: "Enchanted Ravager Scales"
+item.enchanted_ravager_scales.desc: "Ravager scales hardened with battle magic."
+item.enchanted_table_slab.name: "Enchanted Table Slab"
+item.enchanted_table_slab.desc: "A mossy slab humming with stored magic."
 item.enchanted_magma_residue.name: "Enchanted Magma Residue"
 item.enchanted_magma_residue.desc: "Empowered molten residue."
 item.enchanted_smoldering_rod.name: "Enchanted Smoldering Rod"
@@ -995,6 +1016,9 @@ item.megalodon_tooth.name: "Megalodon Tooth"
 # --- Items: Utility Items ---
 item.fish_bucket.name: "Fish Bucket"
 item.treasure_totem.name: "Treasure Totem"
+item.battle_totem_1.name: "Battle Totem I"
+item.battle_totem_2.name: "Battle Totem II"
+item.battle_totem_3.name: "Battle Totem III"
 item.display_case.name: "Display Case"
 item.netherite_relic.name: "Netherite Gladiator Statue"
 item.fishing_journal.name: "Fishing Journal"
@@ -1150,6 +1174,12 @@ recipeguidegui.requires_fishing_level: "Requires Fishing Level %level%"
 recipeguidegui.requires_advancement: "Requires %advancement%"
 recipeguidegui.craft: "Craft"
 recipeguidegui.reach_level_to_unlock: "Reach Fishing Level %level% to unlock it."
+recipeguidegui.type_shaped: "Shaped"
+recipeguidegui.type_shapeless: "Shapeless"
+recipeguidegui.type_enchanted_material: "Enchanted Material"
+recipecraftingmanager.cannot_craft_insufficient_ingredients: "Cannot craft, insufficient ingredients"
+recipecraftingmanager.crafted_item: "Crafted %item%."
+recipecraftingmanager.recipe_locked: "Recipe locked"
 biomeselectiongui.dimension_prefix: "Dimension: %dimension%"
 biomeselectiongui.dimension.overworld: "Overworld"
 biomeselectiongui.dimension.nether: "Nether"
@@ -1366,6 +1396,12 @@ item.fish_bucket.lore.0: "A bucket used for catching fish."
 item.fish_bucket.lore.1: "Right-click on water to catch nearby fish!"
 item.treasure_totem.lore.0: "Place to grant nearby players"
 item.treasure_totem.lore.1: "+5 Treasure Chance within 10 blocks."
+item.battle_totem_1.lore.0: "Place to grant nearby players"
+item.battle_totem_1.lore.1: "+1 Sea Creature Attack Modifier within 10 blocks."
+item.battle_totem_2.lore.0: "Place to grant nearby players"
+item.battle_totem_2.lore.1: "+2 Sea Creature Attack Modifier within 10 blocks."
+item.battle_totem_3.lore.0: "Place to grant nearby players"
+item.battle_totem_3.lore.1: "+3 Sea Creature Attack Modifier within 10 blocks."
 item.display_case.lore.0: "Place to display an item inside."
 item.display_case.lore.1: "Right-click with an item to place it."
 item.display_case.lore.2: "Right-click again to swap."
@@ -1377,3 +1413,8 @@ item.frost_salve.lore.0: "Right-click to reduce heat by 25."
 item.frost_salve.lore.1: "Consumed on use."
 item.magma_filter.lore.0: "Right-click to reduce heat by 50."
 item.magma_filter.lore.1: "Consumed on use."
+language.name: "English"
+fishingcommand.fishing_language_code: "/fs language <code>"
+fishingsettingsgui.language: "Language"
+fishingsettingsgui.current_language: "Current: %language%"
+fishingsettingsgui.command_fish_language: "Command: /fs language <en|es|zh_CN>"

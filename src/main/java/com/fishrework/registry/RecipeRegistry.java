@@ -73,20 +73,19 @@ public class RecipeRegistry {
         RecipeDefinition def = recipes.get(recipeKey);
         if (def == null) return true; // Not a gated recipe
 
-        // 1. Advancement Requirement (PRIORITY)
-        // If a recipe has an advancement requirement, that is the SOLE authority.
-        // This allows admins to grant the advancement to unlock the recipe even if level is too low.
-        if (def.hasAdvancementRequirement()) {
-            return plugin.getAdvancementManager().hasAdvancement(player, def.getRequiredAdvancement());
-        }
-
-        // 2. Level Requirement (Fallback)
-        // Only checked if there is NO advancement requirement.
+        // 1. Level Requirement
+        // Level recipes may also carry a progression advancement key for display/recipe-book
+        // sync, but the configured level remains the crafting authority.
         if (def.hasLevelRequirement()) {
             PlayerData data = plugin.getPlayerData(player.getUniqueId());
             if (data == null) return false;
             int level = data.getLevel(def.getRequiredSkill());
             if (level < def.getRequiredLevel()) return false;
+        }
+
+        // 2. Advancement Requirement
+        if (!def.hasLevelRequirement() && def.hasAdvancementRequirement()) {
+            return plugin.getAdvancementManager().hasAdvancement(player, def.getRequiredAdvancement());
         }
 
         return true;

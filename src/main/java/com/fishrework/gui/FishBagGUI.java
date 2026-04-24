@@ -30,6 +30,7 @@ public class FishBagGUI extends BaseGUI {
     public FishBagGUI(FishRework plugin, Player player) {
         super(plugin, 3, localizedTitle(plugin, "fishbaggui.title", "Fish Bag"));
         this.player = player;
+        plugin.refreshPlayerCustomItems(player);
         initializeItems();
     }
 

@@ -547,10 +547,17 @@ specialcraftinggui.returns_all_grid_items_to: Devuelve todos los objetos de la c
   a tu inventario.
 specialcraftinggui.special_crafting: Fabricación especial
 totemlistener: '!'
+totemlistener.exclamation: '!'
 totemlistener.treasure_totem: Tótem del Tesoro
+totemlistener.battle_totem_1: Tótem de Batalla I
+totemlistener.battle_totem_2: Tótem de Batalla II
+totemlistener.battle_totem_3: Tótem de Batalla III
 totemlistener.you_broke_a: 'Rompiste un '
 totemlistener.you_placed_a: 'Colocaste un '
 totemmanager.treasure_totem: Tótem del Tesoro
+totemmanager.battle_totem_1: Tótem de Batalla I
+totemmanager.battle_totem_2: Tótem de Batalla II
+totemmanager.battle_totem_3: Tótem de Batalla III
 treasuremanager.ancient_debris_netherite_ingot: '- Escombros antiguos, Lingote de netherita'
 treasuremanager.apple_copperiron_ingot_bread: '- Manzana, Lingote de cobre/hierro, Pan'
 treasuremanager.artifact: '- ⭐ Artefacto'
@@ -946,6 +953,20 @@ item.enchanted_guardian_scale.name: "Enchanted Guardian Scale"
 item.enchanted_guardian_scale.desc: "A magically hardened guardian scale."
 item.enchanted_mossy_vine.name: "Enchanted Mossy Vine"
 item.enchanted_mossy_vine.desc: "A pulsing mossy vine from the jungle depths."
+item.enchanted_spider_silk.name: "Seda de araña encantada"
+item.enchanted_spider_silk.desc: "Fina seda de araña tejida con magia."
+item.enchanted_slime_chunk.name: "Trozo viscoso encantado"
+item.enchanted_slime_chunk.desc: "Un trozo de slime pegajoso saturado de magia."
+item.enchanted_battle_scrap.name: "Chatarra de batalla encantada"
+item.enchanted_battle_scrap.desc: "Chatarra de batalla reforzada con encantamiento."
+item.super_enchanted_battle_scrap.name: "Chatarra de batalla superencantada"
+item.super_enchanted_battle_scrap.desc: "Una masa compacta de chatarra de batalla que vibra con magia bélica."
+item.enchanted_ironclad_plate.name: "Placa blindada encantada"
+item.enchanted_ironclad_plate.desc: "Una densa placa blindada fortalecida por encantamiento."
+item.enchanted_ravager_scales.name: "Escamas de devastador encantadas"
+item.enchanted_ravager_scales.desc: "Escamas de devastador endurecidas con magia de batalla."
+item.enchanted_table_slab.name: "Losa de mesa encantada"
+item.enchanted_table_slab.desc: "Una losa musgosa que vibra con magia almacenada."
 item.enchanted_magma_residue.name: "Enchanted Magma Residue"
 item.enchanted_magma_residue.desc: "Empowered molten residue."
 item.enchanted_smoldering_rod.name: "Enchanted Smoldering Rod"
@@ -1041,6 +1062,9 @@ item.megalodon_tooth.name: "Diente de Megalodón"
 # --- Items: Utility Items ---
 item.fish_bucket.name: "Cubo de Pez"
 item.treasure_totem.name: "Tótem del Tesoro"
+item.battle_totem_1.name: "Tótem de Batalla I"
+item.battle_totem_2.name: "Tótem de Batalla II"
+item.battle_totem_3.name: "Tótem de Batalla III"
 item.display_case.name: "Vitrina"
 item.netherite_relic.name: "Estatua de Gladiador de Netherita"
 item.fishing_journal.name: "Diario de Pesca"
@@ -1170,6 +1194,12 @@ recipeguidegui.requires_fishing_level: "Requiere nivel de pesca %level%"
 recipeguidegui.requires_advancement: "Requiere %advancement%"
 recipeguidegui.craft: "Fabricar"
 recipeguidegui.reach_level_to_unlock: "Alcanza nivel de pesca %level% para desbloquearla."
+recipeguidegui.type_shaped: "Con forma"
+recipeguidegui.type_shapeless: "Sin forma"
+recipeguidegui.type_enchanted_material: "Material encantado"
+recipecraftingmanager.cannot_craft_insufficient_ingredients: "No se puede fabricar, faltan ingredientes"
+recipecraftingmanager.crafted_item: "Fabricaste %item%."
+recipecraftingmanager.recipe_locked: "Receta bloqueada"
 biomeselectiongui.dimension_prefix: "Dimensión: %dimension%"
 biomeselectiongui.dimension.overworld: "Superficie"
 biomeselectiongui.dimension.nether: "Nether"
@@ -1409,6 +1439,12 @@ item.fish_bucket.lore.0: "Un cubo usado para atrapar peces."
 item.fish_bucket.lore.1: "¡Haz clic derecho sobre el agua para atrapar peces cercanos!"
 item.treasure_totem.lore.0: "Colócalo para otorgar a los jugadores cercanos"
 item.treasure_totem.lore.1: "+5 de probabilidad de tesoro en 10 bloques."
+item.battle_totem_1.lore.0: "Colócalo para otorgar a los jugadores cercanos"
+item.battle_totem_1.lore.1: "+1 modificador de ataque contra criaturas marinas en 10 bloques."
+item.battle_totem_2.lore.0: "Colócalo para otorgar a los jugadores cercanos"
+item.battle_totem_2.lore.1: "+2 modificador de ataque contra criaturas marinas en 10 bloques."
+item.battle_totem_3.lore.0: "Colócalo para otorgar a los jugadores cercanos"
+item.battle_totem_3.lore.1: "+3 modificador de ataque contra criaturas marinas en 10 bloques."
 item.display_case.lore.0: "Colócalo para exhibir un objeto dentro."
 item.display_case.lore.1: "Haz clic derecho con un objeto para colocarlo."
 item.display_case.lore.2: "Haz clic derecho otra vez para cambiarlo."
@@ -1420,3 +1456,8 @@ item.frost_salve.lore.0: "Haz clic derecho para reducir el calor en 25."
 item.frost_salve.lore.1: "Se consume al usarlo."
 item.magma_filter.lore.0: "Haz clic derecho para reducir el calor en 50."
 item.magma_filter.lore.1: "Se consume al usarlo."
+language.name: "Español"
+fishingcommand.fishing_language_code: "/fs language <code>"
+fishingsettingsgui.language: "Idioma"
+fishingsettingsgui.current_language: "Actual: %language%"
+fishingsettingsgui.command_fish_language: "Comando: /fs language <en|es|zh_CN>"

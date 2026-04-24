@@ -100,6 +100,10 @@ public class EnchantmentListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEnchantCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
+        plugin.getLanguageManager().withPlayer(player, () -> handleEnchantCommand(event, player));
+    }
+
+    private void handleEnchantCommand(PlayerCommandPreprocessEvent event, Player player) {
         if (!player.hasPermission("minecraft.command.enchant")) return;
 
         String message = event.getMessage();

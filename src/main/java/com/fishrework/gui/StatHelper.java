@@ -1,5 +1,6 @@
 package com.fishrework.gui;
 
+import com.fishrework.FishRework;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -38,6 +39,13 @@ public final class StatHelper {
         }
         total += getFlatBonus(player.getInventory().getItemInMainHand(), key);
         total += getFlatBonus(player.getInventory().getItemInOffHand(), key);
+
+        FishRework plugin = FishRework.getInstance();
+        if (plugin != null
+                && plugin.getTotemManager() != null
+                && key.equals(plugin.getItemManager().SC_FLAT_ATTACK_KEY)) {
+            total += plugin.getTotemManager().getSeaCreatureAttackModifier(player);
+        }
         return total;
     }
 
