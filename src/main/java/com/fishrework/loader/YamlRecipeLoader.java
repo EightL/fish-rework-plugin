@@ -89,11 +89,16 @@ public class YamlRecipeLoader {
 
             List<String> pattern = entry.getStringList("pattern");
             recipe.shape(pattern.toArray(new String[0]));
+            Set<Character> patternSymbols = collectPatternSymbols(pattern);
 
             ConfigurationSection ingredients = entry.getConfigurationSection("ingredients");
             if (ingredients != null) {
                 for (String charKey : ingredients.getKeys(false)) {
                     char c = charKey.charAt(0);
+                    if (!patternSymbols.contains(c)) {
+                        plugin.getLogger().warning("Ignoring unused ingredient symbol '" + c + "' in shaped recipe '" + recipeId + "'.");
+                        continue;
+                    }
                     if (ingredients.isList(charKey)) {
                         // Material choice (list of vanilla materials or custom items)
                         List<String> choices = ingredients.getStringList(charKey);
@@ -103,6 +108,12 @@ public class YamlRecipeLoader {
                         String ingredientName = ingredients.getString(charKey);
                         setIngredient(recipe, c, ingredientName, itemManager);
                     }
+                }
+            }
+
+            for (char c : patternSymbols) {
+                if (ingredients == null || !ingredients.contains(String.valueOf(c))) {
+                    throw new IllegalArgumentException("Missing ingredient for symbol '" + c + "'");
                 }
             }
 
@@ -120,6 +131,19 @@ public class YamlRecipeLoader {
             plugin.getLogger().warning("Failed to load shaped recipe '" + recipeId + "': " + e.getMessage());
             return false;
         }
+    }
+
+    private Set<Character> collectPatternSymbols(List<String> pattern) {
+        Set<Character> symbols = new LinkedHashSet<>();
+        for (String row : pattern) {
+            for (int i = 0; i < row.length(); i++) {
+                char c = row.charAt(i);
+                if (c != ' ') {
+                    symbols.add(c);
+                }
+            }
+        }
+        return symbols;
     }
 
     // ── Shapeless Recipes ───────────────────────────────────

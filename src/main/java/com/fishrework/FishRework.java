@@ -33,6 +33,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -308,11 +311,45 @@ public class FishRework extends JavaPlugin {
 
         // Fill in any keys present in the bundled default config but absent on disk.
         getConfig().options().copyDefaults(true);
+        boolean addedDefaults = copyMissingConfigDefaults();
 
         if (migrated) {
             getConfig().set("config_version", CURRENT_CONFIG_VERSION);
+        }
+
+        if (migrated || addedDefaults) {
             saveConfig();
+            reloadConfig();
+        }
+
+        if (migrated) {
             getLogger().info("[Fish Rework] Config migrated to v" + CURRENT_CONFIG_VERSION + ".");
+        }
+    }
+
+    private boolean copyMissingConfigDefaults() {
+        try (InputStream in = getResource("config.yml")) {
+            if (in == null) {
+                return false;
+            }
+
+            org.bukkit.configuration.file.YamlConfiguration defaults =
+                    org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
+                            new InputStreamReader(in, StandardCharsets.UTF_8));
+            boolean changed = false;
+            for (String path : defaults.getKeys(true)) {
+                if (defaults.isConfigurationSection(path)) {
+                    continue;
+                }
+                if (!getConfig().isSet(path)) {
+                    getConfig().set(path, defaults.get(path));
+                    changed = true;
+                }
+            }
+            return changed;
+        } catch (IOException e) {
+            getLogger().warning("[Fish Rework] Failed to update config defaults: " + e.getMessage());
+            return false;
         }
     }
 

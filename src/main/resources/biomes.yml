@@ -2,6 +2,8 @@
 # Defines per-biome passive/hostile mob weights, night-only mobs, and land mob chances.
 # Each profile key matches a BiomeGroup enum value.
 
+content_version: 1
+
 biome_profiles:
   COLD_OCEAN:
     passive_weights:

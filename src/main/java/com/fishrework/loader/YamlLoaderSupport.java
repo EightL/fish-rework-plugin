@@ -25,9 +25,13 @@ final class YamlLoaderSupport {
         try (InputStream in = plugin.getResource(fileName)) {
             if (in != null) {
                 YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(in, StandardCharsets.UTF_8));
-                if (copyMissingPaths(config, defaults)) {
+                boolean migrated = YamlContentMigrator.migrate(plugin, fileName, file, config, defaults);
+                boolean addedDefaults = copyMissingPaths(config, defaults);
+                if (migrated || addedDefaults) {
                     config.save(file);
-                    plugin.getLogger().info("Added missing defaults to " + fileName + ".");
+                    if (addedDefaults) {
+                        plugin.getLogger().info("Added missing defaults to " + fileName + ".");
+                    }
                 }
             }
         } catch (IOException e) {

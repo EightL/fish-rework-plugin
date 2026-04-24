@@ -337,6 +337,10 @@ public class LanguageManager {
         try (InputStream defaultStream = plugin.getResource(fileName)) {
             if (defaultStream != null) {
                 YamlConfiguration defaultConf = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream, StandardCharsets.UTF_8));
+                if (copyMissingPaths(config, defaultConf)) {
+                    config.save(file);
+                    plugin.getLogger().info("Added missing language defaults to " + fileName + ".");
+                }
                 config.setDefaults(defaultConf);
             }
         } catch (Exception e) {
@@ -345,6 +349,20 @@ public class LanguageManager {
 
         localeConfigs.put(locale, config);
         return config;
+    }
+
+    private boolean copyMissingPaths(FileConfiguration target, YamlConfiguration defaults) {
+        boolean changed = false;
+        for (String path : defaults.getKeys(true)) {
+            if (defaults.isConfigurationSection(path)) {
+                continue;
+            }
+            if (!target.isSet(path)) {
+                target.set(path, defaults.get(path));
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     private String defaultLocaleName(String locale) {

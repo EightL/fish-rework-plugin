@@ -5,6 +5,8 @@
 #  Sources from https://minecraft-heads.com/, thank you.
 # ══════════════════════════════════════════════════════════
 
+content_version: 1
+
 artifacts:
   # ── Common ──
   clover:

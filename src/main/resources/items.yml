@@ -5,6 +5,8 @@
 #  remain in Java due to unique construction logic.
 # ══════════════════════════════════════════════════════════
 
+content_version: 1
+
 # ── Drop Materials ──────────────────────────────────────
 # Created via createMaterial(id, material, name, rarity, description)
 materials:

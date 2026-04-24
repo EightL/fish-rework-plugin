@@ -10,6 +10,7 @@
 #    advancement: "x"  → requires advancement key (overrides level)
 # ══════════════════════════════════════════════════════════
 
+content_version: 2
 
 # ── Shaped Recipes ──────────────────────────────────────
 shaped:
@@ -717,7 +718,7 @@ upgrade:
     level: 42
     pattern:
       - "SVS"
-      - "BHB"
+      - "WHW"
       - "W W"
     ingredients:
       H: infernal_plate_leggings
