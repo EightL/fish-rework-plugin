@@ -1,4 +1,4 @@
-package com.fishrework.command;
+ package com.fishrework.command;
 
 import com.fishrework.FishRework;
 import com.fishrework.gui.LeaderboardGUI;
