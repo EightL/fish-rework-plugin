@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,6 +40,21 @@ public class MobListener implements Listener {
 
     public MobListener(FishRework plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity entity)) return;
+        if (!plugin.getMobManager().isFishedMob(entity)) return;
+        if (!(event.getTarget() instanceof Player)) return;
+
+        String mobId = plugin.getMobManager().getMobId(entity);
+        if (!"drowned".equals(mobId)) return;
+
+        event.setCancelled(true);
+        if (entity instanceof org.bukkit.entity.Mob mob) {
+            mob.setTarget(null);
+        }
     }
 
     @EventHandler
@@ -104,6 +120,9 @@ public class MobListener implements Listener {
 
         if (plugin.getBroodmotherCosmetics() != null) {
             plugin.getBroodmotherCosmetics().cleanup(entity);
+        }
+        if (plugin.getAttachedBlockCosmetics() != null) {
+            plugin.getAttachedBlockCosmetics().cleanup(entity);
         }
 
         if (plugin.getMobManager().hasSharedMountedHp(entity)) {

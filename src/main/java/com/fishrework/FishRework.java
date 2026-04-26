@@ -84,6 +84,7 @@ public class FishRework extends JavaPlugin {
     private ArtifactPassiveManager artifactPassiveManager;
     private RecipeCraftingManager recipeCraftingManager;
     private com.fishrework.task.BroodmotherCosmetics broodmotherCosmetics;
+    private com.fishrework.task.AttachedBlockCosmetics attachedBlockCosmetics;
 
     // Registries
     private MobRegistry mobRegistry;
@@ -169,6 +170,7 @@ public class FishRework extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GuiListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new MobListener(this), this);
+        getServer().getPluginManager().registerEvents(new MobFireListener(this), this);
         getServer().getPluginManager().registerEvents(new FishBucketListener(this), this);
         if (isFeatureEnabled(FeatureKeys.CUSTOM_RECIPES_ENABLED)) {
             getServer().getPluginManager().registerEvents(new CraftingListener(this), this);
@@ -241,6 +243,12 @@ public class FishRework extends JavaPlugin {
                     broodmotherCosmetics.getTickPeriod(), broodmotherCosmetics.getTickPeriod());
         }
 
+        // ── 5e3. Attached block cosmetics task ──
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
+            attachedBlockCosmetics = new com.fishrework.task.AttachedBlockCosmetics(this);
+            getServer().getScheduler().runTaskTimer(this, attachedBlockCosmetics, 1L, 1L);
+        }
+
         // ── 5f. Start armor full-set cosmetic trails ──
         getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorSetTrailTask(this), 10L, 4L);
 
@@ -285,6 +293,7 @@ public class FishRework extends JavaPlugin {
     @Override
     public void onDisable() {
         if (broodmotherCosmetics != null) broodmotherCosmetics.cleanupAll();
+        if (attachedBlockCosmetics != null) attachedBlockCosmetics.cleanupAll();
         getServer().getScheduler().cancelTasks(this);
         if (totemManager != null) totemManager.stop();
         if (lavaRingManager != null) lavaRingManager.shutdown();
@@ -490,6 +499,7 @@ public class FishRework extends JavaPlugin {
     public TotemManager getTotemManager() { return totemManager; }
     public com.fishrework.manager.DisplayCaseManager getDisplayCaseManager() { return displayCaseManager; }
     public com.fishrework.task.BroodmotherCosmetics getBroodmotherCosmetics() { return broodmotherCosmetics; }
+    public com.fishrework.task.AttachedBlockCosmetics getAttachedBlockCosmetics() { return attachedBlockCosmetics; }
 
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }

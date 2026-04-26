@@ -969,8 +969,7 @@ public class ItemManager {
         // Mythic weapon
         itemRegistry.put("gehenna", this::createGehenna);
 
-        // Special weapon
-        itemRegistry.put("megalodon_tooth", this::createMegalodonTooth);
+        // NOTE: "megalodon_tooth" is now YAML-defined (items.yml) so it can be fully configurable.
     }
 
     public ItemStack createGehenna() {

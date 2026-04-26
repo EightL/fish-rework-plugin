@@ -86,6 +86,9 @@ public class SpawnConfig {
     /** Iron Golem: setPlayerCreated(false). */
     private final boolean notPlayerCreated;
 
+    /** If false, the mob will not target players (initial aggro + target events). */
+    private final boolean aggroPlayers;
+
     // ── Constructor ───────────────────────────────────────────
 
     private SpawnConfig(Builder b) {
@@ -115,6 +118,7 @@ public class SpawnConfig {
                 : Collections.emptyList();
         this.spread = b.spread;
         this.notPlayerCreated = b.notPlayerCreated;
+        this.aggroPlayers = b.aggroPlayers;
     }
 
     // ── Getters ───────────────────────────────────────────────
@@ -142,6 +146,7 @@ public class SpawnConfig {
     public List<GroupMemberConfig> getMembers() { return members; }
     public double getSpread()          { return spread; }
     public boolean isNotPlayerCreated() { return notPlayerCreated; }
+    public boolean isAggroPlayers()     { return aggroPlayers; }
 
     // ── Builder ───────────────────────────────────────────────
 
@@ -170,6 +175,7 @@ public class SpawnConfig {
         private List<GroupMemberConfig> members;
         private double spread = 2.0;
         private boolean notPlayerCreated;
+        private boolean aggroPlayers = true;
 
         Builder(Type type) { this.type = type; }
 
@@ -192,6 +198,7 @@ public class SpawnConfig {
         public Builder members(List<GroupMemberConfig> v) { this.members = v; return this; }
         public Builder spread(double v)           { this.spread = v; return this; }
         public Builder notPlayerCreated(boolean v) { this.notPlayerCreated = v; return this; }
+        public Builder aggroPlayers(boolean v)    { this.aggroPlayers = v; return this; }
 
         public SpawnConfig build() { return new SpawnConfig(this); }
     }

@@ -221,8 +221,8 @@ public class MobManager {
             tagGroupKillAll(entity);
         }
 
-        // Aggro nearest player for hostiles
-        if (def.isHostile()) {
+        // Aggro nearest player for hostiles (optional override)
+        if (def.isHostile() && (config == null || config.isAggroPlayers())) {
             aggroNearest(entity, location);
         }
 
@@ -234,6 +234,30 @@ public class MobManager {
         // Decorative netherrack tentacles for bosses
         if ("ghast_broodmother".equals(mobId) && plugin.getBroodmotherCosmetics() != null) {
             plugin.getBroodmotherCosmetics().attach(entity);
+        }
+
+        // Jungle spider: purple terracotta lumpy abdomen
+        if ("jungle_spider".equals(mobId) && plugin.getAttachedBlockCosmetics() != null) {
+            Material m = Material.PURPLE_WOOL;
+            plugin.getAttachedBlockCosmetics().attach(entity, java.util.List.of(
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(Material.PURPLE_CONCRETE_POWDER,  0.00f, 0.02f, -0.62f, 0.80f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m, -0.36f, -0.04f, -0.50f, 0.50f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.36f, -0.04f, -0.50f, 0.50f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.00f, 0.20f, -0.74f, 0.50f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.00f, -0.10f, -1.04f, 0.42f)
+            ));
+        }
+
+        // Cave spider: lime terracotta lumpy abdomen
+        if ("cave_spider".equals(mobId) && plugin.getAttachedBlockCosmetics() != null) {
+            Material m = Material.LIME_WOOL;
+            plugin.getAttachedBlockCosmetics().attach(entity, java.util.List.of(
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(Material.LIME_CONCRETE_POWDER,  0.00f, 0.00f, -0.42f, 0.60f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m, -0.26f, -0.05f, -0.34f, 0.36f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.26f, -0.05f, -0.34f, 0.36f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.00f, 0.14f, -0.50f, 0.36f),
+                    new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.00f, -0.11f, -0.68f, 0.30f)
+            ));
         }
 
         return entity;
@@ -392,7 +416,9 @@ public class MobManager {
                 // Potion effects
                 applyPotionEffects(entity, member.getPotionEffects());
 
-                aggroNearest(entity, location);
+                if (config == null || config.isAggroPlayers()) {
+                    aggroNearest(entity, location);
+                }
 
                 // Fire resistance — prevents daylight burning
                 applyFireResistance(entity);
@@ -459,7 +485,9 @@ public class MobManager {
         // Stats
         applyEntityStats(entity, config, def.isHostile());
 
-        aggroNearest(entity, location);
+        if (config == null || config.isAggroPlayers()) {
+            aggroNearest(entity, location);
+        }
 
         // Fire resistance — prevents daylight burning
         applyFireResistance(entity);

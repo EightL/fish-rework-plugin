@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
@@ -536,6 +537,8 @@ public class YamlItemLoader {
                     "weapons." + id + ".rarity");
             String nameColorStr = entry.getString("name_color");
             String pdcKeyStr = entry.getString("pdc_key");
+            Double attackDamage = entry.contains("attack_damage") ? entry.getDouble("attack_damage") : null;
+            Double attackSpeed = entry.contains("attack_speed") ? entry.getDouble("attack_speed") : null;
             int upgradeTier = entry.getInt("upgrade_tier", 0);
             int durability = entry.getInt("durability", 0);
 
@@ -567,6 +570,8 @@ public class YamlItemLoader {
             final Rarity fRarity = rarity;
             final String fNameColor = nameColorStr;
                 final String fPdcKey = pdcKeyStr;
+            final Double fAttackDamage = attackDamage;
+            final Double fAttackSpeed = attackSpeed;
             final int fUpgradeTier = upgradeTier;
             final int fDurability = durability;
             final List<Map<?, ?>> fLoreEntries = new ArrayList<>(loreEntries);
@@ -575,7 +580,7 @@ public class YamlItemLoader {
 
             registry.put(id, () -> buildWeapon(
                     itemManager, fId, fMat, plugin.getLanguageManager().getString("item." + fId + ".name", fName), fRarity, fNameColor, fPdcKey,
-                    fLoreEntries, fEnchants, fPdc, fUpgradeTier, fDurability));
+                    fLoreEntries, fEnchants, fPdc, fAttackDamage, fAttackSpeed, fUpgradeTier, fDurability));
             count++;
         }
         return count;
@@ -585,7 +590,7 @@ public class YamlItemLoader {
             String id, Material material, String name, Rarity rarity,
                 String nameColorStr, String pdcKeyStr, List<Map<?, ?>> loreEntries,
             Map<String, Integer> enchantments,
-            Map<String, Double> pdcDoubles, int upgradeTier, int durability) {
+            Map<String, Double> pdcDoubles, Double attackDamage, Double attackSpeed, int upgradeTier, int durability) {
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -637,6 +642,42 @@ public class YamlItemLoader {
         for (Map.Entry<String, Double> pdcEntry : pdcDoubles.entrySet()) {
             NamespacedKey key = new NamespacedKey(plugin, pdcEntry.getKey());
             meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, pdcEntry.getValue());
+        }
+
+        if (attackDamage != null) {
+            meta.getPersistentDataContainer().set(
+                    new NamespacedKey(plugin, "weapon_attack_damage"),
+                    PersistentDataType.DOUBLE,
+                    attackDamage
+            );
+        }
+        if (attackSpeed != null) {
+            meta.getPersistentDataContainer().set(
+                    new NamespacedKey(plugin, "weapon_attack_speed"),
+                    PersistentDataType.DOUBLE,
+                    attackSpeed
+            );
+        }
+
+        // Vanilla attribute overrides (final values shown in "When in Main Hand")
+        if (attackSpeed != null || attackDamage != null) {
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        }
+        if (attackSpeed != null) {
+            meta.addAttributeModifier(Attribute.ATTACK_SPEED, new AttributeModifier(
+                    new NamespacedKey(plugin, id + "_attack_speed"),
+                    attackSpeed - 4.0,
+                    AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.MAINHAND
+            ));
+        }
+        if (attackDamage != null) {
+            meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(
+                    new NamespacedKey(plugin, id + "_attack_damage"),
+                    attackDamage - 1.0,
+                    AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.MAINHAND
+            ));
         }
 
             // PDC: upgrade tier

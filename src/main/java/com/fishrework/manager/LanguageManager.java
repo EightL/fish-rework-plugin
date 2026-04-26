@@ -337,9 +337,13 @@ public class LanguageManager {
         try (InputStream defaultStream = plugin.getResource(fileName)) {
             if (defaultStream != null) {
                 YamlConfiguration defaultConf = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream, StandardCharsets.UTF_8));
-                if (copyMissingPaths(config, defaultConf)) {
+                YamlConfiguration englishDefaults = "en".equals(locale) ? null : loadBundledLocale("en");
+                int[] counts = mergeDefaults(config, defaultConf, englishDefaults);
+                if (counts[0] + counts[1] > 0) {
                     config.save(file);
-                    plugin.getLogger().info("Added missing language defaults to " + fileName + ".");
+                    plugin.getLogger().info(String.format(
+                            "Updated %s: added %d new key(s), refreshed %d stale English fallback(s).",
+                            fileName, counts[0], counts[1]));
                 }
                 config.setDefaults(defaultConf);
             }
@@ -351,18 +355,53 @@ public class LanguageManager {
         return config;
     }
 
-    private boolean copyMissingPaths(FileConfiguration target, YamlConfiguration defaults) {
-        boolean changed = false;
-        for (String path : defaults.getKeys(true)) {
-            if (defaults.isConfigurationSection(path)) {
+    /**
+     * Merges bundled defaults into the user's lang file.
+     * Returns [addedCount, refreshedCount].
+     *
+     * Two cases overwrite the user's value:
+     *   1. Key absent from user file → copied from locale defaults (added).
+     *   2. Key present, but user value equals the bundled English value AND the bundled
+     *      locale value differs from English → user has a stale English fallback that
+     *      now has a real translation (refreshed).
+     * Admin-customized values (different from both en and locale defaults) are preserved.
+     */
+    private int[] mergeDefaults(FileConfiguration target, YamlConfiguration localeDefaults, YamlConfiguration englishDefaults) {
+        int added = 0;
+        int refreshed = 0;
+        for (String path : localeDefaults.getKeys(true)) {
+            if (localeDefaults.isConfigurationSection(path)) {
                 continue;
             }
             if (!target.isSet(path)) {
-                target.set(path, defaults.get(path));
-                changed = true;
+                target.set(path, localeDefaults.get(path));
+                added++;
+                continue;
+            }
+            if (englishDefaults == null) {
+                continue;
+            }
+            Object userValue = target.get(path);
+            Object enValue = englishDefaults.get(path);
+            Object localeValue = localeDefaults.get(path);
+            if (userValue != null && enValue != null && localeValue != null
+                    && userValue.equals(enValue) && !localeValue.equals(enValue)) {
+                target.set(path, localeValue);
+                refreshed++;
             }
         }
-        return changed;
+        return new int[] { added, refreshed };
+    }
+
+    private YamlConfiguration loadBundledLocale(String locale) {
+        try (InputStream stream = plugin.getResource("lang_" + locale + ".yml")) {
+            if (stream == null) {
+                return null;
+            }
+            return YamlConfiguration.loadConfiguration(new InputStreamReader(stream, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String defaultLocaleName(String locale) {

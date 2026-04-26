@@ -909,6 +909,8 @@ weapons:
     display_name: "Novice Trident"
     rarity: UNCOMMON
     durability: 1200
+    attack_damage: 9
+    attack_speed: 1.2
     lore:
       - text: "A starter trident for early sea hunting."
         color: DARK_GRAY
@@ -922,6 +924,8 @@ weapons:
     display_name: "Adept Trident"
     rarity: RARE
     durability: 1600
+    attack_damage: 9
+    attack_speed: 1.3
     lore:
       - text: "A sharper trident favored by experienced anglers."
         color: DARK_GRAY
@@ -935,6 +939,8 @@ weapons:
     display_name: "Prismarine Harpoon"
     rarity: RARE
     durability: 1200
+    attack_damage: 9
+    attack_speed: 1.4
     lore:
       - text: "A reinforced harpoon for hunting sea beasts."
         color: DARK_GRAY
@@ -949,6 +955,8 @@ weapons:
     display_name: "Tidesplitter"
     rarity: EPIC
     durability: 1600
+    attack_damage: 9
+    attack_speed: 1.5
     lore:
       - text: "Splits the waves and pierces the toughest scales."
     enchantments:
@@ -962,6 +970,8 @@ weapons:
     display_name: "Dreadspear"
     rarity: LEGENDARY
     durability: 2000
+    attack_damage: 9
+    attack_speed: 1.6
     lore:
       - text: "Forged with the souls of the deep."
     enchantments:
@@ -976,6 +986,8 @@ weapons:
     rarity: LEGENDARY
     name_color: GOLD
     durability: 2500
+    attack_damage: 9
+    attack_speed: 1.7
     lore:
       - text: "The legendary weapon of the sea god."
         color: DARK_GRAY
@@ -993,6 +1005,8 @@ weapons:
     rarity: MYTHIC
     pdc_key: hephaesteantrident
     durability: 3200
+    attack_damage: 9
+    attack_speed: 1.8
     lore:
       - text: "Forged by Hephaestus himself"
         color: DARK_GRAY
@@ -1159,6 +1173,8 @@ weapons:
     rarity: SPECIAL
     pdc_key: megalodon_tooth
     durability: 1200
+    attack_damage: 8.0
+    attack_speed: 2.4
     lore:
       - text: "A jagged relic carved from an apex hunter fang."
         color: DARK_GRAY

@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -80,13 +79,6 @@ public class LoreUpdateListener implements Listener {
                 event.getItem().setItemStack(refreshed);
             }
         });
-    }
-
-    @EventHandler
-    public void onJoinRefreshEquipment(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        plugin.getServer().getScheduler().runTaskLater(plugin, () ->
-                plugin.getLanguageManager().withPlayer(player, () -> refreshPlayerCustomItems(player)), 2L);
     }
 
     /** Catches /enchant command and any other direct item modification. */

@@ -233,7 +233,8 @@ public class YamlMobLoader {
                 .groupKillAll(sec.getBoolean("group_kill_all", false))
                 .slimeSize(sec.getInt("slime_size", -1))
                 .spread(sec.getDouble("spread", 2.0))
-                .notPlayerCreated(sec.getBoolean("not_player_created", false));
+                .notPlayerCreated(sec.getBoolean("not_player_created", false))
+                .aggroPlayers(sec.getBoolean("aggro_players", true));
 
         // Aggro
         if (sec.contains("aggro")) {

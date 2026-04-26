@@ -84,6 +84,8 @@ public class LoreManager {
         double scFlatAttack = getStat(meta, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double scFlatDefense = getStat(meta, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
         double baseSpeed = getStat(meta, plugin.getItemManager().FISHING_SPEED_KEY);
+        Double weaponAttackDamage = getOptionalStat(meta, new NamespacedKey(plugin, "weapon_attack_damage"));
+        Double weaponAttackSpeed = getOptionalStat(meta, new NamespacedKey(plugin, "weapon_attack_speed"));
         List<Component> artifactPotionLore = new ArrayList<>();
         boolean isNetherArmorPiece = isNetherArmorPiece(meta);
         NamedTextColor heatResistanceColor = isNetherArmorPiece ? NamedTextColor.GREEN : NamedTextColor.GOLD;
@@ -194,6 +196,24 @@ public class LoreManager {
                 .append(Component.text("+" + com.fishrework.util.FormatUtil.format("%.1f", heatResistance) + "%").color(heatResistanceColor)));
         }
 
+        if (weaponAttackDamage != null || weaponAttackSpeed != null) {
+            if (!newLore.isEmpty() && !isBlankComponent(newLore.get(newLore.size() - 1))) {
+                newLore.add(Component.empty());
+            }
+            newLore.add(Component.text("When in Main Hand:").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+            if (weaponAttackDamage != null) {
+                newLore.add(Component.text(com.fishrework.util.FormatUtil.format(" %.0f", weaponAttackDamage) + " Attack Damage")
+           
+                        .color(NamedTextColor.DARK_GREEN)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+            if (weaponAttackSpeed != null) {
+                newLore.add(Component.text(com.fishrework.util.FormatUtil.format(" %.1f", weaponAttackSpeed) + " Attack Speed")
+                        .color(NamedTextColor.DARK_GREEN)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+
         newLore.addAll(artifactPotionLore);
 
         if (isNetherArmorPiece) {
@@ -246,6 +266,13 @@ public class LoreManager {
         return 0.0;
     }
 
+    private Double getOptionalStat(ItemMeta meta, NamespacedKey key) {
+        if (meta.getPersistentDataContainer().has(key, PersistentDataType.DOUBLE)) {
+            return meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
+        }
+        return null;
+    }
+
     private static Component statLine(String label, String value) {
         return Component.text(label).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
                 .append(Component.text(value).color(NamedTextColor.GREEN));
@@ -267,6 +294,9 @@ public class LoreManager {
                 || startsWithLocalizedPrefix(plain, "loremanager.full_set_bonus", "Full Set bonus:")
                 || startsWithLocalizedPrefix(plain, "loremanager.water_movement", "Water Movement: ")
                 || startsWithLocalizedPrefix(plain, "loremanager.night_multiplier", "Night multiplier: ")
+                || plain.trim().equalsIgnoreCase("When in Main Hand:")
+                || plain.trim().endsWith("Attack Damage")
+                || plain.trim().endsWith("Attack Speed")
                 || matchesLocalizedLine(plain, "loremanager.stats_are_halved_outside_of", "Stats are halved outside of Nether.")
                 || matchesLocalizedLine(plain, "loremanager.stats_double_in_nether", "Stats double in Nether.")
                 || isRarityLine(plain)) {

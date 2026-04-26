@@ -39,6 +39,11 @@ public class PlayerListener implements Listener {
                         plugin.getRecipeRegistry().syncRecipes(event.getPlayer());
                     }
 
+                    // Refresh inventory lore now that PlayerData (incl. language) is loaded.
+                    // Must run after the put above so getPlayerLocale resolves to the player's saved locale
+                    // instead of the server default — otherwise zh_CN players' items get rebaked in English.
+                    plugin.refreshPlayerCustomItems(event.getPlayer());
+
                     // Notify admins of available updates (check runs async at startup)
                     if (event.getPlayer().hasPermission("fishrework.admin")
                             && plugin.getUpdateChecker() != null) {

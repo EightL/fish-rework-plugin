@@ -39,6 +39,10 @@ public class AggroTask implements Runnable {
     private static final Particle.DustOptions WAILING_AURA_CRIMSON = new Particle.DustOptions(Color.fromRGB(150, 24, 32), 2.0f);
     private static final Particle.DustOptions WAILING_AURA_GREEN = new Particle.DustOptions(Color.fromRGB(102, 255, 125), 2.0f);
     private static final Particle.DustOptions WAILING_AURA_DEEP = new Particle.DustOptions(Color.fromRGB(40, 155, 70), 1.8f);
+    private static final Particle.DustOptions VENOM_PURPLE_MAIN = new Particle.DustOptions(Color.fromRGB(150, 65, 215), 1.25f);
+    private static final Particle.DustOptions VENOM_PURPLE_DARK = new Particle.DustOptions(Color.fromRGB(88, 35, 150), 1.05f);
+    private static final Particle.DustOptions VENOM_GREEN_MAIN = new Particle.DustOptions(Color.fromRGB(88, 235, 110), 1.2f);
+    private static final Particle.DustOptions VENOM_GREEN_DARK = new Particle.DustOptions(Color.fromRGB(30, 145, 55), 1.0f);
 
     private final FishRework plugin;
     private final NamespacedKey wailingRoleKey;
@@ -288,6 +292,30 @@ public class AggroTask implements Runnable {
         ThreadLocalRandom rng = ThreadLocalRandom.current();
 
         switch (particleType) {
+            case "venom_purple" -> {
+                for (int i = 0; i < 4; i++) {
+                    double ox = rng.nextDouble(-0.75, 0.75);
+                    double oy = rng.nextDouble(-0.25, 0.65);
+                    double oz = rng.nextDouble(-0.75, 0.75);
+                    Location p = loc.clone().add(ox, oy, oz);
+                    spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, VENOM_PURPLE_MAIN);
+                    if ((i & 1) == 0) {
+                        spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, VENOM_PURPLE_DARK);
+                    }
+                }
+            }
+            case "venom_green" -> {
+                for (int i = 0; i < 4; i++) {
+                    double ox = rng.nextDouble(-0.7, 0.7);
+                    double oy = rng.nextDouble(-0.25, 0.6);
+                    double oz = rng.nextDouble(-0.7, 0.7);
+                    Location p = loc.clone().add(ox, oy, oz);
+                    spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, VENOM_GREEN_MAIN);
+                    if ((i & 1) == 0) {
+                        spawnParticle(world, Particle.DUST, p, 1, 0.01, 0.01, 0.01, 0.0, VENOM_GREEN_DARK);
+                    }
+                }
+            }
             case "potion" -> {
                 // Purple/green swirling potion particles around the witch
                 for (int i = 0; i < 3; i++) {
