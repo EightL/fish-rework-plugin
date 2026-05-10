@@ -5,7 +5,6 @@ import com.fishrework.manager.TotemManager.TotemType;
 import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
@@ -33,7 +32,7 @@ public class TotemListener implements Listener {
     // ── Placement ─────────────────────────────────────────────
 
     /**
-     * Detects when a player places a Conduit that is actually a custom totem.
+    * Detects when a player places a custom totem item.
      * Cancels the vanilla block place and spawns the custom totem entities instead.
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -44,7 +43,6 @@ public class TotemListener implements Listener {
     private void handleBlockPlace(BlockPlaceEvent event) {
         if (!plugin.isFeatureEnabled(FeatureKeys.TREASURE_TOTEM_ENABLED)) return;
         ItemStack item = event.getItemInHand();
-        if (item.getType() != Material.CONDUIT) return;
         if (!item.hasItemMeta()) return;
 
         TotemType type = plugin.getTotemManager().getTotemType(item);

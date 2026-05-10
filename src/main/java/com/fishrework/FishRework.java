@@ -180,6 +180,7 @@ public class FishRework extends JavaPlugin {
         }
         getServer().getPluginManager().registerEvents(new EnchantmentListener(this), this);
         getServer().getPluginManager().registerEvents(new HephaesteanTridentListener(this), this);
+        getServer().getPluginManager().registerEvents(new RodCastParticlesListener(this), this);
         getServer().getPluginManager().registerEvents(new FishHookLureListener(this), this);
         loreUpdateListener = new LoreUpdateListener(this);
         getServer().getPluginManager().registerEvents(loreUpdateListener, this);

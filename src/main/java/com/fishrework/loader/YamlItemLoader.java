@@ -544,6 +544,7 @@ public class YamlItemLoader {
 
             // Lore lines (list of {text, color} maps)
             List<Map<?, ?>> loreEntries = entry.getMapList("lore");
+            String textureBase64 = entry.getString("texture_base64");
 
             // Enchantments
             Map<String, Integer> enchantments = new LinkedHashMap<>();
@@ -575,6 +576,7 @@ public class YamlItemLoader {
             final int fUpgradeTier = upgradeTier;
             final int fDurability = durability;
             final List<Map<?, ?>> fLoreEntries = new ArrayList<>(loreEntries);
+            final String fTextureBase64 = textureBase64;
             final Map<String, Integer> fEnchants = enchantments;
             final Map<String, Double> fPdc = pdcDoubles;
 
@@ -731,6 +733,7 @@ public class YamlItemLoader {
                     "utility_items." + id + ".rarity");
             String pdcKeyStr = entry.getString("pdc_key", id);
             List<Map<?, ?>> loreEntries = entry.getMapList("lore");
+                String textureBase64 = entry.getString("texture_base64");
 
             final String fId = id;
             final Material fMat = material;
@@ -738,9 +741,11 @@ public class YamlItemLoader {
             final Rarity fRarity = rarity;
             final String fPdcKey = pdcKeyStr;
             final List<Map<?, ?>> fLoreEntries = new ArrayList<>(loreEntries);
+            final String fTextureBase64 = textureBase64;
 
             registry.put(id, () -> buildUtilityItem(
-                    itemManager, fId, fMat, plugin.getLanguageManager().getString("item." + fId + ".name", fName), fRarity, fPdcKey, fLoreEntries));
+                    itemManager, fId, fMat, plugin.getLanguageManager().getString("item." + fId + ".name", fName),
+                    fRarity, fPdcKey, fLoreEntries, fTextureBase64));
             count++;
         }
         return count;
@@ -748,9 +753,11 @@ public class YamlItemLoader {
 
     private ItemStack buildUtilityItem(ItemManager itemManager,
             String id, Material material, String name, Rarity rarity,
-            String pdcKeyStr, List<Map<?, ?>> loreEntries) {
+            String pdcKeyStr, List<Map<?, ?>> loreEntries, String textureBase64) {
 
-        ItemStack item = new ItemStack(material);
+        ItemStack item = (textureBase64 != null && !textureBase64.isBlank())
+                ? itemManager.getCustomSkull(textureBase64)
+                : new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
         meta.displayName(Component.text(name).color(rarity.getColor())
@@ -779,7 +786,7 @@ public class YamlItemLoader {
         NamespacedKey pdcKey = new NamespacedKey(plugin, pdcKeyStr);
         meta.getPersistentDataContainer().set(pdcKey, PersistentDataType.BYTE, (byte) 1);
         meta.getPersistentDataContainer().set(itemManager.CUSTOM_ITEM_KEY, PersistentDataType.STRING, id);
-        itemManager.setVanillaFallbackMaterial(meta, material);
+        itemManager.setVanillaFallbackMaterial(meta, item.getType());
 
         // PDC: rarity
         meta.getPersistentDataContainer().set(itemManager.RARITY_KEY,

@@ -182,7 +182,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text(name).color(rarity.getColor()).decoration(TextDecoration.ITALIC, false));
         meta.lore(Collections.singletonList(
-                Component.text(description).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)
+            Component.text(description).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
         ));
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, id);
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
@@ -308,8 +308,7 @@ public class ItemManager {
     // ── Treasure Totem ──
 
     public boolean isTreasureTotem(ItemStack item) {
-        if (item == null || item.getType() != Material.CONDUIT) return false;
-        if (!item.hasItemMeta()) return false;
+        if (item == null || !item.hasItemMeta()) return false;
         return item.getItemMeta().getPersistentDataContainer().has(TREASURE_TOTEM_KEY, PersistentDataType.BYTE);
     }
 

@@ -974,6 +974,7 @@ weapons:
     attack_speed: 1.6
     lore:
       - text: "Forged with the souls of the deep."
+        color: DARK_GRAY
     enchantments:
       LOYALTY: 5
     pdc:
@@ -1204,7 +1205,8 @@ utility_items:
         color: YELLOW
 
   treasure_totem:
-    material: CONDUIT
+    material: PLAYER_HEAD
+    texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIzODU2NDBiZTVhODRlNjgyMTI2NDY5YTdiMzYzMWQ0Mjg1ZGM3MWI3MGM3NmI5NDY0OTI4OGY5ZTExMjcyZCJ9fX0="
     display_name: "Treasure Totem"
     rarity: LEGENDARY
     pdc_key: treasure_totem
@@ -1215,7 +1217,8 @@ utility_items:
         color: YELLOW
 
   battle_totem_1:
-    material: CONDUIT
+    material: PLAYER_HEAD
+    texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEwMmE1MDY1Yjk0MmIxMzY1NjY3OGI5MmZmN2VkMjQ2ZGIwNjNmOTc5N2QyNDU4NDdjZGMzOTVmOTAyMGMzYiJ9fX0="
     display_name: "Battle Totem I"
     rarity: RARE
     pdc_key: battle_totem_1
@@ -1226,7 +1229,8 @@ utility_items:
         color: YELLOW
 
   battle_totem_2:
-    material: CONDUIT
+    material: PLAYER_HEAD
+    texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEwMmE1MDY1Yjk0MmIxMzY1NjY3OGI5MmZmN2VkMjQ2ZGIwNjNmOTc5N2QyNDU4NDdjZGMzOTVmOTAyMGMzYiJ9fX0="
     display_name: "Battle Totem II"
     rarity: EPIC
     pdc_key: battle_totem_2
@@ -1237,7 +1241,8 @@ utility_items:
         color: YELLOW
 
   battle_totem_3:
-    material: CONDUIT
+    material: PLAYER_HEAD
+    texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEwMmE1MDY1Yjk0MmIxMzY1NjY3OGI5MmZmN2VkMjQ2ZGIwNjNmOTc5N2QyNDU4NDdjZGMzOTVmOTAyMGMzYiJ9fX0="
     display_name: "Battle Totem III"
     rarity: LEGENDARY
     pdc_key: battle_totem_3

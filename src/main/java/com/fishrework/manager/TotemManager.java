@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages active Totems using ItemDisplay (visual) + Interaction (hitbox) entities.
  * <p>
- * The ItemDisplay shows a conduit item that spins and bobs like an activated vanilla conduit.
- * Continuous nautilus particles spiral inward to replicate the conduit ambient effect.
+ * The ItemDisplay shows the custom totem item (player head) that spins and bobs.
+ * Double-helix dust particles orbit the totem as the ambient effect.
  * <p>
  * Totems are persisted via PersistentDataContainer tags on the entities themselves.
  * On chunk load we scan for tagged entities and re-cache them; on chunk unload we evict.
@@ -110,9 +110,11 @@ public class TotemManager {
         // Center the totem on the block, float 1.5 blocks above ground
         Location spawnLoc = location.clone().add(0.5, 1.5, 0.5);
 
-        // 1. ItemDisplay (visual) — conduit item gives the "eye" model
+        // 1. ItemDisplay (visual) — custom totem item provides the head texture
         ItemDisplay display = (ItemDisplay) world.spawnEntity(spawnLoc, EntityType.ITEM_DISPLAY);
-        display.setItemStack(new ItemStack(type.displayMaterial));
+        ItemStack displayItem = plugin.getItemManager().getRequiredItem(type.itemId).clone();
+        displayItem.setAmount(1);
+        display.setItemStack(displayItem);
         display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.NONE);
         display.setGravity(false);
         display.setPersistent(true);
@@ -121,7 +123,7 @@ public class TotemManager {
 
         // Initial transformation — centered and scaled up
         Transformation t = new Transformation(
-                new Vector3f(-0.5f, -0.5f, -0.5f), // translation (center the model)
+            new Vector3f(0.0f, -0.5f, 0.0f), // translation (center the model)
                 new AxisAngle4f(0, 0, 1, 0),        // left rotation
                 new Vector3f(type.scale, type.scale, type.scale), // scale
                 new AxisAngle4f(0, 0, 1, 0)          // right rotation
@@ -156,7 +158,6 @@ public class TotemManager {
         activeTotems.put(interaction.getUniqueId(), new TotemEntry(display.getUniqueId(), interaction.getUniqueId(), spawnLoc, type));
 
         // 5. Placement feedback
-        world.playSound(spawnLoc, Sound.BLOCK_CONDUIT_ACTIVATE, 1.0f, 1.0f);
         spawnPlacementParticles(world, spawnLoc, type);
 
         plugin.getLogger().info(placer.getName() + " placed a " + type.fallbackName + " at " +
@@ -178,8 +179,6 @@ public class TotemManager {
             Entity displayEntity = findEntity(world, entry.displayUuid);
             Entity interactionEntity = findEntity(world, entry.interactionUuid);
             if (displayEntity != null) {
-                displayEntity.getLocation().getWorld().playSound(
-                        displayEntity.getLocation(), Sound.BLOCK_CONDUIT_DEACTIVATE, 1.0f, 1.0f);
                 displayEntity.remove();
             }
             if (interactionEntity != null) {
@@ -230,7 +229,7 @@ public class TotemManager {
             if (displayEntity instanceof ItemDisplay display) {
                 // Animate: rotate + bob
                 Transformation rotated = new Transformation(
-                        new Vector3f(-0.5f, -0.5f + bobOffset, -0.5f),
+                    new Vector3f(0.0f, -0.5f + bobOffset, 0.0f),
                         new AxisAngle4f(rotationAngle, 0, 1, 0),
                         new Vector3f(type.scale, type.scale, type.scale),
                         new AxisAngle4f(0, 0, 1, 0)
@@ -240,11 +239,6 @@ public class TotemManager {
                 display.setTransformation(rotated);
 
                 spawnAmbientParticles(world, loc, type);
-
-                // Ambient conduit sound (rarely, ~every 8 seconds)
-                if (tickCount % 160 == 0) {
-                    world.playSound(loc, Sound.BLOCK_CONDUIT_AMBIENT, 0.6f, 1.0f);
-                }
             } else {
                 // Display entity gone — remove totem
                 Entity interactionEntity = findEntity(world, entry.interactionUuid);
@@ -385,60 +379,46 @@ public class TotemManager {
     }
 
     private void spawnPlacementParticles(World world, Location loc, TotemType type) {
-        if (type.treasureTotem) {
-            world.spawnParticle(Particle.NAUTILUS, loc, 40, 1.0, 1.0, 1.0, 0.08);
-            return;
-        }
-        world.spawnParticle(Particle.DUST, loc, 35, 1.0, 1.0, 1.0, 0.02,
-                new Particle.DustOptions(type.glowColor, 1.25f));
+        world.spawnParticle(Particle.DUST, loc, 28, 0.6, 0.7, 0.6, 0.02,
+                new Particle.DustOptions(type.glowColor, 1.2f));
     }
 
     private void spawnAmbientParticles(World world, Location loc, TotemType type) {
-        if (type.treasureTotem) {
-            if (tickCount % 3 == 0) {
-                double angle = tickCount * 0.3;
-                double radius = 1.5 + Math.sin(tickCount * 0.05) * 0.5;
-                double px = loc.getX() + Math.cos(angle) * radius;
-                double py = loc.getY() + (Math.random() - 0.5) * 1.5;
-                double pz = loc.getZ() + Math.sin(angle) * radius;
-                world.spawnParticle(Particle.NAUTILUS, px, py, pz, 1,
-                        loc.getX() - px, loc.getY() - py, loc.getZ() - pz, 0.5);
-            }
-            if (tickCount % 10 == 0) {
-                world.spawnParticle(Particle.NAUTILUS, loc, 3, 1.5, 1.0, 1.5, 0.04);
-            }
-            return;
-        }
+        double radius = 0.5;
+        double height = 1.1;
+        double angle = tickCount * 0.35;
+        double phase = angle % (Math.PI * 2);
+        double baseY = loc.getY() - (height / 2.0);
 
-        if (tickCount % 4 == 0) {
-            double angle = tickCount * 0.35;
-            double radius = 1.15 + Math.sin(tickCount * 0.08) * 0.25;
-            double px = loc.getX() + Math.cos(angle) * radius;
-            double py = loc.getY() + (Math.random() - 0.5) * 1.2;
-            double pz = loc.getZ() + Math.sin(angle) * radius;
-            world.spawnParticle(Particle.DUST, px, py, pz, 1, 0.05, 0.05, 0.05, 0.01,
-                    new Particle.DustOptions(type.glowColor, 0.95f));
-        }
-        if (tickCount % 12 == 0) {
-            world.spawnParticle(Particle.DUST, loc, 4, 1.0, 0.85, 1.0, 0.02,
-                    new Particle.DustOptions(type.glowColor, 1.1f));
-        }
+        double y1 = baseY + (phase / (Math.PI * 2)) * height;
+        double y2 = baseY + ((phase + Math.PI) % (Math.PI * 2)) / (Math.PI * 2) * height;
+
+        spawnHelixParticle(world, loc, type, radius, angle, y1, 1.0f);
+        spawnHelixParticle(world, loc, type, radius, angle + Math.PI, y2, 1.0f);
+    }
+
+    private void spawnHelixParticle(World world, Location loc, TotemType type,
+            double radius, double angle, double y, float size) {
+        double px = loc.getX() + Math.cos(angle) * radius;
+        double pz = loc.getZ() + Math.sin(angle) * radius;
+        world.spawnParticle(Particle.DUST, px, y, pz, 1, 0, 0, 0, 0,
+                new Particle.DustOptions(type.glowColor, size));
     }
 
     // ── Inner Data Class ──────────────────────────────────────
 
     public enum TotemType {
         TREASURE("treasure_totem", "totemmanager.treasure_totem", "Treasure Totem",
-                NamedTextColor.GOLD, Color.fromRGB(255, 215, 0), Material.CONDUIT, 1.0f,
+            NamedTextColor.GOLD, Color.fromRGB(255, 215, 0), Material.PLAYER_HEAD, 1.0f,
                 true, 0.0, "totems.treasure_bonus"),
         BATTLE_1("battle_totem_1", "totemmanager.battle_totem_1", "Battle Totem I",
-                NamedTextColor.RED, Color.fromRGB(232, 74, 43), Material.CONDUIT, 1.0f,
+            NamedTextColor.RED, Color.fromRGB(232, 74, 43), Material.PLAYER_HEAD, 1.0f,
                 false, 1.0, "totems.battle_totem_1_attack_modifier"),
         BATTLE_2("battle_totem_2", "totemmanager.battle_totem_2", "Battle Totem II",
-                NamedTextColor.DARK_RED, Color.fromRGB(173, 32, 50), Material.CONDUIT, 1.08f,
+            NamedTextColor.DARK_RED, Color.fromRGB(173, 32, 50), Material.PLAYER_HEAD, 1.08f,
                 false, 2.0, "totems.battle_totem_2_attack_modifier"),
         BATTLE_3("battle_totem_3", "totemmanager.battle_totem_3", "Battle Totem III",
-                NamedTextColor.LIGHT_PURPLE, Color.fromRGB(178, 73, 225), Material.CONDUIT, 1.16f,
+            NamedTextColor.LIGHT_PURPLE, Color.fromRGB(178, 73, 225), Material.PLAYER_HEAD, 1.16f,
                 false, 3.0, "totems.battle_totem_3_attack_modifier");
 
         private final String itemId;
