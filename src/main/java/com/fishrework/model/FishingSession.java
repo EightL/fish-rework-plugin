@@ -26,8 +26,8 @@ public class FishingSession {
     // Recently discovered mobs (for "NEW" indicator in encyclopedia)
     private final java.util.Set<String> recentDiscoveries = new java.util.HashSet<>();
 
-    // Auto-sell toggle
-    private boolean autoSellEnabled = false;
+    // Auto-sell mode
+    private AutoSellMode autoSellMode = AutoSellMode.OFF;
 
     // ── Catch Tracking ──
 
@@ -100,12 +100,16 @@ public class FishingSession {
 
     // ── Auto-sell ──
 
-    public boolean isAutoSellEnabled() {
-        return autoSellEnabled;
+    public AutoSellMode getAutoSellMode() {
+        return autoSellMode;
     }
 
-    public void setAutoSellEnabled(boolean enabled) {
-        this.autoSellEnabled = enabled;
+    public void setAutoSellMode(AutoSellMode mode) {
+        this.autoSellMode = mode == null ? AutoSellMode.OFF : mode;
+    }
+
+    public boolean isAutoSellEnabled() {
+        return autoSellMode != AutoSellMode.OFF;
     }
 
     // ── Getters ──

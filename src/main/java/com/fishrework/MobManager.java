@@ -1,6 +1,7 @@
 package com.fishrework;
 
 import com.fishrework.gui.LavaBagGUI;
+import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.ArtifactPassiveStat;
 import com.fishrework.model.BiomeFishingProfile;
 import com.fishrework.model.BiomeGroup;
@@ -12,6 +13,7 @@ import com.fishrework.model.Rarity;
 import com.fishrework.model.Skill;
 import com.fishrework.model.SpawnConfig;
 import com.fishrework.registry.MobRegistry;
+import com.fishrework.util.AutoSellUtil;
 import com.fishrework.util.BagUtils;
 import com.fishrework.util.FeatureKeys;
 import org.bukkit.Location;
@@ -20,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -200,6 +203,32 @@ public class MobManager {
         if (fishingPlayer != null && primary != null) {
             pullTowardPlayer(primary, fishingPlayer);
         }
+    }
+
+    public boolean shouldSpawnLiveCatch(CustomMob def) {
+        if (def == null || def.isTreasure()) {
+            return true;
+        }
+
+        String configured = plugin.getConfig().getString("mob_balance.live_catch_min_rarity", "UNCOMMON");
+        if (configured == null || configured.isBlank()) {
+            configured = "UNCOMMON";
+        }
+
+        String normalized = configured.trim().toUpperCase(Locale.ROOT);
+        if ("NONE".equals(normalized) || "DISABLED".equals(normalized) || "OFF".equals(normalized)) {
+            return false;
+        }
+
+        Rarity minimum;
+        try {
+            minimum = Rarity.valueOf(normalized);
+        } catch (IllegalArgumentException ignored) {
+            minimum = Rarity.UNCOMMON;
+        }
+
+        Rarity rarity = def.getRarity() != null ? def.getRarity() : Rarity.COMMON;
+        return rarity.ordinal() >= minimum.ordinal();
     }
 
     // ── Unified Spawn Methods ─────────────────────────────────
@@ -1297,8 +1326,73 @@ public class MobManager {
         BiomeGroup currentBiomeGroup = resolveBiomeGroup(fishLocation);
         applyTargetedHostileBaits(mobWeights, level, hostileMultiplier, biomeProfile,
                 targetedHostileMobIds, currentBiomeGroup, nativeBiomeGroups);
+        applyTimeSpawnModifiers(mobWeights, fishLocation);
 
         return mobWeights;
+    }
+
+    private void applyTimeSpawnModifiers(Map<String, Double> mobWeights, Location fishLocation) {
+        if (mobWeights.isEmpty() || fishLocation == null || fishLocation.getWorld() == null) return;
+        if (!plugin.getConfig().getBoolean("mob_balance.time_spawn_modifiers.enabled", false)) return;
+
+        String phase = getTimeSpawnModifierPhase(fishLocation.getWorld().getTime());
+        if (phase == null) return;
+
+        String basePath = "mob_balance.time_spawn_modifiers." + phase;
+        double passiveMultiplier = plugin.getConfig().getDouble(basePath + ".passive_multiplier", 1.0);
+        double hostileMultiplier = plugin.getConfig().getDouble(basePath + ".hostile_multiplier", 1.0);
+        double treasureMultiplier = plugin.getConfig().getDouble(basePath + ".treasure_multiplier", 1.0);
+        ConfigurationSection mobMultipliers = plugin.getConfig().getConfigurationSection(basePath + ".mobs");
+
+        for (Map.Entry<String, Double> entry : new HashMap<>(mobWeights).entrySet()) {
+            CustomMob mob = plugin.getMobRegistry().get(entry.getKey());
+            if (mob == null) continue;
+
+            double multiplier = getTimeCategoryMultiplier(mob, passiveMultiplier, hostileMultiplier, treasureMultiplier);
+            if (mobMultipliers != null && mobMultipliers.contains(mob.getId())) {
+                multiplier *= mobMultipliers.getDouble(mob.getId(), 1.0);
+            }
+
+            double adjustedWeight = entry.getValue() * Math.max(0.0, multiplier);
+            if (adjustedWeight > 0.0) {
+                mobWeights.put(entry.getKey(), adjustedWeight);
+            } else {
+                mobWeights.remove(entry.getKey());
+            }
+        }
+    }
+
+    private String getTimeSpawnModifierPhase(long worldTime) {
+        long time = Math.floorMod(worldTime, 24000L);
+        if (isTimeWithinRange(time,
+                plugin.getConfig().getLong("mob_balance.time_spawn_modifiers.day_start_time", 0L),
+                plugin.getConfig().getLong("mob_balance.time_spawn_modifiers.day_end_time", 12000L))) {
+            return "day";
+        }
+        if (isTimeWithinRange(time,
+                plugin.getConfig().getLong("mob_balance.time_spawn_modifiers.night_start_time", 13000L),
+                plugin.getConfig().getLong("mob_balance.time_spawn_modifiers.night_end_time", 23000L))) {
+            return "night";
+        }
+        return null;
+    }
+
+    private boolean isTimeWithinRange(long time, long startInclusive, long endExclusive) {
+        long start = Math.floorMod(startInclusive, 24000L);
+        long end = Math.floorMod(endExclusive, 24000L);
+        if (start == end) return true;
+        if (start < end) {
+            return time >= start && time < end;
+        }
+        return time >= start || time < end;
+    }
+
+    private double getTimeCategoryMultiplier(CustomMob mob,
+                                             double passiveMultiplier,
+                                             double hostileMultiplier,
+                                             double treasureMultiplier) {
+        if (mob.isTreasure()) return treasureMultiplier;
+        return mob.isHostile() ? hostileMultiplier : passiveMultiplier;
     }
 
     private void applyTargetedHostileBaits(Map<String, Double> mobWeights,
@@ -1420,15 +1514,36 @@ public class MobManager {
      * Overload for when the entity instance is not available (e.g. group kill checks).
      */
     public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory, double scale) {
-        boolean collectToLavaBag = BagUtils.hasLavaBagInInventory(plugin, player);
-        boolean collectToFishBag = BagUtils.hasFishBagInInventory(plugin, player);
-        PlayerData data = (collectToLavaBag || collectToFishBag) ? plugin.getPlayerData(player.getUniqueId()) : null;
+        dropMobLoot(player, location, def, directToInventory, scale, false);
+    }
+
+    /**
+     * Overload used by immediate fishing rewards that should behave like vanilla caught items.
+     */
+    public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory, double scale,
+                            boolean pullDropsToPlayer) {
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        boolean collectToLavaBag = data != null && BagUtils.hasLavaBagInInventory(plugin, player);
+        boolean collectToFishBag = data != null && BagUtils.hasFishBagInInventory(plugin, player);
+        AutoSellMode autoSellMode = data != null ? data.getSession().getAutoSellMode() : AutoSellMode.OFF;
+        boolean autoSellEnabled = data != null
+            && plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)
+            && autoSellMode != AutoSellMode.OFF;
+        double autoSellTotal = 0.0;
         boolean lavaBagChanged = false;
         boolean fishBagChanged = false;
 
         for (MobDrop drop : def.getDrops()) {
             java.util.List<ItemStack> items = drop.roll(scale);
             for (ItemStack item : items) {
+                if (autoSellEnabled) {
+                    double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), item, autoSellMode);
+                    if (sellPrice > 0) {
+                        autoSellTotal += sellPrice * item.getAmount();
+                        continue;
+                    }
+                }
+
                 ItemStack toHandle = item;
 
                 if (data != null) {
@@ -1460,10 +1575,16 @@ public class MobManager {
                     for (ItemStack remaining : leftover.values()) {
                         Item itemEntity = location.getWorld().dropItemNaturally(location, remaining);
                         itemEntity.setInvulnerable(true);
+                        if (pullDropsToPlayer) {
+                            applyVanillaCatchItemVelocity(itemEntity, player);
+                        }
                     }
                 } else {
                     Item itemEntity = location.getWorld().dropItemNaturally(location, toHandle);
                     itemEntity.setInvulnerable(true);
+                    if (pullDropsToPlayer) {
+                        applyVanillaCatchItemVelocity(itemEntity, player);
+                    }
                 }
             }
         }
@@ -1474,6 +1595,36 @@ public class MobManager {
         if (fishBagChanged && data != null) {
             plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
         }
+        if (autoSellTotal > 0 && data != null) {
+            data.addBalance(autoSellTotal);
+            data.getSession().addDoubloonsEarned(autoSellTotal);
+            String currencyName = plugin.getLanguageManager().getCurrencyName();
+            player.sendActionBar(net.kyori.adventure.text.Component.text(
+                    plugin.getLanguageManager().getString(
+                            "fishinglistener.auto_sold_for",
+                            "Auto-sold for %total% %currency%",
+                            "total", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
+                            "currency", currencyName))
+                    .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
+        }
+    }
+
+    private void applyVanillaCatchItemVelocity(Item itemEntity, Player player) {
+        if (itemEntity == null || player == null) return;
+
+        Location itemLocation = itemEntity.getLocation();
+        Location playerLocation = player.getLocation();
+        double dx = playerLocation.getX() - itemLocation.getX();
+        double dy = playerLocation.getY() - itemLocation.getY();
+        double dz = playerLocation.getZ() - itemLocation.getZ();
+        double horizontalDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        org.bukkit.util.Vector velocity = new org.bukkit.util.Vector(
+                dx * 0.1,
+                dy * 0.1 + Math.sqrt(Math.sqrt(horizontalDistance)) * 0.08,
+                dz * 0.1
+        );
+        itemEntity.setVelocity(velocity);
     }
 
     public void dropMobExperience(Location location, CustomMob def) {

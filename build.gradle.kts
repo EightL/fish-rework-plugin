@@ -10,12 +10,13 @@ data class PaperBuildTarget(
     val javaVersion: Int,
 )
 
-val targetMinecraftVersion = providers.gradleProperty("targetMinecraftVersion").orElse("26.1.1").get()
+val targetMinecraftVersion = providers.gradleProperty("targetMinecraftVersion").orElse("26.1.2").get()
 val paperBuildTarget = when (targetMinecraftVersion) {
+    "26.1.2" -> PaperBuildTarget(apiVersion = "26.1.2.build.63-stable", javaVersion = 25)
     "26.1.1" -> PaperBuildTarget(apiVersion = "26.1.1.build.29-alpha", javaVersion = 25)
     "1.21.11" -> PaperBuildTarget(apiVersion = "1.21.11-R0.1-SNAPSHOT", javaVersion = 21)
     else -> throw GradleException(
-        "Unsupported targetMinecraftVersion '$targetMinecraftVersion'. Supported values: 26.1.1, 1.21.11"
+        "Unsupported targetMinecraftVersion '$targetMinecraftVersion'. Supported values: 26.1.2, 26.1.1, 1.21.11"
     )
 }
 

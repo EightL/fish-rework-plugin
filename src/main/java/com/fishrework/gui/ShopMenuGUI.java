@@ -19,7 +19,7 @@ import java.util.List;
  * Main shop hub GUI (3 rows).
  * Slot 11: Fish Vendor (sell fish & materials)
  * Slot 13: Fishing Shop (buy baits & fish bag)
- * Slot 15: Fish Bag (open fish bag directly)
+ * Slot 15: Configured Doubloon Vendors (if enabled)
  * Slot 22: Back button
  * Bottom row: balance display (bottom-right)
  */
@@ -76,6 +76,23 @@ public class ShopMenuGUI extends BaseGUI {
         shop.setItemMeta(shopMeta);
         inventory.setItem(13, shop);
 
+        if (plugin.getConfig().getBoolean("vendors.enabled", false)) {
+            ItemStack vendors = new ItemStack(Material.VILLAGER_SPAWN_EGG);
+            ItemMeta vendorsMeta = vendors.getItemMeta();
+            vendorsMeta.displayName(plugin.getLanguageManager().getMessage("shopmenugui.doubloon_vendors", "Doubloon Vendors").color(NamedTextColor.AQUA)
+                    .decoration(TextDecoration.ITALIC, false));
+            vendorsMeta.lore(List.of(
+                    Component.empty(),
+                    plugin.getLanguageManager().getMessage("shopmenugui.admin_configured_shops", "Admin-configured shops").color(NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, false),
+                    Component.empty(),
+                    plugin.getLanguageManager().getMessage("shopmenugui.click_to_browse", "Click to browse!").color(NamedTextColor.GREEN)
+                            .decoration(TextDecoration.ITALIC, false)
+            ));
+            vendors.setItemMeta(vendorsMeta);
+            inventory.setItem(15, vendors);
+        }
+
         // Slot 22: Back
         setBackButton(22);
 
@@ -109,6 +126,13 @@ public class ShopMenuGUI extends BaseGUI {
                     return;
                 }
                 new BuyShopGUI(plugin, player).open(player);
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+            }
+            case 15 -> {
+                if (!plugin.getConfig().getBoolean("vendors.enabled", false)) {
+                    return;
+                }
+                new VendorListGUI(plugin, player).open(player);
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             }
             case 22 -> {

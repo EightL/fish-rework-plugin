@@ -46,6 +46,8 @@ class LocalizationResourceTest {
         assertTrue(lang.contains("currentfishchancesgui.page_sort:"), "lang_en.yml should define chance page sort text");
         assertTrue(lang.contains("skilldetailgui.top_chance_entry:"), "lang_en.yml should define top chance entry formatting");
         assertTrue(lang.contains("fishingcommand.ui_state_on:"), "lang_en.yml should define localized ON state text");
+        assertTrue(lang.contains("fishinglistener.you_hooked_sea_creature: \"You hooked in a %mob%!\""),
+                "lang_en.yml should include the hooked sea creature name placeholder");
     }
 
     @Test

@@ -2,10 +2,13 @@ package com.fishrework.listener;
 
 import com.fishrework.FishRework;
 import com.fishrework.gui.FishBagGUI;
+import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.FishingSession;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
+import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
+import com.fishrework.util.AutoSellUtil;
 import com.fishrework.util.BagUtils;
 import com.fishrework.util.FeatureKeys;
 import com.fishrework.util.FishingUtils;
@@ -36,11 +39,6 @@ public class FishingListener implements Listener {
 
     private final FishRework plugin;
     private final Random random = new Random();
-
-    // Vanilla fish that can be auto-sold
-    private static final Set<Material> AUTO_SELL_FISH = Set.of(
-            Material.COD, Material.SALMON, Material.TROPICAL_FISH, Material.PUFFERFISH
-    );
 
     public FishingListener(FishRework plugin) {
         this.plugin = plugin;
@@ -112,7 +110,7 @@ public class FishingListener implements Listener {
 
         double streakMultiplier = showAndGetStreakMultiplier(player, session);
 
-        if (tryAutoSellCatch(player, caughtItem, itemStack, type, mobId, data, session, baseXp,
+        if (tryAutoSellCatch(player, caughtItem, itemStack, mobId, data, session, baseXp,
                 baitContext.xpMultiplier, streakMultiplier)) {
             return;
         }
@@ -251,40 +249,77 @@ public class FishingListener implements Listener {
             return new MobCatchResult(false, resultingItemStack);
         }
 
+        if (!plugin.getMobManager().shouldSpawnLiveCatch(mobDef)) {
+            Location rewardLocation = caughtItem.getLocation().clone();
+            caughtItem.remove();
+            plugin.getMobManager().dropMobLoot(player, rewardLocation, mobDef, false, 1.0, true);
+            plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitXpMultiplier);
+            session.recordCatch();
+            maybeSendSeaCreatureMessage(player, data, mobDef);
+            grantWaterCreatureCatchProgress(player);
+            if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
+                FishingUtils.playCatchEffects(player, mobDef.getRarity(), rewardLocation);
+                FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
+            }
+            return new MobCatchResult(true, currentItemStack);
+        }
+
+        Location spawnLocation = caughtItem.getLocation().clone().add(0, -0.5, 0);
         caughtItem.remove();
-        plugin.getMobManager().spawnMob(caughtItem.getLocation().add(0, -0.5, 0), mobId, player, baitXpMultiplier);
+        plugin.getMobManager().spawnMob(spawnLocation, mobId, player, baitXpMultiplier);
 
         Rarity doubleSpawnCap = getDoubleSpawnRarityCap(currentLevel);
         boolean canDoubleSpawn = mobDef.getRarity() != null
                 && mobDef.getRarity().ordinal() <= doubleSpawnCap.ordinal();
         if (canDoubleSpawn && random.nextDouble() * 100 < doubleCatchChance) {
-            Location secondSpawn = caughtItem.getLocation().clone().add(
+            Location secondSpawn = spawnLocation.clone().add(
                     (random.nextDouble() - 0.5) * 1.5,
-                    -0.5,
+                    0,
                     (random.nextDouble() - 0.5) * 1.5
             );
             plugin.getMobManager().spawnMob(secondSpawn, mobId, player, baitXpMultiplier);
             player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.double_catch", "🎣 DOUBLE CATCH!").color(NamedTextColor.GOLD));
         }
 
-        if (plugin.getMobManager().isHostile(mobId)) {
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.you_hooked_a_rare_sea", "You hooked a rare sea creature!").color(NamedTextColor.AQUA));
-        }
+        maybeSendSeaCreatureMessage(player, data, mobDef);
 
-        plugin.getAdvancementManager().grantAdvancement(player, plugin.getAdvancementManager().FISHH_KEY);
-
-        if (!player.hasDiscoveredRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY)) {
-            player.discoverRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY);
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.unlocked_recipe_fish_bucket", "Unlocked Recipe: Fish Bucket!").color(NamedTextColor.GOLD));
-        }
+        grantWaterCreatureCatchProgress(player);
 
         session.recordCatch();
         if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
-            FishingUtils.playCatchEffects(player, mobDef.getRarity(), caughtItem.getLocation());
+            FishingUtils.playCatchEffects(player, mobDef.getRarity(), spawnLocation);
             FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
         }
 
         return new MobCatchResult(true, currentItemStack);
+    }
+
+    private void grantWaterCreatureCatchProgress(Player player) {
+        plugin.getAdvancementManager().grantAdvancement(player, plugin.getAdvancementManager().FISHH_KEY);
+
+        if (!player.hasDiscoveredRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY)) {
+            player.discoverRecipe(plugin.getItemManager().FISH_BUCKET_RECIPE_KEY);
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishinglistener.unlocked_recipe_fish_bucket",
+                    "Unlocked Recipe: Fish Bucket!").color(NamedTextColor.GOLD));
+        }
+    }
+
+    private void maybeSendSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef) {
+        SeaCreatureMessageMode mode = data == null ? SeaCreatureMessageMode.ALL : data.getSeaCreatureMessageMode();
+        if (mode == SeaCreatureMessageMode.NONE) {
+            return;
+        }
+        if (mode == SeaCreatureMessageMode.RARE_ONLY
+                && (mobDef.getRarity() == null || mobDef.getRarity().ordinal() < Rarity.RARE.ordinal())) {
+            return;
+        }
+        String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
+        TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.WHITE;
+        String template = plugin.getLanguageManager().getString(
+                "fishinglistener.you_hooked_sea_creature",
+                "You hooked in a %mob%!");
+        player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.AQUA));
     }
 
     private double showAndGetStreakMultiplier(Player player, FishingSession session) {
@@ -311,7 +346,6 @@ public class FishingListener implements Listener {
     private boolean tryAutoSellCatch(Player player,
                                      Item caughtItem,
                                      ItemStack itemStack,
-                                     Material type,
                                      String mobId,
                                      PlayerData data,
                                      FishingSession session,
@@ -319,13 +353,12 @@ public class FishingListener implements Listener {
                                      double baitXpMultiplier,
                                      double streakMultiplier) {
         if (!plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)
-                || !session.isAutoSellEnabled()
-                || !AUTO_SELL_FISH.contains(type)
+                || session.getAutoSellMode() == AutoSellMode.OFF
                 || mobId != null) {
             return false;
         }
 
-        double sellPrice = plugin.getItemManager().getSellPrice(itemStack);
+        double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), itemStack, session.getAutoSellMode());
         if (sellPrice <= 0) {
             return false;
         }

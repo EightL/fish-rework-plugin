@@ -2,7 +2,9 @@ package com.fishrework.storage;
 
 import com.fishrework.FishRework;
 import com.fishrework.model.ParticleDetailMode;
+import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.PlayerData;
+import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
 
 import java.io.File;
@@ -280,8 +282,14 @@ public class DatabaseManager {
         if (settings.containsKey("dmg_indicator")) {
             data.setDamageIndicatorsEnabled(Boolean.parseBoolean(settings.get("dmg_indicator")));
         }
-        if (settings.containsKey("auto_sell")) {
-            data.getSession().setAutoSellEnabled(Boolean.parseBoolean(settings.get("auto_sell")));
+        if (settings.containsKey("auto_sell_mode")) {
+            AutoSellMode mode = AutoSellMode.fromInput(settings.get("auto_sell_mode"));
+            if (mode != null) {
+                data.getSession().setAutoSellMode(mode);
+            }
+        } else if (settings.containsKey("auto_sell")) {
+            boolean enabled = Boolean.parseBoolean(settings.get("auto_sell"));
+            data.getSession().setAutoSellMode(enabled ? AutoSellMode.OTHER : AutoSellMode.OFF);
         }
         if (settings.containsKey("tips_notifications")) {
             data.setFishingTipsEnabled(Boolean.parseBoolean(settings.get("tips_notifications")));
@@ -295,6 +303,12 @@ public class DatabaseManager {
             ParticleDetailMode mode = ParticleDetailMode.fromInput(settings.get("particle_mode"));
             if (mode != null) {
                 data.setParticleDetailMode(mode);
+            }
+        }
+        if (settings.containsKey("sea_creature_message_mode")) {
+            SeaCreatureMessageMode mode = SeaCreatureMessageMode.fromInput(settings.get("sea_creature_message_mode"));
+            if (mode != null) {
+                data.setSeaCreatureMessageMode(mode);
             }
         }
         loadBalanceInternal(uuid, data);

@@ -155,7 +155,7 @@ fishingcommand.set_player_level: ' - Set player level'
 fishingcommand.set_sea_creature_effect_detail: ' - Set sea creature effect detail'
 fishingcommand.spawn_mob_at_location: ' - Spawn mob at location'
 fishingcommand.synced_your_recipes_and_advancements: Synced your recipes and advancements!
-fishingcommand.toggle_autosell_for_common_fish: ' - Toggle auto-sell for common fish'
+fishingcommand.toggle_autosell_for_common_fish: ' - Cycle auto-sell mode'
 fishingcommand.toggle_damage_indicators: ' - Toggle damage indicators'
 fishingcommand.toggle_fishing_tip_notifications: ' - Toggle fishing tip notifications'
 fishingcommand.total_catches: '  Total Catches: '
@@ -182,6 +182,7 @@ fishingcommand.usage_fishing_give_player_item: 'Usage: /fishing give <player> <i
 fishingcommand.usage_fishing_notifications_onofftoggle: 'Usage: /fishing notifications
   [on|off|toggle]'
 fishingcommand.usage_fishing_particles_highmediumlow: 'Usage: /fishing particles <high|medium|low>'
+fishingcommand.usage_fishing_autosell_mode: 'Usage: /fishing autosell [off|other|all]'
 fishingcommand.usage_fishing_reset_player: 'Usage: /fishing reset <player>'
 fishingcommand.usage_fishing_setchance_mobartifact_chance: 'Usage: /fishing setchance
   <mob|artifact> <chance>'
@@ -248,7 +249,11 @@ fishingcommand.set_player_skill_level: 'Set %player%''s %skill% to level %level%
 fishingcommand.set_plugin_language: ' - Set plugin language'
 fishingcommand.sold_items_for_currency: 'Sold %count% items for %amount% %currency%!'
 fishingcommand.spawned_mob: 'Spawned %mob%'
-fishingcommand.status_autosell_now: 'Auto-sell is now %state%!'
+fishingcommand.status_autosell_now: 'Auto-sell mode is now %state%!'
+fishingcommand.autosell_scope: Auto-sell applies to catches, mob kills, and treasure chests.
+fishingcommand.autosell_mode_off: 'OFF'
+fishingcommand.autosell_mode_other: 'OTHER'
+fishingcommand.autosell_mode_all: 'ALL'
 fishingcommand.status_balance: 'Balance: %balance% %currency%'
 fishingcommand.status_damage_indicators_now: 'Damage indicators are now %state%.'
 fishingcommand.status_notifications_now: 'Fishing tip notifications are now %state%.'
@@ -272,12 +277,27 @@ fishinglistener.double_catch: 🎣 DOUBLE CATCH!
 fishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
 fishinglistener.ud83cudfa3_double_catch: 🎣 DOUBLE CATCH!
 fishinglistener.unlocked_recipe_fish_bucket: 'Unlocked Recipe: Fish Bucket!'
-fishinglistener.you_hooked_a_rare_sea: You hooked a rare sea creature!
+fishinglistener.you_hooked_a_rare_sea: "You hooked in a %mob%!"
+fishinglistener.you_hooked_named_sea_creature: "You hooked in a %mob%!"
+fishinglistener.you_hooked_sea_creature: "You hooked in a %mob%!"
 fishingsettingsgui.automatically_sells_common_fish: Automatically sells common fish.
 fishingsettingsgui.changes_how_intense_sea_creature: Changes how intense sea creature
   effects look.
 fishingsettingsgui.click_to_cycle: Click to cycle.
-fishingsettingsgui.command_fish_autosell: 'Command: /fish autosell'
+fishingsettingsgui.command_fish_autosell: 'Command: /fish autosell [off|other|all]'
+fishingsettingsgui.autosell_mode_off: 'OFF'
+fishingsettingsgui.autosell_mode_other: 'OTHER'
+fishingsettingsgui.autosell_mode_all: 'ALL'
+fishingsettingsgui.autosell_desc_off: Auto-sell disabled.
+fishingsettingsgui.autosell_desc_other: Auto-sells common fish and junk loot.
+fishingsettingsgui.autosell_desc_all: Auto-sells all sellable loot.
+fishingsettingsgui.sea_creature_chat: Sea Creature Chat
+fishingsettingsgui.sea_creature_chat_mode_none: 'NONE'
+fishingsettingsgui.sea_creature_chat_mode_rare_only: 'RARE ONLY'
+fishingsettingsgui.sea_creature_chat_mode_all: 'ALL'
+fishingsettingsgui.sea_creature_chat_desc_none: Hides hooked sea creature chat messages.
+fishingsettingsgui.sea_creature_chat_desc_rare_only: Shows chat messages for rare and better sea creatures.
+fishingsettingsgui.sea_creature_chat_desc_all: Shows chat messages for every hooked sea creature.
 fishingsettingsgui.command_fish_dmgindicator: 'Command: /fish dmgindicator'
 fishingsettingsgui.command_fish_notifications: 'Command: /fish notifications'
 fishingsettingsgui.command_fish_particles_highmediumlow: 'Command: /fish particles
@@ -336,6 +356,7 @@ lavafishinglistener.lava_fishing_cast_into_lava: 🔥 Lava fishing! Cast into la
 lavafishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
 lavafishinglistener.you_hooked_a_creature_from: 🔥 You hooked a creature from the lava!
 lavafishinglistener.you_hooked_a_nether_creature: 🔥 You hooked a nether creature!
+lavafishinglistener.you_hooked_sea_creature: "🔥 You hooked a %mob%!"
 lavafishinglistener.you_pulled_up_some_lava: You pulled up some lava debris...
 leaderboardgui.no_data_yet: No Data Yet
 loremanager.bobber_damage: 'Bobber Damage: '
@@ -1111,7 +1132,7 @@ fishingtip.tip_2: "Use /fish help to list all available fishing commands."
 fishingtip.tip_3: "Visit the wiki for recipes, exact sea creature info, and custom item details: {wiki}"
 fishingtip.tip_4: "Struggling against sea creatures? Craft custom gear and check the wiki for builds: {wiki}"
 fishingtip.tip_5: "Use /fish bag to store catches and keep your inventory clean."
-fishingtip.tip_6: "Use /fish autosell to auto-sell common fish while you grind."
+fishingtip.tip_6: "Use /fish autosell [off|other|all] to auto-sell loot while you grind."
 fishingtip.tip_7: "Use /fish notifications to toggle these tips anytime."
 lavabobbertask.lava_catch_escaped: "The catch escaped!"
 lavabobbertask.lava_reel_now: "⚡ REEL IN NOW! ⚡"

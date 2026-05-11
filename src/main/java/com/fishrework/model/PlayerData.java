@@ -17,6 +17,7 @@ public class PlayerData {
     private boolean fishingTipsEnabled = true;
     private String languageLocale = null;
     private ParticleDetailMode particleDetailMode = ParticleDetailMode.HIGH;
+    private SeaCreatureMessageMode seaCreatureMessageMode = SeaCreatureMessageMode.ALL;
     /** Maximum doubloon balance a player can hold. Configurable in config.yml under economy.max_balance. */
     public static final double DEFAULT_MAX_BALANCE = 10_000_000.0;
     private volatile double balance = 0.0;
@@ -209,6 +210,14 @@ public class PlayerData {
         this.particleDetailMode = mode == null ? ParticleDetailMode.HIGH : mode;
     }
 
+    public SeaCreatureMessageMode getSeaCreatureMessageMode() {
+        return seaCreatureMessageMode;
+    }
+
+    public void setSeaCreatureMessageMode(SeaCreatureMessageMode mode) {
+        this.seaCreatureMessageMode = mode == null ? SeaCreatureMessageMode.ALL : mode;
+    }
+
     // ── Heat System ──
 
     public double getHeat() {
@@ -255,5 +264,6 @@ public class PlayerData {
         lavaBagContents = null;
         fishingTipsEnabled = true;
         particleDetailMode = ParticleDetailMode.HIGH;
+        seaCreatureMessageMode = SeaCreatureMessageMode.ALL;
     }
 }

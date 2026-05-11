@@ -147,7 +147,7 @@ materials:
     material: MAGMA_CREAM
     display_name: "Weird Material"
     rarity: EPIC
-    description: "A strange substance of unknown origin."
+    description: "Used to repair items in the anvil."
 
   guardian_scale:
     material: PRISMARINE_SHARD

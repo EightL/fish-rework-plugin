@@ -13,6 +13,12 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 public class RodCastParticlesListener implements Listener {
 
@@ -22,6 +28,8 @@ public class RodCastParticlesListener implements Listener {
             new Particle.DustOptions(Color.fromRGB(90, 160, 255), 1.1f);
 
     private final FishRework plugin;
+    private final Map<UUID, TrailState> activeTrails = new HashMap<>();
+    private BukkitTask trailTask;
 
     public RodCastParticlesListener(FishRework plugin) {
         this.plugin = plugin;
@@ -37,31 +45,73 @@ public class RodCastParticlesListener implements Listener {
         if (!isTrackedRod(customId)) return;
 
         int maxTicks = getTrailDuration(customId);
-        new BukkitRunnable() {
-            int ticks = 0;
+        activeTrails.put(hook.getUniqueId(), new TrailState(hook, customId, maxTicks));
+        ensureTrailTask();
+    }
 
+    private void ensureTrailTask() {
+        if (trailTask != null) {
+            return;
+        }
+
+        trailTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!hook.isValid() || hook.isDead()) {
-                    cancel();
-                    return;
-                }
-                ticks++;
-                if (ticks > maxTicks) {
-                    cancel();
+                if (activeTrails.isEmpty()) {
+                    stopTrailTask();
                     return;
                 }
 
-                Location loc = hook.getLocation();
-                World world = loc.getWorld();
-                if (world == null) {
-                    cancel();
-                    return;
+                Iterator<Map.Entry<UUID, TrailState>> iterator = activeTrails.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    TrailState state = iterator.next().getValue();
+                    FishHook hook = state.hook;
+                    if (hook == null || hook.isDead() || !hook.isValid()) {
+                        iterator.remove();
+                        continue;
+                    }
+
+                    state.ticks++;
+                    if (state.ticks > state.maxTicks) {
+                        iterator.remove();
+                        continue;
+                    }
+
+                    Location loc = hook.getLocation();
+                    World world = loc.getWorld();
+                    if (world == null) {
+                        iterator.remove();
+                        continue;
+                    }
+
+                    spawnRodCastParticles(world, loc, state.customId, state.ticks);
                 }
 
-                spawnRodCastParticles(world, loc, customId, ticks);
+                if (activeTrails.isEmpty()) {
+                    stopTrailTask();
+                }
             }
         }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    private void stopTrailTask() {
+        if (trailTask != null) {
+            trailTask.cancel();
+            trailTask = null;
+        }
+    }
+
+    private static final class TrailState {
+        private final FishHook hook;
+        private final String customId;
+        private final int maxTicks;
+        private int ticks = 0;
+
+        private TrailState(FishHook hook, String customId, int maxTicks) {
+            this.hook = hook;
+            this.customId = customId;
+            this.maxTicks = maxTicks;
+        }
     }
 
     private ItemStack getRodInHands(Player player) {

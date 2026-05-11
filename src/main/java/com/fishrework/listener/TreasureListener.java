@@ -1,6 +1,9 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import com.fishrework.model.AutoSellMode;
+import com.fishrework.model.PlayerData;
+import com.fishrework.util.AutoSellUtil;
 import com.fishrework.util.FeatureKeys;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,9 +97,25 @@ public class TreasureListener implements Listener {
 
         Player player = (Player) event.getPlayer();
         Inventory inv = event.getInventory();
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        AutoSellMode autoSellMode = data != null ? data.getSession().getAutoSellMode() : AutoSellMode.OFF;
+        boolean autoSellEnabled = data != null
+                && plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)
+                && autoSellMode != AutoSellMode.OFF;
+        double autoSellTotal = 0.0;
+        int autoSellCount = 0;
 
         for (ItemStack item : inv.getContents()) {
             if (item == null || item.getType() == Material.AIR) continue;
+
+            if (autoSellEnabled) {
+                double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), item, autoSellMode);
+                if (sellPrice > 0) {
+                    autoSellTotal += sellPrice * item.getAmount();
+                    autoSellCount += item.getAmount();
+                    continue;
+                }
+            }
 
             // Give to player
             Map<Integer, ItemStack> leftover = player.getInventory().addItem(item);
@@ -105,6 +124,18 @@ public class TreasureListener implements Listener {
             for (ItemStack drop : leftover.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation(), drop);
             }
+        }
+
+        if (autoSellTotal > 0 && data != null) {
+            data.addBalance(autoSellTotal);
+            data.getSession().addDoubloonsEarned(autoSellTotal);
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "fishingcommand.sold_items_for_currency",
+                            "Sold %count% items for %amount% %currency%!",
+                            "count", String.valueOf(autoSellCount),
+                            "amount", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
+                            "currency", plugin.getLanguageManager().getCurrencyName())
+                    .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
         }
         
         // Clear inventory to be safe (though it will be destroyed)

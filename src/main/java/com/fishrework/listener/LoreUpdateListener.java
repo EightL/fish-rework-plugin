@@ -107,7 +107,7 @@ public class LoreUpdateListener implements Listener {
 
     public void refreshPlayerCustomItems(Player player) {
         if (player == null || !player.isOnline()) return;
-        plugin.getLanguageManager().withPlayer(player, () -> refreshPlayerCustomItemsLocalized(player));
+        refreshPlayerCustomItemsLocalized(player);
     }
 
     private void refreshPlayerCustomItemsLocalized(Player player) {

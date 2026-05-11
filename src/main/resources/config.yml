@@ -53,9 +53,9 @@ general:
 # enabled: true names every Fish Rework mob, which also makes Minecraft log named entity deaths.
 # For only legendary+ named mobs, set enabled false and keep special_creatures_enabled true.
 named_entities:
-  enabled: true
+  enabled: false
   special_creatures_enabled: true
-  special_min_rarity: LEGENDARY
+  special_min_rarity: EPIC
 
 # Datapack extraction settings
 datapack:
@@ -486,6 +486,7 @@ mob_balance:
   size_variance_percent: 0.3        # Max random size/weight variance (0.3 = 0-30%)
   hostile_default_health_mult: 2.0  # Default health multiplier for hostile mobs without explicit config
   hostile_default_damage_mult: 1.4  # Default damage multiplier for hostile mobs without explicit config
+  live_catch_min_rarity: UNCOMMON   # Minimum rarity that spawns as a live catch. COMMON pays out immediately.
   initial_aggro_range: 32           # Range (blocks) to find nearest player for initial aggro
   hostile_retarget_range: 24.0      # Range for hostile mobs to find new target when current is lost
   passive_aggro_search_range: 32.0  # Range for passive-aggro mobs to search for players
@@ -496,6 +497,23 @@ mob_balance:
   glow_squid_depth_weight: 5.0      # Spawn weight for glow squid below Y threshold
   night_start_time: 13000           # World time (ticks) when night begins for hostile spawns
   night_end_time: 23000             # World time (ticks) when night ends for hostile spawns
+
+  time_spawn_modifiers:
+    enabled: false                  # If true, applies day/night spawn weight multipliers below
+    day_start_time: 0               # World time (ticks) when day modifiers begin
+    day_end_time: 12000             # World time (ticks) when day modifiers end
+    night_start_time: 13000         # World time (ticks) when night modifiers begin
+    night_end_time: 23000           # World time (ticks) when night modifiers end
+    day:
+      passive_multiplier: 1.0       # Multiplies non-hostile fish/creature weights during day
+      hostile_multiplier: 1.0       # Multiplies hostile sea creature weights during day
+      treasure_multiplier: 1.0      # Multiplies treasure chest weights during day
+      mobs: {}                      # Optional per-mob multipliers, e.g. turtle: 1.5
+    night:
+      passive_multiplier: 1.0       # Multiplies non-hostile fish/creature weights at night
+      hostile_multiplier: 1.0       # Multiplies hostile sea creature weights at night
+      treasure_multiplier: 1.0      # Multiplies treasure chest weights at night
+      mobs: {}                      # Optional per-mob multipliers, e.g. drowned: 1.4
   # Pull-toward-player mechanic (when fishing up a mob)
   pull_max_duration_ticks: 60       # Max duration of pull effect (60 = 3 seconds)
   pull_stop_distance: 2.0           # Stop pulling when mob is within this many blocks
@@ -693,9 +711,9 @@ economy:
     lure_1: 300
     luck_of_the_sea_1: 400
     sea_creature_chance_1: 500
-    trident: 600
-    beginner_trident_1: 700
-    beginner_trident_2: 1000
+    trident: 1200
+    beginner_trident_1: 1500
+    beginner_trident_2: 2400
     quickcharge_repeater_1: 1800
     multishot_volley_1: 2000
 
@@ -703,6 +721,69 @@ economy:
   fish_bag_price: 100
   # Lava bag buy price
   lava_bag_price: 2500
+
+# Configurable Doubloon vendors.
+# Use VANILLA for normal Minecraft materials, FISHREWORK_ITEM for this plugin's item IDs,
+# COMMAND for external plugin/mod items, and INFO for non-purchase tutorial entries.
+vendors:
+  enabled: true
+  list_title: "Doubloon Vendors"
+  menus:
+    example_shop:
+      enabled: true
+      title: "Setting up custom shops"
+      rows: 3
+      icon: PAPER
+      slot: 22
+      permission: ""
+      entries:
+        overview:
+          enabled: true
+          slot: 10
+          type: INFO
+          icon: BOOK
+          name: "Custom Doubloon Shops"
+          lore:
+            - "Add shops in plugins/FishRework/config.yml"
+            - "under the vendors section."
+        structure:
+          enabled: true
+          slot: 11
+          type: INFO
+          icon: WRITABLE_BOOK
+          name: "Basic Structure"
+          lore:
+            - "menus.<shop_id> creates a vendor menu."
+            - "entries.<item_id> creates a clickable entry."
+            - "Set type, slot, amount, price, and reward data."
+        reward_types:
+          enabled: true
+          slot: 12
+          type: INFO
+          icon: CHEST
+          name: "Reward Types"
+          lore:
+            - "VANILLA: give a Minecraft material."
+            - "FISHREWORK_ITEM: give a FishRework item ID."
+            - "COMMAND: run console commands after purchase."
+        external_items:
+          enabled: true
+          slot: 14
+          type: INFO
+          icon: TRIPWIRE_HOOK
+          name: "External Custom Items"
+          lore:
+            - "Use COMMAND rewards for other plugins."
+            - "Example: crate key give %player% fishing 1"
+            - "This lets the other plugin create its own item."
+        placeholders:
+          enabled: true
+          slot: 15
+          type: INFO
+          icon: NAME_TAG
+          name: "Command Placeholders"
+          lore:
+            - "%player%, %uuid%, %amount%, %price%"
 
 # ═══════════════════════════════════════════════════════
 #  Bait Definitions

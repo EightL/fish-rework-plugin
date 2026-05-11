@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Central registry for all level/advancement-gated recipes.
@@ -20,6 +19,8 @@ public class RecipeRegistry {
     private final FishRework plugin;
     private final Map<NamespacedKey, RecipeDefinition> recipes = new LinkedHashMap<>();
     private final Map<String, List<RecipeDefinition>> recipesByResultId = new LinkedHashMap<>();
+    private final Map<Skill, Map<Integer, List<RecipeDefinition>>> recipesByLevel = new EnumMap<>(Skill.class);
+    private final Map<NamespacedKey, List<RecipeDefinition>> recipesByAdvancement = new HashMap<>();
 
     public RecipeRegistry(FishRework plugin) {
         this.plugin = plugin;
@@ -29,6 +30,17 @@ public class RecipeRegistry {
         recipes.put(def.getKey(), def);
         if (def.getResultId() != null && !def.getResultId().isBlank()) {
             recipesByResultId.computeIfAbsent(def.getResultId(), ignored -> new ArrayList<>()).add(def);
+        }
+        if (def.hasLevelRequirement()) {
+            recipesByLevel
+                    .computeIfAbsent(def.getRequiredSkill(), ignored -> new HashMap<>())
+                    .computeIfAbsent(def.getRequiredLevel(), ignored -> new ArrayList<>())
+                    .add(def);
+        }
+        if (def.hasAdvancementRequirement()) {
+            recipesByAdvancement
+                    .computeIfAbsent(def.getRequiredAdvancement(), ignored -> new ArrayList<>())
+                    .add(def);
         }
         plugin.getServer().addRecipe(def.getRecipe());
     }
@@ -109,18 +121,26 @@ public class RecipeRegistry {
      * Returns all recipe keys that require a specific skill level.
      */
     public List<RecipeDefinition> getRecipesForLevel(Skill skill, int level) {
-        return recipes.values().stream()
-                .filter(def -> def.getRequiredSkill() == skill && def.getRequiredLevel() == level)
-                .collect(Collectors.toList());
+        Map<Integer, List<RecipeDefinition>> byLevel = recipesByLevel.get(skill);
+        if (byLevel == null) {
+            return Collections.emptyList();
+        }
+        List<RecipeDefinition> list = byLevel.get(level);
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(list);
     }
 
     /**
      * Returns all recipe keys that require a specific advancement.
      */
     public List<RecipeDefinition> getRecipesForAdvancement(NamespacedKey advancementKey) {
-        return recipes.values().stream()
-                .filter(def -> advancementKey.equals(def.getRequiredAdvancement()))
-                .collect(Collectors.toList());
+        List<RecipeDefinition> list = recipesByAdvancement.get(advancementKey);
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(list);
     }
 
     /**

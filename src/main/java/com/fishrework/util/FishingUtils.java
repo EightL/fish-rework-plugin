@@ -90,6 +90,24 @@ public class FishingUtils {
         }
     }
 
+    /**
+     * Builds a hooked message where the mob name placeholder %mob% is replaced
+     * with the actual mob name colored by rarity, while the surrounding text
+     * uses a consistent textColor.
+     */
+    public static Component buildHookedMessage(String template, String mobName, TextColor rarityColor, TextColor textColor) {
+        String placeholder = "%mob%";
+        int idx = template.indexOf(placeholder);
+        if (idx >= 0) {
+            return Component.text()
+                    .append(Component.text(template.substring(0, idx), textColor))
+                    .append(Component.text(mobName, rarityColor))
+                    .append(Component.text(template.substring(idx + placeholder.length()), textColor))
+                    .build();
+        }
+        return Component.text(template, textColor);
+    }
+
     public static Sound getLavaExtinguishSound() {
         return LAVA_EXTINGUISH_SOUND;
     }

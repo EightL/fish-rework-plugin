@@ -1,8 +1,10 @@
 package com.fishrework.gui;
 
 import com.fishrework.FishRework;
+import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
+import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,6 +35,7 @@ public class FishingSettingsGUI extends BaseGUI {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
         inventory.setItem(4, createLanguageItem());
         inventory.setItem(10, createAutoSellItem());
+        inventory.setItem(11, createSeaCreatureMessageItem());
         inventory.setItem(12, createNotificationsItem());
         inventory.setItem(14, createDamageIndicatorsItem());
         inventory.setItem(16, createParticleModeItem());
@@ -68,6 +71,44 @@ public class FishingSettingsGUI extends BaseGUI {
         return item;
     }
 
+    private ItemStack createSeaCreatureMessageItem() {
+        PlayerData data = plugin.getPlayerData(player.getUniqueId());
+        SeaCreatureMessageMode mode = data == null ? SeaCreatureMessageMode.ALL : data.getSeaCreatureMessageMode();
+
+        ItemStack item = new ItemStack(Material.NAME_TAG);
+        ItemMeta meta = item.getItemMeta();
+        String label = plugin.getLanguageManager().getString(player,
+                "fishingsettingsgui.sea_creature_chat",
+                "Sea Creature Chat");
+        String modeLabel = plugin.getLanguageManager().getString(player,
+                "fishingsettingsgui.sea_creature_chat_mode_" + mode.getId(),
+                mode.name());
+        NamedTextColor color = switch (mode) {
+            case ALL -> NamedTextColor.GREEN;
+            case RARE_ONLY -> NamedTextColor.YELLOW;
+            case NONE -> NamedTextColor.RED;
+        };
+
+        meta.displayName(Component.text(label + ": " + modeLabel)
+                .color(color)
+                .decoration(TextDecoration.ITALIC, false));
+        meta.lore(List.of(
+                plugin.getLanguageManager().getMessage(player,
+                                "fishingsettingsgui.sea_creature_chat_desc_" + mode.getId(),
+                                "Shows hooked sea creature chat messages.")
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false),
+                Component.empty(),
+                plugin.getLanguageManager().getMessage(player,
+                                "fishingsettingsgui.click_to_cycle",
+                                "Click to cycle.")
+                        .color(NamedTextColor.YELLOW)
+                        .decoration(TextDecoration.ITALIC, false)
+        ));
+        item.setItemMeta(meta);
+        return item;
+    }
+
     private void setLocalizedBackButton(int slot) {
         ItemStack back = new ItemStack(Material.BARRIER);
         ItemMeta meta = back.getItemMeta();
@@ -80,22 +121,58 @@ public class FishingSettingsGUI extends BaseGUI {
 
     private ItemStack createAutoSellItem() {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        boolean enabled = data != null && data.getSession().isAutoSellEnabled();
+        AutoSellMode mode = data != null ? data.getSession().getAutoSellMode() : AutoSellMode.OFF;
         boolean featureEnabled = plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED);
-        return createToggleItem(
-                featureEnabled ? Material.GOLD_INGOT : Material.BARRIER,
-                plugin.getLanguageManager().getString(player, "fishingsettingsgui.autosell", "Auto-Sell"),
-                featureEnabled ? enabled : null,
-                featureEnabled
-                        ? List.of(
-                                plugin.getLanguageManager().getMessage(player, "fishingsettingsgui.automatically_sells_common_fish", "Automatically sells common fish.").color(NamedTextColor.GRAY)
-                                        .decoration(TextDecoration.ITALIC, false),
-                                plugin.getLanguageManager().getMessage(player, "fishingsettingsgui.command_fish_autosell", "Command: /fish autosell").color(NamedTextColor.DARK_GRAY)
-                                        .decoration(TextDecoration.ITALIC, false)
-                        )
-                        : List.of(plugin.getLanguageManager().getMessage(player, "fishingsettingsgui.disabled_by_server_admin", "Disabled by server admin.").color(NamedTextColor.RED)
-                                .decoration(TextDecoration.ITALIC, false))
-        );
+        ItemStack item = new ItemStack(featureEnabled ? Material.GOLD_INGOT : Material.BARRIER);
+        ItemMeta meta = item.getItemMeta();
+
+        String label = plugin.getLanguageManager().getString(player, "fishingsettingsgui.autosell", "Auto-Sell");
+        if (!featureEnabled) {
+            meta.displayName(Component.text(label + ": "
+                    + plugin.getLanguageManager().getString(player, "common.disabled", "DISABLED"))
+                .color(NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(plugin.getLanguageManager().getMessage(player,
+                    "fishingsettingsgui.disabled_by_server_admin",
+                    "Disabled by server admin.")
+                .color(NamedTextColor.RED)
+                .decoration(TextDecoration.ITALIC, false)));
+            item.setItemMeta(meta);
+            return item;
+        }
+
+        String modeLabel = plugin.getLanguageManager().getString(player,
+            "fishingsettingsgui.autosell_mode_" + mode.getId(),
+            mode.name());
+        NamedTextColor color = switch (mode) {
+            case ALL -> NamedTextColor.GREEN;
+            case OTHER -> NamedTextColor.YELLOW;
+            case OFF -> NamedTextColor.RED;
+        };
+
+        meta.displayName(Component.text(label + ": " + modeLabel)
+            .color(color)
+            .decoration(TextDecoration.ITALIC, false));
+        meta.lore(List.of(
+            plugin.getLanguageManager().getMessage(player,
+                    "fishingsettingsgui.autosell_desc_" + mode.getId(),
+                    "Auto-sell mode.")
+                .color(NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false),
+            plugin.getLanguageManager().getMessage(player,
+                    "fishingsettingsgui.command_fish_autosell",
+                    "Command: /fish autosell [off|other|all]")
+                .color(NamedTextColor.DARK_GRAY)
+                .decoration(TextDecoration.ITALIC, false),
+            Component.empty(),
+            plugin.getLanguageManager().getMessage(player,
+                    "fishingsettingsgui.click_to_cycle",
+                    "Click to cycle.")
+                .color(NamedTextColor.YELLOW)
+                .decoration(TextDecoration.ITALIC, false)
+        ));
+        item.setItemMeta(meta);
+        return item;
     }
 
     private ItemStack createNotificationsItem() {
@@ -223,9 +300,13 @@ public class FishingSettingsGUI extends BaseGUI {
         }
 
         if (slot == 10 && plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)) {
-            boolean enabled = !data.getSession().isAutoSellEnabled();
-            data.getSession().setAutoSellEnabled(enabled);
-            plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell", String.valueOf(enabled));
+            AutoSellMode next = data.getSession().getAutoSellMode().next();
+            data.getSession().setAutoSellMode(next);
+            plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell_mode", next.getId());
+        } else if (slot == 11) {
+            SeaCreatureMessageMode next = data.getSeaCreatureMessageMode().next();
+            data.setSeaCreatureMessageMode(next);
+            plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "sea_creature_message_mode", next.getId());
         } else if (slot == 12 && plugin.isFeatureEnabled(FeatureKeys.FISHING_TIPS_ENABLED)) {
             boolean enabled = !data.isFishingTipsEnabled();
             data.setFishingTipsEnabled(enabled);

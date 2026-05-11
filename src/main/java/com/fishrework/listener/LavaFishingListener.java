@@ -6,6 +6,7 @@ import com.fishrework.model.FishingSession;
 import com.fishrework.model.LavaBobberState;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
+import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
 import com.fishrework.task.LavaBobberTask;
 import com.fishrework.util.BagUtils;
@@ -375,15 +376,24 @@ public class LavaFishingListener implements Listener {
             return;
         }
 
+        if (!plugin.getMobManager().shouldSpawnLiveCatch(mobDef)) {
+            plugin.getMobManager().dropMobLoot(player, hookLoc, mobDef, false, 1.0, true);
+            plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitContext.xpMultiplier);
+            session.recordCatch();
+            player.sendActionBar(plugin.getLanguageManager().getMessage(
+                    "lavafishinglistener.you_pulled_up_some_lava",
+                    "You pulled up some lava debris...").color(NamedTextColor.GRAY));
+            maybeSendLavaSeaCreatureMessage(player, data, mobDef);
+            if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
+                FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
+                FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
+            }
+            return;
+        }
+
         plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitContext.xpMultiplier);
 
-        if (plugin.getMobManager().isHostile(mobId)) {
-            player.sendMessage(plugin.getLanguageManager().getMessage("lavafishinglistener.you_hooked_a_nether_creature", "🔥 You hooked a nether creature!")
-                    .color(NamedTextColor.RED));
-        } else {
-            player.sendMessage(plugin.getLanguageManager().getMessage("lavafishinglistener.you_hooked_a_creature_from", "🔥 You hooked a creature from the lava!")
-                    .color(NamedTextColor.GOLD));
-        }
+        maybeSendLavaSeaCreatureMessage(player, data, mobDef);
 
         session.recordCatch();
 
@@ -391,6 +401,23 @@ public class LavaFishingListener implements Listener {
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
             FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
         }
+    }
+
+    private void maybeSendLavaSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef) {
+        SeaCreatureMessageMode mode = data == null ? SeaCreatureMessageMode.ALL : data.getSeaCreatureMessageMode();
+        if (mode == SeaCreatureMessageMode.NONE) {
+            return;
+        }
+        if (mode == SeaCreatureMessageMode.RARE_ONLY
+                && (mobDef.getRarity() == null || mobDef.getRarity().ordinal() < Rarity.RARE.ordinal())) {
+            return;
+        }
+        String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
+        TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.GOLD;
+        String template = plugin.getLanguageManager().getString(
+                "lavafishinglistener.you_hooked_sea_creature",
+                "You hooked a %mob%!");
+        player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.GOLD));
     }
 
     private void grantLavaCatchXp(Player player, FishingSession session, double baitXpMultiplier) {

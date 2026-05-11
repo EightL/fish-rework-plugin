@@ -6,6 +6,7 @@ import com.fishrework.gui.FishingSettingsGUI;
 import com.fishrework.gui.RecipeBrowserGUI;
 import com.fishrework.gui.RecipeGuideGUI;
 import com.fishrework.gui.SkillsMenuGUI;
+import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
@@ -50,6 +51,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerCommand(this::handleArtifacts, "artifacts");
         registerCommand(this::handleLeaderboard, "top", "leaderboard");
         registerCommand(this::handleShop, "shop");
+        registerCommand(this::handleVendor, "vendor", "vendors");
         registerCommand(this::handleBag, "bag");
         registerCommand(this::handleRecipe, "recipe");
         registerCommand(this::handleBalance, "balance", "bal");
@@ -178,6 +180,40 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         return true;
     }
 
+    private boolean handleVendor(Player player, String[] args) {
+        if (!requireFeature(player,
+                FeatureKeys.ECONOMY_ENABLED,
+                "fishingcommand.feature_economy_disabled",
+                "The economy system is disabled on this server.")) {
+            return true;
+        }
+        if (!plugin.getConfig().getBoolean("vendors.enabled", false)) {
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.vendors_disabled", "Doubloon vendors are disabled on this server.").color(NamedTextColor.RED));
+            return true;
+        }
+
+        if (args.length < 2) {
+            new com.fishrework.gui.VendorListGUI(plugin, player).open(player);
+            return true;
+        }
+
+        String menuId = args[1].toLowerCase(java.util.Locale.ROOT);
+        String path = "vendors.menus." + menuId;
+        if (!plugin.getConfig().isConfigurationSection(path) || !plugin.getConfig().getBoolean(path + ".enabled", true)) {
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.vendor_not_found", "Vendor not found.").color(NamedTextColor.RED));
+            return true;
+        }
+
+        String permission = plugin.getConfig().getString(path + ".permission", "");
+        if (permission != null && !permission.isBlank() && !player.hasPermission(permission)) {
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.vendor_no_permission", "You do not have permission to open this vendor.").color(NamedTextColor.RED));
+            return true;
+        }
+
+        new com.fishrework.gui.ConfigVendorGUI(plugin, player, menuId).open(player);
+        return true;
+    }
+
     private boolean handleBag(Player player, String[] args) {
         if (!requireFeature(player,
                 FeatureKeys.FISH_BAG_ENABLED,
@@ -248,21 +284,40 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        if (data != null) {
-            boolean newState = !data.getSession().isAutoSellEnabled();
-            data.getSession().setAutoSellEnabled(newState);
-            plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell", String.valueOf(newState));
-            player.sendMessage(plugin.getLanguageManager().getMessage(
-                "fishingcommand.status_autosell_now",
-                "Auto-sell is now %state%!",
-                "state", newState
-                        ? plugin.getLanguageManager().getString("fishingcommand.ui_state_on", "ON")
-                        : plugin.getLanguageManager().getString("fishingcommand.ui_state_off", "OFF")
-            ).color(newState ? NamedTextColor.GREEN : NamedTextColor.RED));
-            if (newState) {
-                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.common_fish_will_be_automatically", "Common fish will be automatically sold for Doubloons.")
-                        .color(NamedTextColor.GRAY));
+        if (data == null) {
+            return true;
+        }
+
+        AutoSellMode current = data.getSession().getAutoSellMode();
+        AutoSellMode newMode = null;
+        if (args.length >= 2) {
+            newMode = AutoSellMode.fromInput(args[1]);
+            if (newMode == null) {
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "fishingcommand.usage_fishing_autosell_mode",
+                        "Usage: /fishing autosell [off|other|all]")
+                        .color(NamedTextColor.RED));
+                return true;
             }
+        } else {
+            newMode = current.next();
+        }
+
+        data.getSession().setAutoSellMode(newMode);
+        plugin.getDatabaseManager().saveSetting(player.getUniqueId(), "auto_sell_mode", newMode.getId());
+        String modeLabel = plugin.getLanguageManager().getString(
+                "fishingcommand.autosell_mode_" + newMode.getId(),
+                newMode.name());
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                "fishingcommand.status_autosell_now",
+                "Auto-sell mode is now %state%!",
+                "state", modeLabel
+        ).color(newMode == AutoSellMode.OFF ? NamedTextColor.RED : NamedTextColor.GREEN));
+        if (newMode != AutoSellMode.OFF) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.autosell_scope",
+                    "Auto-sell applies to catches, mob kills, and treasure chests.")
+                    .color(NamedTextColor.GRAY));
         }
         return true;
     }
@@ -497,6 +552,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_recipe_browser_for", " - Open the recipe browser for a held/custom item").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_shop", "/fishing shop").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_fishing_shop", " - Open the fishing shop").color(NamedTextColor.GRAY)));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_vendor", "/fishing vendor [id]").color(NamedTextColor.YELLOW)
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_doubloon_vendors", " - Open configured Doubloon vendors").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_bag", "/fishing bag").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.open_your_fish_bag", " - Open your fish bag").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_balance", "/fishing balance").color(NamedTextColor.YELLOW)
@@ -631,11 +688,17 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         // Auto-sell status
+        AutoSellMode autoSellMode = session.getAutoSellMode();
+        String autoSellLabel = plugin.getLanguageManager().getString(
+            "fishingcommand.autosell_mode_" + autoSellMode.getId(),
+            autoSellMode.name());
+        NamedTextColor autoSellColor = switch (autoSellMode) {
+            case ALL -> NamedTextColor.GREEN;
+            case OTHER -> NamedTextColor.YELLOW;
+            case OFF -> NamedTextColor.RED;
+        };
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.autosell", "  Auto-Sell: ").color(NamedTextColor.GRAY)
-                .append(Component.text(session.isAutoSellEnabled()
-                                ? plugin.getLanguageManager().getString("fishingcommand.ui_state_on", "ON")
-                                : plugin.getLanguageManager().getString("fishingcommand.ui_state_off", "OFF"))
-                        .color(session.isAutoSellEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED)));
+            .append(Component.text(autoSellLabel).color(autoSellColor)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.separator", "----------------------------").color(NamedTextColor.GOLD));
     }
 
@@ -1277,6 +1340,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("sync");
             completions.add("recipe");
             completions.add("shop");
+            completions.add("vendor");
             completions.add("bag");
             completions.add("balance");
             completions.add("stats");
@@ -1296,12 +1360,16 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("dmgindicator")) {
                 completions.addAll(List.of("on", "off"));
+            } else if (args[0].equalsIgnoreCase("autosell")) {
+                completions.addAll(List.of("off", "other", "all"));
             } else if (args[0].equalsIgnoreCase("notifications")) {
                 completions.addAll(List.of("on", "off", "toggle"));
             } else if (args[0].equalsIgnoreCase("particles")) {
                 completions.addAll(List.of("high", "medium", "low"));
             } else if (args[0].equalsIgnoreCase("recipe")) {
                 completions.addAll(plugin.getRecipeRegistry().getRecipeResultIds());
+            } else if (args[0].equalsIgnoreCase("vendor") || args[0].equalsIgnoreCase("vendors")) {
+                completions.addAll(getEnabledVendorIds(sender));
             } else if (args[0].equalsIgnoreCase("xpmultiplier")) {
                 if (isAdmin) {
                     completions.addAll(List.of("0.5", "1.0", "1.5", "2.0"));
@@ -1350,5 +1418,21 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         return completions;
+    }
+
+    private List<String> getEnabledVendorIds(CommandSender sender) {
+        org.bukkit.configuration.ConfigurationSection menus = plugin.getConfig().getConfigurationSection("vendors.menus");
+        if (menus == null) return List.of();
+
+        List<String> ids = new ArrayList<>();
+        for (String id : menus.getKeys(false)) {
+            String path = "vendors.menus." + id;
+            if (!plugin.getConfig().getBoolean(path + ".enabled", true)) continue;
+            String permission = plugin.getConfig().getString(path + ".permission", "");
+            if (permission != null && !permission.isBlank() && !sender.hasPermission(permission)) continue;
+            ids.add(id);
+        }
+        Collections.sort(ids);
+        return ids;
     }
 }
