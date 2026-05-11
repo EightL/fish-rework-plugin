@@ -255,10 +255,15 @@ public class CombatBonusListener implements Listener {
         if (weapon.getType() != Material.CROSSBOW) return;
         if (!(projectile instanceof AbstractArrow baseArrow)) return;
 
+        int volleyLevel = 0;
         org.bukkit.enchantments.Enchantment shotgunVolley = org.bukkit.Registry.ENCHANTMENT.get(shotgunVolleyEnchantKey);
-        if (shotgunVolley == null) return;
-
-        int volleyLevel = weapon.getEnchantmentLevel(shotgunVolley);
+        if (shotgunVolley != null) {
+            volleyLevel = weapon.getEnchantmentLevel(shotgunVolley);
+        }
+        Integer fallbackVolleyLevel = weaponPdc.get(shotgunVolleyLevelKey, PersistentDataType.INTEGER);
+        if (fallbackVolleyLevel != null) {
+            volleyLevel = Math.max(volleyLevel, fallbackVolleyLevel);
+        }
         if (volleyLevel <= 0) return;
 
         markShotgunProjectile(baseArrow, volleyLevel);

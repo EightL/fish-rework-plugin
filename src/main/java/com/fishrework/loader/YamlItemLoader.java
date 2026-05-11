@@ -25,6 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.Registry;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -34,6 +35,8 @@ import java.util.function.Supplier;
 public class YamlItemLoader {
 
     private final FishRework plugin;
+    private final Set<String> warnedUnknownEnchantments = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<String> warnedCustomEnchantFallbacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public YamlItemLoader(FishRework plugin) {
         this.plugin = plugin;
@@ -384,12 +387,7 @@ public class YamlItemLoader {
         item.setItemMeta(meta);
 
         // Enchantments (added after setItemMeta since addUnsafeEnchantment works on ItemStack)
-        for (Map.Entry<String, Integer> enchEntry : enchantments.entrySet()) {
-            Enchantment ench = resolveEnchantment(enchEntry.getKey());
-            if (ench != null) {
-                item.addUnsafeEnchantment(ench, enchEntry.getValue());
-            }
-        }
+        applyEnchantments(item, enchantments);
 
         // Update lore via LoreManager
         plugin.getLoreManager().updateLore(item);
@@ -704,12 +702,7 @@ public class YamlItemLoader {
         item.setItemMeta(meta);
 
         // Enchantments (after setItemMeta)
-        for (Map.Entry<String, Integer> enchEntry : enchantments.entrySet()) {
-            Enchantment ench = resolveEnchantment(enchEntry.getKey());
-            if (ench != null) {
-                item.addUnsafeEnchantment(ench, enchEntry.getValue());
-            }
-        }
+        applyEnchantments(item, enchantments);
 
         plugin.getLoreManager().updateLore(item);
         return item;
@@ -948,6 +941,54 @@ public class YamlItemLoader {
         };
     }
 
+    private void applyEnchantments(ItemStack item, Map<String, Integer> enchantments) {
+        for (Map.Entry<String, Integer> enchEntry : enchantments.entrySet()) {
+            String enchantName = enchEntry.getKey();
+            int level = enchEntry.getValue();
+            Enchantment enchantment = resolveEnchantment(enchantName);
+            if (enchantment != null) {
+                item.addUnsafeEnchantment(enchantment, level);
+            } else {
+                applyKnownCustomEnchantmentFallback(item, enchantName, level);
+            }
+        }
+    }
+
+    private boolean applyKnownCustomEnchantmentFallback(ItemStack item, String name, int level) {
+        NamespacedKey key = toNamespacedKey(name);
+        if (key == null || !"fishrework".equals(key.getNamespace()) || !"shotgun_volley".equals(key.getKey())) {
+            return false;
+        }
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return true;
+        }
+        meta.getPersistentDataContainer().set(
+                new NamespacedKey(plugin, "shotgun_volley_level"),
+                PersistentDataType.INTEGER,
+                Math.max(1, level));
+        item.setItemMeta(meta);
+
+        if (warnedCustomEnchantFallbacks.add(key.toString())) {
+            plugin.getLogger().warning(
+                    "Custom enchantment " + key + " is not registered; using FishRework's item fallback. "
+                            + "Restart or datapack-reload the server after datapack extraction for the vanilla enchantment entry.");
+        }
+        return true;
+    }
+
+    private boolean isKnownCustomEnchantment(String name) {
+        NamespacedKey key = toNamespacedKey(name);
+        return key != null && "fishrework".equals(key.getNamespace()) && "shotgun_volley".equals(key.getKey());
+    }
+
+    private NamespacedKey toNamespacedKey(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        return NamespacedKey.fromString(name.toLowerCase(Locale.ROOT));
+    }
+
     /** Resolves an enchantment name like "RESPIRATION" to its Bukkit Enchantment. */
     private Enchantment resolveEnchantment(String name) {
         if (name == null || name.isBlank()) {
@@ -981,14 +1022,16 @@ public class YamlItemLoader {
             case "FLAME" -> Enchantment.FLAME;
             case "INFINITY" -> Enchantment.INFINITY;
             default -> {
-                NamespacedKey key = NamespacedKey.fromString(name.toLowerCase(Locale.ROOT));
+                NamespacedKey key = toNamespacedKey(name);
                 if (key != null) {
                     Enchantment custom = Registry.ENCHANTMENT.get(key);
                     if (custom != null) {
                         yield custom;
                     }
                 }
-                plugin.getLogger().warning("Unknown enchantment: " + name);
+                if (!isKnownCustomEnchantment(name) && warnedUnknownEnchantments.add(name.toLowerCase(Locale.ROOT))) {
+                    plugin.getLogger().warning("Unknown enchantment: " + name);
+                }
                 yield null;
             }
         };

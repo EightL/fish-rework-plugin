@@ -5,7 +5,6 @@ import com.fishrework.model.CustomMob;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.model.FishingSession;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -236,8 +235,8 @@ public class MobListener implements Listener {
                 NamedTextColor color = "king_slime".equals(mobId)
                         ? NamedTextColor.DARK_GREEN : NamedTextColor.RED;
                 String displayName = "king_slime".equals(mobId) ? "King Slime" : "Bog Blob";
-                childSlime.customName(Component.text(displayName).color(color));
-                childSlime.setCustomNameVisible(true);
+                CustomMob def = plugin.getMobRegistry().get(mobId);
+                plugin.getMobManager().applyEntityName(childSlime, displayName, color, true, def);
 
                 // Make children aggressive
                 if (childSlime instanceof org.bukkit.entity.Mob mob) {

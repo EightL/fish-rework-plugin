@@ -8,6 +8,7 @@ import com.fishrework.model.CustomMob;
 import com.fishrework.gui.FishBagGUI;
 import com.fishrework.model.MobDrop;
 import com.fishrework.model.PlayerData;
+import com.fishrework.model.Rarity;
 import com.fishrework.model.Skill;
 import com.fishrework.model.SpawnConfig;
 import com.fishrework.registry.MobRegistry;
@@ -112,6 +113,55 @@ public class MobManager {
         return activeFishedMobs;
     }
 
+    public void applyEntityName(LivingEntity entity,
+                                String displayName,
+                                net.kyori.adventure.text.format.NamedTextColor color,
+                                boolean visible,
+                                CustomMob def) {
+        if (!visible || !shouldNameEntity(def) || displayName == null || displayName.isBlank()) {
+            entity.customName(null);
+            entity.setCustomNameVisible(false);
+            return;
+        }
+
+        net.kyori.adventure.text.Component name = net.kyori.adventure.text.Component.text(displayName);
+        if (color != null) {
+            name = name.color(color);
+        }
+        entity.customName(name);
+        entity.setCustomNameVisible(true);
+    }
+
+    public boolean shouldNameEntity(CustomMob def) {
+        if (plugin.getConfig().getBoolean("named_entities.enabled", true)) {
+            return true;
+        }
+        if (!plugin.getConfig().getBoolean("named_entities.special_creatures_enabled", true)) {
+            return false;
+        }
+        return isSpecialNamedCreature(def);
+    }
+
+    private boolean isSpecialNamedCreature(CustomMob def) {
+        if (def == null || def.getRarity() == null) {
+            return false;
+        }
+        Rarity minimum = parseNamedEntitySpecialMinRarity();
+        return def.getRarity().ordinal() >= minimum.ordinal();
+    }
+
+    private Rarity parseNamedEntitySpecialMinRarity() {
+        String configured = plugin.getConfig().getString("named_entities.special_min_rarity", "LEGENDARY");
+        if (configured == null || configured.isBlank()) {
+            return Rarity.LEGENDARY;
+        }
+        try {
+            return Rarity.valueOf(configured.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ignored) {
+            return Rarity.LEGENDARY;
+        }
+    }
+
     // ══════════════════════════════════════════════════════════
     //  Spawning — config-driven via SpawnConfig (from mobs.yml)
     // ══════════════════════════════════════════════════════════
@@ -165,12 +215,7 @@ public class MobManager {
         // Name with optional color
         net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
         String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
-        if (nameColor != null) {
-            entity.customName(net.kyori.adventure.text.Component.text(localizedName).color(nameColor));
-        } else {
-            entity.customName(net.kyori.adventure.text.Component.text(localizedName));
-        }
-        entity.setCustomNameVisible(true);
+        applyEntityName(entity, localizedName, nameColor, true, def);
 
         // Tropical fish randomization
         if (entity instanceof org.bukkit.entity.TropicalFish tropicalFish) {
@@ -236,6 +281,8 @@ public class MobManager {
             plugin.getBroodmotherCosmetics().attach(entity);
         }
 
+        /*
+        // Temporarily disabled: attached block styling for spider variants.
         // Jungle spider: purple terracotta lumpy abdomen
         if ("jungle_spider".equals(mobId) && plugin.getAttachedBlockCosmetics() != null) {
             Material m = Material.PURPLE_WOOL;
@@ -259,6 +306,7 @@ public class MobManager {
                     new com.fishrework.task.AttachedBlockCosmetics.BlockSpec(m,  0.00f, -0.11f, -0.68f, 0.30f)
             ));
         }
+        */
 
         return entity;
     }
@@ -278,8 +326,7 @@ public class MobManager {
         String mountName = mountConfig.getDisplayName() != null
                 ? mountConfig.getDisplayName()
                 : plugin.getLanguageManager().getString("mobmanager.mount", "Mount");
-        mount.customName(net.kyori.adventure.text.Component.text(mountName));
-        mount.setCustomNameVisible(mountConfig.isShowName());
+        applyEntityName(mount, mountName, null, mountConfig.isShowName(), def);
         tagEntity(mount, mobId, catchXpMultiplierPercent);
 
         // Panda gene
@@ -313,12 +360,7 @@ public class MobManager {
 
         net.kyori.adventure.text.format.NamedTextColor riderColor = resolveNameColor(config, def);
         String localizedRiderName = def.getLocalizedDisplayName(plugin.getLanguageManager());
-        if (riderColor != null) {
-            rider.customName(net.kyori.adventure.text.Component.text(localizedRiderName).color(riderColor));
-        } else {
-            rider.customName(net.kyori.adventure.text.Component.text(localizedRiderName));
-        }
-        rider.setCustomNameVisible(true);
+        applyEntityName(rider, localizedRiderName, riderColor, true, def);
         tagEntity(rider, mobId, catchXpMultiplierPercent);
 
         // Rider stats
@@ -390,12 +432,7 @@ public class MobManager {
                 String memberName = member.getDisplayName() != null
                         ? member.getDisplayName()
                         : def.getLocalizedDisplayName(plugin.getLanguageManager());
-                if (nameColor != null) {
-                    entity.customName(net.kyori.adventure.text.Component.text(memberName).color(nameColor));
-                } else {
-                    entity.customName(net.kyori.adventure.text.Component.text(memberName));
-                }
-                entity.setCustomNameVisible(member.isShowName());
+                applyEntityName(entity, memberName, nameColor, member.isShowName(), def);
                 applyGlowColor(entity, config);
 
                 tagEntity(entity, mobId, catchXpMultiplierPercent);
@@ -432,12 +469,7 @@ public class MobManager {
                     String riderName = riderConfig.getDisplayName() != null
                             ? riderConfig.getDisplayName()
                             : def.getLocalizedDisplayName(plugin.getLanguageManager());
-                    if (nameColor != null) {
-                        riderEntity.customName(net.kyori.adventure.text.Component.text(riderName).color(nameColor));
-                    } else {
-                        riderEntity.customName(net.kyori.adventure.text.Component.text(riderName));
-                    }
-                    riderEntity.setCustomNameVisible(true);
+                    applyEntityName(riderEntity, riderName, nameColor, riderConfig.isShowName(), def);
                     applyGlowColor(riderEntity, config);
                     tagEntity(riderEntity, mobId, catchXpMultiplierPercent);
                     if (killAll) tagGroupKillAll(riderEntity);
@@ -467,12 +499,7 @@ public class MobManager {
         // Name with color
         net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
         String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
-        if (nameColor != null) {
-            entity.customName(net.kyori.adventure.text.Component.text(localizedName).color(nameColor));
-        } else {
-            entity.customName(net.kyori.adventure.text.Component.text(localizedName));
-        }
-        entity.setCustomNameVisible(true);
+        applyEntityName(entity, localizedName, nameColor, true, def);
         applyGlowColor(entity, config);
 
         tagEntity(entity, mobId, catchXpMultiplierPercent);

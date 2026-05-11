@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,10 +33,13 @@ public class CollectionGui extends BaseGUI {
 
     private final Player player;
     private int page;
-    private final BiomeGroup filter;
-    private final MobCategory typeFilter;
-    private final SortType sort;
-    private final BiomeDimension biomeDimension;
+    private final Map<String, double[]> collection;
+    private BiomeGroup filter;
+    private MobCategory typeFilter;
+    private SortType sort;
+    private BiomeDimension biomeDimension;
+    private int totalPages = 1;
+    private boolean initialized;
 
     /** Slots used for mob display (3 rows × 7 columns). */
     private static final int[] MOB_SLOTS = {
@@ -43,6 +47,7 @@ public class CollectionGui extends BaseGUI {
             19, 20, 21, 22, 23, 24, 25,
             28, 29, 30, 31, 32, 33, 34
     };
+    private static final int[] CONTROL_SLOTS = {45, 47, 48, 49, 50, 51, 53};
     private static final int MOBS_PER_PAGE = MOB_SLOTS.length; // 21
 
     public CollectionGui(FishRework plugin, Player player) {
@@ -77,6 +82,7 @@ public class CollectionGui extends BaseGUI {
         this.sort = sort;
         this.typeFilter = typeFilter;
         this.biomeDimension = biomeDimension;
+        this.collection = plugin.getDatabaseManager().loadCollection(player.getUniqueId());
         initializeItems();
     }
     
@@ -92,11 +98,7 @@ public class CollectionGui extends BaseGUI {
     }
 
     private void initializeItems() {
-        // Fill background
-        fillBackground(Material.GRAY_STAINED_GLASS_PANE);
-
-        // Load player's collection data
-        Map<String, double[]> collection = plugin.getDatabaseManager().loadCollection(player.getUniqueId());
+        refreshDynamicSlots();
 
         // Get filtered mobs
         List<CustomMob> filteredMobs = getFilteredMobs();
@@ -140,7 +142,7 @@ public class CollectionGui extends BaseGUI {
         double xpMulti = plugin.getLevelManager().getXpMultiplier(level);
         boolean calculatePercents = (filter != null);
 
-        int totalPages = Math.max(1, (int) Math.ceil((double) filteredMobs.size() / MOBS_PER_PAGE));
+        totalPages = Math.max(1, (int) Math.ceil((double) filteredMobs.size() / MOBS_PER_PAGE));
         if (page >= totalPages) page = totalPages - 1;
 
         int startIndex = page * MOBS_PER_PAGE;
@@ -388,6 +390,30 @@ public class CollectionGui extends BaseGUI {
         inventory.setItem(51, sortItem);
         
         // Front page intentionally omits quick biome tiles to reduce clutter.
+        initialized = true;
+    }
+
+    private void refreshDynamicSlots() {
+        if (!initialized) {
+            fillBackground(Material.GRAY_STAINED_GLASS_PANE);
+            return;
+        }
+
+        ItemStack filler = createFiller();
+        for (int slot : MOB_SLOTS) {
+            inventory.setItem(slot, filler);
+        }
+        for (int slot : CONTROL_SLOTS) {
+            inventory.setItem(slot, filler);
+        }
+    }
+
+    private ItemStack createFiller() {
+        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta meta = filler.getItemMeta();
+        meta.displayName(Component.empty());
+        filler.setItemMeta(meta);
+        return filler;
     }
 
     @Override
@@ -398,6 +424,7 @@ public class CollectionGui extends BaseGUI {
         if (slot == 48) {
             // Back
             new SkillDetailGUI(plugin, player, Skill.FISHING).open(player);
+            playClick();
         } else if (slot == 47) {
             // Type Filter cycle: ALL -> PASSIVE -> HOSTILE -> TREASURE -> ALL
             MobCategory nextType = null;
@@ -410,31 +437,40 @@ public class CollectionGui extends BaseGUI {
                     case TREASURE: nextType = null; break;
                 }
             }
-            new CollectionGui(plugin, player, 0, filter, sort, nextType, biomeDimension).open(player);
-            player.playSound(player.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1f, 1f);
+            typeFilter = nextType;
+            page = 0;
+            initializeItems();
+            playClick();
         } else if (slot == 50) {
              // Open Filter Selection (Reset page to 0, keep sort?) - Usually good to reset sort or keep it? Keeping it.
              new BiomeSelectionGui(plugin, player, filter, sort, typeFilter, biomeDimension).open(player);
+             playClick();
         } else if (slot == 45) {
             // Previous page
             if (page > 0) {
-                new CollectionGui(plugin, player, page - 1, filter, sort, typeFilter, biomeDimension).open(player);
+                page--;
+                initializeItems();
+                playClick();
             }
         } else if (slot == 51) {
             // Sort Button
             SortType[] values = SortType.values();
             int nextOrdinal = (sort.ordinal() + 1) % values.length;
-            new CollectionGui(plugin, player, page, filter, values[nextOrdinal], typeFilter, biomeDimension).open(player);
-            // Click sound
-            player.playSound(player.getLocation(), org.bukkit.Sound.UI_BUTTON_CLICK, 1f, 1f);
+            sort = values[nextOrdinal];
+            initializeItems();
+            playClick();
         } else if (slot == 53) {
             // Next page
-            List<CustomMob> filteredMobs = getFilteredMobs();
-            int maxPage = (int) Math.ceil((double) filteredMobs.size() / MOBS_PER_PAGE) - 1;
-            if (page < maxPage) {
-                new CollectionGui(plugin, player, page + 1, filter, sort, typeFilter, biomeDimension).open(player);
+            if (page < totalPages - 1) {
+                page++;
+                initializeItems();
+                playClick();
             }
         }
+    }
+
+    private void playClick() {
+        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
     }
 
     private List<CustomMob> getFilteredMobs() {

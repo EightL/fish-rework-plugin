@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class RecipeBrowserGUI extends BaseGUI {
@@ -31,6 +32,7 @@ public class RecipeBrowserGUI extends BaseGUI {
     private TypeFilter typeFilter;
     private UnlockFilter unlockFilter;
     private Integer levelFilter;
+    private List<RecipeEntryInfo> filteredEntries = List.of();
 
     public RecipeBrowserGUI(FishRework plugin, Player player) {
         this(plugin, player, 0, TypeFilter.ALL, UnlockFilter.ALL, null, null);
@@ -56,22 +58,22 @@ public class RecipeBrowserGUI extends BaseGUI {
     private void initializeItems() {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
 
-        List<String> resultIds = getFilteredResultIds();
-        int totalPages = Math.max(1, (int) Math.ceil((double) resultIds.size() / RECIPE_SLOTS.length));
+        filteredEntries = getFilteredEntries();
+        int totalPages = Math.max(1, (int) Math.ceil((double) filteredEntries.size() / RECIPE_SLOTS.length));
         if (page >= totalPages) {
             page = totalPages - 1;
         }
 
         int startIndex = page * RECIPE_SLOTS.length;
-        int endIndex = Math.min(startIndex + RECIPE_SLOTS.length, resultIds.size());
+        int endIndex = Math.min(startIndex + RECIPE_SLOTS.length, filteredEntries.size());
 
         for (int i = 0; i < RECIPE_SLOTS.length; i++) {
             inventory.setItem(RECIPE_SLOTS[i], null);
         }
 
         for (int i = startIndex; i < endIndex; i++) {
-            String resultId = resultIds.get(i);
-            inventory.setItem(RECIPE_SLOTS[i - startIndex], createRecipeEntry(resultId));
+            RecipeEntryInfo entry = filteredEntries.get(i);
+            inventory.setItem(RECIPE_SLOTS[i - startIndex], createRecipeEntry(entry));
         }
 
         setPaginationControls(45, 53, page, totalPages);
@@ -83,33 +85,36 @@ public class RecipeBrowserGUI extends BaseGUI {
                 plugin.getLanguageManager().getString(
                         "recipebrowsergui.recipes_count",
                         "Recipes: %count%",
-                        "count", String.valueOf(resultIds.size()))));
+                        "count", String.valueOf(filteredEntries.size()))));
         inventory.setItem(50, createLevelFilterItem());
         inventory.setItem(51, createUnlockFilterItem());
     }
 
-    private List<String> getFilteredResultIds() {
-        List<String> resultIds = new ArrayList<>();
+    private List<RecipeEntryInfo> getFilteredEntries() {
+        List<RecipeEntryInfo> entries = new ArrayList<>();
         for (String resultId : plugin.getRecipeRegistry().getRecipeResultIds()) {
             List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForResultId(resultId);
             if (recipes.isEmpty()) {
                 continue;
             }
-            if (matchesFilters(resultId, recipes)) {
-                resultIds.add(resultId);
+            ItemStack item = plugin.getItemManager().getItem(resultId);
+            if (item == null) {
+                continue;
+            }
+            boolean unlocked = recipes.stream()
+                    .anyMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
+            if (matchesFilters(resultId, item, recipes, unlocked)) {
+                String displayName = getDisplayName(item);
+                String sortKey = (unlocked ? "0:" : "1:") + displayName.toLowerCase(Locale.ROOT);
+                entries.add(new RecipeEntryInfo(resultId, recipes, item, displayName, unlocked, sortKey));
             }
         }
 
-        resultIds.sort(Comparator.comparing(this::getSortKey));
-        return resultIds;
+        entries.sort(Comparator.comparing(RecipeEntryInfo::sortKey));
+        return entries;
     }
 
-    private boolean matchesFilters(String resultId, List<RecipeDefinition> recipes) {
-        ItemStack item = plugin.getItemManager().getItem(resultId);
-        if (item == null) {
-            return false;
-        }
-
+    private boolean matchesFilters(String resultId, ItemStack item, List<RecipeDefinition> recipes, boolean unlocked) {
         if (!typeFilter.matches(resultId, item)) {
             return false;
         }
@@ -134,16 +139,16 @@ public class RecipeBrowserGUI extends BaseGUI {
 
         return switch (unlockFilter) {
             case ALL -> true;
-            case UNLOCKED -> recipes.stream().anyMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
-            case LOCKED -> recipes.stream().noneMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
+            case UNLOCKED -> unlocked;
+            case LOCKED -> !unlocked;
         };
     }
 
-    private ItemStack createRecipeEntry(String resultId) {
-        ItemStack item = plugin.getItemManager().getRequiredItem(resultId).clone();
-        List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForResultId(resultId);
+    private ItemStack createRecipeEntry(RecipeEntryInfo entry) {
+        ItemStack item = entry.item().clone();
+        List<RecipeDefinition> recipes = entry.recipes();
         RecipeDefinition primaryRecipe = selectPrimaryRecipe(recipes);
-        boolean unlocked = recipes.stream().anyMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
+        boolean unlocked = entry.unlocked();
         boolean craftableNow = recipes.stream()
                 .anyMatch(recipe -> plugin.getRecipeCraftingManager().getAvailability(player, recipe).canCraftNow());
 
@@ -152,7 +157,7 @@ public class RecipeBrowserGUI extends BaseGUI {
         }
 
         ItemMeta meta = item.getItemMeta();
-        String displayName = getDisplayName(item);
+        String displayName = entry.displayName();
         meta.displayName(Component.text(displayName)
                 .color(craftableNow ? NamedTextColor.GREEN : NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
@@ -242,14 +247,6 @@ public class RecipeBrowserGUI extends BaseGUI {
                         .thenComparing(recipe -> recipe.getKey().getKey()))
                 .findFirst()
                 .orElse(null);
-    }
-
-    private String getSortKey(String resultId) {
-        ItemStack item = plugin.getItemManager().getRequiredItem(resultId);
-        String name = getDisplayName(item);
-        boolean unlocked = plugin.getRecipeRegistry().getRecipesForResultId(resultId).stream()
-                .anyMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
-        return (unlocked ? "0:" : "1:") + name.toLowerCase();
     }
 
     private String getDisplayName(ItemStack item) {
@@ -387,7 +384,7 @@ public class RecipeBrowserGUI extends BaseGUI {
         }
 
         if (slot == 53) {
-            int totalPages = Math.max(1, (int) Math.ceil((double) getFilteredResultIds().size() / RECIPE_SLOTS.length));
+            int totalPages = Math.max(1, (int) Math.ceil((double) filteredEntries.size() / RECIPE_SLOTS.length));
             if (page < totalPages - 1) {
                 page++;
                 initializeItems();
@@ -427,18 +424,21 @@ public class RecipeBrowserGUI extends BaseGUI {
                 continue;
             }
 
-            List<String> resultIds = getFilteredResultIds();
             int resultIndex = page * RECIPE_SLOTS.length + i;
-            if (resultIndex < resultIds.size()) {
-                String resultId = resultIds.get(resultIndex);
-                List<RecipeDefinition> recipes = plugin.getRecipeRegistry().getRecipesForResultId(resultId);
-                boolean unlocked = recipes.stream().anyMatch(recipe -> plugin.getRecipeRegistry().canCraft(player, recipe.getKey()));
-                if (unlocked) {
-                    openRecipe(resultId);
-                }
+            if (resultIndex < filteredEntries.size() && filteredEntries.get(resultIndex).unlocked()) {
+                openRecipe(filteredEntries.get(resultIndex).resultId());
             }
             return;
         }
+    }
+
+    private record RecipeEntryInfo(
+            String resultId,
+            List<RecipeDefinition> recipes,
+            ItemStack item,
+            String displayName,
+            boolean unlocked,
+            String sortKey) {
     }
 
     public enum UnlockFilter {

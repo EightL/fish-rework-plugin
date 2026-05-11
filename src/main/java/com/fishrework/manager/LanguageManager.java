@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -25,7 +26,9 @@ public class LanguageManager {
 
     private final FishRework plugin;
     private final Map<String, FileConfiguration> localeConfigs = new ConcurrentHashMap<>();
+    private final Map<String, String> normalizedLocaleCache = new ConcurrentHashMap<>();
     private final ThreadLocal<Player> playerContext = new ThreadLocal<>();
+    private volatile Set<String> knownLocales = Set.of("en", "es", "zh_CN");
     private String defaultLocale = "en";
     private FileConfiguration langConfig;
     private File langFile;
@@ -36,12 +39,10 @@ public class LanguageManager {
 
     public void initialize() {
         localeConfigs.clear();
-        defaultLocale = normalizeLocale(plugin.getConfig().getString("locale", "en"));
-        if (defaultLocale == null) {
-            defaultLocale = "en";
-        }
+        normalizedLocaleCache.clear();
+        String configuredDefaultLocale = plugin.getConfig().getString("locale", "en");
 
-        Set<String> locales = new LinkedHashSet<>(List.of("en", "es", "zh_CN", defaultLocale));
+        Set<String> locales = new LinkedHashSet<>(List.of("en", "es", "zh_CN"));
         File[] files = plugin.getDataFolder().listFiles((dir, name) -> name.startsWith("lang_") && name.endsWith(".yml"));
         if (files != null) {
             for (File file : files) {
@@ -49,6 +50,14 @@ public class LanguageManager {
                 locales.add(name.substring("lang_".length(), name.length() - ".yml".length()));
             }
         }
+        knownLocales = Set.copyOf(locales);
+
+        defaultLocale = normalizeLocale(configuredDefaultLocale);
+        if (defaultLocale == null) {
+            defaultLocale = "en";
+        }
+        locales.add(defaultLocale);
+        knownLocales = Set.copyOf(locales);
 
         for (String locale : locales) {
             loadLocale(locale);
@@ -242,17 +251,17 @@ public class LanguageManager {
         } else if (requested.equalsIgnoreCase("english")) {
             requested = "en";
         }
-        Set<String> known = new LinkedHashSet<>(List.of("en", "es", "zh_CN"));
-        known.addAll(localeConfigs.keySet());
-        File[] files = plugin.getDataFolder().listFiles((dir, name) -> name.startsWith("lang_") && name.endsWith(".yml"));
-        if (files != null) {
-            for (File file : files) {
-                String name = file.getName();
-                known.add(name.substring("lang_".length(), name.length() - ".yml".length()));
-            }
+        String cacheKey = requested.toLowerCase();
+        String cached = normalizedLocaleCache.get(cacheKey);
+        if (cached != null) {
+            return cached;
         }
+
+        Set<String> known = new HashSet<>(knownLocales);
+        known.addAll(localeConfigs.keySet());
         for (String locale : known) {
             if (locale.equalsIgnoreCase(requested)) {
+                normalizedLocaleCache.put(cacheKey, locale);
                 return locale;
             }
         }
@@ -352,6 +361,10 @@ public class LanguageManager {
         }
 
         localeConfigs.put(locale, config);
+        Set<String> updated = new HashSet<>(knownLocales);
+        updated.add(locale);
+        knownLocales = Set.copyOf(updated);
+        normalizedLocaleCache.clear();
         return config;
     }
 

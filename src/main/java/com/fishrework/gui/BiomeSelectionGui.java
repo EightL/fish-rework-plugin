@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +58,7 @@ public class BiomeSelectionGui extends BaseGUI {
     private final BiomeGroup currentFilter;
     private final CollectionGui.SortType sort;
     private final com.fishrework.model.CustomMob.MobCategory typeFilter;
-    private final CollectionGui.BiomeDimension biomeDimension;
+    private CollectionGui.BiomeDimension biomeDimension;
 
     public BiomeSelectionGui(FishRework plugin, Player player, BiomeGroup currentFilter) {
         this(plugin, player, currentFilter, CollectionGui.SortType.XP_ASC, null, CollectionGui.BiomeDimension.OVERWORLD);
@@ -210,14 +211,17 @@ public class BiomeSelectionGui extends BaseGUI {
         if (slot == 49) {
             // Back to Encyclopedia with current filter (or just ALL if they cancel? typically back means cancel action, so return to previous state)
             new CollectionGui(plugin, player, 0, currentFilter, sort, typeFilter, biomeDimension).open(player);
+            playClick();
         } else if (slot == 4) {
             // ALL filter
             new CollectionGui(plugin, player, 0, null, sort, typeFilter, biomeDimension).open(player);
+            playClick();
         } else if (slot == 5) {
-            CollectionGui.BiomeDimension next = biomeDimension == CollectionGui.BiomeDimension.OVERWORLD
+            biomeDimension = biomeDimension == CollectionGui.BiomeDimension.OVERWORLD
                     ? CollectionGui.BiomeDimension.NETHER
                     : CollectionGui.BiomeDimension.OVERWORLD;
-            new BiomeSelectionGui(plugin, player, currentFilter, sort, typeFilter, next).open(player);
+            initializeItems();
+            playClick();
         } else {
             // Check if slot corresponds to a biome
              List<BiomeGroup> groups = getVisibleGroups();
@@ -226,8 +230,13 @@ public class BiomeSelectionGui extends BaseGUI {
              if (index >= 0 && index < groups.size()) {
                  BiomeGroup selected = groups.get(index);
                  new CollectionGui(plugin, player, 0, selected, sort, typeFilter, biomeDimension).open(player);
+                 playClick();
              }
         }
+    }
+
+    private void playClick() {
+        player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
     }
 
     private List<BiomeGroup> getVisibleGroups() {

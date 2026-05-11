@@ -49,6 +49,14 @@ bonuses:
 general:
   xp_multiplier: 1.2   # Multiplies all normal earned XP (40% lower than 2.0 baseline)
 
+# Entity names on spawned fishing mobs.
+# enabled: true names every Fish Rework mob, which also makes Minecraft log named entity deaths.
+# For only legendary+ named mobs, set enabled false and keep special_creatures_enabled true.
+named_entities:
+  enabled: true
+  special_creatures_enabled: true
+  special_min_rarity: LEGENDARY
+
 # Datapack extraction settings
 datapack:
   name: "fishrework_fishing"
