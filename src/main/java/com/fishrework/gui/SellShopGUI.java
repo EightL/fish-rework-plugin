@@ -122,7 +122,7 @@ public class SellShopGUI extends BaseGUI {
 
                 try {
                     Material mat = Material.valueOf(key.toUpperCase());
-                    if (addedVanillaMaterials.add(mat)) {
+                    if (addedVanillaMaterials.add(mat) && !isVendorItemDisabled(key)) {
                         String name = formatName(key);
                         sellEntries.add(new SellEntry(name, mat, null, price, EntryCategory.VANILLA));
                     }
@@ -151,7 +151,7 @@ public class SellShopGUI extends BaseGUI {
                 }
 
                 double price = customSection.getDouble(key);
-                if (price > 0) {
+                if (price > 0 && !isVendorItemDisabled(key)) {
                     // Try to get the item from ItemManager for display
                     ItemStack sample = plugin.getItemManager().getItem(key);
                     Material mat = sample != null ? sample.getType() : Material.PAPER;
@@ -815,6 +815,12 @@ public class SellShopGUI extends BaseGUI {
                 || material == Material.SHIELD
                 || material == Material.MACE
                 || material == Material.FISHING_ROD;
+    }
+
+    private boolean isVendorItemDisabled(String key) {
+        java.util.List<String> disabled = plugin.getConfig().getStringList("economy.disabled_vendor_items");
+        if (disabled.isEmpty()) return false;
+        return disabled.stream().anyMatch(d -> d.equalsIgnoreCase(key));
     }
 
     private String getCustomId(ItemStack item) {

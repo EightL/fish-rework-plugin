@@ -267,6 +267,14 @@ public class FishRework extends JavaPlugin {
         loadFishingTipsFromLang();
         startFishingTipsTask();
 
+        // ── 7c. Periodic auto-save: flush all online player data to DB ──
+        long autoSaveInterval = Math.max(60L, getConfig().getLong("auto_save_interval_seconds", 300L)) * 20L;
+        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+            for (PlayerData data : playerDataMap.values()) {
+                databaseManager.savePlayer(data);
+            }
+        }, autoSaveInterval, autoSaveInterval);
+
         // ── 8. Load online players (reload safety) ──
         for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
             getServer().getScheduler().runTaskAsynchronously(this, () -> {

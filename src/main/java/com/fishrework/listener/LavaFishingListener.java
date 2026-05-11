@@ -255,9 +255,8 @@ public class LavaFishingListener implements Listener {
 
         handleLavaCatchOutcome(player, hookLoc, data, session, baitContext, mobId);
 
-        grantLavaCatchXp(player, session, baitContext.xpMultiplier);
+        grantLavaCatchXp(player, baitContext.xpMultiplier);
         consumeLavaRodDurability(player);
-        showLavaCatchStreak(player, session);
         playLavaCatchFeedback(player, hookLoc);
         applyLavaHeat(player, mobId);
     }
@@ -420,12 +419,11 @@ public class LavaFishingListener implements Listener {
         player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.GOLD));
     }
 
-    private void grantLavaCatchXp(Player player, FishingSession session, double baitXpMultiplier) {
+    private void grantLavaCatchXp(Player player, double baitXpMultiplier) {
         double baseXp = plugin.getConfig().getDouble("fishing.xp.lava_catch", 30.0);
         if (baitXpMultiplier > 0) {
             baseXp *= (1.0 + baitXpMultiplier / 100.0);
         }
-        baseXp *= session.getStreakMultiplier();
         plugin.getSkillManager().grantXp(player, Skill.FISHING, baseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
     }
 
@@ -435,17 +433,6 @@ public class LavaFishingListener implements Listener {
             org.bukkit.inventory.meta.Damageable damageable = (org.bukkit.inventory.meta.Damageable) rod.getItemMeta();
             damageable.setDamage(damageable.getDamage() + 1);
             rod.setItemMeta(damageable);
-        }
-    }
-
-    private void showLavaCatchStreak(Player player, FishingSession session) {
-        int streakTier = session.getStreakTier();
-        if (streakTier > 0) {
-            String streakText = "⭐".repeat(Math.min(streakTier, 5));
-            double bonus = (session.getStreakMultiplier() - 1.0) * 100;
-            player.sendActionBar(Component.text(streakText + " Streak x" + session.getCurrentStreak()
-                    + " (+" + com.fishrework.util.FormatUtil.format("%.0f", bonus) + "% Bonus) " + streakText)
-                    .color(NamedTextColor.GOLD));
         }
     }
 

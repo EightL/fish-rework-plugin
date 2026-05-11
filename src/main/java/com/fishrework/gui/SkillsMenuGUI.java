@@ -3,6 +3,7 @@ package com.fishrework.gui;
 import com.fishrework.FishRework;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
+import com.fishrework.storage.DatabaseManager.LeaderboardCategory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -147,7 +148,7 @@ public class SkillsMenuGUI extends BaseGUI {
             if (event.isLeftClick()) {
                 new SkillDetailGUI(plugin, player, Skill.FISHING).open(player);
             } else if (event.isRightClick()) {
-                new LeaderboardGUI(plugin, player, Skill.FISHING).open(player);
+                new LeaderboardGUI(plugin, player, LeaderboardCategory.BALANCE).open(player);
             }
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (mat == Material.BARRIER) {

@@ -117,6 +117,13 @@ public class DatabaseManager {
                     "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "balance DOUBLE NOT NULL DEFAULT 0);";
             stmt.execute(economySql);
+            // Migrate existing tables that lack the new columns
+            for (String col : new String[]{
+                    "ALTER TABLE player_economy ADD COLUMN lifetime_doubloons BIGINT NOT NULL DEFAULT 0",
+                    "ALTER TABLE player_economy ADD COLUMN total_fish_caught BIGINT NOT NULL DEFAULT 0",
+                    "ALTER TABLE player_economy ADD COLUMN total_treasures_caught BIGINT NOT NULL DEFAULT 0"}) {
+                try { stmt.execute(col); } catch (SQLException ignored) {}
+            }
 
             String fishBagSql = "CREATE TABLE IF NOT EXISTS " + TABLE_PLAYER_FISH_BAG + " (" +
                     "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
@@ -394,7 +401,8 @@ public class DatabaseManager {
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save player data for " + data.getUuid(), e);
         }
-        saveBalanceInternal(data.getUuid(), data.getBalance());
+        saveEconomyInternal(data.getUuid(), data.getBalance(),
+                data.getLifetimeDoubloons(), data.getTotalFishCaught(), data.getTotalTreasuresCaught());
         saveFishBagInternal(data.getUuid(), data.getFishBagContents());
         saveLavaBagInternal(data.getUuid(), data.getLavaBagContents());
         } // end synchronized
@@ -408,28 +416,47 @@ public class DatabaseManager {
     }
 
     private void saveBalanceInternal(UUID uuid, double balance) {
+        saveEconomyInternal(uuid, balance, -1, -1, -1);
+    }
+
+    private void saveEconomyInternal(UUID uuid, double balance, long lifetimeDoubloons,
+                                      long totalFish, long totalTreasures) {
         if (!isConnected()) return;
-        String sql = "INSERT OR REPLACE INTO player_economy (uuid, balance) VALUES (?, ?)";
+        String sql = "INSERT INTO player_economy (uuid, balance, lifetime_doubloons, total_fish_caught, total_treasures_caught) " +
+                     "VALUES (?, ?, ?, ?, ?) ON CONFLICT(uuid) DO UPDATE SET " +
+                     "balance = excluded.balance, " +
+                     "lifetime_doubloons = CASE WHEN ? >= 0 THEN excluded.lifetime_doubloons ELSE lifetime_doubloons END, " +
+                     "total_fish_caught = CASE WHEN ? >= 0 THEN excluded.total_fish_caught ELSE total_fish_caught END, " +
+                     "total_treasures_caught = CASE WHEN ? >= 0 THEN excluded.total_treasures_caught ELSE total_treasures_caught END;";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             ps.setDouble(2, balance);
+            ps.setLong(3, Math.max(0, lifetimeDoubloons));
+            ps.setLong(4, Math.max(0, totalFish));
+            ps.setLong(5, Math.max(0, totalTreasures));
+            ps.setLong(6, lifetimeDoubloons);
+            ps.setLong(7, totalFish);
+            ps.setLong(8, totalTreasures);
             ps.executeUpdate();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save balance for " + uuid, e);
+            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save economy for " + uuid, e);
         }
     }
 
     private void loadBalanceInternal(UUID uuid, PlayerData data) {
         if (!isConnected()) return;
-        String sql = "SELECT balance FROM player_economy WHERE uuid = ?";
+        String sql = "SELECT balance, lifetime_doubloons, total_fish_caught, total_treasures_caught FROM player_economy WHERE uuid = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 data.setBalance(rs.getDouble("balance"));
+                data.setLifetimeDoubloons(rs.getLong("lifetime_doubloons"));
+                data.setTotalFishCaught(rs.getLong("total_fish_caught"));
+                data.setTotalTreasuresCaught(rs.getLong("total_treasures_caught"));
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load balance for " + uuid, e);
+            plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load economy for " + uuid, e);
         }
     }
 
@@ -597,5 +624,65 @@ public class DatabaseManager {
             plugin.getLogger().log(Level.SEVERE, "Failed to deserialize fish bag contents (I/O error)", e);
             return null;
         }
+    }
+
+    public enum LeaderboardCategory { BALANCE, FISHING_XP, TOTAL_FISH, TOTAL_TREASURES }
+
+    /** Returns top players as UUID -> score (long, truncated for balance).
+     *  @param liveCache optional map of online player UUIDs -> PlayerData to overlay live in-memory values */
+    public java.util.LinkedHashMap<UUID, Long> getTopPlayersBy(
+            LeaderboardCategory category, int limit,
+            java.util.Map<UUID, PlayerData> liveCache) {
+        synchronized (dbLock) {
+        // 1. Fetch DB results into a mutable score map
+        java.util.Map<UUID, Long> scores = new java.util.HashMap<>();
+        if (isConnected()) {
+            String sql;
+            switch (category) {
+                case BALANCE:      sql = "SELECT uuid, CAST(balance AS BIGINT) AS score FROM player_economy ORDER BY balance DESC LIMIT ?"; break;
+                case TOTAL_FISH:   sql = "SELECT uuid, total_fish_caught AS score FROM player_economy ORDER BY total_fish_caught DESC LIMIT ?"; break;
+                case TOTAL_TREASURES: sql = "SELECT uuid, total_treasures_caught AS score FROM player_economy ORDER BY total_treasures_caught DESC LIMIT ?"; break;
+                case FISHING_XP:   sql = "SELECT uuid, CAST(xp AS BIGINT) AS score FROM player_skills WHERE skill = 'FISHING' ORDER BY xp DESC LIMIT ?"; break;
+                default: return new java.util.LinkedHashMap<>();
+            }
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, limit * 2); // fetch extra so merging doesn't lose top entries
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) scores.put(UUID.fromString(rs.getString("uuid")), rs.getLong("score"));
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Leaderboard query failed for " + category, e);
+            }
+        }
+
+        // 2. Overwrite with live in-memory values for online players
+        if (liveCache != null) {
+            for (java.util.Map.Entry<UUID, PlayerData> entry : liveCache.entrySet()) {
+                PlayerData pd = entry.getValue();
+                if (pd == null) continue;
+                long live = switch (category) {
+                    case BALANCE       -> (long) pd.getBalance();
+                    case FISHING_XP    -> (long) pd.getXp(Skill.FISHING);
+                    case TOTAL_FISH    -> pd.getTotalFishCaught();
+                    case TOTAL_TREASURES -> pd.getTotalTreasuresCaught();
+                };
+                scores.put(entry.getKey(), live);
+            }
+        }
+
+        // 3. Sort merged map and return top N
+        return scores.entrySet().stream()
+                .sorted(java.util.Map.Entry.<UUID, Long>comparingByValue().reversed())
+                .limit(limit)
+                .collect(java.util.stream.Collectors.toMap(
+                        java.util.Map.Entry::getKey,
+                        java.util.Map.Entry::getValue,
+                        (a, b) -> a,
+                        java.util.LinkedHashMap::new));
+        } // end synchronized
+    }
+
+    /** Convenience overload without live cache (DB-only). */
+    public java.util.LinkedHashMap<UUID, Long> getTopPlayersBy(LeaderboardCategory category, int limit) {
+        return getTopPlayersBy(category, limit, null);
     }
 }

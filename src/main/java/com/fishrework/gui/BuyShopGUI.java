@@ -76,8 +76,8 @@ public class BuyShopGUI extends BaseGUI {
         int fishingLevel = data != null ? data.getLevel(Skill.FISHING) : 0;
 
         // Bring back only utility baits requested by design.
-        addRegularBaitIfConfigured("treasure_bait");
-        addRegularBaitIfConfigured("xp_bait");
+        if (!isShopItemDisabled("treasure_bait")) addRegularBaitIfConfigured("treasure_bait");
+        if (!isShopItemDisabled("xp_bait")) addRegularBaitIfConfigured("xp_bait");
 
         // Only biome baits are sold in this shop now.
         double defaultBiomeBaitPrice = plugin.getConfig().getDouble(
@@ -112,18 +112,20 @@ public class BuyShopGUI extends BaseGUI {
                 definition.biomeGroups()
             );
 
-            buyEntries.add(new BuyEntry(
-                "biome_bait:" + definition.key(),
-                localizedName,
-                display,
-                price,
-                true
-            ));
+            if (!isShopItemDisabled(definition.key())) {
+                buyEntries.add(new BuyEntry(
+                    "biome_bait:" + definition.key(),
+                    localizedName,
+                    display,
+                    price,
+                    true
+                ));
+            }
         }
 
         // Special utility bags
         double fishBagPrice = plugin.getConfig().getDouble("economy.fish_bag_price", 0);
-        if (fishBagPrice > 0) {
+        if (fishBagPrice > 0 && !isShopItemDisabled("fish_bag")) {
             ItemStack fishBag = plugin.getItemManager().getItem("fish_bag");
             if (fishBag != null) {
                 buyEntries.add(new BuyEntry(
@@ -137,7 +139,7 @@ public class BuyShopGUI extends BaseGUI {
         }
 
         double lavaBagPrice = plugin.getConfig().getDouble("economy.lava_bag_price", 0);
-        if (lavaBagPrice > 0 && fishingLevel >= MAGMA_SATCHEL_REQUIRED_LEVEL) {
+        if (lavaBagPrice > 0 && !isShopItemDisabled("lava_bag") && fishingLevel >= MAGMA_SATCHEL_REQUIRED_LEVEL) {
             ItemStack lavaBag = plugin.getItemManager().getItem("lava_bag");
             if (lavaBag != null) {
                 buyEntries.add(new BuyEntry(
@@ -155,7 +157,7 @@ public class BuyShopGUI extends BaseGUI {
 
     private void addShopEquipmentEntries() {
         double lureBookPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.lure_1", 300.0);
-        if (lureBookPrice > 0) {
+        if (lureBookPrice > 0 && !isShopItemDisabled("lure_1")) {
             ItemStack lureBook = createShopEnchantedBook(Enchantment.LURE, 1);
             if (lureBook != null) {
                 buyEntries.add(new BuyEntry(SHOP_BOOK_LURE_1_ID, "Lure I Book", lureBook, lureBookPrice, true));
@@ -163,7 +165,7 @@ public class BuyShopGUI extends BaseGUI {
         }
 
         double luckBookPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.luck_of_the_sea_1", 400.0);
-        if (luckBookPrice > 0) {
+        if (luckBookPrice > 0 && !isShopItemDisabled("luck_of_the_sea_1")) {
             ItemStack luckBook = createShopEnchantedBook(Enchantment.LUCK_OF_THE_SEA, 1);
             if (luckBook != null) {
                 buyEntries.add(new BuyEntry(SHOP_BOOK_LUCK_1_ID, "Luck of the Sea I Book", luckBook, luckBookPrice, true));
@@ -171,7 +173,7 @@ public class BuyShopGUI extends BaseGUI {
         }
 
         double seaCreatureBookPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.sea_creature_chance_1", 500.0);
-        if (seaCreatureBookPrice > 0) {
+        if (seaCreatureBookPrice > 0 && !isShopItemDisabled("sea_creature_chance_1")) {
             Enchantment seaCreature = org.bukkit.Registry.ENCHANTMENT.get(new NamespacedKey("fishrework", "sea_creature_chance"));
             ItemStack seaCreatureBook = createShopEnchantedBook(seaCreature, 1);
             if (seaCreatureBook != null) {
@@ -180,28 +182,28 @@ public class BuyShopGUI extends BaseGUI {
         }
 
         double tridentPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.trident", 600.0);
-        if (tridentPrice > 0) {
+        if (tridentPrice > 0 && !isShopItemDisabled("trident")) {
             ItemStack trident = new ItemStack(Material.TRIDENT);
             buyEntries.add(new BuyEntry(SHOP_TRIDENT_BASE_ID, "Trident", trident, tridentPrice, true));
         }
 
         double beginnerTrident1Price = plugin.getConfig().getDouble("economy.fishing_shop_prices.beginner_trident_1", 700.0);
-        if (beginnerTrident1Price > 0) {
+        if (beginnerTrident1Price > 0 && !isShopItemDisabled("beginner_trident_1")) {
             addShopCustomItemIfConfigured(SHOP_TRIDENT_BEGINNER_1_ID, "Novice Trident", beginnerTrident1Price);
         }
 
         double beginnerTrident2Price = plugin.getConfig().getDouble("economy.fishing_shop_prices.beginner_trident_2", 1000.0);
-        if (beginnerTrident2Price > 0) {
+        if (beginnerTrident2Price > 0 && !isShopItemDisabled("beginner_trident_2")) {
             addShopCustomItemIfConfigured(SHOP_TRIDENT_BEGINNER_2_ID, "Adept Trident", beginnerTrident2Price);
         }
 
         double quickCrossbowPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.quickcharge_repeater_1", 2000.0);
-        if (quickCrossbowPrice > 0) {
+        if (quickCrossbowPrice > 0 && !isShopItemDisabled("quickcharge_repeater_1")) {
             addShopCustomItemIfConfigured(SHOP_QUICK_CROSSBOW_T1_ID, "Quickcharge Repeater I", quickCrossbowPrice);
         }
 
         double multishotCrossbowPrice = plugin.getConfig().getDouble("economy.fishing_shop_prices.multishot_volley_1", 1800.0);
-        if (multishotCrossbowPrice > 0) {
+        if (multishotCrossbowPrice > 0 && !isShopItemDisabled("multishot_volley_1")) {
             addShopCustomItemIfConfigured(SHOP_MULTI_CROSSBOW_T1_ID, "Multishot Volley I", multishotCrossbowPrice);
         }
     }
@@ -423,6 +425,14 @@ public class BuyShopGUI extends BaseGUI {
                 .color(NamedTextColor.GREEN));
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         initializeItems(); // Refresh balance display
+    }
+
+    private boolean isShopItemDisabled(String entryId) {
+        java.util.List<String> disabled = plugin.getConfig().getStringList("economy.disabled_shop_items");
+        if (disabled.isEmpty()) return false;
+        // Strip biome_bait: prefix for config matching
+        String checkId = entryId.startsWith("biome_bait:") ? entryId.substring("biome_bait:".length()) : entryId;
+        return disabled.stream().anyMatch(d -> d.equalsIgnoreCase(checkId));
     }
 
     private boolean canBulkBuy(String entryId) {

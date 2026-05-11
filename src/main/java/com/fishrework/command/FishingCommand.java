@@ -10,6 +10,7 @@ import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
+import com.fishrework.storage.DatabaseManager.LeaderboardCategory;
 import com.fishrework.util.FeatureKeys;
 import com.fishrework.util.FishingChanceSnapshotHelper;
 import net.kyori.adventure.text.Component;
@@ -165,7 +166,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 "The leaderboard is disabled on this server.")) {
             return true;
         }
-        new LeaderboardGUI(plugin, player, Skill.FISHING).open(player);
+        new LeaderboardGUI(plugin, player, LeaderboardCategory.BALANCE).open(player);
         return true;
     }
 
@@ -678,14 +679,6 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 .append(Component.text(String.valueOf(session.getLevelsGained())).color(NamedTextColor.YELLOW)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.new_discoveries", "  New Discoveries: ").color(NamedTextColor.GRAY)
                 .append(Component.text(String.valueOf(session.getNewDiscoveries())).color(NamedTextColor.LIGHT_PURPLE)));
-
-        // Streak info
-        if (session.getBestStreak() > 0) {
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.current_streak", "  Current Streak: ").color(NamedTextColor.GRAY)
-                    .append(Component.text("x" + session.getCurrentStreak()).color(NamedTextColor.GOLD)));
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.best_streak", "  Best Streak: ").color(NamedTextColor.GRAY)
-                    .append(Component.text("x" + session.getBestStreak()).color(NamedTextColor.GOLD)));
-        }
 
         // Auto-sell status
         AutoSellMode autoSellMode = session.getAutoSellMode();

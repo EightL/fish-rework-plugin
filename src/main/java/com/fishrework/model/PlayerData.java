@@ -21,6 +21,9 @@ public class PlayerData {
     /** Maximum doubloon balance a player can hold. Configurable in config.yml under economy.max_balance. */
     public static final double DEFAULT_MAX_BALANCE = 10_000_000.0;
     private volatile double balance = 0.0;
+    private volatile long lifetimeDoubloons = 0L;
+    private volatile long totalFishCaught = 0L;
+    private volatile long totalTreasuresCaught = 0L;
     private double heat = 0.0;
     private long lastHeatDecayTime = 0;
     private ItemStack[] fishBagContents = null; // null = empty bag, 45 slots (rows 0-4)
@@ -144,7 +147,19 @@ public class PlayerData {
     public void addBalance(double amount) {
         if (amount < 0) return; // Use deductBalance for deductions
         this.balance = Math.min(this.balance + amount, DEFAULT_MAX_BALANCE);
+        this.lifetimeDoubloons += (long) amount;
     }
+
+    public long getLifetimeDoubloons() { return lifetimeDoubloons; }
+    public void setLifetimeDoubloons(long amount) { this.lifetimeDoubloons = Math.max(0, amount); }
+
+    public long getTotalFishCaught() { return totalFishCaught; }
+    public void setTotalFishCaught(long count) { this.totalFishCaught = Math.max(0, count); }
+    public void incrementTotalFishCaught() { this.totalFishCaught++; }
+
+    public long getTotalTreasuresCaught() { return totalTreasuresCaught; }
+    public void setTotalTreasuresCaught(long count) { this.totalTreasuresCaught = Math.max(0, count); }
+    public void incrementTotalTreasuresCaught() { this.totalTreasuresCaught++; }
 
     /**
      * Deducts an amount from the balance.
@@ -258,6 +273,9 @@ public class PlayerData {
         caughtMobs.clear();
         collectedArtifacts.clear();
         balance = 0.0;
+        lifetimeDoubloons = 0L;
+        totalFishCaught = 0L;
+        totalTreasuresCaught = 0L;
         heat = 0.0;
         lastHeatDecayTime = 0;
         fishBagContents = null;

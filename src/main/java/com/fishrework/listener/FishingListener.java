@@ -108,10 +108,8 @@ public class FishingListener implements Listener {
             session.recordCatch();
         }
 
-        double streakMultiplier = showAndGetStreakMultiplier(player, session);
-
         if (tryAutoSellCatch(player, caughtItem, itemStack, mobId, data, session, baseXp,
-                baitContext.xpMultiplier, streakMultiplier)) {
+                baitContext.xpMultiplier)) {
             return;
         }
 
@@ -119,7 +117,7 @@ public class FishingListener implements Listener {
 
         tryDoubleCatchDrop(player, itemStack, doubleCatchChance);
 
-        double finalBaseXp = applyXpMultipliers(baseXp, baitContext.xpMultiplier, streakMultiplier);
+        double finalBaseXp = applyXpMultipliers(baseXp, baitContext.xpMultiplier);
         plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
     }
 
@@ -322,27 +320,6 @@ public class FishingListener implements Listener {
         player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.AQUA));
     }
 
-    private double showAndGetStreakMultiplier(Player player, FishingSession session) {
-        if (!plugin.isFeatureEnabled(FeatureKeys.CATCH_STREAK_ENABLED)) {
-            return 1.0;
-        }
-
-        int streakTier = session.getStreakTier();
-        double streakMultiplier = session.getStreakMultiplier();
-        if (streakTier > 0) {
-            String streakText = "\u2B50".repeat(Math.min(streakTier, 5));
-            double bonus = (streakMultiplier - 1.0) * 100;
-            player.sendActionBar(Component.text(plugin.getLanguageManager().getString(
-                            "fishinglistener.streak_actionbar",
-                            "%stars% Streak x%streak% (+%bonus%% Bonus) %stars%",
-                            "stars", streakText,
-                            "streak", String.valueOf(session.getCurrentStreak()),
-                            "bonus", com.fishrework.util.FormatUtil.format("%.0f", bonus)))
-                    .color(NamedTextColor.GOLD));
-        }
-        return streakMultiplier;
-    }
-
     private boolean tryAutoSellCatch(Player player,
                                      Item caughtItem,
                                      ItemStack itemStack,
@@ -350,8 +327,7 @@ public class FishingListener implements Listener {
                                      PlayerData data,
                                      FishingSession session,
                                      double baseXp,
-                                     double baitXpMultiplier,
-                                     double streakMultiplier) {
+                                     double baitXpMultiplier) {
         if (!plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)
                 || session.getAutoSellMode() == AutoSellMode.OFF
                 || mobId != null) {
@@ -364,7 +340,6 @@ public class FishingListener implements Listener {
         }
 
         double total = sellPrice * itemStack.getAmount();
-        total *= streakMultiplier;
         data.addBalance(total);
         session.addDoubloonsEarned(total);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
@@ -376,7 +351,7 @@ public class FishingListener implements Listener {
                         "currency", currencyName))
                 .color(NamedTextColor.GREEN));
 
-        double finalBaseXp = applyXpMultipliers(baseXp, baitXpMultiplier, streakMultiplier);
+        double finalBaseXp = applyXpMultipliers(baseXp, baitXpMultiplier);
         plugin.getSkillManager().grantXp(player, Skill.FISHING, finalBaseXp, Skill.FISHING.getLocalizedDisplayName(plugin.getLanguageManager()));
         return true;
     }
@@ -410,12 +385,11 @@ public class FishingListener implements Listener {
         }
     }
 
-    private double applyXpMultipliers(double baseXp, double baitXpMultiplier, double streakMultiplier) {
+    private double applyXpMultipliers(double baseXp, double baitXpMultiplier) {
         double finalXp = baseXp;
         if (baitXpMultiplier > 0) {
             finalXp *= (1.0 + baitXpMultiplier / 100.0);
         }
-        finalXp *= streakMultiplier;
         return finalXp;
     }
 

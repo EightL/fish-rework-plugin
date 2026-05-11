@@ -71,6 +71,10 @@ fishing_tips:
   max_delay_seconds: 420
   wiki_url: "https://eightl-projects.vercel.app"  # Used in tips that reference the wiki
 
+# How often (in seconds) online player data is flushed to the database.
+# Lower = fresher leaderboards, slightly more DB writes. Default: 300 (5 min).
+auto_save_interval_seconds: 300
+
 # Mob Spawn Weights
 # ─────────────────────────────────────────────────────────────
 # GLOBAL mobs: These weights apply everywhere as the base rate.
@@ -706,6 +710,20 @@ economy:
     basalt_deltas: 25
     nether_wastes: 25
 
+  # Items to completely hide from the buy shop.
+  # Valid IDs: treasure_bait, xp_bait, fish_bag, lava_bag,
+  #   lure_1, luck_of_the_sea_1, sea_creature_chance_1,
+  #   trident, beginner_trident_1, beginner_trident_2,
+  #   quickcharge_repeater_1, multishot_volley_1,
+  #   or any biome bait key like: wild_tropics, frozen_peaks, etc.
+  disabled_shop_items: []
+  # Example: disabled_shop_items: [iron_ingot, trident, wild_tropics]
+
+  # Items to completely hide from the SELL vendor (Fish Vendor GUI).
+  # Use Material names for vanilla items (e.g. IRON_INGOT) or custom item IDs (e.g. corrupted_flesh).
+  disabled_vendor_items: []
+  # Example: disabled_vendor_items: [IRON_INGOT, GOLD_INGOT, corrupted_flesh]
+
   # Fishing shop buy prices (equipment + books)
   fishing_shop_prices:
     lure_1: 300
@@ -912,5 +930,4 @@ features:
   damage_indicators_enabled: true    # Floating damage numbers
   catch_broadcast_enabled: true      # Broadcast rare catches server-wide
   fishing_tips_enabled: true         # Periodic fishing tips (overrides fishing_tips.enabled)
-  catch_streak_enabled: true         # Catch streak XP multiplier system
   double_catch_enabled: true         # Double catch chance mechanic

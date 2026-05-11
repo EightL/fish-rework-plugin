@@ -909,7 +909,7 @@ weapons:
     display_name: "Novice Trident"
     rarity: UNCOMMON
     durability: 1200
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.2
     lore:
       - text: "A starter trident for early sea hunting."
@@ -917,14 +917,14 @@ weapons:
     enchantments:
       LOYALTY: 1
     pdc:
-      sea_creature_attack: 5.0
+      sea_creature_attack: 35.0
 
   beginner_trident_2:
     material: TRIDENT
     display_name: "Adept Trident"
     rarity: RARE
     durability: 1600
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.3
     lore:
       - text: "A sharper trident favored by experienced anglers."
@@ -932,14 +932,14 @@ weapons:
     enchantments:
       LOYALTY: 2
     pdc:
-      sea_creature_attack: 10.0
+      sea_creature_attack: 40.0
 
   trident_1:
     material: TRIDENT
     display_name: "Prismarine Harpoon"
     rarity: RARE
     durability: 1200
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.4
     lore:
       - text: "A reinforced harpoon for hunting sea beasts."
@@ -947,7 +947,7 @@ weapons:
     enchantments:
       LOYALTY: 3
     pdc:
-      sea_creature_attack: 20.0
+      sea_creature_attack: 50.0
     upgrade_tier: 1
 
   trident_2:
@@ -955,14 +955,14 @@ weapons:
     display_name: "Tidesplitter"
     rarity: EPIC
     durability: 1600
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.5
     lore:
       - text: "Splits the waves and pierces the toughest scales."
     enchantments:
       LOYALTY: 4
     pdc:
-      sea_creature_attack: 40.0
+      sea_creature_attack: 70.0
     upgrade_tier: 2
 
   trident_3:
@@ -970,7 +970,7 @@ weapons:
     display_name: "Dreadspear"
     rarity: LEGENDARY
     durability: 2000
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.6
     lore:
       - text: "Forged with the souls of the deep."
@@ -978,7 +978,7 @@ weapons:
     enchantments:
       LOYALTY: 5
     pdc:
-      sea_creature_attack: 60.0
+      sea_creature_attack: 85.0
     upgrade_tier: 3
 
   poseidons_trident:
@@ -987,7 +987,7 @@ weapons:
     rarity: LEGENDARY
     name_color: GOLD
     durability: 2500
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.7
     lore:
       - text: "The legendary weapon of the sea god."
@@ -995,7 +995,7 @@ weapons:
     enchantments:
       LOYALTY: 6
     pdc:
-      sea_creature_attack: 80.0
+      sea_creature_attack: 100.0
     upgrade_tier: 4
 
 
@@ -1006,7 +1006,7 @@ weapons:
     rarity: MYTHIC
     pdc_key: hephaesteantrident
     durability: 3200
-    attack_damage: 9
+    attack_damage: 7
     attack_speed: 1.8
     lore:
       - text: "Forged by Hephaestus himself"
@@ -1015,7 +1015,7 @@ weapons:
       LOYALTY: 6
       CHANNELING: 1
     pdc:
-      sea_creature_attack: 80.0
+      sea_creature_attack: 100.0
     upgrade_tier: 5
 
   quickcharge_repeater_1:

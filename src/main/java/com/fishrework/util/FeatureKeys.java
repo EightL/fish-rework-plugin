@@ -10,7 +10,6 @@ public final class FeatureKeys {
     public static final String AUTO_SELL_ENABLED = "auto_sell_enabled";
     public static final String BAIT_SYSTEM_ENABLED = "bait_system_enabled";
     public static final String CATCH_BROADCAST_ENABLED = "catch_broadcast_enabled";
-    public static final String CATCH_STREAK_ENABLED = "catch_streak_enabled";
     public static final String CUSTOM_MOBS_ENABLED = "custom_mobs_enabled";
     public static final String CUSTOM_RECIPES_ENABLED = "custom_recipes_enabled";
     public static final String DOUBLE_CATCH_ENABLED = "double_catch_enabled";

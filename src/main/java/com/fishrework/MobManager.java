@@ -1715,6 +1715,14 @@ public class MobManager {
                 }
             }
             playerData.addCaughtMob(mobId);
+
+            // Track lifetime catch stats
+            if (def != null && def.isTreasure()) {
+                playerData.incrementTotalTreasuresCaught();
+            } else {
+                playerData.incrementTotalFishCaught();
+            }
+
             plugin.getAdvancementManager().checkCatchAll(player);
         }
 
