@@ -18,11 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.fishrework.model.CustomMob.MobCategory;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Fish Collection GUI — auto-populated from MobRegistry.
@@ -38,6 +42,7 @@ public class CollectionGui extends BaseGUI {
     private MobCategory typeFilter;
     private SortType sort;
     private BiomeDimension biomeDimension;
+    private boolean showCatchLeaders;
     private int totalPages = 1;
     private boolean initialized;
 
@@ -75,6 +80,11 @@ public class CollectionGui extends BaseGUI {
     }
 
     public CollectionGui(FishRework plugin, Player player, int page, BiomeGroup filter, SortType sort, MobCategory typeFilter, BiomeDimension biomeDimension) {
+        this(plugin, player, page, filter, sort, typeFilter, biomeDimension, false);
+    }
+
+    public CollectionGui(FishRework plugin, Player player, int page, BiomeGroup filter, SortType sort, MobCategory typeFilter,
+                         BiomeDimension biomeDimension, boolean showCatchLeaders) {
         super(plugin, 6, localizedTitle(plugin, "collectiongui.title", "Fishing Encyclopedia"));
         this.player = player;
         this.page = page;
@@ -82,6 +92,7 @@ public class CollectionGui extends BaseGUI {
         this.sort = sort;
         this.typeFilter = typeFilter;
         this.biomeDimension = biomeDimension;
+        this.showCatchLeaders = showCatchLeaders;
         this.collection = plugin.getDatabaseManager().loadCollection(player.getUniqueId());
         initializeItems();
     }
@@ -185,17 +196,13 @@ public class CollectionGui extends BaseGUI {
                 lore.add(Component.text(countLabel + count).color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false));
 
-                // --- Max Weight Attribute Cleanup ---
-                // Show max weight ONLY if it's an aquatic mob AND not a treasure
-                // Treasures and land mobs (Pigs, etc) don't have "Max Weight" logic that makes sense to users
-                boolean isAquatic = plugin.getMobManager().isAquatic(mob.getEntityType());
-                if (!mob.isTreasure() && isAquatic) {
-                    lore.add(Component.text(plugin.getLanguageManager().getString(
-                                    "collectiongui.max_weight",
-                                    "Max Weight: %weight%kg",
-                                    "weight", com.fishrework.util.FormatUtil.format("%.2f", maxWeight)))
-                            .color(NamedTextColor.YELLOW)
-                            .decoration(TextDecoration.ITALIC, false));
+                if (showCatchLeaders) {
+                    appendCatchLeaderLore(lore, mob);
+                }
+
+                // Every registered non-treasure creature now participates in the shared weight profile.
+                if (!mob.isTreasure()) {
+                    lore.add(buildMaxWeightLine(mob, maxWeight));
                 }
                 
                 lore.add(Component.text(""));
@@ -255,7 +262,7 @@ public class CollectionGui extends BaseGUI {
                 }
                 
                 // Mob Drops
-                if (plugin.getMobRegistry().get(mob.getId()) != null && !mob.getDrops().isEmpty()) {
+                if (!mob.isTreasure() && plugin.getMobRegistry().get(mob.getId()) != null && !mob.getDrops().isEmpty()) {
                      List<Component> dropsLore = new ArrayList<>();
                      dropsLore.add(Component.empty());
                      dropsLore.add(plugin.getLanguageManager().getMessage("collectiongui.drops", "Drops:").color(NamedTextColor.GOLD)
@@ -290,8 +297,8 @@ public class CollectionGui extends BaseGUI {
                                     String.valueOf(drop.getMinAmount()) : 
                                     (drop.getMinAmount() + "-" + drop.getMaxAmount());
                             
-                            // Chance
-                            String chanceStr = formatDropChance(drop.getChance());
+                            // Runtime chance now depends on the caught creature's sampled weight profile.
+                            String chanceStr = formatWeightAdjustedDropChance(drop.getChance());
                             
                             dropsLore.add(Component.text("- " + name + " (" + rangeStr + ") " + chanceStr)
                                     .color(NamedTextColor.GRAY)
@@ -336,6 +343,28 @@ public class CollectionGui extends BaseGUI {
 
         // Navigation
         setPaginationControls(45, 53, page, totalPages);
+
+        // Other-player catches toggle (top-right)
+        ItemStack catchLeaderToggle = new ItemStack(showCatchLeaders ? Material.LIME_DYE : Material.GRAY_DYE);
+        ItemMeta catchLeaderToggleMeta = catchLeaderToggle.getItemMeta();
+        catchLeaderToggleMeta.displayName(plugin.getLanguageManager().getMessage(
+                        "collectiongui.other_player_catches",
+                        "Other Player Catches")
+                .color(showCatchLeaders ? NamedTextColor.GREEN : NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false));
+        catchLeaderToggleMeta.lore(List.of(
+                plugin.getLanguageManager().getMessage(
+                                showCatchLeaders
+                                        ? "collectiongui.hide_other_player_catches"
+                                        : "collectiongui.show_other_player_catches",
+                                showCatchLeaders
+                                        ? "Hide stored player catch leaders"
+                                        : "Show stored player catch leaders")
+                        .color(NamedTextColor.YELLOW)
+                        .decoration(TextDecoration.ITALIC, false)
+        ));
+        catchLeaderToggle.setItemMeta(catchLeaderToggleMeta);
+        inventory.setItem(8, catchLeaderToggle);
 
         // Back button
         setBackButton(48);
@@ -443,8 +472,12 @@ public class CollectionGui extends BaseGUI {
             playClick();
         } else if (slot == 50) {
              // Open Filter Selection (Reset page to 0, keep sort?) - Usually good to reset sort or keep it? Keeping it.
-             new BiomeSelectionGui(plugin, player, filter, sort, typeFilter, biomeDimension).open(player);
+             new BiomeSelectionGui(plugin, player, filter, sort, typeFilter, biomeDimension, showCatchLeaders).open(player);
              playClick();
+        } else if (slot == 8) {
+            showCatchLeaders = !showCatchLeaders;
+            initializeItems();
+            playClick();
         } else if (slot == 45) {
             // Previous page
             if (page > 0) {
@@ -471,6 +504,43 @@ public class CollectionGui extends BaseGUI {
 
     private void playClick() {
         player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+    }
+
+    private void appendCatchLeaderLore(List<Component> lore, CustomMob mob) {
+        LinkedHashMap<UUID, Long> leaders = plugin.getDatabaseManager().getTopCollectorsForMob(mob.getId(), 5);
+        lore.add(Component.empty());
+        lore.add(plugin.getLanguageManager().getMessage(
+                        "collectiongui.other_player_catch_leaders",
+                        "Other player catches:")
+                .color(NamedTextColor.GOLD)
+                .decoration(TextDecoration.ITALIC, false));
+
+        if (leaders.isEmpty()) {
+            lore.add(plugin.getLanguageManager().getMessage(
+                            "collectiongui.no_other_player_catches",
+                            "No stored catches yet.")
+                    .color(NamedTextColor.DARK_GRAY)
+                    .decoration(TextDecoration.ITALIC, false));
+            return;
+        }
+
+        int rank = 1;
+        for (Map.Entry<UUID, Long> entry : leaders.entrySet()) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(entry.getKey());
+            String name = offlinePlayer.getName();
+            if (name == null || name.isBlank()) {
+                name = plugin.getLanguageManager().getString("collectiongui.unknown_player", "Unknown");
+            }
+            String line = plugin.getLanguageManager().getString(
+                    "collectiongui.other_player_catch_entry",
+                    "#%rank% %name%: %count%",
+                    "rank", String.valueOf(rank),
+                    "name", name,
+                    "count", String.valueOf(entry.getValue()));
+            lore.add(Component.text(line).color(NamedTextColor.AQUA)
+                    .decoration(TextDecoration.ITALIC, false));
+            rank++;
+        }
     }
 
     private List<CustomMob> getFilteredMobs() {
@@ -641,5 +711,48 @@ public class CollectionGui extends BaseGUI {
         if (percent >= 1.0) return com.fishrework.util.FormatUtil.format("%.1f%%", percent);
         if (percent > 0.0) return com.fishrework.util.FormatUtil.format("%.2f%%", percent);
         return "0%";
+    }
+
+    private Component buildMaxWeightLine(CustomMob mob, double maxWeight) {
+        String template = plugin.getLanguageManager().getString(
+                "collectiongui.max_weight",
+                "Max Weight: %weight%kg");
+        String token = "%weight%";
+        int tokenIndex = template.indexOf(token);
+        String formattedWeight = com.fishrework.util.FormatUtil.format("%.2f", maxWeight);
+        Component coloredWeight = Component.text(formattedWeight + "kg")
+                .color(plugin.getMobManager().getWeightRarity(mob, maxWeight).getColor());
+
+        if (tokenIndex < 0) {
+            return Component.text(template + " ")
+                    .color(NamedTextColor.YELLOW)
+                    .append(coloredWeight)
+                    .decoration(TextDecoration.ITALIC, false);
+        }
+
+        int suffixStart = tokenIndex + token.length();
+        if (template.startsWith("kg", suffixStart)) {
+            suffixStart += 2;
+        }
+
+        return Component.text(template.substring(0, tokenIndex))
+                .color(NamedTextColor.YELLOW)
+                .append(coloredWeight)
+                .append(Component.text(template.substring(suffixStart)).color(NamedTextColor.YELLOW))
+                .decoration(TextDecoration.ITALIC, false);
+    }
+
+    private String formatWeightAdjustedDropChance(double baseChance) {
+        com.fishrework.model.SeaCreatureWeightProfile.Tuning tuning = plugin.getMobManager().getWeightProfileTuning();
+        double minimum = baseChance * plugin.getMobManager().getDropRollMultiplierAtSize(tuning.minSizeMultiplier());
+        double normal = baseChance * plugin.getMobManager().getDropRollMultiplierAtSize(1.0);
+        double maximum = baseChance * plugin.getMobManager().getDropRollMultiplierAtSize(tuning.maxSizeMultiplier());
+        return plugin.getLanguageManager().getString(
+                "collectiongui.weight_adjusted_drop_chance",
+                "%normal% at 1.0x, %min%-%max% by weight",
+                "normal", formatDropChance(normal),
+                "min", formatDropChance(minimum),
+                "max", formatDropChance(maximum)
+        );
     }
 }

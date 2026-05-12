@@ -59,9 +59,10 @@ public class BiomeSelectionGui extends BaseGUI {
     private final CollectionGui.SortType sort;
     private final com.fishrework.model.CustomMob.MobCategory typeFilter;
     private CollectionGui.BiomeDimension biomeDimension;
+    private final boolean showCatchLeaders;
 
     public BiomeSelectionGui(FishRework plugin, Player player, BiomeGroup currentFilter) {
-        this(plugin, player, currentFilter, CollectionGui.SortType.XP_ASC, null, CollectionGui.BiomeDimension.OVERWORLD);
+        this(plugin, player, currentFilter, CollectionGui.SortType.XP_ASC, null, CollectionGui.BiomeDimension.OVERWORLD, false);
     }
 
     public BiomeSelectionGui(
@@ -70,7 +71,8 @@ public class BiomeSelectionGui extends BaseGUI {
             BiomeGroup currentFilter,
             CollectionGui.SortType sort,
             com.fishrework.model.CustomMob.MobCategory typeFilter,
-            CollectionGui.BiomeDimension biomeDimension
+            CollectionGui.BiomeDimension biomeDimension,
+            boolean showCatchLeaders
     ) {
         super(plugin, 6, localizedTitle(plugin, "biomeselectiongui.title", "Select Biome Filter")); // 6 rows to fit all biomes comfortably
         this.player = player;
@@ -78,6 +80,7 @@ public class BiomeSelectionGui extends BaseGUI {
         this.sort = sort;
         this.typeFilter = typeFilter;
         this.biomeDimension = biomeDimension;
+        this.showCatchLeaders = showCatchLeaders;
         initializeItems();
     }
 
@@ -210,11 +213,11 @@ public class BiomeSelectionGui extends BaseGUI {
 
         if (slot == 49) {
             // Back to Encyclopedia with current filter (or just ALL if they cancel? typically back means cancel action, so return to previous state)
-            new CollectionGui(plugin, player, 0, currentFilter, sort, typeFilter, biomeDimension).open(player);
+            new CollectionGui(plugin, player, 0, currentFilter, sort, typeFilter, biomeDimension, showCatchLeaders).open(player);
             playClick();
         } else if (slot == 4) {
             // ALL filter
-            new CollectionGui(plugin, player, 0, null, sort, typeFilter, biomeDimension).open(player);
+            new CollectionGui(plugin, player, 0, null, sort, typeFilter, biomeDimension, showCatchLeaders).open(player);
             playClick();
         } else if (slot == 5) {
             biomeDimension = biomeDimension == CollectionGui.BiomeDimension.OVERWORLD
@@ -229,7 +232,7 @@ public class BiomeSelectionGui extends BaseGUI {
              int index = slot - 9;
              if (index >= 0 && index < groups.size()) {
                  BiomeGroup selected = groups.get(index);
-                 new CollectionGui(plugin, player, 0, selected, sort, typeFilter, biomeDimension).open(player);
+                 new CollectionGui(plugin, player, 0, selected, sort, typeFilter, biomeDimension, showCatchLeaders).open(player);
                  playClick();
              }
         }

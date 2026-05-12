@@ -34,6 +34,10 @@ public class AdvancementListener implements Listener {
         // This handles vanilla commands, manual grants, and normal progression
         plugin.getRecipeRegistry().syncRecipes(event.getPlayer());
 
+        if (event.getAdvancement().getKey().equals(plugin.getAdvancementManager().MYTHIC_WEIGHT_CENSUS_KEY)) {
+            awardGehenna(event);
+        }
+
         String advancementPath = event.getAdvancement().getKey().getKey();
         if (advancementPath.startsWith("fishing/level_")) {
             return;
@@ -60,6 +64,14 @@ public class AdvancementListener implements Listener {
                     .decoration(TextDecoration.ITALIC, false)
                     .clickEvent(ClickEvent.runCommand("/fishing recipe " + recipe.getResultId()))
                     .hoverEvent(plugin.getLanguageManager().getMessage("advancementlistener.click_to_open_recipe", "Click to open recipe").color(NamedTextColor.GREEN)));
+        }
+    }
+
+    private void awardGehenna(PlayerAdvancementDoneEvent event) {
+        ItemStack gehenna = plugin.getItemManager().getRequiredItem("gehenna");
+        java.util.HashMap<Integer, ItemStack> overflow = event.getPlayer().getInventory().addItem(gehenna);
+        for (ItemStack item : overflow.values()) {
+            event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), item);
         }
     }
 }

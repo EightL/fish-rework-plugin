@@ -1007,6 +1007,16 @@ public class ItemManager {
         meta.getPersistentDataContainer().set(SEA_CREATURE_ATTACK_KEY, PersistentDataType.DOUBLE, 25.0);
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, "gehenna");
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
+        meta.getPersistentDataContainer().set(
+            new NamespacedKey(plugin, "weapon_attack_damage"),
+            PersistentDataType.DOUBLE,
+            12.0
+        );
+        meta.getPersistentDataContainer().set(
+            new NamespacedKey(plugin, "weapon_attack_speed"),
+            PersistentDataType.DOUBLE,
+            1.2
+        );
         setVanillaFallbackMaterial(meta, item.getType());
 
         item.setItemMeta(meta);

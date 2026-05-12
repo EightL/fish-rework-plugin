@@ -24,8 +24,8 @@ public class MobDrop {
     }
 
     /**
-     * Rolls the drop with a chance multiplier.
-     * @param multiplier Chance multiplier (e.g. 1.3 for 30% more drops).
+     * Rolls the drop with a roll-volume multiplier.
+     * @param multiplier Roll multiplier (e.g. 1.3 for 30% more expected drops).
      * @return List of drops (can be empty, single, or multiple).
      */
     public java.util.List<ItemStack> roll(double multiplier) {

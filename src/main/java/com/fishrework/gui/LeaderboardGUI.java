@@ -21,13 +21,22 @@ import java.util.UUID;
 
 public class LeaderboardGUI extends BaseGUI {
 
+    private static final int ENTRIES_PER_PAGE = 45;
+
     private final Player player;
     private final LeaderboardCategory category;
+    private final int page;
+    private boolean hasNextPage;
 
     public LeaderboardGUI(FishRework plugin, Player player, LeaderboardCategory category) {
+        this(plugin, player, category, 0);
+    }
+
+    public LeaderboardGUI(FishRework plugin, Player player, LeaderboardCategory category, int page) {
         super(plugin, 6, localizedTitle(plugin, "leaderboardgui.title", "⚓ Fishing Leaderboard"));
         this.player = player;
         this.category = category;
+        this.page = Math.max(0, page);
         initializeItems();
     }
 
@@ -36,24 +45,34 @@ public class LeaderboardGUI extends BaseGUI {
         fillBottomBar();
 
         // Tab buttons
-        setTabButton(46, Material.SUNFLOWER,       "leaderboardgui.balance",         "Balance",         LeaderboardCategory.BALANCE);
-        setTabButton(47, Material.EXPERIENCE_BOTTLE,"leaderboardgui.fishing_xp",     "Fishing XP",      LeaderboardCategory.FISHING_XP);
-        setTabButton(48, Material.COD,              "leaderboardgui.total_fish",     "Fish Caught",     LeaderboardCategory.TOTAL_FISH);
-        setTabButton(49, Material.CHEST,            "leaderboardgui.total_treasures","Treasures Caught",LeaderboardCategory.TOTAL_TREASURES);
+        setTabButton(47, Material.SUNFLOWER,        "leaderboardgui.balance",          "Balance",          LeaderboardCategory.BALANCE);
+        setTabButton(48, Material.EXPERIENCE_BOTTLE,"leaderboardgui.fishing_xp",       "Fishing XP",       LeaderboardCategory.FISHING_XP);
+        setTabButton(50, Material.COD,              "leaderboardgui.total_fish",       "Fish Caught",      LeaderboardCategory.TOTAL_FISH);
+        setTabButton(51, Material.CHEST,            "leaderboardgui.total_treasures",  "Treasures Caught", LeaderboardCategory.TOTAL_TREASURES);
 
-        // Close button
-        ItemStack close = new ItemStack(Material.BARRIER);
-        ItemMeta cm = close.getItemMeta();
-        cm.displayName(plugin.getLanguageManager().getMessage("leaderboardgui.close", "Close").color(NamedTextColor.RED)
+        // Back control
+        ItemStack back = new ItemStack(Material.BARRIER);
+        ItemMeta cm = back.getItemMeta();
+        cm.displayName(plugin.getLanguageManager().getMessage("basegui.back", "Back").color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
-        close.setItemMeta(cm);
-        inventory.setItem(53, close);
+        back.setItemMeta(cm);
+        inventory.setItem(49, back);
 
         // Leaderboard entries (slots 0-44)
-        LinkedHashMap<UUID, Long> top = plugin.getDatabaseManager()
-                .getTopPlayersBy(category, 10, plugin.getPlayerDataMap());
+        int offset = page * ENTRIES_PER_PAGE;
+        LinkedHashMap<UUID, Long> ranked = plugin.getDatabaseManager()
+                .getTopPlayersBy(category, offset + ENTRIES_PER_PAGE + 1, plugin.getPlayerDataMap());
+        hasNextPage = ranked.size() > offset + ENTRIES_PER_PAGE;
+        LinkedHashMap<UUID, Long> top = ranked.entrySet().stream()
+                .skip(offset)
+                .limit(ENTRIES_PER_PAGE)
+                .collect(java.util.stream.Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new));
         int slot = 0;
-        int rank = 1;
+        int rank = offset + 1;
         for (Map.Entry<UUID, Long> entry : top.entrySet()) {
             UUID uuid = entry.getKey();
             long score = entry.getValue();
@@ -95,6 +114,13 @@ public class LeaderboardGUI extends BaseGUI {
                     break;
                 }
             }
+        }
+
+        if (page > 0) {
+            setPaginationControls(45, 53, page, page + 1);
+        }
+        if (hasNextPage) {
+            setPaginationControls(45, 53, page, page + 2);
         }
     }
 
@@ -144,16 +170,22 @@ public class LeaderboardGUI extends BaseGUI {
         int slot = event.getSlot();
 
         // Map tab slots to categories
-        if (slot == 46) {
-            openTab(player, LeaderboardCategory.BALANCE);
+        if (slot == 45 && page > 0) {
+            new LeaderboardGUI(plugin, player, category, page - 1).open(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+        } else if (slot == 53 && hasNextPage) {
+            new LeaderboardGUI(plugin, player, category, page + 1).open(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (slot == 47) {
-            openTab(player, LeaderboardCategory.FISHING_XP);
+            openTab(player, LeaderboardCategory.BALANCE);
         } else if (slot == 48) {
+            openTab(player, LeaderboardCategory.FISHING_XP);
+        } else if (slot == 50) {
             openTab(player, LeaderboardCategory.TOTAL_FISH);
-        } else if (slot == 49) {
+        } else if (slot == 51) {
             openTab(player, LeaderboardCategory.TOTAL_TREASURES);
-        } else if (slot == 53) {
-            player.closeInventory();
+        } else if (slot == 49) {
+            new SkillDetailGUI(plugin, player, com.fishrework.model.Skill.FISHING).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         }
     }
@@ -163,7 +195,7 @@ public class LeaderboardGUI extends BaseGUI {
             p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             return;
         }
-        new LeaderboardGUI(plugin, p, cat).open(p);
+        new LeaderboardGUI(plugin, p, cat, 0).open(p);
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
     }
 }

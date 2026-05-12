@@ -426,8 +426,9 @@ public class FishRework extends JavaPlugin {
             datapackNames.add("fishrework_fishing");
         }
 
+        Path datapackRoot = resolveDatapackRoot(w);
         for (String datapackName : datapackNames) {
-            Path datapacksDir = w.getWorldFolder().toPath().resolve("datapacks").resolve(datapackName);
+            Path datapacksDir = datapackRoot.resolve(datapackName);
             for (String p : paths) {
                 try (InputStream in = getResource("pack/" + p)) {
                     if (in == null) continue;
@@ -439,6 +440,34 @@ public class FishRework extends JavaPlugin {
                 }
             }
         }
+    }
+
+    private Path resolveDatapackRoot(org.bukkit.World overworld) {
+        Path overworldFolder = overworld.getWorldFolder().toPath().toAbsolutePath().normalize();
+        Path modernLevelRoot = resolveModernLevelRoot(overworldFolder);
+        if (modernLevelRoot != null) {
+            return modernLevelRoot.resolve("datapacks");
+        }
+        return overworldFolder.resolve("datapacks");
+    }
+
+    private Path resolveModernLevelRoot(Path overworldFolder) {
+        Path worldName = overworldFolder.getFileName();
+        Path namespaceDir = overworldFolder.getParent();
+        Path dimensionsDir = namespaceDir != null ? namespaceDir.getParent() : null;
+        Path namespaceName = namespaceDir != null ? namespaceDir.getFileName() : null;
+        Path dimensionsName = dimensionsDir != null ? dimensionsDir.getFileName() : null;
+        if (worldName == null
+                || namespaceDir == null
+                || dimensionsDir == null
+                || namespaceName == null
+                || dimensionsName == null
+                || !"overworld".equals(worldName.toString())
+                || !"minecraft".equals(namespaceName.toString())
+                || !"dimensions".equals(dimensionsName.toString())) {
+            return null;
+        }
+        return dimensionsDir.getParent();
     }
 
     // ══════════════════════════════════════════════════════════

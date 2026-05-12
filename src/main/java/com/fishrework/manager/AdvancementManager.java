@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
  */
 public class AdvancementManager {
 
+    private static final int MYTHIC_WEIGHT_UNIQUE_TARGET = 67;
+
     private final FishRework plugin;
     public final NamespacedKey ROOT_KEY;
     public final NamespacedKey FISHH_KEY;
@@ -35,6 +37,7 @@ public class AdvancementManager {
     public final NamespacedKey KILL_KING_SLIME_KEY;
     public final NamespacedKey KILL_WARDEN_KEY;
     public final NamespacedKey BUCKET_CATCHER_KEY;
+    public final NamespacedKey MYTHIC_WEIGHT_CENSUS_KEY;
 
     public final NamespacedKey ARTIFACT_COMMON_KEY;
     public final NamespacedKey ARTIFACT_UNCOMMON_KEY;
@@ -58,6 +61,7 @@ public class AdvancementManager {
         this.KILL_KING_SLIME_KEY = new NamespacedKey(plugin, "fishing/kill_king_slime");
         this.KILL_WARDEN_KEY = new NamespacedKey(plugin, "fishing/kill_warden");
         this.BUCKET_CATCHER_KEY = new NamespacedKey(plugin, "fishing/bucket_catcher");
+        this.MYTHIC_WEIGHT_CENSUS_KEY = new NamespacedKey(plugin, "fishing/mythic_weight_census");
 
         this.ARTIFACT_COMMON_KEY = new NamespacedKey(plugin, "fishing/artifact_common");
         this.ARTIFACT_UNCOMMON_KEY = new NamespacedKey(plugin, "fishing/artifact_uncommon");
@@ -98,6 +102,7 @@ public class AdvancementManager {
         safeRemove(KILL_POSEIDON_KEY);
         safeRemove(KILL_ELDER_GUARDIAN_KEY);
         safeRemove(KILL_DEAD_RIDER_KEY);
+        safeRemove(MYTHIC_WEIGHT_CENSUS_KEY);
         safeRemove(CATCH_ALL_KEY);
         safeRemove(FISHH_KEY);
         safeRemove(ROOT_KEY);
@@ -125,6 +130,9 @@ public class AdvancementManager {
 
         // Check catch-all
         checkCatchAll(player);
+
+        // Check the long-form Mythic weight chase
+        checkMythicWeightCensus(player);
         
         // Check biomes
         checkBiomeAdvancements(player);
@@ -169,6 +177,9 @@ public class AdvancementManager {
 
         // Catch All — catch every custom mob
         safeLoad(CATCH_ALL_KEY, buildCatchAllJson());
+
+        // Mythic Weight Census — catch 67 unique non-treasure creatures at Mythic weight
+        safeLoad(MYTHIC_WEIGHT_CENSUS_KEY, buildMythicWeightCensusJson());
 
         // Dead Rider Kill
         safeLoad(KILL_DEAD_RIDER_KEY, buildKillDeadRiderJson());
@@ -222,7 +233,7 @@ public class AdvancementManager {
         // Completionist
         safeLoad(FISHING_COMPLETIONIST_KEY, buildCompletionistJson());
 
-        plugin.getLogger().info("Loaded custom advancements (root + fishh + levels 5-50 + bosses + biome groups + artifacts + completionist).");
+        plugin.getLogger().info("Loaded custom advancements (root + fishh + weight census + levels 5-50 + bosses + biome groups + artifacts + completionist).");
     }
 
     // ── JSON Builders ─────────────────────────────────────────
@@ -417,6 +428,20 @@ public class AdvancementManager {
          return buildAdvancementJson(CATCH_ALL_KEY, FISHH_KEY, icon, "Master Angler", "Catch or eliminate every type of unique fish.", "challenge", true, true);
     }
 
+    private String buildMythicWeightCensusJson() {
+        String icon = "{ \"id\": \"minecraft:mace\", \"nbt\": \"{Enchantments:[{id:k,lvl:1}]}\" }";
+        return buildAdvancementJson(
+                MYTHIC_WEIGHT_CENSUS_KEY,
+                FISHH_KEY,
+                icon,
+                "Mythic Weight Census",
+                "Record Mythic-weight specimens for 67 unique creatures. Reward: Gehenna.",
+                "challenge",
+                true,
+                true
+        );
+    }
+
     private String buildProgressionJson(NamespacedKey parent, int level) {
         String icon = getIconForLevel(level);
         String frame = level == 50 ? "challenge" : "task";
@@ -601,6 +626,28 @@ public class AdvancementManager {
         }
     }
 
+    public void checkMythicWeightCensus(Player player) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.ADVANCEMENTS_ENABLED)) return;
+        if (hasAdvancement(player, MYTHIC_WEIGHT_CENSUS_KEY)) return;
+
+        java.util.Map<String, double[]> collection = plugin.getDatabaseManager().loadCollection(player.getUniqueId());
+        int mythicWeightCreatures = 0;
+        for (java.util.Map.Entry<String, double[]> entry : collection.entrySet()) {
+            CustomMob mob = plugin.getMobRegistry().get(entry.getKey());
+            if (mob == null || mob.isTreasure()) continue;
+            double[] stats = entry.getValue();
+            double maxWeight = stats != null && stats.length > 1 ? stats[1] : 0.0;
+            if (plugin.getMobManager().getWeightRarity(mob, maxWeight) == com.fishrework.model.Rarity.MYTHIC) {
+                mythicWeightCreatures++;
+            }
+        }
+
+        if (mythicWeightCreatures >= MYTHIC_WEIGHT_UNIQUE_TARGET) {
+            grantAdvancement(player, MYTHIC_WEIGHT_CENSUS_KEY);
+            checkCompletionistAdvancement(player);
+        }
+    }
+
     private java.util.Set<String> getGroupLandRequirements(BiomeAdvancementGroup group) {
         java.util.Set<String> land = new java.util.HashSet<>();
         for (com.fishrework.model.BiomeGroup bg : group.biomes) {
@@ -740,6 +787,7 @@ public class AdvancementManager {
         allKeys.add(FISHH_KEY);
         allKeys.add(CATCH_ALL_KEY);
         allKeys.add(BUCKET_CATCHER_KEY);
+        allKeys.add(MYTHIC_WEIGHT_CENSUS_KEY);
         allKeys.add(KILL_DEAD_RIDER_KEY);
         allKeys.add(KILL_ELDER_GUARDIAN_KEY);
         allKeys.add(KILL_POSEIDON_KEY);

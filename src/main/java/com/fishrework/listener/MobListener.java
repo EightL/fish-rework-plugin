@@ -223,7 +223,16 @@ public class MobListener implements Listener {
                 PersistentDataContainer pdc = childSlime.getPersistentDataContainer();
                 pdc.set(plugin.getMobManager().FISHED_MOB_KEY, PersistentDataType.BYTE, (byte) 1);
                 pdc.set(plugin.getMobManager().MOB_ID_KEY, PersistentDataType.STRING, mobId);
-                pdc.set(plugin.getMobManager().FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, 0.0);
+                pdc.set(plugin.getMobManager().FISH_WEIGHT_KEY, PersistentDataType.DOUBLE,
+                        plugin.getMobManager().getMobWeight(slime));
+                pdc.set(plugin.getMobManager().MOB_SCALE_KEY, PersistentDataType.DOUBLE,
+                        slime.getPersistentDataContainer().getOrDefault(
+                                plugin.getMobManager().MOB_SCALE_KEY,
+                                PersistentDataType.DOUBLE,
+                                1.0
+                        ));
+                pdc.set(plugin.getMobManager().MOB_DROP_ROLL_MULTIPLIER_KEY, PersistentDataType.DOUBLE,
+                        plugin.getMobManager().getMobDropRollMultiplier(slime));
                 double parentXpBonus = plugin.getMobManager().getCatchXpMultiplierPercent(slime);
                 pdc.set(plugin.getMobManager().CATCH_XP_MULTIPLIER_KEY, PersistentDataType.DOUBLE, parentXpBonus);
                 pdc.set(plugin.getMobManager().GROUP_KILL_ALL_KEY, PersistentDataType.BYTE, (byte) 1);
@@ -280,6 +289,8 @@ public class MobListener implements Listener {
         boolean isSlimeType = "king_slime".equals(mobId) || "slime".equals(mobId);
         String groupUUID = plugin.getMobManager().getGroupUUID(deadEntity);
         double catchXpMultiplierPercent = plugin.getMobManager().getCatchXpMultiplierPercent(deadEntity);
+        double rewardWeight = plugin.getMobManager().getMobWeight(deadEntity);
+        double dropRollMultiplier = plugin.getMobManager().getMobDropRollMultiplier(deadEntity);
 
         // For slimes, wait 5 ticks for split children to spawn and be tagged.
         // The pending-split flag prevents premature rewards, but we still delay to give
@@ -289,16 +300,35 @@ public class MobListener implements Listener {
         if (delay > 0) {
             Location loc = deadEntity.getLocation().clone();
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                checkAndRewardIfGroupDead(loc, killer, mobId, groupUUID, true, catchXpMultiplierPercent);
+                checkAndRewardIfGroupDead(
+                        loc,
+                        killer,
+                        mobId,
+                        groupUUID,
+                        true,
+                        catchXpMultiplierPercent,
+                        rewardWeight,
+                        dropRollMultiplier
+                );
             }, delay);
         } else {
-            checkAndRewardIfGroupDead(deadEntity.getLocation(), killer, mobId, groupUUID, false, catchXpMultiplierPercent);
+            checkAndRewardIfGroupDead(
+                    deadEntity.getLocation(),
+                    killer,
+                    mobId,
+                    groupUUID,
+                    false,
+                    catchXpMultiplierPercent,
+                    rewardWeight,
+                    dropRollMultiplier
+            );
         }
     }
 
     /** Checks if all entities with the given mobId and groupUUID are dead. If so, grants reward (once). */
     private void checkAndRewardIfGroupDead(Location loc, Player killer, String mobId, String groupUUID,
-                                           boolean isSlimeType, double catchXpMultiplierPercent) {
+                                           boolean isSlimeType, double catchXpMultiplierPercent,
+                                           double rewardWeight, double dropRollMultiplier) {
         // Fast-path: if this group has a pending slime split (children spawning/being tagged),
         // don't give the reward yet. A future child death will re-trigger this check.
         if (isSlimeType && groupUUID != null && pendingSlimeSplits.contains(groupUUID)) {
@@ -333,9 +363,9 @@ public class MobListener implements Listener {
             // Last one dead — give full reward
             CustomMob def = plugin.getMobRegistry().get(mobId);
             if (def != null) {
-                plugin.getMobManager().dropMobLoot(killer, loc, def, false, 1.0);
+                plugin.getMobManager().dropMobLoot(killer, loc, def, false, dropRollMultiplier);
                 plugin.getMobManager().dropMobExperience(loc, def);
-                plugin.getMobManager().registerCatch(killer, mobId, 0, def, catchXpMultiplierPercent);
+                plugin.getMobManager().registerCatch(killer, mobId, rewardWeight, def, catchXpMultiplierPercent);
             }
         }
     }

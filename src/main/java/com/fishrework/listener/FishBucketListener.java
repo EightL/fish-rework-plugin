@@ -65,8 +65,12 @@ public class FishBucketListener implements Listener {
                         }
                         
                         // Register Catch (XP, Collection, Advancement, Msg)
-                        // Use weight 0.0 for land mobs
-                        plugin.getMobManager().registerCatch(player, mobId, 0.0, def);
+                        plugin.getMobManager().registerCatch(
+                                player,
+                                mobId,
+                                plugin.getMobManager().getMobWeight(entity),
+                                def
+                        );
                         
                         // Effects
                         player.playSound(player.getLocation(), Sound.ITEM_BUCKET_FILL_FISH, 1.0f, 1.0f);

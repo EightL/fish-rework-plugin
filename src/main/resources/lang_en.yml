@@ -30,8 +30,16 @@ collectiongui.click_to_change_biome_filter: Click to change biome filter
 collectiongui.click_to_change_sort_order: Click to change sort order
 collectiongui.click_to_filter_by_type: Click to filter by type
 collectiongui.drops: 'Drops:'
+collectiongui.weight_adjusted_drop_chance: "%normal% at 1.0x, %min%-%max% by weight"
+collectiongui.hide_other_player_catches: Hide stored player catch leaders
 collectiongui.land_bonus: ' [Land Bonus]'
+collectiongui.no_other_player_catches: No stored catches yet.
+collectiongui.other_player_catch_entry: '#%rank% %name%: %count%'
+collectiongui.other_player_catch_leaders: 'Other player catches:'
+collectiongui.other_player_catches: Other Player Catches
+collectiongui.show_other_player_catches: Show stored player catch leaders
 collectiongui.u2b50_new: '⭐ NEW! '
+collectiongui.unknown_player: Unknown
 collectiongui.xp: 'XP: '
 coolingitemlistener.you_are_not_hot_enough: You are not hot enough to use this item.
 currentfishchancesgui.bait: 'Bait: '
@@ -279,7 +287,7 @@ fishinglistener.ud83cudfa3_double_catch: 🎣 DOUBLE CATCH!
 fishinglistener.unlocked_recipe_fish_bucket: 'Unlocked Recipe: Fish Bucket!'
 fishinglistener.you_hooked_a_rare_sea: "You hooked in a %mob%!"
 fishinglistener.you_hooked_named_sea_creature: "You hooked in a %mob%!"
-fishinglistener.you_hooked_sea_creature: "You hooked in a %mob%!"
+fishinglistener.you_hooked_sea_creature: "You hooked in a %mob% (%weight%)!"
 fishingsettingsgui.automatically_sells_common_fish: Automatically sells common fish.
 fishingsettingsgui.changes_how_intense_sea_creature: Changes how intense sea creature
   effects look.
@@ -356,7 +364,7 @@ lavafishinglistener.lava_fishing_cast_into_lava: 🔥 Lava fishing! Cast into la
 lavafishinglistener.treasure_sent_to_fish_bag: Treasure sent to Fish Bag!
 lavafishinglistener.you_hooked_a_creature_from: 🔥 You hooked a creature from the lava!
 lavafishinglistener.you_hooked_a_nether_creature: 🔥 You hooked a nether creature!
-lavafishinglistener.you_hooked_sea_creature: "🔥 You hooked a %mob%!"
+lavafishinglistener.you_hooked_sea_creature: "🔥 You hooked a %mob% (%weight%)!"
 lavafishinglistener.you_pulled_up_some_lava: You pulled up some lava debris...
 leaderboardgui.no_data_yet: No Data Yet
 loremanager.bobber_damage: 'Bobber Damage: '
@@ -452,6 +460,7 @@ skilldetailgui.current_fish_chances: 🐟 Current Fish Chances
 skilldetailgui.damage_indicators_and_particles: damage indicators, and particles.
 skilldetailgui.disabled_by_server_admin: ✖ Disabled by server admin
 skilldetailgui.double_catch: '  Double Catch: '
+skilldetailgui.fishing_leaderboard: Fishing Leaderboard
 skilldetailgui.fishing_shop: ⛁ Fishing Shop
 skilldetailgui.for_autosell_notifications: for autosell, notifications,
 skilldetailgui.for_fish_rework_recipes: for Fish Rework recipes.
@@ -467,6 +476,7 @@ skilldetailgui.settings: Settings
 skilldetailgui.special_crafting: Special Crafting
 skilldetailgui.the_fishing_encyclopedia_is_disabled: The Fishing Encyclopedia is disabled
   on this server.
+skilldetailgui.the_leaderboard_is_disabled: The leaderboard is disabled on this server.
 skilldetailgui.the_shop_is_disabled_on: The shop is disabled on this server.
 skilldetailgui.the_upgrade_gear_menu_is: The Upgrade Gear menu is disabled on this
   server.
@@ -495,10 +505,12 @@ skilldetailgui.ud83cudfa3_fishing_encyclopedia: 🎣 Fishing Encyclopedia
 skilldetailgui.ud83dudd17_active_bait: '🔗 Active Bait: '
 skilldetailgui.unlock_this_level_to_view: Unlock this level to view recipes
 skilldetailgui.upgrade_weapons__armor_with: Upgrade weapons & armor with
+skilldetailgui.view_fishing_leaderboard: Open the /fs top leaderboard.
 skilldetailgui.view_rare_artifact_finds: View rare artifact finds!
 skilldetailgui.view_your_caught_fish: View your caught fish!
 skilldetailgui.xp_multi: '  XP Multi: '
 skilldetailgui.you_need_fishing_level_20: You need Fishing Level 20 to unlock this!
+skilldetailgui.leaderboard_disabled_by_server_admin: Leaderboard disabled by server admin.
 skillmanager.divider: '--------------------------------'
 skillmanager.attributes_gained: '   Attributes Gained:'
 skillmanager.click_to_open_recipe: Click to open recipe

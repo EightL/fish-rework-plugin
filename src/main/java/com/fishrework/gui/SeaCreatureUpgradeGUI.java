@@ -103,9 +103,12 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                 "Result", "Place all 3 items to", "see the upgrade result."));
 
         // Enchant fusion row
-        inventory.setItem(COMBINE_LEFT_SLOT, createBlankSlot(Material.LIGHT_BLUE_STAINED_GLASS_PANE));
-        inventory.setItem(COMBINE_RIGHT_SLOT, createBlankSlot(Material.ORANGE_STAINED_GLASS_PANE));
-        inventory.setItem(COMBINE_MIDDLE_SLOT, createBlankSlot(Material.LIME_STAINED_GLASS_PANE));
+        inventory.setItem(COMBINE_LEFT_SLOT, createPlaceholder(Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+                "Fusion Input", "Place an enchanted book", "or item with a III-V enchant."));
+        inventory.setItem(COMBINE_RIGHT_SLOT, createPlaceholder(Material.ORANGE_STAINED_GLASS_PANE,
+                "Matching Input", "Place the same item type", "with matching enchant + level."));
+        inventory.setItem(COMBINE_MIDDLE_SLOT, createPlaceholder(Material.LIME_STAINED_GLASS_PANE,
+                "Fusion Rule", "Matching III-V enchants", "combine into the next level."));
         ItemStack combineArrow = new ItemStack(Material.ARROW);
         ItemMeta cam = combineArrow.getItemMeta();
         cam.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.arrow_indicator", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
@@ -131,14 +134,6 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         lore.add(Component.text(line1).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         lore.add(Component.text(line2).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    private ItemStack createBlankSlot(Material mat) {
-        ItemStack item = new ItemStack(mat);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(" "));
         item.setItemMeta(meta);
         return item;
     }
@@ -399,11 +394,13 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             }
             case COMBINE_LEFT_SLOT -> {
                 placedCombineLeft = null;
-                inventory.setItem(slot, createBlankSlot(Material.LIGHT_BLUE_STAINED_GLASS_PANE));
+                inventory.setItem(slot, createPlaceholder(Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+                        "Fusion Input", "Place an enchanted book", "or item with a III-V enchant."));
             }
             case COMBINE_RIGHT_SLOT -> {
                 placedCombineRight = null;
-                inventory.setItem(slot, createBlankSlot(Material.ORANGE_STAINED_GLASS_PANE));
+                inventory.setItem(slot, createPlaceholder(Material.ORANGE_STAINED_GLASS_PANE,
+                        "Matching Input", "Place the same item type", "with matching enchant + level."));
             }
         }
     }

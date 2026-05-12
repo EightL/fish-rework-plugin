@@ -12,14 +12,14 @@ import java.util.List;
  * Mobs without a spawn config get default behaviour:
  * <ul>
  *   <li>HOSTILE — 2× HP, 2× damage, aggro nearest</li>
- *   <li>PASSIVE — standard spawn with weight/scale variance</li>
+ *   <li>PASSIVE — standard spawn with the shared weight/size/drop profile</li>
  * </ul>
  */
 public class SpawnConfig {
 
     /** Spawn pattern used by MobManager. */
     public enum Type {
-        /** Default: single entity with weight/scale variance. */
+        /** Default: single entity with the shared weight/size/drop profile. */
         SIMPLE,
         /** Mount + rider, both tagged with same mob ID. */
         MOUNTED,
@@ -41,7 +41,7 @@ public class SpawnConfig {
     private final double health;
     /** Absolute damage override (-1 = use multiplier). */
     private final double damage;
-    /** Visual entity scale (-1 = normal weight-based). */
+    /** Visual entity scale (-1 = normal profile-driven scale). */
     private final double scale;
 
     /** Passive-aggro AI config (null = none). */

@@ -685,4 +685,31 @@ public class DatabaseManager {
     public java.util.LinkedHashMap<UUID, Long> getTopPlayersBy(LeaderboardCategory category, int limit) {
         return getTopPlayersBy(category, limit, null);
     }
+
+    public java.util.LinkedHashMap<UUID, Long> getTopCollectorsForMob(String mobId, int limit) {
+        java.util.LinkedHashMap<UUID, Long> top = new java.util.LinkedHashMap<>();
+        if (mobId == null || mobId.isBlank() || limit <= 0) {
+            return top;
+        }
+
+        synchronized (dbLock) {
+            if (!isConnected()) {
+                return top;
+            }
+
+            String sql = "SELECT uuid, count FROM fish_collection WHERE mob_id = ? ORDER BY count DESC, uuid ASC LIMIT ?";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, mobId);
+                ps.setInt(2, limit);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    top.put(UUID.fromString(rs.getString("uuid")), rs.getLong("count"));
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load catch leaders for " + mobId, e);
+            }
+        }
+
+        return top;
+    }
 }

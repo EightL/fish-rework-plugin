@@ -10,6 +10,7 @@ import com.fishrework.gui.FishBagGUI;
 import com.fishrework.model.MobDrop;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
+import com.fishrework.model.SeaCreatureWeightProfile;
 import com.fishrework.model.Skill;
 import com.fishrework.model.SpawnConfig;
 import com.fishrework.registry.MobRegistry;
@@ -57,6 +58,7 @@ public class MobManager {
     public final NamespacedKey MOB_ID_KEY;
     public final NamespacedKey FISH_WEIGHT_KEY;
     public final NamespacedKey MOB_SCALE_KEY;
+    public final NamespacedKey MOB_DROP_ROLL_MULTIPLIER_KEY;
     public final NamespacedKey CATCH_XP_MULTIPLIER_KEY;
 
     // Passive-aggro AI keys (stored in PDC for AggroTask to read)
@@ -85,6 +87,7 @@ public class MobManager {
         this.MOB_ID_KEY = new NamespacedKey(plugin, "mob_id");
         this.FISH_WEIGHT_KEY = new NamespacedKey(plugin, "fish_weight");
         this.MOB_SCALE_KEY = new NamespacedKey(plugin, "mob_scale");
+        this.MOB_DROP_ROLL_MULTIPLIER_KEY = new NamespacedKey(plugin, "mob_drop_roll_multiplier");
         this.CATCH_XP_MULTIPLIER_KEY = new NamespacedKey(plugin, "catch_xp_multiplier");
         this.AGGRO_SPEED_KEY = new NamespacedKey(plugin, "aggro_speed");
         this.AGGRO_DAMAGE_KEY = new NamespacedKey(plugin, "aggro_damage");
@@ -173,36 +176,38 @@ public class MobManager {
      * Spawns a mob by its registry ID at the given location.
      * Behaviour is driven by the mob's {@link SpawnConfig}.
      */
-    public void spawnMob(Location location, String mobId) {
-        spawnMob(location, mobId, null);
+    public SeaCreatureWeightProfile spawnMob(Location location, String mobId) {
+        return spawnMob(location, mobId, null);
     }
 
     /**
      * Spawns a mob by its registry ID at the given location.
      * If a fishing player is provided, the creature will be pulled toward them.
      */
-    public void spawnMob(Location location, String mobId, Player fishingPlayer) {
-        spawnMob(location, mobId, fishingPlayer, 0.0);
+    public SeaCreatureWeightProfile spawnMob(Location location, String mobId, Player fishingPlayer) {
+        return spawnMob(location, mobId, fishingPlayer, 0.0);
     }
 
-    public void spawnMob(Location location, String mobId, Player fishingPlayer, double catchXpMultiplierPercent) {
+    public SeaCreatureWeightProfile spawnMob(Location location, String mobId, Player fishingPlayer, double catchXpMultiplierPercent) {
         CustomMob def = plugin.getMobRegistry().get(mobId);
-        if (def == null) return;
+        if (def == null) return null;
 
         SpawnConfig config = def.getSpawnConfig();
         SpawnConfig.Type type = config != null ? config.getType() : SpawnConfig.Type.SIMPLE;
+        SeaCreatureWeightProfile weightProfile = rollWeightProfile(def);
 
         LivingEntity primary = switch (type) {
-            case MOUNTED -> spawnMounted(location, mobId, def, config, catchXpMultiplierPercent);
-            case GROUP   -> spawnGroup(location, mobId, def, config, catchXpMultiplierPercent);
-            case SCALED  -> spawnScaled(location, mobId, def, config, catchXpMultiplierPercent);
-            default      -> spawnSimple(location, mobId, def, config, catchXpMultiplierPercent);
+            case MOUNTED -> spawnMounted(location, mobId, def, config, catchXpMultiplierPercent, weightProfile);
+            case GROUP   -> spawnGroup(location, mobId, def, config, catchXpMultiplierPercent, weightProfile);
+            case SCALED  -> spawnScaled(location, mobId, def, config, catchXpMultiplierPercent, weightProfile);
+            default      -> spawnSimple(location, mobId, def, config, catchXpMultiplierPercent, weightProfile);
         };
 
         // Pull toward the fishing player if provided
         if (fishingPlayer != null && primary != null) {
             pullTowardPlayer(primary, fishingPlayer);
         }
+        return weightProfile;
     }
 
     public boolean shouldSpawnLiveCatch(CustomMob def) {
@@ -234,11 +239,12 @@ public class MobManager {
     // ── Unified Spawn Methods ─────────────────────────────────
 
     /**
-     * Standard single-entity spawn with weight/scale variance.
+     * Standard single-entity spawn with the shared weight/size/drop profile.
      * Applies stats, aggro, equipment, and potion effects from config.
      */
     private LivingEntity spawnSimple(Location location, String mobId, CustomMob def, SpawnConfig config,
-                                     double catchXpMultiplierPercent) {
+                                     double catchXpMultiplierPercent,
+                                     SeaCreatureWeightProfile weightProfile) {
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, def.getEntityType());
 
         // Name with optional color
@@ -260,12 +266,10 @@ public class MobManager {
             golem.setPlayerCreated(false);
         }
 
-        // PDC tags + weight/scale variance
+        // PDC tags + config stats + sampled weight/size/drop profile
         tagEntity(entity, mobId, catchXpMultiplierPercent);
-        applyWeightScale(entity, def);
-
-        // Stats from config (health, damage, scale)
         applyEntityStats(entity, config, def.isHostile());
+        applyWeightProfile(entity, weightProfile);
 
         // Passive-aggro AI
         if (config != null && config.hasAggro()) {
@@ -344,10 +348,11 @@ public class MobManager {
      * Mounted spawn: mount + rider, both tagged with same mob ID.
      */
     private LivingEntity spawnMounted(Location location, String mobId, CustomMob def, SpawnConfig config,
-                                      double catchXpMultiplierPercent) {
+                                      double catchXpMultiplierPercent,
+                                      SeaCreatureWeightProfile weightProfile) {
         SpawnConfig.EntityConfig mountConfig = config.getMount();
         if (mountConfig == null) {
-            return spawnSimple(location, mobId, def, config, catchXpMultiplierPercent);
+            return spawnSimple(location, mobId, def, config, catchXpMultiplierPercent, weightProfile);
         }
 
         // ── Spawn mount ──
@@ -374,8 +379,8 @@ public class MobManager {
             tagPassiveAggro(mount, aggro.getSpeed(), aggro.getDamage(), aggro.getRange(), aggro.getHitInterval());
         }
 
-        // Mount weight
-        applyWeightScale(mount, def);
+        // Shared weight/size/drop profile for the whole mounted catch
+        applyWeightProfile(mount, weightProfile);
 
         // Fire resistance — prevents daylight burning
         applyFireResistance(mount);
@@ -403,8 +408,8 @@ public class MobManager {
             applyEquipment(rider, config.getEquipment());
         }
 
-        // Rider weight
-        applyWeightScale(rider, def);
+        // Shared weight/size/drop profile for the whole mounted catch
+        applyWeightProfile(rider, weightProfile);
 
         // Fire resistance — prevents daylight burning
         applyFireResistance(rider);
@@ -438,7 +443,8 @@ public class MobManager {
      * Group spawn: multiple entities, optionally GROUP_KILL_ALL.
      */
     private LivingEntity spawnGroup(Location location, String mobId, CustomMob def, SpawnConfig config,
-                                    double catchXpMultiplierPercent) {
+                                    double catchXpMultiplierPercent,
+                                    SeaCreatureWeightProfile weightProfile) {
         double spread = config.getSpread();
         boolean killAll = config.isGroupKillAll();
         net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
@@ -472,6 +478,7 @@ public class MobManager {
 
                 // Stats
                 applyGroupMemberStats(entity, member);
+                applyWeightProfile(entity, weightProfile);
 
                 // Aggro
                 if (member.hasAggro()) {
@@ -503,6 +510,7 @@ public class MobManager {
                     tagEntity(riderEntity, mobId, catchXpMultiplierPercent);
                     if (killAll) tagGroupKillAll(riderEntity);
                     applyGroupMemberStats(riderEntity, riderConfig);
+                    applyWeightProfile(riderEntity, weightProfile);
                     entity.addPassenger(riderEntity);
                     aggroNearest(riderEntity, location);
                     applyFireResistance(riderEntity);
@@ -517,7 +525,8 @@ public class MobManager {
      * Scaled spawn: size-scaled entity (slimes). Optionally GROUP_KILL_ALL.
      */
     private LivingEntity spawnScaled(Location location, String mobId, CustomMob def, SpawnConfig config,
-                                     double catchXpMultiplierPercent) {
+                                     double catchXpMultiplierPercent,
+                                     SeaCreatureWeightProfile weightProfile) {
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, def.getEntityType());
 
         // Slime size
@@ -540,6 +549,7 @@ public class MobManager {
 
         // Stats
         applyEntityStats(entity, config, def.isHostile());
+        applyWeightProfile(entity, weightProfile);
 
         if (config == null || config.isAggroPlayers()) {
             aggroNearest(entity, location);
@@ -902,6 +912,8 @@ public class MobManager {
         pdc.set(FISHED_MOB_KEY, PersistentDataType.BYTE, (byte) 1);
         pdc.set(MOB_ID_KEY, PersistentDataType.STRING, mobId);
         pdc.set(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, 0.0);
+        pdc.set(MOB_SCALE_KEY, PersistentDataType.DOUBLE, 1.0);
+        pdc.set(MOB_DROP_ROLL_MULTIPLIER_KEY, PersistentDataType.DOUBLE, 1.0);
         pdc.set(CATCH_XP_MULTIPLIER_KEY, PersistentDataType.DOUBLE, Math.max(0.0, catchXpMultiplierPercent));
         addActiveMob(entity.getUniqueId());
     }
@@ -915,27 +927,85 @@ public class MobManager {
         );
     }
 
-    /** Applies weight and scale variance to a tagged entity. */
-    private void applyWeightScale(LivingEntity entity, CustomMob def) {
-        double variancePercent = plugin.getConfig().getDouble("mob_balance.size_variance_percent", 0.3)
-                * ThreadLocalRandom.current().nextDouble();
-        double scale = 1.0 + variancePercent;
-        double weight = def.getBaseWeight() * scale;
+    public SeaCreatureWeightProfile rollWeightProfile(CustomMob def) {
+        double baseWeight = def != null && !def.isTreasure() ? def.getBaseWeight() : 0.0;
+        return SeaCreatureWeightProfile.roll(baseWeight, getWeightProfileTuning(), ThreadLocalRandom.current());
+    }
 
+    public double getMobWeight(LivingEntity entity) {
+        if (entity == null) return 0.0;
+        return entity.getPersistentDataContainer().getOrDefault(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, 0.0);
+    }
+
+    public double getMobDropRollMultiplier(LivingEntity entity) {
+        if (entity == null) return 1.0;
+        return entity.getPersistentDataContainer().getOrDefault(
+                MOB_DROP_ROLL_MULTIPLIER_KEY,
+                PersistentDataType.DOUBLE,
+                1.0
+        );
+    }
+
+    public Rarity getWeightRarity(CustomMob def, double weightKg) {
+        if (def == null || def.isTreasure()) {
+            return Rarity.COMMON;
+        }
+        return SeaCreatureWeightProfile.classifyWeight(def.getBaseWeight(), weightKg, getWeightProfileTuning());
+    }
+
+    public Rarity getWeightRarity(SeaCreatureWeightProfile profile) {
+        if (profile == null) {
+            return Rarity.COMMON;
+        }
+        return SeaCreatureWeightProfile.classifySizeMultiplier(profile.getSizeMultiplier(), getWeightProfileTuning());
+    }
+
+    public double getDropRollMultiplierAtSize(double sizeMultiplier) {
+        return SeaCreatureWeightProfile.fromSizeMultiplier(1.0, sizeMultiplier, getWeightProfileTuning())
+                .getDropRollMultiplier();
+    }
+
+    public SeaCreatureWeightProfile.Tuning getWeightProfileTuning() {
+        SeaCreatureWeightProfile.Tuning defaults = SeaCreatureWeightProfile.Tuning.defaults();
+        String root = "mob_balance.weight_profile.";
+        return new SeaCreatureWeightProfile.Tuning(
+                plugin.getConfig().getDouble(root + "min_size_multiplier", defaults.minSizeMultiplier()),
+                plugin.getConfig().getDouble(root + "max_size_multiplier", defaults.maxSizeMultiplier()),
+                plugin.getConfig().getDouble(root + "lighter_side_chance", defaults.lighterSideChance()),
+                plugin.getConfig().getDouble(root + "lighter_shape", defaults.lighterShape()),
+                plugin.getConfig().getDouble(root + "heavier_shape", defaults.heavierShape()),
+                plugin.getConfig().getDouble(root + "weight_exponent", defaults.weightExponent()),
+                plugin.getConfig().getDouble(root + "drop_roll_multiplier_at_min_size", defaults.dropAtMinSize()),
+                plugin.getConfig().getDouble(root + "drop_roll_multiplier_at_normal_size", defaults.dropAtNormalSize()),
+                plugin.getConfig().getDouble(root + "drop_roll_multiplier_at_max_size", defaults.dropAtMaxSize()),
+                plugin.getConfig().getDouble(root + "drop_underweight_curve", defaults.dropUnderweightCurve()),
+                plugin.getConfig().getDouble(root + "drop_overweight_curve", defaults.dropOverweightCurve()),
+                plugin.getConfig().getDouble(root + "uncommon_weight_min_size", defaults.uncommonWeightMinSize()),
+                plugin.getConfig().getDouble(root + "rare_weight_min_size", defaults.rareWeightMinSize()),
+                plugin.getConfig().getDouble(root + "epic_weight_min_size", defaults.epicWeightMinSize()),
+                plugin.getConfig().getDouble(root + "legendary_weight_min_size", defaults.legendaryWeightMinSize()),
+                plugin.getConfig().getDouble(root + "mythic_weight_min_size", defaults.mythicWeightMinSize())
+        );
+    }
+
+    /** Applies one sampled weight/size/drop profile to a tagged entity. */
+    private void applyWeightProfile(LivingEntity entity, SeaCreatureWeightProfile profile) {
+        if (entity == null || profile == null) return;
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
-        pdc.set(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, weight);
-        pdc.set(MOB_SCALE_KEY, PersistentDataType.DOUBLE, scale);
+        pdc.set(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, profile.getWeightKg());
+        pdc.set(MOB_SCALE_KEY, PersistentDataType.DOUBLE, profile.getSizeMultiplier());
+        pdc.set(MOB_DROP_ROLL_MULTIPLIER_KEY, PersistentDataType.DOUBLE, profile.getDropRollMultiplier());
 
-        // Visual scale (only if no explicit scale override from config)
         try {
             org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.SCALE);
-            if (scaleAttr != null && scaleAttr.getBaseValue() == scaleAttr.getDefaultValue()) {
-                scaleAttr.setBaseValue(scale);
+            if (scaleAttr != null) {
+                scaleAttr.setBaseValue(scaleAttr.getBaseValue() * profile.getSizeMultiplier());
             }
-            // Health scaling with size variance
+
+            // Preserve the previous size->health relationship while extending it to every spawn form.
             org.bukkit.attribute.AttributeInstance healthAttr = entity.getAttribute(Attribute.MAX_HEALTH);
             if (healthAttr != null) {
-                double newMaxHealth = healthAttr.getBaseValue() * scale;
+                double newMaxHealth = healthAttr.getBaseValue() * profile.getSizeMultiplier();
                 healthAttr.setBaseValue(newMaxHealth);
                 entity.setHealth(newMaxHealth);
             }
@@ -1491,10 +1561,7 @@ public class MobManager {
         dropMobLoot(player, entity, def, directToInventory);
 
         // Collection & XP
-        double weight = 0.0;
-        if (entity.getPersistentDataContainer().has(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE)) {
-            weight = entity.getPersistentDataContainer().get(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE);
-        }
+        double weight = getMobWeight(entity);
         
         double catchXpMultiplierPercent = getCatchXpMultiplierPercent(entity);
         registerCatch(player, mobId, weight, def, catchXpMultiplierPercent);
@@ -1505,22 +1572,23 @@ public class MobManager {
      * Can be called independently of the main reward loop (e.g. for Group Kill-All mobs).
      */
     public void dropMobLoot(Player player, LivingEntity entity, CustomMob def, boolean directToInventory) {
-        // Get scale multiplier from entity (default 1.0)
-        double scale = entity.getPersistentDataContainer().getOrDefault(MOB_SCALE_KEY, PersistentDataType.DOUBLE, 1.0);
-        dropMobLoot(player, entity.getLocation(), def, directToInventory, scale);
+        double dropRollMultiplier = getMobDropRollMultiplier(entity);
+        dropMobLoot(player, entity.getLocation(), def, directToInventory, dropRollMultiplier);
     }
 
     /**
      * Overload for when the entity instance is not available (e.g. group kill checks).
      */
-    public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory, double scale) {
-        dropMobLoot(player, location, def, directToInventory, scale, false);
+    public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory,
+                            double dropRollMultiplier) {
+        dropMobLoot(player, location, def, directToInventory, dropRollMultiplier, false);
     }
 
     /**
      * Overload used by immediate fishing rewards that should behave like vanilla caught items.
      */
-    public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory, double scale,
+    public void dropMobLoot(Player player, Location location, CustomMob def, boolean directToInventory,
+                            double dropRollMultiplier,
                             boolean pullDropsToPlayer) {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         boolean collectToLavaBag = data != null && BagUtils.hasLavaBagInInventory(plugin, player);
@@ -1534,7 +1602,7 @@ public class MobManager {
         boolean fishBagChanged = false;
 
         for (MobDrop drop : def.getDrops()) {
-            java.util.List<ItemStack> items = drop.roll(scale);
+            java.util.List<ItemStack> items = drop.roll(dropRollMultiplier);
             for (ItemStack item : items) {
                 if (autoSellEnabled) {
                     double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), item, autoSellMode);
@@ -1724,6 +1792,7 @@ public class MobManager {
             }
 
             plugin.getAdvancementManager().checkCatchAll(player);
+            plugin.getAdvancementManager().checkMythicWeightCensus(player);
         }
 
         // XP via SkillManager (only if def is present and has XP)

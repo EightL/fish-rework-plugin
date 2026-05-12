@@ -6,6 +6,7 @@ import com.fishrework.model.CustomMob;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
 import com.fishrework.registry.RecipeDefinition;
+import com.fishrework.storage.DatabaseManager.LeaderboardCategory;
 import com.fishrework.util.FeatureKeys;
 import com.fishrework.util.FishingChanceSnapshotHelper;
 import net.kyori.adventure.text.Component;
@@ -125,6 +126,32 @@ public class SkillDetailGUI extends BaseGUI {
             xpHfMeta.displayName(Component.text(" "));
             xpHeaderFill.setItemMeta(xpHfMeta);
             inventory.setItem(0, xpHeaderFill);
+        }
+
+        // Slot 1: Fishing Leaderboard
+        if (skill == Skill.FISHING) {
+            boolean leaderboardEnabled = plugin.isFeatureEnabled(FeatureKeys.LEADERBOARD_ENABLED);
+            ItemStack leaderboardBtn = new ItemStack(leaderboardEnabled ? Material.GOLDEN_HELMET : Material.BARRIER);
+            ItemMeta leaderboardMeta = leaderboardBtn.getItemMeta();
+            leaderboardMeta.displayName(plugin.getLanguageManager().getMessage(
+                            "skilldetailgui.fishing_leaderboard",
+                            "Fishing Leaderboard")
+                    .color(leaderboardEnabled ? NamedTextColor.GOLD : NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false));
+            leaderboardMeta.lore(List.of(
+                    Component.text(""),
+                    plugin.getLanguageManager().getMessage(
+                                    leaderboardEnabled
+                                            ? "skilldetailgui.view_fishing_leaderboard"
+                                            : "skilldetailgui.leaderboard_disabled_by_server_admin",
+                                    leaderboardEnabled
+                                            ? "Open the /fs top leaderboard."
+                                            : "Leaderboard disabled by server admin.")
+                            .color(leaderboardEnabled ? NamedTextColor.YELLOW : NamedTextColor.RED)
+                            .decoration(TextDecoration.ITALIC, false)
+            ));
+            leaderboardBtn.setItemMeta(leaderboardMeta);
+            inventory.setItem(1, leaderboardBtn);
         }
 
         // Slot 4: Collection
@@ -337,7 +364,7 @@ public class SkillDetailGUI extends BaseGUI {
         ItemMeta hfMeta = headerFill.getItemMeta();
         hfMeta.displayName(Component.text(" "));
         headerFill.setItemMeta(hfMeta);
-        for (int slot : new int[]{1, 3, 5}) {
+        for (int slot : new int[]{3, 5}) {
             inventory.setItem(slot, headerFill);
         }
         if (skill != Skill.FISHING) {
@@ -631,6 +658,17 @@ public class SkillDetailGUI extends BaseGUI {
 
         if (event.getSlot() == 0 && skill == Skill.FISHING) {
             new ArtifactCollectionGUI(plugin, player).open(player);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+        } else if (event.getSlot() == 1 && skill == Skill.FISHING) {
+            if (!plugin.isFeatureEnabled(FeatureKeys.LEADERBOARD_ENABLED)) {
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                                "skilldetailgui.the_leaderboard_is_disabled",
+                                "The leaderboard is disabled on this server.")
+                        .color(net.kyori.adventure.text.format.NamedTextColor.RED));
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
+                return;
+            }
+            new LeaderboardGUI(plugin, player, LeaderboardCategory.BALANCE).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         } else if (event.getSlot() == 2 && skill == Skill.FISHING) {
             if (!plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED)) {

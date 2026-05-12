@@ -487,7 +487,23 @@ sea_creature_upgrade:
 #  Balance Tuning — Mob Behavior
 # ═══════════════════════════════════════════════════════
 mob_balance:
-  size_variance_percent: 0.3        # Max random size/weight variance (0.3 = 0-30%)
+  weight_profile:
+    min_size_multiplier: 0.70       # Lower bound for sampled creature size.
+    max_size_multiplier: 2.00       # Upper bound; the sampling curve keeps this exceptionally rare.
+    lighter_side_chance: 0.54       # Rolls below 1.0x are slightly more common than rolls above it.
+    lighter_shape: 1.60              # Higher values pull sub-1.0x rolls back toward normal size.
+    heavier_shape: 3.50              # Higher values make giant outliers rarer.
+    weight_exponent: 1.50            # Displayed kg grows non-linearly with visual size.
+    drop_roll_multiplier_at_min_size: 0.22
+    drop_roll_multiplier_at_normal_size: 0.40 # 1.0x creatures average 60% fewer drop rolls than before.
+    drop_roll_multiplier_at_max_size: 6.20    # Ultra-large outliers strongly overperform to keep the total nerf moderate.
+    drop_underweight_curve: 0.80
+    drop_overweight_curve: 1.25
+    uncommon_weight_min_size: 1.10
+    rare_weight_min_size: 1.25
+    epic_weight_min_size: 1.50
+    legendary_weight_min_size: 1.80
+    mythic_weight_min_size: 1.95      # Reserved for near-2.0x catches and the Gehenna advancement.
   hostile_default_health_mult: 2.0  # Default health multiplier for hostile mobs without explicit config
   hostile_default_damage_mult: 1.4  # Default damage multiplier for hostile mobs without explicit config
   live_catch_min_rarity: UNCOMMON   # Minimum rarity that spawns as a live catch. COMMON pays out immediately.

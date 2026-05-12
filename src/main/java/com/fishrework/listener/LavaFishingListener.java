@@ -6,6 +6,7 @@ import com.fishrework.model.FishingSession;
 import com.fishrework.model.LavaBobberState;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
+import com.fishrework.model.SeaCreatureWeightProfile;
 import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
 import com.fishrework.task.LavaBobberTask;
@@ -376,13 +377,21 @@ public class LavaFishingListener implements Listener {
         }
 
         if (!plugin.getMobManager().shouldSpawnLiveCatch(mobDef)) {
-            plugin.getMobManager().dropMobLoot(player, hookLoc, mobDef, false, 1.0, true);
-            plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitContext.xpMultiplier);
+            SeaCreatureWeightProfile weightProfile = plugin.getMobManager().rollWeightProfile(mobDef);
+            plugin.getMobManager().dropMobLoot(
+                    player,
+                    hookLoc,
+                    mobDef,
+                    false,
+                    weightProfile.getDropRollMultiplier(),
+                    true
+            );
+            plugin.getMobManager().registerCatch(player, mobId, weightProfile.getWeightKg(), mobDef, baitContext.xpMultiplier);
             session.recordCatch();
             player.sendActionBar(plugin.getLanguageManager().getMessage(
                     "lavafishinglistener.you_pulled_up_some_lava",
                     "You pulled up some lava debris...").color(NamedTextColor.GRAY));
-            maybeSendLavaSeaCreatureMessage(player, data, mobDef);
+            maybeSendLavaSeaCreatureMessage(player, data, mobDef, weightProfile);
             if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
                 FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
                 FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
@@ -390,9 +399,9 @@ public class LavaFishingListener implements Listener {
             return;
         }
 
-        plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitContext.xpMultiplier);
+        SeaCreatureWeightProfile weightProfile = plugin.getMobManager().spawnMob(hookLoc, mobId, player, baitContext.xpMultiplier);
 
-        maybeSendLavaSeaCreatureMessage(player, data, mobDef);
+        maybeSendLavaSeaCreatureMessage(player, data, mobDef, weightProfile);
 
         session.recordCatch();
 
@@ -402,7 +411,8 @@ public class LavaFishingListener implements Listener {
         }
     }
 
-    private void maybeSendLavaSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef) {
+    private void maybeSendLavaSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef,
+                                                 SeaCreatureWeightProfile weightProfile) {
         SeaCreatureMessageMode mode = data == null ? SeaCreatureMessageMode.ALL : data.getSeaCreatureMessageMode();
         if (mode == SeaCreatureMessageMode.NONE) {
             return;
@@ -413,10 +423,19 @@ public class LavaFishingListener implements Listener {
         }
         String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
         TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.GOLD;
+        double weightKg = weightProfile != null ? weightProfile.getWeightKg() : 0.0;
+        Rarity weightRarity = plugin.getMobManager().getWeightRarity(weightProfile);
         String template = plugin.getLanguageManager().getString(
                 "lavafishinglistener.you_hooked_sea_creature",
-                "You hooked a %mob%!");
-        player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.GOLD));
+                "You hooked a %mob% (%weight%)!");
+        player.sendMessage(FishingUtils.buildHookedMessage(
+                template,
+                mobName,
+                rarityColor,
+                com.fishrework.util.FormatUtil.format("%.2fkg", weightKg),
+                weightRarity.getColor(),
+                NamedTextColor.GOLD
+        ));
     }
 
     private void grantLavaCatchXp(Player player, double baitXpMultiplier) {

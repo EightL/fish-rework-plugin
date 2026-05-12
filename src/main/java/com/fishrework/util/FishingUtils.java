@@ -96,16 +96,46 @@ public class FishingUtils {
      * uses a consistent textColor.
      */
     public static Component buildHookedMessage(String template, String mobName, TextColor rarityColor, TextColor textColor) {
-        String placeholder = "%mob%";
-        int idx = template.indexOf(placeholder);
-        if (idx >= 0) {
-            return Component.text()
-                    .append(Component.text(template.substring(0, idx), textColor))
-                    .append(Component.text(mobName, rarityColor))
-                    .append(Component.text(template.substring(idx + placeholder.length()), textColor))
-                    .build();
+        return buildHookedMessage(template, mobName, rarityColor, "", textColor, textColor);
+    }
+
+    /**
+     * Builds a hooked message where %mob% and %weight% can be colored independently.
+     */
+    public static Component buildHookedMessage(String template,
+                                               String mobName,
+                                               TextColor rarityColor,
+                                               String weight,
+                                               TextColor weightColor,
+                                               TextColor textColor) {
+        net.kyori.adventure.text.TextComponent.Builder builder = Component.text();
+        int cursor = 0;
+        while (cursor < template.length()) {
+            int mobIdx = template.indexOf("%mob%", cursor);
+            int weightIdx = template.indexOf("%weight%", cursor);
+            int nextIdx = nextPlaceholderIndex(mobIdx, weightIdx);
+            if (nextIdx < 0) {
+                builder.append(Component.text(template.substring(cursor), textColor));
+                break;
+            }
+            if (nextIdx > cursor) {
+                builder.append(Component.text(template.substring(cursor, nextIdx), textColor));
+            }
+            if (nextIdx == mobIdx) {
+                builder.append(Component.text(mobName, rarityColor));
+                cursor = mobIdx + "%mob%".length();
+            } else {
+                builder.append(Component.text(weight, weightColor));
+                cursor = weightIdx + "%weight%".length();
+            }
         }
-        return Component.text(template, textColor);
+        return builder.build();
+    }
+
+    private static int nextPlaceholderIndex(int first, int second) {
+        if (first < 0) return second;
+        if (second < 0) return first;
+        return Math.min(first, second);
     }
 
     public static Sound getLavaExtinguishSound() {

@@ -6,6 +6,7 @@ import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.FishingSession;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Rarity;
+import com.fishrework.model.SeaCreatureWeightProfile;
 import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
 import com.fishrework.util.AutoSellUtil;
@@ -249,11 +250,19 @@ public class FishingListener implements Listener {
 
         if (!plugin.getMobManager().shouldSpawnLiveCatch(mobDef)) {
             Location rewardLocation = caughtItem.getLocation().clone();
+            SeaCreatureWeightProfile weightProfile = plugin.getMobManager().rollWeightProfile(mobDef);
             caughtItem.remove();
-            plugin.getMobManager().dropMobLoot(player, rewardLocation, mobDef, false, 1.0, true);
-            plugin.getMobManager().registerCatch(player, mobId, 0.0, mobDef, baitXpMultiplier);
+            plugin.getMobManager().dropMobLoot(
+                    player,
+                    rewardLocation,
+                    mobDef,
+                    false,
+                    weightProfile.getDropRollMultiplier(),
+                    true
+            );
+            plugin.getMobManager().registerCatch(player, mobId, weightProfile.getWeightKg(), mobDef, baitXpMultiplier);
             session.recordCatch();
-            maybeSendSeaCreatureMessage(player, data, mobDef);
+            maybeSendSeaCreatureMessage(player, data, mobDef, weightProfile);
             grantWaterCreatureCatchProgress(player);
             if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
                 FishingUtils.playCatchEffects(player, mobDef.getRarity(), rewardLocation);
@@ -264,7 +273,7 @@ public class FishingListener implements Listener {
 
         Location spawnLocation = caughtItem.getLocation().clone().add(0, -0.5, 0);
         caughtItem.remove();
-        plugin.getMobManager().spawnMob(spawnLocation, mobId, player, baitXpMultiplier);
+        SeaCreatureWeightProfile weightProfile = plugin.getMobManager().spawnMob(spawnLocation, mobId, player, baitXpMultiplier);
 
         Rarity doubleSpawnCap = getDoubleSpawnRarityCap(currentLevel);
         boolean canDoubleSpawn = mobDef.getRarity() != null
@@ -279,7 +288,7 @@ public class FishingListener implements Listener {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishinglistener.double_catch", "🎣 DOUBLE CATCH!").color(NamedTextColor.GOLD));
         }
 
-        maybeSendSeaCreatureMessage(player, data, mobDef);
+        maybeSendSeaCreatureMessage(player, data, mobDef, weightProfile);
 
         grantWaterCreatureCatchProgress(player);
 
@@ -303,7 +312,8 @@ public class FishingListener implements Listener {
         }
     }
 
-    private void maybeSendSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef) {
+    private void maybeSendSeaCreatureMessage(Player player, PlayerData data, com.fishrework.model.CustomMob mobDef,
+                                             SeaCreatureWeightProfile weightProfile) {
         SeaCreatureMessageMode mode = data == null ? SeaCreatureMessageMode.ALL : data.getSeaCreatureMessageMode();
         if (mode == SeaCreatureMessageMode.NONE) {
             return;
@@ -314,10 +324,19 @@ public class FishingListener implements Listener {
         }
         String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
         TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.WHITE;
+        double weightKg = weightProfile != null ? weightProfile.getWeightKg() : 0.0;
+        Rarity weightRarity = plugin.getMobManager().getWeightRarity(weightProfile);
         String template = plugin.getLanguageManager().getString(
                 "fishinglistener.you_hooked_sea_creature",
-                "You hooked in a %mob%!");
-        player.sendMessage(FishingUtils.buildHookedMessage(template, mobName, rarityColor, NamedTextColor.AQUA));
+                "You hooked in a %mob% (%weight%)!");
+        player.sendMessage(FishingUtils.buildHookedMessage(
+                template,
+                mobName,
+                rarityColor,
+                com.fishrework.util.FormatUtil.format("%.2fkg", weightKg),
+                weightRarity.getColor(),
+                NamedTextColor.AQUA
+        ));
     }
 
     private boolean tryAutoSellCatch(Player player,
