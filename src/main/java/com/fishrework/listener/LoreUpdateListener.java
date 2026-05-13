@@ -133,10 +133,9 @@ public class LoreUpdateListener implements Listener {
         refreshEquippedSlot(player, org.bukkit.inventory.EquipmentSlot.HAND);
         refreshEquippedSlot(player, org.bukkit.inventory.EquipmentSlot.OFF_HAND);
 
-        if (data != null) {
-            data.setFishBagContents(refreshBagContents(data.getFishBagContents()));
-            data.setLavaBagContents(refreshBagContents(data.getLavaBagContents()));
-        }
+        // Bag contents are NOT refreshed here — refreshing creates new item instances
+        // whose lore diverges from freshly-fished drops, breaking stacking in addToBag.
+        // Bag item lore is already refreshed lazily when the GUI is rendered.
     }
 
     private void refreshEquippedSlot(Player player, org.bukkit.inventory.EquipmentSlot slot) {

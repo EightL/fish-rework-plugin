@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class MobListener implements Listener {
 
@@ -39,6 +40,17 @@ public class MobListener implements Listener {
 
     public MobListener(FishRework plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        if (plugin.getFishStallManager() == null) return;
+
+        for (org.bukkit.entity.Entity entity : event.getChunk().getEntities()) {
+            if (entity instanceof LivingEntity living && plugin.getMobManager().isFishedMob(living)) {
+                plugin.getFishStallManager().cleanupAttachedModel(living);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -122,6 +134,9 @@ public class MobListener implements Listener {
         }
         if (plugin.getAttachedBlockCosmetics() != null) {
             plugin.getAttachedBlockCosmetics().cleanup(entity);
+        }
+        if (plugin.getFishStallManager() != null) {
+            plugin.getFishStallManager().cleanupAttachedModel(entity);
         }
 
         if (plugin.getMobManager().hasSharedMountedHp(entity)) {

@@ -11,6 +11,7 @@ import com.fishrework.loader.YamlMobLoader;
 import com.fishrework.manager.AdvancementManager;
 import com.fishrework.manager.ArtifactPassiveManager;
 import com.fishrework.manager.BossBarManager;
+import com.fishrework.manager.FishStallManager;
 import com.fishrework.manager.ItemManager;
 import com.fishrework.manager.LanguageManager;
 import com.fishrework.manager.LavaCreatureManager;
@@ -85,6 +86,7 @@ public class FishRework extends JavaPlugin {
     private RecipeCraftingManager recipeCraftingManager;
     private com.fishrework.task.BroodmotherCosmetics broodmotherCosmetics;
     private com.fishrework.task.AttachedBlockCosmetics attachedBlockCosmetics;
+    private FishStallManager fishStallManager;
 
     // Registries
     private MobRegistry mobRegistry;
@@ -209,6 +211,7 @@ public class FishRework extends JavaPlugin {
             getServer().getPluginManager().registerEvents(lavaFishingListener, this);
         }
         getServer().getPluginManager().registerEvents(new AnvilProtectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new FishStallListener(this), this);
 
         if (isFeatureEnabled(FeatureKeys.LAVA_FISHING_ENABLED)) {
             lavaRingManager.start();
@@ -250,7 +253,11 @@ public class FishRework extends JavaPlugin {
             getServer().getScheduler().runTaskTimer(this, attachedBlockCosmetics, 1L, 1L);
         }
 
-        // ── 5f. Start armor full-set cosmetic trails ──
+        // ── 5f. Fish Stall Manager — manages display entity models ──
+        fishStallManager = new FishStallManager(this);
+        getServer().getScheduler().runTaskTimer(this, fishStallManager, 1L, 1L);
+
+        // ── 5g. Start armor full-set cosmetic trails ──
         getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorSetTrailTask(this), 10L, 4L);
 
         // ── 6. Advancements ──
@@ -303,6 +310,11 @@ public class FishRework extends JavaPlugin {
     public void onDisable() {
         if (broodmotherCosmetics != null) broodmotherCosmetics.cleanupAll();
         if (attachedBlockCosmetics != null) attachedBlockCosmetics.cleanupAll();
+        if (fishStallManager != null) {
+            for (org.bukkit.World w : getServer().getWorlds()) {
+                fishStallManager.destroyAll(w);
+            }
+        }
         getServer().getScheduler().cancelTasks(this);
         if (totemManager != null) totemManager.stop();
         if (lavaRingManager != null) lavaRingManager.shutdown();
@@ -538,6 +550,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.manager.DisplayCaseManager getDisplayCaseManager() { return displayCaseManager; }
     public com.fishrework.task.BroodmotherCosmetics getBroodmotherCosmetics() { return broodmotherCosmetics; }
     public com.fishrework.task.AttachedBlockCosmetics getAttachedBlockCosmetics() { return attachedBlockCosmetics; }
+    public FishStallManager getFishStallManager() { return fishStallManager; }
 
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }

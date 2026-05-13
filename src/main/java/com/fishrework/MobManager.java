@@ -207,6 +207,7 @@ public class MobManager {
         if (fishingPlayer != null && primary != null) {
             pullTowardPlayer(primary, fishingPlayer);
         }
+        applyDisplayModel(primary, def);
         return weightProfile;
     }
 
@@ -234,6 +235,30 @@ public class MobManager {
 
         Rarity rarity = def.getRarity() != null ? def.getRarity() : Rarity.COMMON;
         return rarity.ordinal() >= minimum.ordinal();
+    }
+
+    private void applyDisplayModel(LivingEntity entity, CustomMob def) {
+        if (entity == null || def == null) return;
+
+        String modelId = def.getDisplayModelId();
+        if (modelId == null || modelId.isBlank()) return;
+        if (plugin.getFishStallManager() == null || !plugin.getFishStallManager().hasModel(modelId)) return;
+
+        double scaleMultiplier = entity.getPersistentDataContainer().getOrDefault(
+                MOB_SCALE_KEY,
+                PersistentDataType.DOUBLE,
+                1.0
+        );
+        boolean attached = plugin.getFishStallManager().attachModel(modelId, entity, scaleMultiplier);
+        if (!attached) return;
+
+        entity.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                org.bukkit.potion.PotionEffectType.INVISIBILITY,
+                Integer.MAX_VALUE,
+                0,
+                false,
+                false
+        ));
     }
 
     // ── Unified Spawn Methods ─────────────────────────────────
@@ -993,13 +1018,14 @@ public class MobManager {
         if (entity == null || profile == null) return;
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         pdc.set(FISH_WEIGHT_KEY, PersistentDataType.DOUBLE, profile.getWeightKg());
-        pdc.set(MOB_SCALE_KEY, PersistentDataType.DOUBLE, profile.getSizeMultiplier());
         pdc.set(MOB_DROP_ROLL_MULTIPLIER_KEY, PersistentDataType.DOUBLE, profile.getDropRollMultiplier());
 
+        double effectiveScaleMultiplier = profile.getSizeMultiplier();
         try {
             org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.SCALE);
             if (scaleAttr != null) {
-                scaleAttr.setBaseValue(scaleAttr.getBaseValue() * profile.getSizeMultiplier());
+                effectiveScaleMultiplier = scaleAttr.getBaseValue() * profile.getSizeMultiplier();
+                scaleAttr.setBaseValue(effectiveScaleMultiplier);
             }
 
             // Preserve the previous size->health relationship while extending it to every spawn form.
@@ -1010,6 +1036,10 @@ public class MobManager {
                 entity.setHealth(newMaxHealth);
             }
         } catch (Exception ignored) {}
+
+        // Attached display models read this PDC value after spawn. It needs to match the
+        // final visible size, including explicit spawn.scale and the rolled size profile.
+        pdc.set(MOB_SCALE_KEY, PersistentDataType.DOUBLE, effectiveScaleMultiplier);
     }
 
     /** Makes a mob aggressive toward nearest player. */
@@ -1319,8 +1349,16 @@ public class MobManager {
             if (level < mob.getRequiredLevel()) continue;
 
             double weight;
+            Double overrideWeight = getMobWeightOverride(mob.getId());
 
-            if (mob.isHostile()) {
+            if (overrideWeight != null) {
+                weight = overrideWeight;
+                if (mob.isHostile() && mob.isBoostByRareCreature()) {
+                    weight *= hostileMultiplier;
+                } else if (mob.isTreasure()) {
+                    weight *= treasureMultiplier;
+                }
+            } else if (mob.isHostile()) {
                 if (biomeProfile != null && biomeProfile.hasHostileWeight(mob.getId())) {
                     if (biomeProfile.isNightOnly(mob.getId()) && !isNight) {
                         continue; // Skip night-only mobs during daytime
@@ -1348,6 +1386,9 @@ public class MobManager {
                     weight = getConfigChance(mob);
                 }
                 
+            }
+
+            if (!mob.isHostile() && !mob.isTreasure()) {
                 totalPassiveWeight += weight;
             }
             
@@ -1638,7 +1679,7 @@ public class MobManager {
                     toHandle = overflow;
                 }
 
-                if (directToInventory) {
+                if (directToInventory || pullDropsToPlayer) {
                     HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(toHandle);
                     for (ItemStack remaining : leftover.values()) {
                         Item itemEntity = location.getWorld().dropItemNaturally(location, remaining);
@@ -2106,22 +2147,49 @@ public class MobManager {
         return !isHostile(mobId);
     }
 
-    // ── Config / Chance ───────────────────────────────────────
+    // ── Config / Weight ───────────────────────────────────────
 
     /**
-     * Gets the effective spawn chance, preferring config override, falling back to registry default.
+     * Gets the effective base spawn weight, preferring runtime overrides, then config defaults.
      */
     public double getConfigChance(CustomMob mob) {
+        Double overrideWeight = getMobWeightOverride(mob.getId());
+        if (overrideWeight != null) {
+            return overrideWeight;
+        }
         return plugin.getConfig().getDouble("mobs." + mob.getId() + ".chance", mob.getDefaultChance());
     }
 
     public double getMobChance(String mobId, double fallback) {
+        if ("land_mob_bonus".equals(mobId)) {
+            return plugin.getConfig().getDouble("mobs.land_mob_bonus.chance", fallback);
+        }
+        Double overrideWeight = getMobWeightOverride(mobId);
+        if (overrideWeight != null) {
+            return overrideWeight;
+        }
         return plugin.getConfig().getDouble("mobs." + mobId + ".chance", fallback);
     }
 
-    public void setMobChance(String mobId, double chance) {
-        plugin.getConfig().set("mobs." + mobId + ".chance", chance);
+    public void setMobChance(String mobId, double weight) {
+        if ("land_mob_bonus".equals(mobId)) {
+            plugin.getConfig().set("mobs.land_mob_bonus.chance", weight);
+        } else {
+            plugin.getConfig().set(getMobWeightOverridePath(mobId), weight);
+        }
         plugin.saveConfig();
+    }
+
+    private Double getMobWeightOverride(String mobId) {
+        String path = getMobWeightOverridePath(mobId);
+        if (!plugin.getConfig().contains(path)) {
+            return null;
+        }
+        return plugin.getConfig().getDouble(path);
+    }
+
+    private String getMobWeightOverridePath(String mobId) {
+        return "mob_weight_overrides." + mobId;
     }
     
     public double getEffectiveLandMobChance(BiomeFishingProfile profile) {

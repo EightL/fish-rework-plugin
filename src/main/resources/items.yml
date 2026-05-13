@@ -490,6 +490,7 @@ armor_sets:
         trim_material: copper
         armor: 3
         toughness: 2
+        durability: 500
       chestplate:
         material: LEATHER_CHESTPLATE
         leather_color: [175, 185, 208]
@@ -498,12 +499,14 @@ armor_sets:
         trim_material: iron
         armor: 8
         toughness: 2
+        durability: 600
       leggings:
         display_name: "Ironclad Leggings"
         trim_pattern: tide
         trim_material: copper
         armor: 6
         toughness: 2
+        durability: 600
       boots:
         material: LEATHER_BOOTS
         leather_color: [175, 185, 208]
@@ -512,6 +515,7 @@ armor_sets:
         trim_material: iron
         armor: 3
         toughness: 2
+        durability: 500
 
   # ── Dreadplate Armor ────────────────────────────────────
   # +5 SCC, +5 SCD, +5 SCA per piece
@@ -551,12 +555,14 @@ armor_sets:
         trim_material: netherite
         armor: 6
         toughness: 3
+        durability: 800
       boots:
         display_name: "Dreadplate Boots"
         trim_pattern: rib
         trim_material: redstone
         armor: 3
         toughness: 3
+        durability: 650
 
   # ── Deadman Set ─────────────────────────────────────────
   # +5 SCC, +5 SCD, +5 SCA per piece (base — night doubles in MobManager)

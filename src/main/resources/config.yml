@@ -496,9 +496,9 @@ mob_balance:
     weight_exponent: 1.50            # Displayed kg grows non-linearly with visual size.
     drop_roll_multiplier_at_min_size: 0.22
     drop_roll_multiplier_at_normal_size: 0.40 # 1.0x creatures average 60% fewer drop rolls than before.
-    drop_roll_multiplier_at_max_size: 6.20    # Ultra-large outliers strongly overperform to keep the total nerf moderate.
+    drop_roll_multiplier_at_max_size: 4.00    # Ultra-large outliers still overperform, but with a tighter loot ceiling.
     drop_underweight_curve: 0.80
-    drop_overweight_curve: 1.25
+    drop_overweight_curve: 2.00
     uncommon_weight_min_size: 1.10
     rare_weight_min_size: 1.25
     epic_weight_min_size: 1.50

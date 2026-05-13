@@ -71,7 +71,7 @@ fishbucketlistener.you_cannot_catch_monsters_with: ¡No puedes atrapar monstruos
 fishbucketlistener.you_cannot_empty_the_fish: ¡No puedes vaciar el Cubo de pesca!
 fishingcommand: '----------------------------'
 fishingcommand.admin_commands: '--- Comandos de administración ---'
-fishingcommand.all_mob_chances_land_mob: ¡Todas las probabilidades de mobs, bonus terrestre
+fishingcommand.all_mob_chances_land_mob: ¡Todos los pesos de mobs, bonus terrestre
   y probabilidad de artefactos restablecidas!
 fishingcommand.amount_must_be__0: La cantidad debe ser >= 0.
 fishingcommand.amount_must_be_between_0: La cantidad debe estar entre 0 y 1.000.000.
@@ -113,7 +113,7 @@ fishingcommand.fishing_resetchances: /fishing resetchances
 fishingcommand.fishing_sell: /fishing sell
 fishingcommand.fishing_session_stats: '--- Estadísticas de sesión de pesca ---'
 fishingcommand.fishing_setchance_mobartifact_chance: /fishing setchance <mob|artifact>
-  <probabilidad>
+  <peso|probabilidad>
 fishingcommand.fishing_setcoins_player_amount: /fishing setcoins <jugador> <cantidad>
 fishingcommand.fishing_setheat_player_amount: /fishing setheat <jugador> <cantidad>
 fishingcommand.fishing_setlevel_player_level: /fishing setlevel <jugador> <nivel>
@@ -158,12 +158,12 @@ fishingcommand.quick_particle_detail_shortcut: ' - Atajo rápido de detalle de p
 fishingcommand.quick_sell_all_fish_from: ' - Vender rápidamente todos los peces del
   inventario'
 fishingcommand.reload_configyml_without_restart: ' - Recargar config.yml sin reiniciar'
-fishingcommand.reset_all_chances_to_defaults: ' - Restablecer todas las probabilidades'
+fishingcommand.reset_all_chances_to_defaults: ' - Restablecer todos los pesos'
 fishingcommand.reset_player_data: ' - Restablecer datos del jugador'
 fishingcommand.set_doubloons_balance: ' - Establecer saldo de doblones'
 fishingcommand.set_global_xp_multiplier: ' - Establecer multiplicador global de XP'
 fishingcommand.set_heat_clamped_to_0100: ' - Establecer calor (limitado a 0-100)'
-fishingcommand.set_mobartifact_spawn_chance: ' - Establecer probabilidad de mob/artefacto'
+fishingcommand.set_mobartifact_spawn_chance: ' - Establecer peso de mob o probabilidad de artefacto'
 fishingcommand.set_player_level: ' - Establecer nivel del jugador'
 fishingcommand.set_sea_creature_effect_detail: ' - Establecer detalle de efectos de
   criaturas marinas'
@@ -199,7 +199,7 @@ fishingcommand.usage_fishing_particles_highmediumlow: 'Uso: /fishing particles <
 fishingcommand.usage_fishing_autosell_mode: 'Uso: /fishing autosell [off|other|all]'
 fishingcommand.usage_fishing_reset_player: 'Uso: /fishing reset <jugador>'
 fishingcommand.usage_fishing_setchance_mobartifact_chance: 'Uso: /fishing setchance
-  <mob|artifact> <probabilidad>'
+  <mob|artifact> <peso|probabilidad>'
 fishingcommand.usage_fishing_setcoins_player_amount: 'Uso: /fishing setcoins <jugador>
   <cantidad>'
 fishingcommand.usage_fishing_setheat_player_amount: 'Uso: /fishing setheat <jugador>
@@ -295,8 +295,8 @@ fishingcommand.unlocked_all_creatures_for_player: 'Se desbloquearon todas las cr
   para %player%'
 fishingcommand.updated_artifact_chance: 'Se actualizó la probabilidad de artefactos:
   %old%% -> %new%%'
-fishingcommand.updated_mob_chance: 'Se actualizó la probabilidad de %mob%: %old%% ->
-  %new%%'
+fishingcommand.updated_mob_chance: 'Se actualizó el peso de %mob%: %old% ->
+  %new%'
 fishingcommand.your_balance_set_by_admin: 'Tu saldo fue establecido a %amount% %currency%
   por un administrador.'
 fishingcommand.your_heat_set_by_admin: 'Tu calor de lava fue establecido a %value%

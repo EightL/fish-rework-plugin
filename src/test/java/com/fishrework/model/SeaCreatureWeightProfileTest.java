@@ -30,11 +30,11 @@ class SeaCreatureWeightProfileTest {
         assertTrue(light.getWeightKg() < 100.0);
         assertTrue(giant.getWeightKg() > 100.0);
         assertEquals(0.22, light.getDropRollMultiplier(), 0.000001);
-        assertEquals(6.20, giant.getDropRollMultiplier(), 0.000001);
+        assertEquals(4.00, giant.getDropRollMultiplier(), 0.000001);
     }
 
     @Test
-    void defaultSamplingTargetsMidTeenLootNerf() {
+    void defaultSamplingTargetsLowerLootVolumeWithTighterOutlierRewards() {
         Random random = new Random(0xF15A_C0DE);
         int sampleCount = 200_000;
         double dropRollSum = 0.0;
@@ -53,8 +53,8 @@ class SeaCreatureWeightProfileTest {
         }
 
         double averageDropRollMultiplier = dropRollSum / sampleCount;
-        assertTrue(averageDropRollMultiplier > 0.84 && averageDropRollMultiplier < 0.88,
-                "Expected total drop roll volume to land near a 12-16% nerf, got " + averageDropRollMultiplier);
+        assertTrue(averageDropRollMultiplier > 0.56 && averageDropRollMultiplier < 0.59,
+                "Expected total drop roll volume to land near a 41-44% nerf, got " + averageDropRollMultiplier);
         assertTrue(nearMaximumSize < sampleCount * 0.01,
                 "2.0x-scale creatures should stay exceptional");
         assertTrue(lightOutliers > nearMaximumSize,

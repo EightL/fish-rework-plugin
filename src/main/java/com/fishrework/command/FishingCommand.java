@@ -1,6 +1,7 @@
  package com.fishrework.command;
 
 import com.fishrework.FishRework;
+import com.fishrework.manager.FishStallManager;
 import com.fishrework.gui.LeaderboardGUI;
 import com.fishrework.gui.FishingSettingsGUI;
 import com.fishrework.gui.RecipeBrowserGUI;
@@ -83,6 +84,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerCommand(this::handleAdminHeat, "heat");
         registerAdminCommand(this::handleAdminSetHeat, "setheat");
         registerAdminCommand(this::handleAdminSetCoins, "setcoins");
+        registerAdminCommand(this::handleModels, "models");
     }
 
     private void registerCommand(SubcommandHandler handler, String... aliases) {
@@ -520,6 +522,59 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
 
 
+    private boolean handleModels(Player player, String[] args) {
+        if (args.length < 2) {
+            player.sendMessage(Component.text("Usage: /fishing models <spawn|destroy|list|destroyall> [id]").color(NamedTextColor.YELLOW));
+            return true;
+        }
+        String sub = args[1].toLowerCase();
+        FishStallManager mgr = plugin.getFishStallManager();
+        switch (sub) {
+            case "spawn" -> {
+                if (args.length < 3) {
+                    player.sendMessage(Component.text("Usage: /fishing models spawn <model_id>").color(NamedTextColor.RED));
+                    return true;
+                }
+                String modelId = args[2].toLowerCase();
+                if (!mgr.hasModel(modelId)) {
+                    player.sendMessage(Component.text("Unknown model: " + modelId + ". Use /fishing models list").color(NamedTextColor.RED));
+                    return true;
+                }
+                String instanceId = mgr.spawnModel(modelId, player.getLocation());
+                if (instanceId != null) {
+                    player.sendMessage(Component.text("Spawned model: " + modelId + " [#" + instanceId + "]").color(NamedTextColor.GREEN));
+                }
+            }
+            case "destroy" -> {
+                if (args.length < 3) {
+                    player.sendMessage(Component.text("Usage: /fishing models destroy <instance_id>").color(NamedTextColor.RED));
+                    return true;
+                }
+                boolean removed = mgr.destroyInstance(args[2]);
+                player.sendMessage(removed
+                    ? Component.text("Removed model instance: " + args[2]).color(NamedTextColor.GREEN)
+                    : Component.text("No active instance with id: " + args[2]).color(NamedTextColor.RED));
+            }
+            case "list" -> {
+                player.sendMessage(Component.text("--- Available Models ---").color(NamedTextColor.GOLD));
+                mgr.getModelIds().forEach(id ->
+                    player.sendMessage(Component.text("  " + id + " - " + mgr.getDisplayName(id)).color(NamedTextColor.YELLOW))
+                );
+                player.sendMessage(Component.text("--- Active Instances ---").color(NamedTextColor.GOLD));
+                mgr.getActiveInstances().forEach((iid, info) ->
+                    player.sendMessage(Component.text("  #" + iid + " [" + info + "]").color(NamedTextColor.AQUA))
+                );
+            }
+            case "destroyall" -> {
+                int count = mgr.destroyAll(player.getWorld());
+                player.sendMessage(Component.text("Removed " + count + " model instance(s).").color(NamedTextColor.GREEN));
+            }
+            default ->
+                player.sendMessage(Component.text("Unknown models subcommand. Use: spawn, destroy, list, destroyall").color(NamedTextColor.RED));
+        }
+        return true;
+    }
+
     private boolean handleAdminHeat(Player player, String[] args) {
         adminHeat(player, args);
         return true;
@@ -592,10 +647,10 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.give_xp_to_player", " - Give XP to player").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setlevel_player_level", "/fishing setlevel <player> <level>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_player_level", " - Set player level").color(NamedTextColor.GRAY)));
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setchance_mobartifact_chance", "/fishing setchance <mob|artifact> <chance>").color(NamedTextColor.YELLOW)
-                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_mobartifact_spawn_chance", " - Set mob/artifact spawn chance").color(NamedTextColor.GRAY)));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setchance_mobartifact_chance", "/fishing setchance <mob|artifact> <weight|chance>").color(NamedTextColor.YELLOW)
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_mobartifact_spawn_chance", " - Set mob spawn weight or artifact chance").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_resetchances", "/fishing resetchances").color(NamedTextColor.YELLOW)
-                    .append(plugin.getLanguageManager().getMessage("fishingcommand.reset_all_chances_to_defaults", " - Reset all chances to defaults").color(NamedTextColor.GRAY)));
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.reset_all_chances_to_defaults", " - Reset all weights to defaults").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_reset_player", "/fishing reset <player>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.reset_player_data", " - Reset player data").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_give_player_item_count", "/fishing give <player> <item> [count]").color(NamedTextColor.YELLOW)
@@ -851,7 +906,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
 
     private void adminSetChance(Player player, String[] args) {
         if (args.length < 3) {
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setchance_mobartifact_chance", "Usage: /fishing setchance <mob|artifact> <chance>").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.usage_fishing_setchance_mobartifact_chance", "Usage: /fishing setchance <mob|artifact> <weight|chance>").color(NamedTextColor.RED));
             return;
         }
 
@@ -893,20 +948,25 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         try {
-            double chance = Double.parseDouble(args[2]);
-            if (chance < 0.0 || chance > 100.0) {
-                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.chance_must_be_between_00", "Chance must be between 0.0 and 100.0.").color(NamedTextColor.RED));
+            double weight = Double.parseDouble(args[2]);
+            if (weight < 0.0 || weight > 1_000_000.0) {
+                player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.amount_must_be_between_0", "Amount must be between 0 and 1,000,000.").color(NamedTextColor.RED));
                 return;
             }
-            double oldChance = plugin.getMobManager().getMobChance(target, -1);
+            FishingChanceSnapshotHelper.ChanceSnapshot snapshot =
+                    FishingChanceSnapshotHelper.capture(plugin, player, Skill.FISHING);
+            double oldWeight = snapshot.rawWeights().getOrDefault(
+                    target,
+                    plugin.getMobManager().getMobChance(target, -1)
+            );
             
-            plugin.getMobManager().setMobChance(target, chance);
+            plugin.getMobManager().setMobChance(target, weight);
             player.sendMessage(plugin.getLanguageManager().getMessage(
                     "fishingcommand.updated_mob_chance",
-                    "Updated %mob% chance: %old%% -> %new%%",
+                    "Updated %mob% weight: %old% -> %new%",
                     "mob", target,
-                    "old", com.fishrework.util.FormatUtil.format("%.1f", oldChance),
-                    "new", com.fishrework.util.FormatUtil.format("%.1f", chance)
+                    "old", com.fishrework.util.FormatUtil.format("%.1f", oldWeight),
+                    "new", com.fishrework.util.FormatUtil.format("%.1f", weight)
             ).color(NamedTextColor.GREEN));
         } catch (NumberFormatException e) {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.invalid_number", "Invalid number.").color(NamedTextColor.RED));
@@ -1031,13 +1091,14 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         for (com.fishrework.model.CustomMob mob : plugin.getMobRegistry().getAll()) {
             plugin.getConfig().set("mobs." + mob.getId() + ".chance", mob.getDefaultChance());
         }
+        plugin.getConfig().set("mob_weight_overrides", null);
         // Also reset land_mob_bonus
         plugin.getConfig().set("mobs.land_mob_bonus.chance", null);
         // Reset artifact chance
         plugin.getConfig().set("artifacts.chance", null);
         
         plugin.saveConfig();
-        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.all_mob_chances_land_mob", "All mob chances, land mob bonus, and artifact chance reset to defaults!").color(NamedTextColor.GREEN));
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.all_mob_chances_land_mob", "All mob weights, land mob bonus, and artifact chance reset to defaults!").color(NamedTextColor.GREEN));
     }
 
     private void adminChances(Player player, String[] args) {
@@ -1348,7 +1409,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("help");
             completions.addAll(List.of("chances", "heat", "dmgindicator"));
             if (isAdmin) {
-                completions.addAll(List.of("addxp", "setlevel", "setchance", "resetchances", "reset", "give", "spawn", "fulfill", "setheat", "setcoins"));
+                completions.addAll(List.of("addxp", "setlevel", "setchance", "resetchances", "reset", "give", "spawn", "fulfill", "setheat", "setcoins", "models"));
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("dmgindicator")) {
@@ -1369,6 +1430,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("locale") || args[0].equalsIgnoreCase("language")) {
                 completions.addAll(plugin.getLanguageManager().getAvailableLocales());
+            } else if (args[0].equalsIgnoreCase("models")) {
+                completions.addAll(List.of("spawn", "destroy", "list", "destroyall"));
             } else if (isAdmin) {
                 if (args[0].equalsIgnoreCase("setchance")) {
                     completions.addAll(plugin.getMobRegistry().getAllIds());
@@ -1401,6 +1464,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 completions.addAll(List.of("all", "creatures", "artifacts"));
             } else if (args[0].equalsIgnoreCase("setheat")) {
                 completions.addAll(List.of("0", "25", "50", "75", "100"));
+            } else if (args[0].equalsIgnoreCase("models") && args[1].equalsIgnoreCase("spawn")) {
+                completions.addAll(plugin.getFishStallManager().getModelIds());
             } else if (args[0].equalsIgnoreCase("setcoins")) {
                 completions.addAll(List.of("0", "100", "1000", "10000"));
             }

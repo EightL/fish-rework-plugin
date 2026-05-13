@@ -67,7 +67,7 @@ fishbucketlistener.you_cannot_catch_monsters_with: You cannot catch monsters wit
 fishbucketlistener.you_cannot_empty_the_fish: You cannot empty the Fish Bucket!
 fishingcommand: '----------------------------'
 fishingcommand.admin_commands: '--- Admin Commands ---'
-fishingcommand.all_mob_chances_land_mob: All mob chances, land mob bonus, and artifact
+fishingcommand.all_mob_chances_land_mob: All mob weights, land mob bonus, and artifact
   chance reset to defaults!
 fishingcommand.amount_must_be__0: Amount must be >= 0.
 fishingcommand.amount_must_be_between_0: Amount must be between 0 and 1,000,000.
@@ -109,7 +109,7 @@ fishingcommand.fishing_resetchances: /fishing resetchances
 fishingcommand.fishing_sell: /fishing sell
 fishingcommand.fishing_session_stats: '--- Fishing Session Stats ---'
 fishingcommand.fishing_setchance_mobartifact_chance: /fishing setchance <mob|artifact>
-  <chance>
+  <weight|chance>
 fishingcommand.fishing_setcoins_player_amount: /fishing setcoins <player> <amount>
 fishingcommand.fishing_setheat_player_amount: /fishing setheat <player> <amount>
 fishingcommand.fishing_setlevel_player_level: /fishing setlevel <player> <level>
@@ -153,12 +153,12 @@ fishingcommand.player_not_found_online: Player not found online.
 fishingcommand.quick_particle_detail_shortcut: ' - Quick particle detail shortcut'
 fishingcommand.quick_sell_all_fish_from: ' - Quick sell all fish from inventory'
 fishingcommand.reload_configyml_without_restart: ' - Reload config.yml without restart'
-fishingcommand.reset_all_chances_to_defaults: ' - Reset all chances to defaults'
+fishingcommand.reset_all_chances_to_defaults: ' - Reset all weights to defaults'
 fishingcommand.reset_player_data: ' - Reset player data'
 fishingcommand.set_doubloons_balance: ' - Set doubloons balance'
 fishingcommand.set_global_xp_multiplier: ' - Set global XP multiplier'
 fishingcommand.set_heat_clamped_to_0100: ' - Set heat (clamped to 0-100)'
-fishingcommand.set_mobartifact_spawn_chance: ' - Set mob/artifact spawn chance'
+fishingcommand.set_mobartifact_spawn_chance: ' - Set mob spawn weight or artifact chance'
 fishingcommand.set_player_level: ' - Set player level'
 fishingcommand.set_sea_creature_effect_detail: ' - Set sea creature effect detail'
 fishingcommand.spawn_mob_at_location: ' - Spawn mob at location'
@@ -193,7 +193,7 @@ fishingcommand.usage_fishing_particles_highmediumlow: 'Usage: /fishing particles
 fishingcommand.usage_fishing_autosell_mode: 'Usage: /fishing autosell [off|other|all]'
 fishingcommand.usage_fishing_reset_player: 'Usage: /fishing reset <player>'
 fishingcommand.usage_fishing_setchance_mobartifact_chance: 'Usage: /fishing setchance
-  <mob|artifact> <chance>'
+  <mob|artifact> <weight|chance>'
 fishingcommand.usage_fishing_setcoins_player_amount: 'Usage: /fishing setcoins <player>
   <amount>'
 fishingcommand.usage_fishing_setheat_player_amount: 'Usage: /fishing setheat <player>
@@ -275,7 +275,7 @@ fishingcommand.unknown_mob_available_list: 'Unknown mob. Available: %mobs%'
 fishingcommand.unlocked_all_artifacts_for_player: 'Unlocked all artifacts for %player%'
 fishingcommand.unlocked_all_creatures_for_player: 'Unlocked all creatures for %player%'
 fishingcommand.updated_artifact_chance: 'Updated artifact chance: %old%% -> %new%%'
-fishingcommand.updated_mob_chance: 'Updated %mob% chance: %old%% -> %new%%'
+fishingcommand.updated_mob_chance: 'Updated %mob% weight: %old% -> %new%'
 fishingcommand.your_balance_set_by_admin: 'Your balance was set to %amount% %currency%
   by an admin.'
 fishingcommand.your_heat_set_by_admin: 'Your lava heat was set to %value% by an admin.'

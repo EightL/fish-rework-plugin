@@ -40,6 +40,7 @@ public class CustomMob {
     private final String collectionName;
     private final Rarity rarity;
     private final SpawnConfig spawnConfig;
+    private final String displayModelId;
 
     private CustomMob(Builder b) {
         this.id = b.id;
@@ -57,6 +58,7 @@ public class CustomMob {
         this.collectionName = b.collectionName;
         this.rarity = b.rarity;
         this.spawnConfig = b.spawnConfig;
+        this.displayModelId = b.displayModelId;
     }
 
     // --- Getters ---
@@ -84,6 +86,7 @@ public class CustomMob {
     public Material getCollectionIcon() { return collectionIcon; }
     public Rarity getRarity() { return rarity; }
     public SpawnConfig getSpawnConfig() { return spawnConfig; }
+    public String getDisplayModelId() { return displayModelId; }
 
     // --- Builder ---
 
@@ -107,6 +110,7 @@ public class CustomMob {
         private String collectionName = "???";
         private Rarity rarity = Rarity.COMMON;
         private SpawnConfig spawnConfig;
+        private String displayModelId;
 
         private Builder(String id, EntityType entityType, Skill skill) {
             this.id = id;
@@ -131,6 +135,7 @@ public class CustomMob {
         public Builder collectionName(String name) { this.collectionName = name; return this; }
         public Builder rarity(Rarity rarity) { this.rarity = rarity; return this; }
         public Builder spawnConfig(SpawnConfig spawnConfig) { this.spawnConfig = spawnConfig; return this; }
+        public Builder displayModelId(String displayModelId) { this.displayModelId = displayModelId; return this; }
 
         public CustomMob build() {
             return new CustomMob(this);

@@ -225,7 +225,8 @@ public class FishingListener implements Listener {
                     caughtItem.remove();
                     player.sendActionBar(plugin.getLanguageManager().getMessage("fishinglistener.treasure_sent_to_fish_bag", "Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
                 } else {
-                    caughtItem.setItemStack(overflow);
+                    BagUtils.giveToInventoryOrDrop(player, overflow);
+                    caughtItem.remove();
                     resultingItemStack = overflow;
                 }
             } else {
@@ -393,7 +394,8 @@ public class FishingListener implements Listener {
             caughtItem.remove();
             player.sendActionBar(plugin.getLanguageManager().getMessage("fishinglistener.catch_sent_to_fish_bag", "Catch sent to Fish Bag!").color(NamedTextColor.GOLD));
         } else {
-            caughtItem.setItemStack(overflow);
+            BagUtils.giveToInventoryOrDrop(player, overflow);
+            caughtItem.remove();
         }
     }
 

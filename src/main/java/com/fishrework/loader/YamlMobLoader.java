@@ -98,6 +98,10 @@ public class YamlMobLoader {
             "mobs." + id + ".collection_icon"
         );
         String collectionName = entry.getString("collection_name", displayName);
+        String displayModelId = entry.getString("display_model");
+        if (displayModelId == null || displayModelId.isBlank()) {
+            displayModelId = entry.getString("model");
+        }
         Rarity rarity = YamlParseSupport.parseEnum(
             plugin,
             Rarity.class,
@@ -116,7 +120,8 @@ public class YamlMobLoader {
                 .boostByRareCreature(boost)
                 .collectionIcon(collectionIcon)
                 .collectionName(collectionName)
-                .rarity(rarity);
+                .rarity(rarity)
+                .displayModelId(displayModelId);
 
         // Parse drops
         if (entry.contains("drops")) {

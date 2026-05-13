@@ -15,6 +15,7 @@
 #   collection_icon:    Material used as icon in the collection GUI
 #   collection_name:    Display name in the collection GUI
 #   rarity:             COMMON | UNCOMMON | RARE | EPIC | LEGENDARY
+#   display_model:      Optional display-entity model ID to attach while the vanilla mob drives AI
 #   drops:              List of item drops (omitted if none)
 #     - item:           Custom item ID from ItemManager
 #     - vanilla:        Vanilla Minecraft material
@@ -67,6 +68,48 @@ mobs:
       chance: 1.0
       min: 1
       max: 1
+
+  sailfish:
+    entity_type: SALMON
+    display_name: "Sailfish"
+    xp: 20.0
+    base_weight: 8.0
+    default_chance: 8.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: SALMON_SPAWN_EGG
+    collection_name: "Swift Sailfish"
+    rarity: UNCOMMON
+    display_model: sailfish
+    drops:
+    - vanilla: COD
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 2
+
+  catfish:
+    entity_type: SALMON
+    display_name: "Catfish"
+    xp: 20.0
+    base_weight: 8.0
+    default_chance: 10.0
+    category: PASSIVE
+    required_level: 0
+    boost_by_rare_creature: false
+    collection_icon: SALMON_SPAWN_EGG
+    collection_name: "Whiskered Catfish"
+    rarity: UNCOMMON
+    display_model: catfish
+    drops:
+    - vanilla: SALMON
+      chance: 1.0
+      min: 1
+      max: 1
+    spawn:
+      scale: 2
 
   squid:
     entity_type: SQUID
@@ -150,6 +193,8 @@ mobs:
     spawn:
       health_multiplier: 1.0
       damage_multiplier: 0.7
+      aggro:
+        speed: 0.25
 
   elder_guardian:
     entity_type: ELDER_GUARDIAN
@@ -758,15 +803,10 @@ mobs:
       scale: 2.5
       health: 60.0
       aggro:
-        speed: 1.5
+        speed: 0.9
         damage: 16.8
         range: 5.0
-        hit_interval: 30
-      abilities:
-      - id: TIDAL_PULL
-        cooldown_ticks: 100
-        weight: 1
-        chance: 1.0
+        hit_interval: 40
 
   megalodon:
     entity_type: DOLPHIN
@@ -794,7 +834,7 @@ mobs:
       health: 150.0
       particle: gore
       aggro:
-        speed: 1.8
+        speed: 0.72
         damage: 15.75
         range: 10.0
         hit_interval: 40
@@ -1194,7 +1234,7 @@ mobs:
     display_name: "Common Treasure Chest"
     xp: 50.0
     base_weight: 25.0
-    default_chance: 2.5
+    default_chance: 1.25
     category: TREASURE
     required_level: 0
     boost_by_rare_creature: false
@@ -1212,7 +1252,7 @@ mobs:
     display_name: "Uncommon Treasure Chest"
     xp: 100.0
     base_weight: 12.0
-    default_chance: 1.2
+    default_chance: 0.6
     category: TREASURE
     required_level: 0
     boost_by_rare_creature: false
@@ -1230,7 +1270,7 @@ mobs:
     display_name: "Rare Treasure Chest"
     xp: 250.0
     base_weight: 8.0
-    default_chance: 0.5
+    default_chance: 0.1
     category: TREASURE
     required_level: 0
     boost_by_rare_creature: false
@@ -1248,7 +1288,7 @@ mobs:
     display_name: "Epic Treasure Chest"
     xp: 500.0
     base_weight: 4.0
-    default_chance: 0.25
+    default_chance: 0.04
     category: TREASURE
     required_level: 0
     boost_by_rare_creature: false
@@ -1266,7 +1306,7 @@ mobs:
     display_name: "Legendary Treasure Chest"
     xp: 1000.0
     base_weight: 1.0
-    default_chance: 0.1
+    default_chance: 0.02
     category: TREASURE
     required_level: 0
     boost_by_rare_creature: false

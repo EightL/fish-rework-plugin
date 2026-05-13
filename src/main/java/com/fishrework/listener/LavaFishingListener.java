@@ -351,8 +351,7 @@ public class LavaFishingListener implements Listener {
                 plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
 
                 if (overflow != null) {
-                    Item itemEntity = hookLoc.getWorld().dropItemNaturally(hookLoc, overflow);
-                    itemEntity.setInvulnerable(true);
+                    BagUtils.giveToInventoryOrDrop(player, overflow);
                 } else {
                     player.sendActionBar(plugin.getLanguageManager().getMessage("lavafishinglistener.treasure_sent_to_fish_bag", "Treasure sent to Fish Bag!").color(NamedTextColor.GOLD));
                 }

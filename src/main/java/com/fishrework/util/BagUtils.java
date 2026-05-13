@@ -2,6 +2,7 @@ package com.fishrework.util;
 
 import com.fishrework.FishRework;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,7 +22,8 @@ public final class BagUtils {
             Material.SALMON,
             Material.TROPICAL_FISH,
             Material.PUFFERFISH,
-            Material.INK_SAC
+            Material.INK_SAC,
+            Material.NAUTILUS_SHELL
     );
 
     private BagUtils() {
@@ -115,5 +117,17 @@ public final class BagUtils {
         meta.setItems(new ArrayList<>());
         bag.setItemMeta(meta);
         return recoveredCount;
+    }
+
+    public static void giveToInventoryOrDrop(Player player, ItemStack item) {
+        if (player == null || item == null || item.getType().isAir()) {
+            return;
+        }
+
+        Map<Integer, ItemStack> overflow = player.getInventory().addItem(item.clone());
+        for (ItemStack remaining : overflow.values()) {
+            Item dropped = player.getWorld().dropItemNaturally(player.getLocation(), remaining);
+            dropped.setInvulnerable(true);
+        }
     }
 }
