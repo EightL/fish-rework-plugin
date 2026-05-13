@@ -10,7 +10,7 @@ biome_profiles:
       cod: 30.0
       salmon: 12.0
       sailfish: 2.0
-      catfish: 3.0
+
       squid: 8.0
       pufferfish: 2.0
       tropical_fish: 2.0
@@ -29,7 +29,7 @@ biome_profiles:
       cod: 8.0
       salmon: 28.0
       sailfish: 1.0
-      catfish: 2.0
+
       squid: 8.0
       pufferfish: 1.0
       tropical_fish: 1.0
@@ -52,7 +52,7 @@ biome_profiles:
       cod: 22.0
       salmon: 12.0
       sailfish: 6.0
-      catfish: 8.0
+
       squid: 12.0
       pufferfish: 6.0
       tropical_fish: 5.0
@@ -72,7 +72,7 @@ biome_profiles:
       cod: 8.0
       salmon: 5.0
       sailfish: 8.0
-      catfish: 10.0
+
       squid: 6.0
       pufferfish: 12.0
       tropical_fish: 18.0
@@ -92,7 +92,7 @@ biome_profiles:
       cod: 3.0
       salmon: 1.0
       sailfish: 10.0
-      catfish: 12.0
+
       squid: 5.0
       pufferfish: 12.0
       tropical_fish: 22.0
@@ -160,7 +160,7 @@ biome_profiles:
       cod: 18.0
       salmon: 10.0
       sailfish: 4.0
-      catfish: 5.0
+
       squid: 8.0
       pufferfish: 6.0
       turtle: 8.0
