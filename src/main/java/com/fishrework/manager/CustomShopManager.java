@@ -160,8 +160,16 @@ public class CustomShopManager {
             if (!withdrawal.success()) {
                 return withdrawal;
             }
+
+            boolean consumed = plugin.getDatabaseManager().deleteCustomShopListing(shop.id(), listing.slotIndex());
+            if (!consumed) {
+                plugin.getEconomyManager().deposit(buyer, liveListing.price());
+                return EconomyResult.failure("Shop listing is no longer available.");
+            }
+
             EconomyResult sellerDeposit = plugin.getEconomyManager().deposit(shop.ownerUuid(), shop.ownerName(), liveListing.price());
             if (!sellerDeposit.success()) {
+                plugin.getDatabaseManager().saveCustomShopListing(shop.id(), listing.slotIndex(), liveListing.item(), liveListing.price());
                 plugin.getEconomyManager().deposit(buyer, liveListing.price());
                 return EconomyResult.failure("Seller payout failed: " + sellerDeposit.message());
             }
@@ -184,7 +192,9 @@ public class CustomShopManager {
             if (listing == null) {
                 return null;
             }
-            plugin.getDatabaseManager().deleteCustomShopListing(shop.id(), slotIndex);
+            if (!plugin.getDatabaseManager().deleteCustomShopListing(shop.id(), slotIndex)) {
+                return null;
+            }
             return listing.item().clone();
         }
     }

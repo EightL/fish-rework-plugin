@@ -663,16 +663,17 @@ public class DatabaseManager {
         }
     }
 
-    public void deleteCustomShopListing(String shopId, int slotIndex) {
+    public boolean deleteCustomShopListing(String shopId, int slotIndex) {
         synchronized (dbLock) {
-            if (!isConnected() || shopId == null) return;
+            if (!isConnected() || shopId == null) return false;
             String sql = "DELETE FROM custom_shop_items WHERE shop_id = ? AND slot_index = ?";
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setString(1, shopId);
                 ps.setInt(2, slotIndex);
-                ps.executeUpdate();
+                return ps.executeUpdate() > 0;
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to delete custom shop listing for " + shopId + " slot " + slotIndex, e);
+                return false;
             }
         }
     }
