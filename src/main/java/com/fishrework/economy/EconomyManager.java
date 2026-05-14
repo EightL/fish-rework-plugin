@@ -5,6 +5,7 @@ import com.fishrework.util.FormatUtil;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
+import java.util.UUID;
 
 public final class EconomyManager {
 
@@ -50,6 +51,11 @@ public final class EconomyManager {
     public EconomyResult deposit(Player player, double amount) {
         EconomyResult validation = validateAmount(amount);
         return validation != null ? validation : provider.deposit(player, amount);
+    }
+
+    public EconomyResult deposit(UUID uuid, String playerName, double amount) {
+        EconomyResult validation = validateAmount(amount);
+        return validation != null ? validation : provider.deposit(uuid, playerName, amount);
     }
 
     public EconomyResult withdraw(Player player, double amount) {

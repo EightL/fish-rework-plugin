@@ -70,6 +70,7 @@ public class ItemManager {
     public final NamespacedKey HARMONY_ROD_KEY;
     public final NamespacedKey TREASURE_TOTEM_KEY;
     public final NamespacedKey DISPLAY_CASE_KEY;
+    public final NamespacedKey FISH_STALL_KEY;
     public final NamespacedKey FISHING_JOURNAL_KEY;
     public final NamespacedKey ARTIFACT_KEY;
 
@@ -143,6 +144,7 @@ public class ItemManager {
         this.HARMONY_ROD_KEY = new NamespacedKey(plugin, "harmony_rod");
         this.TREASURE_TOTEM_KEY = new NamespacedKey(plugin, "treasure_totem");
         this.DISPLAY_CASE_KEY = new NamespacedKey(plugin, "display_case");
+        this.FISH_STALL_KEY = new NamespacedKey(plugin, "fish_stall");
         this.FISHING_JOURNAL_KEY = new NamespacedKey(plugin, "fishing_journal");
         this.ARTIFACT_KEY = new NamespacedKey(plugin, "artifact");
 
@@ -220,6 +222,7 @@ public class ItemManager {
                 || pdc.has(TREASURE_TYPE_KEY, PersistentDataType.STRING)
                 || pdc.has(TREASURE_TOTEM_KEY, PersistentDataType.BYTE)
                 || pdc.has(DISPLAY_CASE_KEY, PersistentDataType.BYTE)
+                || pdc.has(FISH_STALL_KEY, PersistentDataType.BYTE)
                 || pdc.has(BAIT_KEY, PersistentDataType.STRING)
                 || pdc.has(SCALE_ARMOR_KEY, PersistentDataType.BYTE)
                 || pdc.has(DEADMAN_ARMOR_KEY, PersistentDataType.BYTE)
@@ -262,6 +265,12 @@ public class ItemManager {
                     + "' on custom item '" + getCustomItemId(item) + "'.");
             return null;
         }
+    }
+
+    public boolean isFishStall(ItemStack item) {
+        return item != null
+                && item.hasItemMeta()
+                && item.getItemMeta().getPersistentDataContainer().has(FISH_STALL_KEY, PersistentDataType.BYTE);
     }
 
     public boolean isVanillaCompatibleCustomItem(ItemStack item) {

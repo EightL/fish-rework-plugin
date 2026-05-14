@@ -15,7 +15,30 @@ content_version: 2
 # ── Shaped Recipes ──────────────────────────────────────
 shaped:
 
-
+  # Fish Stall — Level 1
+  fish_stall_recipe:
+    result: fish_stall
+    level: 1
+    pattern:
+      - "LSL"
+      - "CCC"
+      - "BBB"
+    ingredients:
+      L: LANTERN
+      S:
+        - OAK_SLAB
+        - SPRUCE_SLAB
+        - BIRCH_SLAB
+        - JUNGLE_SLAB
+        - ACACIA_SLAB
+        - DARK_OAK_SLAB
+        - MANGROVE_SLAB
+        - CHERRY_SLAB
+        - BAMBOO_SLAB
+        - CRIMSON_SLAB
+        - WARPED_SLAB
+      C: COD
+      B: BARREL
 
   # Harmony Rod — requires "Bucket Catcher" advancement
   harmony_rod_recipe:

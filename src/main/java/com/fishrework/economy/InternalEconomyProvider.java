@@ -5,6 +5,8 @@ import com.fishrework.model.PlayerData;
 import com.fishrework.util.FormatUtil;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public final class InternalEconomyProvider implements EconomyProvider {
 
     private final FishRework plugin;
@@ -52,6 +54,24 @@ public final class InternalEconomyProvider implements EconomyProvider {
         data.addBalance(amount);
         plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
         return EconomyResult.success(data.getBalance() - before, data.getBalance());
+    }
+
+    @Override
+    public EconomyResult deposit(UUID uuid, String playerName, double amount) {
+        if (uuid == null) {
+            return EconomyResult.failure("Player UUID is not available.");
+        }
+        PlayerData data = plugin.getPlayerDataMap().get(uuid);
+        if (data != null) {
+            double before = data.getBalance();
+            if (before + amount > PlayerData.DEFAULT_MAX_BALANCE + 0.000001) {
+                return EconomyResult.failure("Balance limit would be exceeded.");
+            }
+            data.addBalance(amount);
+            plugin.getDatabaseManager().saveBalance(uuid, data.getBalance());
+            return EconomyResult.success(data.getBalance() - before, data.getBalance());
+        }
+        return plugin.getDatabaseManager().addBalance(uuid, amount, PlayerData.DEFAULT_MAX_BALANCE);
     }
 
     @Override

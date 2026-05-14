@@ -12,6 +12,7 @@ public final class FeatureKeys {
     public static final String CATCH_BROADCAST_ENABLED = "catch_broadcast_enabled";
     public static final String CUSTOM_MOBS_ENABLED = "custom_mobs_enabled";
     public static final String CUSTOM_RECIPES_ENABLED = "custom_recipes_enabled";
+    public static final String CUSTOM_SHOPS_ENABLED = "custom_shops_enabled";
     public static final String DOUBLE_CATCH_ENABLED = "double_catch_enabled";
     public static final String DAMAGE_INDICATORS_ENABLED = "damage_indicators_enabled";
     public static final String ECONOMY_ENABLED = "economy_enabled";

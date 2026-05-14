@@ -1210,6 +1210,18 @@ utility_items:
       - text: "Right-click on water to catch nearby fish!"
         color: YELLOW
 
+  fish_stall:
+    material: PLAYER_HEAD
+    texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0="
+    display_name: "Fish Stall"
+    rarity: COMMON
+    pdc_key: fish_stall
+    lore:
+      - text: "Place to create a player shop."
+        color: YELLOW
+      - text: "Configure listings through the stall GUI."
+        color: DARK_GRAY
+
   treasure_totem:
     material: PLAYER_HEAD
     texture_base64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODIzODU2NDBiZTVhODRlNjgyMTI2NDY5YTdiMzYzMWQ0Mjg1ZGM3MWI3MGM3NmI5NDY0OTI4OGY5ZTExMjcyZCJ9fX0="

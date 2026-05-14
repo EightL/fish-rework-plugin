@@ -939,6 +939,7 @@ features:
   # Economy & Shop
   economy_enabled: true          # Custom currency balance tracking. Disabling also disables shop.
   shop_enabled: true             # /fish shop buy/sell GUI
+  custom_shops_enabled: true     # Player-owned fish stall shops and craftable stall item
   auto_sell_enabled: true        # /fish autosell command
 
   # GUIs & Menus

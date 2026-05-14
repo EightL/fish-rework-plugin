@@ -3,9 +3,12 @@ package com.fishrework.storage;
 import com.fishrework.FishRework;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.AutoSellMode;
+import com.fishrework.model.CustomShop;
+import com.fishrework.model.CustomShopListing;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.sql.*;
@@ -130,10 +133,27 @@ public class DatabaseManager {
                     "contents TEXT);";
             stmt.execute(fishBagSql);
 
-                String lavaBagSql = "CREATE TABLE IF NOT EXISTS " + TABLE_PLAYER_LAVA_BAG + " (" +
+            String lavaBagSql = "CREATE TABLE IF NOT EXISTS " + TABLE_PLAYER_LAVA_BAG + " (" +
                     "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "contents TEXT);";
                 stmt.execute(lavaBagSql);
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS custom_shops (" +
+                    "shop_id VARCHAR(36) NOT NULL PRIMARY KEY, " +
+                    "owner_uuid VARCHAR(36) NOT NULL, " +
+                    "owner_name VARCHAR(32) NOT NULL, " +
+                    "world VARCHAR(128) NOT NULL, " +
+                    "x INT NOT NULL, " +
+                    "y INT NOT NULL, " +
+                    "z INT NOT NULL, " +
+                    "yaw REAL NOT NULL DEFAULT 0, " +
+                    "model_instance_id VARCHAR(96));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS custom_shop_items (" +
+                    "shop_id VARCHAR(36) NOT NULL, " +
+                    "slot_index INT NOT NULL, " +
+                    "item TEXT NOT NULL, " +
+                    "price BIGINT NOT NULL, " +
+                    "PRIMARY KEY (shop_id, slot_index));");
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to initialize database tables", e);
         }
@@ -415,6 +435,41 @@ public class DatabaseManager {
         synchronized (dbLock) { saveBalanceInternal(uuid, balance); }
     }
 
+    public com.fishrework.economy.EconomyResult addBalance(UUID uuid, double amount, double maxBalance) {
+        synchronized (dbLock) {
+            if (!isConnected()) return com.fishrework.economy.EconomyResult.failure("Database is not connected.");
+            if (uuid == null) return com.fishrework.economy.EconomyResult.failure("Player UUID is not available.");
+            String select = "SELECT balance FROM player_economy WHERE uuid = ?";
+            String upsert = "INSERT INTO player_economy (uuid, balance, lifetime_doubloons, total_fish_caught, total_treasures_caught) " +
+                    "VALUES (?, ?, ?, 0, 0) ON CONFLICT(uuid) DO UPDATE SET " +
+                    "balance = excluded.balance, lifetime_doubloons = lifetime_doubloons + excluded.lifetime_doubloons;";
+            try {
+                double current = 0.0;
+                try (PreparedStatement ps = connection.prepareStatement(select)) {
+                    ps.setString(1, uuid.toString());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        current = rs.getDouble("balance");
+                    }
+                }
+                if (current + amount > maxBalance + 0.000001) {
+                    return com.fishrework.economy.EconomyResult.failure("Balance limit would be exceeded.");
+                }
+                double next = current + amount;
+                try (PreparedStatement ps = connection.prepareStatement(upsert)) {
+                    ps.setString(1, uuid.toString());
+                    ps.setDouble(2, next);
+                    ps.setLong(3, (long) amount);
+                    ps.executeUpdate();
+                }
+                return com.fishrework.economy.EconomyResult.success(amount, next);
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to add balance for " + uuid, e);
+                return com.fishrework.economy.EconomyResult.failure("Database balance update failed.");
+            }
+        }
+    }
+
     private void saveBalanceInternal(UUID uuid, double balance) {
         saveEconomyInternal(uuid, balance, -1, -1, -1);
     }
@@ -458,6 +513,204 @@ public class DatabaseManager {
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load economy for " + uuid, e);
         }
+    }
+
+    // ── Custom Shops ──
+
+    public void saveCustomShop(CustomShop shop) {
+        synchronized (dbLock) {
+            if (!isConnected() || shop == null) return;
+            String sql = "INSERT OR REPLACE INTO custom_shops " +
+                    "(shop_id, owner_uuid, owner_name, world, x, y, z, yaw, model_instance_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, shop.id());
+                ps.setString(2, shop.ownerUuid().toString());
+                ps.setString(3, shop.ownerName());
+                ps.setString(4, shop.worldName());
+                ps.setInt(5, shop.x());
+                ps.setInt(6, shop.y());
+                ps.setInt(7, shop.z());
+                ps.setFloat(8, shop.yaw());
+                ps.setString(9, shop.modelInstanceId());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save custom shop " + shop.id(), e);
+            }
+        }
+    }
+
+    public void updateCustomShopInstance(String shopId, String modelInstanceId) {
+        synchronized (dbLock) {
+            if (!isConnected()) return;
+            try (PreparedStatement ps = connection.prepareStatement("UPDATE custom_shops SET model_instance_id = ? WHERE shop_id = ?")) {
+                ps.setString(1, modelInstanceId);
+                ps.setString(2, shopId);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to update custom shop instance " + shopId, e);
+            }
+        }
+    }
+
+    public CustomShop loadCustomShop(String shopId) {
+        synchronized (dbLock) {
+            if (!isConnected() || shopId == null) return null;
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM custom_shops WHERE shop_id = ?")) {
+                ps.setString(1, shopId);
+                ResultSet rs = ps.executeQuery();
+                return rs.next() ? readCustomShop(rs) : null;
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load custom shop " + shopId, e);
+                return null;
+            }
+        }
+    }
+
+    public CustomShop loadCustomShopAt(String worldName, int x, int y, int z) {
+        synchronized (dbLock) {
+            if (!isConnected() || worldName == null) return null;
+            String sql = "SELECT * FROM custom_shops WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, worldName);
+                ps.setInt(2, x);
+                ps.setInt(3, y);
+                ps.setInt(4, z);
+                ResultSet rs = ps.executeQuery();
+                return rs.next() ? readCustomShop(rs) : null;
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE,
+                        "[Fish Rework] Failed to load custom shop at " + worldName + " " + x + "," + y + "," + z, e);
+                return null;
+            }
+        }
+    }
+
+    public java.util.List<CustomShop> loadCustomShops() {
+        synchronized (dbLock) {
+            java.util.List<CustomShop> shops = new java.util.ArrayList<>();
+            if (!isConnected()) return shops;
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM custom_shops ORDER BY owner_name, shop_id")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    shops.add(readCustomShop(rs));
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load custom shops", e);
+            }
+            return shops;
+        }
+    }
+
+    public java.util.List<CustomShopListing> loadCustomShopListings(String shopId) {
+        synchronized (dbLock) {
+            java.util.List<CustomShopListing> listings = new java.util.ArrayList<>();
+            if (!isConnected() || shopId == null) return listings;
+            String sql = "SELECT slot_index, item, price FROM custom_shop_items WHERE shop_id = ? ORDER BY slot_index";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, shopId);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    ItemStack[] items = deserializeItemStacks(Base64.getDecoder().decode(rs.getString("item")));
+                    ItemStack item = items.length > 0 ? items[0] : null;
+                    if (item != null) {
+                        listings.add(new CustomShopListing(shopId, rs.getInt("slot_index"), item, rs.getLong("price")));
+                    }
+                }
+            } catch (Exception e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load custom shop listings for " + shopId, e);
+            }
+            return listings;
+        }
+    }
+
+    public void saveCustomShopListing(String shopId, int slotIndex, ItemStack item, long price) {
+        synchronized (dbLock) {
+            if (!isConnected() || shopId == null || item == null || price <= 0) return;
+            String sql = "INSERT OR REPLACE INTO custom_shop_items (shop_id, slot_index, item, price) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, shopId);
+                ps.setInt(2, slotIndex);
+                ps.setString(3, Base64.getEncoder().encodeToString(serializeItemStacks(new ItemStack[]{item})));
+                ps.setLong(4, price);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to save custom shop listing for " + shopId, e);
+            }
+        }
+    }
+
+    public CustomShopListing loadCustomShopListing(String shopId, int slotIndex) {
+        synchronized (dbLock) {
+            if (!isConnected() || shopId == null) return null;
+            String sql = "SELECT slot_index, item, price FROM custom_shop_items WHERE shop_id = ? AND slot_index = ?";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, shopId);
+                ps.setInt(2, slotIndex);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    return null;
+                }
+                ItemStack[] items = deserializeItemStacks(Base64.getDecoder().decode(rs.getString("item")));
+                ItemStack item = items.length > 0 ? items[0] : null;
+                if (item == null) {
+                    return null;
+                }
+                return new CustomShopListing(shopId, rs.getInt("slot_index"), item, rs.getLong("price"));
+            } catch (Exception e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to load custom shop listing for " + shopId + " slot " + slotIndex, e);
+                return null;
+            }
+        }
+    }
+
+    public void deleteCustomShopListing(String shopId, int slotIndex) {
+        synchronized (dbLock) {
+            if (!isConnected() || shopId == null) return;
+            String sql = "DELETE FROM custom_shop_items WHERE shop_id = ? AND slot_index = ?";
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, shopId);
+                ps.setInt(2, slotIndex);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to delete custom shop listing for " + shopId + " slot " + slotIndex, e);
+            }
+        }
+    }
+
+    public void deleteCustomShop(String shopId) {
+        synchronized (dbLock) {
+            if (!isConnected() || shopId == null) return;
+            try {
+                connection.setAutoCommit(false);
+                try (PreparedStatement ps = connection.prepareStatement("DELETE FROM custom_shop_items WHERE shop_id = ?")) {
+                    ps.setString(1, shopId);
+                    ps.executeUpdate();
+                }
+                try (PreparedStatement ps = connection.prepareStatement("DELETE FROM custom_shops WHERE shop_id = ?")) {
+                    ps.setString(1, shopId);
+                    ps.executeUpdate();
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                try { connection.rollback(); } catch (SQLException ignored) {}
+                plugin.getLogger().log(Level.SEVERE, "[Fish Rework] Failed to delete custom shop " + shopId, e);
+            } finally {
+                try { connection.setAutoCommit(true); } catch (SQLException ignored) {}
+            }
+        }
+    }
+
+    private CustomShop readCustomShop(ResultSet rs) throws SQLException {
+        return new CustomShop(
+                rs.getString("shop_id"),
+                UUID.fromString(rs.getString("owner_uuid")),
+                rs.getString("owner_name"),
+                rs.getString("world"),
+                rs.getInt("x"),
+                rs.getInt("y"),
+                rs.getInt("z"),
+                rs.getFloat("yaw"),
+                rs.getString("model_instance_id"));
     }
 
     // ── Fish Bag ──

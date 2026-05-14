@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public final class VaultUnlockedEconomyProvider implements EconomyProvider {
 
@@ -82,6 +83,25 @@ public final class VaultUnlockedEconomyProvider implements EconomyProvider {
     }
 
     @Override
+    public EconomyResult deposit(UUID uuid, String playerName, double amount) {
+        if (!isAvailable()) {
+            return EconomyResult.failure("VaultUnlocked economy provider is not available.");
+        }
+        if (uuid == null) {
+            return EconomyResult.failure("Player UUID is not available.");
+        }
+        ensureAccount(uuid, playerName);
+        BigDecimal value = BigDecimal.valueOf(amount);
+        String world = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0).getName();
+        EconomyResponse response = useConfiguredCurrency
+                ? economy.deposit(pluginName, uuid, world, currency, value)
+                : useWorldAccounts
+                        ? economy.deposit(pluginName, uuid, world, value)
+                        : economy.deposit(pluginName, uuid, value);
+        return fromResponse(response);
+    }
+
+    @Override
     public EconomyResult withdraw(Player player, double amount) {
         if (!isAvailable()) {
             return EconomyResult.failure("VaultUnlocked economy provider is not available.");
@@ -150,6 +170,15 @@ public final class VaultUnlockedEconomyProvider implements EconomyProvider {
         }
         if (!economy.hasAccount(player.getUniqueId())) {
             economy.createAccount(player.getUniqueId(), player.getName(), true);
+        }
+    }
+
+    private void ensureAccount(UUID uuid, String playerName) {
+        if (economy == null || uuid == null) {
+            return;
+        }
+        if (!economy.hasAccount(uuid)) {
+            economy.createAccount(uuid, playerName == null || playerName.isBlank() ? uuid.toString() : playerName, true);
         }
     }
 

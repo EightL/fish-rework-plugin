@@ -2,13 +2,16 @@
 
 import com.fishrework.FishRework;
 import com.fishrework.economy.EconomyResult;
+import com.fishrework.gui.CustomShopGUI;
 import com.fishrework.manager.FishStallManager;
+import com.fishrework.manager.CustomShopManager;
 import com.fishrework.gui.LeaderboardGUI;
 import com.fishrework.gui.FishingSettingsGUI;
 import com.fishrework.gui.RecipeBrowserGUI;
 import com.fishrework.gui.RecipeGuideGUI;
 import com.fishrework.gui.SkillsMenuGUI;
 import com.fishrework.model.AutoSellMode;
+import com.fishrework.model.CustomShop;
 import com.fishrework.model.ParticleDetailMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
@@ -72,6 +75,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         registerCommand(this::handleHelp, "help");
         registerCommand(this::handleDamageIndicator, "dmgindicator");
         registerCommand(this::handleParticles, "particles");
+        registerCommand(this::handleFishStall, "fish_stall", "fishstall");
 
         registerAdminCommand(this::handleAdminAddXp, "addxp");
         registerAdminCommand(this::handleAdminSetLevel, "setlevel");
@@ -480,6 +484,85 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     private boolean handleParticles(Player player, String[] args) {
         String[] particleArgs = args.length >= 2 ? java.util.Arrays.copyOfRange(args, 1, args.length) : new String[0];
         return handleParticleModeCommand(player, particleArgs);
+    }
+
+    private boolean handleFishStall(Player player, String[] args) {
+        if (!requireFeature(player,
+                FeatureKeys.CUSTOM_SHOPS_ENABLED,
+                "fishstalllistener.custom_shops_disabled",
+                "Custom shops are disabled on this server.")) {
+            return true;
+        }
+
+        if (args.length < 2 || (!args[1].equalsIgnoreCase("setprice"))) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.usage_fish_stall_setprice",
+                    "Usage: /fs fish_stall setprice <price>")
+                    .color(NamedTextColor.YELLOW));
+            return true;
+        }
+
+        if (args.length < 3) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                    "fishingcommand.usage_fish_stall_setprice",
+                    "Usage: /fs fish_stall setprice <price>")
+                    .color(NamedTextColor.RED));
+            return true;
+        }
+
+        Long price = parsePositiveInteger(args[2]);
+        if (price == null) {
+            player.sendMessage(plugin.getLanguageManager()
+                    .getMessage("fishstalllistener.invalid_price", "Enter a whole-number price greater than 0.")
+                    .color(NamedTextColor.RED));
+            return true;
+        }
+
+        CustomShopManager.PendingPrice pending = plugin.getCustomShopManager().consumePendingPrice(player.getUniqueId());
+        if (pending == null) {
+            player.sendMessage(plugin.getLanguageManager().getMessage(
+                            "fishingcommand.fish_stall_no_pending_price",
+                            "You have no pending fish stall item. Add an item in the stall GUI first.")
+                    .color(NamedTextColor.RED));
+            return true;
+        }
+
+        CustomShop shop = plugin.getCustomShopManager().getShop(pending.shopId());
+        if (shop == null) {
+            player.sendMessage(plugin.getLanguageManager()
+                    .getMessage("fishstalllistener.shop_not_found", "This shop no longer exists.")
+                    .color(NamedTextColor.RED));
+            giveBackPendingItem(player, pending.item());
+            return true;
+        }
+
+        plugin.getCustomShopManager().saveListing(pending.shopId(), pending.slotIndex(), pending.item(), price);
+        player.sendMessage(plugin.getLanguageManager().getMessage(
+                        "fishingcommand.fish_stall_price_set",
+                        "Listing added for %price%.",
+                        "price", plugin.getCustomShopManager().formatPrice(price))
+                .color(NamedTextColor.GREEN));
+        new CustomShopGUI(plugin, player, shop).open(player);
+        return true;
+    }
+
+    private void giveBackPendingItem(Player player, ItemStack item) {
+        Map<Integer, ItemStack> leftover = player.getInventory().addItem(item.clone());
+        for (ItemStack drop : leftover.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), drop);
+        }
+    }
+
+    private Long parsePositiveInteger(String raw) {
+        if (raw == null) return null;
+        String normalized = raw.trim().replace(",", "").replace(" ", "");
+        if (!normalized.matches("[0-9]+")) return null;
+        try {
+            long value = Long.parseLong(normalized);
+            return value > 0 ? value : null;
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     private boolean handleAdminAddXp(Player player, String[] args) {
@@ -1399,10 +1482,16 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             if (args.length == 1) {
                 completions.add("particles");
                 completions.add("language");
+                completions.add("fish_stall");
             } else if (args.length == 2 && args[0].equalsIgnoreCase("particles")) {
                 completions.addAll(List.of("high", "medium", "low"));
             } else if (args.length == 2 && args[0].equalsIgnoreCase("language")) {
                 completions.addAll(plugin.getLanguageManager().getAvailableLocales());
+            } else if (args.length == 2 && (args[0].equalsIgnoreCase("fish_stall") || args[0].equalsIgnoreCase("fishstall"))) {
+                completions.add("setprice");
+            } else if (args.length == 3 && (args[0].equalsIgnoreCase("fish_stall") || args[0].equalsIgnoreCase("fishstall"))
+                    && args[1].equalsIgnoreCase("setprice")) {
+                completions.addAll(List.of("10", "100", "1000"));
             }
         }
 
@@ -1425,6 +1514,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             completions.add("xpmultiplier");
             completions.add("locale");
             completions.add("language");
+            completions.add("fish_stall");
             completions.add("help");
             completions.addAll(List.of("chances", "heat", "dmgindicator"));
             if (isAdmin) {
@@ -1449,6 +1539,8 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("locale") || args[0].equalsIgnoreCase("language")) {
                 completions.addAll(plugin.getLanguageManager().getAvailableLocales());
+            } else if (args[0].equalsIgnoreCase("fish_stall") || args[0].equalsIgnoreCase("fishstall")) {
+                completions.add("setprice");
             } else if (args[0].equalsIgnoreCase("models")) {
                 completions.addAll(List.of("spawn", "destroy", "list", "destroyall"));
             } else if (isAdmin) {
@@ -1483,6 +1575,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 completions.addAll(List.of("all", "creatures", "artifacts"));
             } else if (args[0].equalsIgnoreCase("setheat")) {
                 completions.addAll(List.of("0", "25", "50", "75", "100"));
+            } else if ((args[0].equalsIgnoreCase("fish_stall") || args[0].equalsIgnoreCase("fishstall"))
+                    && args[1].equalsIgnoreCase("setprice")) {
+                completions.addAll(List.of("10", "100", "1000"));
             } else if (args[0].equalsIgnoreCase("models") && args[1].equalsIgnoreCase("spawn")) {
                 completions.addAll(plugin.getFishStallManager().getModelIds());
             } else if (args[0].equalsIgnoreCase("setcoins")) {

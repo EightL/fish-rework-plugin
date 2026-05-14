@@ -2,6 +2,8 @@ package com.fishrework.economy;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public interface EconomyProvider {
 
     String getId();
@@ -15,6 +17,8 @@ public interface EconomyProvider {
     double getBalance(Player player);
 
     EconomyResult deposit(Player player, double amount);
+
+    EconomyResult deposit(UUID uuid, String playerName, double amount);
 
     EconomyResult withdraw(Player player, double amount);
 

@@ -5,6 +5,7 @@ import com.fishrework.manager.ItemManager;
 import com.fishrework.model.Skill;
 import com.fishrework.registry.RecipeDefinition;
 import com.fishrework.registry.RecipeRegistry;
+import com.fishrework.util.FeatureKeys;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,6 +83,9 @@ public class YamlRecipeLoader {
             currentCustomIngredients.clear();
 
             String resultId = entry.getString("result");
+            if (isFeatureDisabledResult(resultId)) {
+                return false;
+            }
             ItemStack result = itemManager.getRequiredItem(resultId);
 
             NamespacedKey key = new NamespacedKey(plugin, recipeId);
@@ -176,6 +180,9 @@ public class YamlRecipeLoader {
             currentCustomIngredients.clear();
 
             String resultId = entry.getString("result");
+            if (isFeatureDisabledResult(resultId)) {
+                return false;
+            }
             ItemStack result = itemManager.getRequiredItem(resultId);
 
             NamespacedKey key = new NamespacedKey(plugin, recipeId);
@@ -334,6 +341,11 @@ public class YamlRecipeLoader {
             // No gating
             return new RecipeDefinition(key, recipe, Skill.FISHING, 0, null, customIngs, resultId, displayType, grid, ingredientUnits);
         }
+    }
+
+    private boolean isFeatureDisabledResult(String resultId) {
+        return "fish_stall".equalsIgnoreCase(resultId)
+                && !plugin.isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED);
     }
 
     private List<RecipeDefinition.Ingredient> buildShapedGrid(List<String> pattern,

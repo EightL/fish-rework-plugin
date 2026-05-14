@@ -12,6 +12,7 @@ import com.fishrework.loader.YamlMobLoader;
 import com.fishrework.manager.AdvancementManager;
 import com.fishrework.manager.ArtifactPassiveManager;
 import com.fishrework.manager.BossBarManager;
+import com.fishrework.manager.CustomShopManager;
 import com.fishrework.manager.FishStallManager;
 import com.fishrework.manager.ItemManager;
 import com.fishrework.manager.LanguageManager;
@@ -89,6 +90,7 @@ public class FishRework extends JavaPlugin {
     private com.fishrework.task.BroodmotherCosmetics broodmotherCosmetics;
     private com.fishrework.task.AttachedBlockCosmetics attachedBlockCosmetics;
     private FishStallManager fishStallManager;
+    private CustomShopManager customShopManager;
 
     // Registries
     private MobRegistry mobRegistry;
@@ -259,7 +261,11 @@ public class FishRework extends JavaPlugin {
 
         // ── 5f. Fish Stall Manager — manages display entity models ──
         fishStallManager = new FishStallManager(this);
+        customShopManager = new CustomShopManager(this);
         getServer().getScheduler().runTaskTimer(this, fishStallManager, 1L, 1L);
+        if (isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED)) {
+            getServer().getScheduler().runTask(this, () -> customShopManager.restoreShops());
+        }
 
         // ── 5g. Start armor full-set cosmetic trails ──
         getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.ArmorSetTrailTask(this), 10L, 4L);
@@ -505,6 +511,10 @@ public class FishRework extends JavaPlugin {
             && !getConfig().getBoolean("features." + FeatureKeys.ECONOMY_ENABLED, true)) {
             return false;
         }
+        if (featureKey.equals(FeatureKeys.CUSTOM_SHOPS_ENABLED)
+            && !getConfig().getBoolean("features." + FeatureKeys.ECONOMY_ENABLED, true)) {
+            return false;
+        }
         if (featureKey.equals(FeatureKeys.LAVA_BAG)
             && !getConfig().getBoolean("features." + FeatureKeys.FISH_BAG_ENABLED, true)) {
             return false;
@@ -559,6 +569,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.task.BroodmotherCosmetics getBroodmotherCosmetics() { return broodmotherCosmetics; }
     public com.fishrework.task.AttachedBlockCosmetics getAttachedBlockCosmetics() { return attachedBlockCosmetics; }
     public FishStallManager getFishStallManager() { return fishStallManager; }
+    public CustomShopManager getCustomShopManager() { return customShopManager; }
 
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }

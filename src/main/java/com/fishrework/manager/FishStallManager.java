@@ -16,6 +16,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 
 import java.util.*;
+import java.util.logging.Filter;
+import java.util.logging.Logger;
 
 public class FishStallManager implements Runnable {
 
@@ -25,6 +27,7 @@ public class FishStallManager implements Runnable {
     private final NamespacedKey modelIdKey;
     private final NamespacedKey modelRoleKey;
     private final NamespacedKey attachedParentKey;
+    private final CommandSender silentCommandSender;
     private final Map<String, ModelDefinition> registry = new LinkedHashMap<>();
     private final Map<String, UUID> activeInstances = new LinkedHashMap<>();
     private final Map<UUID, AttachedModel> attachedModels = new java.util.concurrent.ConcurrentHashMap<>();
@@ -35,6 +38,7 @@ public class FishStallManager implements Runnable {
         this.modelIdKey = new NamespacedKey(plugin, "fish_model_id");
         this.modelRoleKey = new NamespacedKey(plugin, "fish_model_role");
         this.attachedParentKey = new NamespacedKey(plugin, "fish_model_attached_parent");
+        this.silentCommandSender = Bukkit.getConsoleSender();
         registerModel("fish_stall", "Fish Market Stall", "fr_fish_stall", FISH_STALL_COMMAND);
     }
 
@@ -75,6 +79,10 @@ public class FishStallManager implements Runnable {
     }
 
     public String spawnModel(String modelId, Location loc) {
+        return spawnModel(modelId, loc, Map.of());
+    }
+
+    public String spawnModel(String modelId, Location loc, Map<NamespacedKey, String> hitboxData) {
         ModelDefinition def = registry.get(modelId);
         if (def == null || loc.getWorld() == null) return null;
 
@@ -84,7 +92,6 @@ public class FishStallManager implements Runnable {
             return null;
         }
 
-        setNonPersistentTree(root);
         tagModelTree(root, instanceId, modelId, "standalone", null);
         activeInstances.put(instanceId, root.getUniqueId());
 
@@ -96,8 +103,15 @@ public class FishStallManager implements Runnable {
         hitbox.setInteractionWidth(3.5f);
         hitbox.setInteractionHeight(3.0f);
         hitbox.setResponsive(true);
-        hitbox.setPersistent(false);
+        hitbox.setPersistent(true);
         hitbox.getPersistentDataContainer().set(interactKey, PersistentDataType.STRING, instanceId);
+        if (hitboxData != null) {
+            hitboxData.forEach((key, value) -> {
+                if (key != null && value != null) {
+                    hitbox.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
+                }
+            });
+        }
         activeInstances.put(instanceId + "_hitbox", hitbox.getUniqueId());
         return instanceId;
     }
@@ -189,7 +203,9 @@ public class FishStallManager implements Runnable {
 
     public boolean destroyInstance(String instanceId) {
         UUID uid = activeInstances.remove(instanceId);
-        if (uid == null) return false;
+        if (uid == null) {
+            return destroyInstanceByMetadata(instanceId) > 0;
+        }
         for (World w : Bukkit.getWorlds()) {
             for (Entity e : w.getEntities()) {
                 if (e.getUniqueId().equals(uid)) {
@@ -209,6 +225,78 @@ public class FishStallManager implements Runnable {
             }
         }
         return true;
+    }
+
+    public int destroyInstanceByMetadata(String instanceId) {
+        if (instanceId == null || instanceId.isBlank()) return 0;
+
+        PersistentDataType<String, String> stringType = PersistentDataType.STRING;
+        Set<UUID> removed = new HashSet<>();
+        int count = 0;
+
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : new ArrayList<>(world.getEntities())) {
+                String modelInstance = entity.getPersistentDataContainer().get(stallKey, stringType);
+                String interactionInstance = entity.getPersistentDataContainer().get(interactKey, stringType);
+                if (!instanceId.equals(modelInstance) && !instanceId.equals(interactionInstance)) {
+                    continue;
+                }
+
+                if (entity instanceof Interaction interaction) {
+                    if (removed.add(interaction.getUniqueId())) {
+                        interaction.remove();
+                        count++;
+                    }
+                    continue;
+                }
+
+                Entity root = getTopVehicle(entity);
+                if (root != null && removed.add(root.getUniqueId())) {
+                    removeWithPassengers(root);
+                    count++;
+                }
+            }
+        }
+
+        activeInstances.entrySet().removeIf(entry ->
+                entry.getKey().equals(instanceId) || entry.getKey().equals(instanceId + "_hitbox"));
+        return count;
+    }
+
+    public String findStandaloneInstanceForShop(World world, NamespacedKey shopIdKey, String shopId) {
+        if (world == null || shopIdKey == null || shopId == null || shopId.isBlank()) {
+            return null;
+        }
+        PersistentDataType<String, String> stringType = PersistentDataType.STRING;
+        for (Entity entity : world.getEntities()) {
+            if (!(entity instanceof Interaction interaction)) continue;
+            String foundShopId = interaction.getPersistentDataContainer().get(shopIdKey, stringType);
+            if (!shopId.equals(foundShopId)) continue;
+            String instanceId = interaction.getPersistentDataContainer().get(interactKey, stringType);
+            if (instanceId != null && !instanceId.isBlank()) {
+                return instanceId;
+            }
+        }
+        return null;
+    }
+
+    public List<String> findStandaloneInstancesForShop(World world, NamespacedKey shopIdKey, String shopId) {
+        if (world == null || shopIdKey == null || shopId == null || shopId.isBlank()) {
+            return List.of();
+        }
+
+        PersistentDataType<String, String> stringType = PersistentDataType.STRING;
+        Set<String> instanceIds = new LinkedHashSet<>();
+        for (Entity entity : world.getEntities()) {
+            if (!(entity instanceof Interaction interaction)) continue;
+            String foundShopId = interaction.getPersistentDataContainer().get(shopIdKey, stringType);
+            if (!shopId.equals(foundShopId)) continue;
+            String instanceId = interaction.getPersistentDataContainer().get(interactKey, stringType);
+            if (instanceId != null && !instanceId.isBlank()) {
+                instanceIds.add(instanceId);
+            }
+        }
+        return new ArrayList<>(instanceIds);
     }
 
     public int destroyAll(World world) {
@@ -362,17 +450,18 @@ public class FishStallManager implements Runnable {
      */
     private Entity dispatchModelSummon(ModelDefinition def, Location loc) {
         String cmd = buildSummonCommand(def, loc);
+        World world = loc.getWorld();
 
-        if (cmd.length() < 20000) {
-            Set<UUID> existingRoots = getTaggedRootIds(loc.getWorld(), def.tag);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-            List<Entity> spawnedRoots = findNewModelRoots(loc.getWorld(), def, existingRoots);
+        if (cmd.length() < 30000) {
+            Set<UUID> existingRoots = getTaggedRootIds(world, def.tag);
+            dispatchSummonCommand(world, cmd);
+            List<Entity> spawnedRoots = findNewModelRoots(world, def, existingRoots);
             return spawnedRoots.isEmpty() ? null : spawnedRoots.get(0);
         }
 
         int nbtStart = cmd.indexOf('{');
         if (nbtStart == -1) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            dispatchSummonCommand(world, cmd);
             return null;
         }
 
@@ -382,7 +471,7 @@ public class FishStallManager implements Runnable {
         if (passengersKeyPos == -1) {
             passengersKeyPos = fullNbt.indexOf("Passengers:[");
             if (passengersKeyPos == -1) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                dispatchSummonCommand(world, cmd);
                 return null;
             }
         }
@@ -390,22 +479,22 @@ public class FishStallManager implements Runnable {
         int bracketStart = fullNbt.indexOf('[', passengersKeyPos);
         int bracketEnd = findMatchingBracket(fullNbt, bracketStart);
         if (bracketEnd == -1) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            dispatchSummonCommand(world, cmd);
             return null;
         }
 
         String arrayContent = fullNbt.substring(bracketStart + 1, bracketEnd);
         List<String> passengers = parseNbtArray(arrayContent);
         if (passengers.isEmpty()) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            dispatchSummonCommand(world, cmd);
             return null;
         }
 
-        if (loc.getWorld() == null) {
+        if (world == null) {
             return null;
         }
 
-        Entity root = loc.getWorld().spawnEntity(loc, org.bukkit.entity.EntityType.BLOCK_DISPLAY);
+        Entity root = world.spawnEntity(loc, org.bukkit.entity.EntityType.BLOCK_DISPLAY);
         root.addScoreboardTag(def.tag);
         root.setPersistent(false);
 
@@ -443,7 +532,7 @@ public class FishStallManager implements Runnable {
                 loc.getZ(),
                 summonNbt
         );
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+        dispatchSummonCommand(loc.getWorld(), cmd);
 
         Entity passenger = findSingleTaggedEntity(loc.getWorld(), passengerTag);
         if (passenger == null) {
@@ -563,6 +652,36 @@ public class FishStallManager implements Runnable {
             }
         }
         return entries;
+    }
+
+    private void dispatchSummonCommand(World world, String command) {
+        Logger logger = Bukkit.getLogger();
+        Filter previousFilter = logger.getFilter();
+        Filter summonNoiseFilter = record -> {
+            String message = record.getMessage();
+            if (message != null && (
+                    message.startsWith("Summoned new Block Display")
+                            || message.startsWith("Summoned new Item Display")
+                            || message.startsWith("Summoned new Interaction"))) {
+                return false;
+            }
+            return previousFilter == null || previousFilter.isLoggable(record);
+        };
+
+        try {
+            logger.setFilter(summonNoiseFilter);
+            Bukkit.dispatchCommand(silentCommandSender, command);
+        } finally {
+            logger.setFilter(previousFilter);
+        }
+    }
+
+    private Entity getTopVehicle(Entity entity) {
+        Entity top = entity;
+        while (top != null && top.getVehicle() != null) {
+            top = top.getVehicle();
+        }
+        return top;
     }
 
     private record ModelDefinition(String displayName, String tag, String summonTemplate, float yawOffsetDegrees) {}

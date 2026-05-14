@@ -4,8 +4,11 @@ import com.fishrework.FishRework;
 import com.fishrework.util.FormatUtil;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.UUID;
 
 public final class VaultEconomyProvider implements EconomyProvider {
 
@@ -63,6 +66,23 @@ public final class VaultEconomyProvider implements EconomyProvider {
         EconomyResponse response = useWorldAccounts
                 ? economy.depositPlayer(player, player.getWorld().getName(), amount)
                 : economy.depositPlayer(player, amount);
+        return fromResponse(response);
+    }
+
+    @Override
+    public EconomyResult deposit(UUID uuid, String playerName, double amount) {
+        if (!isAvailable()) {
+            return EconomyResult.failure("Vault economy provider is not available.");
+        }
+        if (uuid == null) {
+            return EconomyResult.failure("Player UUID is not available.");
+        }
+        OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
+        ensureAccount(offlinePlayer);
+        String worldName = plugin.getServer().getWorlds().isEmpty() ? null : plugin.getServer().getWorlds().get(0).getName();
+        EconomyResponse response = useWorldAccounts
+                ? economy.depositPlayer(offlinePlayer, worldName, amount)
+                : economy.depositPlayer(offlinePlayer, amount);
         return fromResponse(response);
     }
 
@@ -125,6 +145,19 @@ public final class VaultEconomyProvider implements EconomyProvider {
             if (useWorldAccounts && !economy.hasAccount(player, player.getWorld().getName())) {
                 economy.createPlayerAccount(player, player.getWorld().getName());
             } else if (!useWorldAccounts && !economy.hasAccount(player)) {
+                economy.createPlayerAccount(player);
+            }
+        } catch (UnsupportedOperationException ignored) {
+            // Some Vault providers create accounts lazily and do not implement explicit creation.
+        }
+    }
+
+    private void ensureAccount(OfflinePlayer player) {
+        if (economy == null || player == null) {
+            return;
+        }
+        try {
+            if (!economy.hasAccount(player)) {
                 economy.createPlayerAccount(player);
             }
         } catch (UnsupportedOperationException ignored) {

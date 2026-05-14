@@ -117,8 +117,15 @@ public class BlockPlaceListener implements Listener {
     }
 
     private boolean isPlaceableCustomUtility(ItemStack item) {
-        return plugin.getTotemManager().getTotemType(item) != null
+        if (plugin.getTotemManager().getTotemType(item) != null
                 || plugin.getItemManager().isDisplayCase(item)
-                || plugin.getItemManager().isNetheriteRelic(item);
+                || plugin.getItemManager().isFishStall(item)
+                || plugin.getItemManager().isNetheriteRelic(item)) {
+            return true;
+        }
+
+        // Allow legacy fish stall items that may be missing the stall byte key.
+        String customId = plugin.getItemManager().getCustomItemId(item);
+        return customId != null && customId.equalsIgnoreCase("fish_stall");
     }
 }
