@@ -88,7 +88,7 @@ public class FishBagGUI extends BaseGUI {
         inventory.setItem(22, sellAll);
 
         // Slot 26: Balance display
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
         balMeta.displayName(Component.text(plugin.getLanguageManager().getString(

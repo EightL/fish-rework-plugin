@@ -1,6 +1,7 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.gui.FishBagGUI;
 import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.FishingSession;
@@ -329,7 +330,7 @@ public class FishingListener implements Listener {
                 && (mobDef.getRarity() == null || mobDef.getRarity().ordinal() < Rarity.RARE.ordinal())) {
             return;
         }
-        String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
+        String mobName = mobDef.getIcon() + " " + mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
         TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.WHITE;
         double weightKg = weightProfile != null ? weightProfile.getWeightKg() : 0.0;
         Rarity weightRarity = plugin.getMobManager().getWeightRarity(weightProfile);
@@ -366,7 +367,12 @@ public class FishingListener implements Listener {
         }
 
         double total = sellPrice * itemStack.getAmount();
-        data.addBalance(total);
+        EconomyResult result = plugin.getEconomyManager().deposit(player, total);
+        if (!result.success()) {
+            player.sendActionBar(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                    .color(NamedTextColor.RED));
+            return false;
+        }
         session.addDoubloonsEarned(total);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
         caughtItem.remove();

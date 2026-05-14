@@ -1,6 +1,7 @@
 package com.fishrework.skill;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.leveling.LevelManager;
 import com.fishrework.model.PlayerData;
 import com.fishrework.model.Skill;
@@ -165,22 +166,27 @@ public class SkillManager {
         // Ensure recipes are fully synced (advancements + levels)
         plugin.getRecipeRegistry().syncRecipes(player);
 
-            // ── QOL: Level milestone currency rewards ──
+        // ── QOL: Level milestone currency rewards ──
         if (skill == Skill.FISHING && newLevel % 10 == 0 && newLevel <= 50) {
             double milestoneReward = newLevel * 50.0; // 500 at 10, 1000 at 20, etc.
             PlayerData pd = plugin.getPlayerData(player.getUniqueId());
             if (pd != null) {
-                pd.addBalance(milestoneReward);
-                pd.getSession().addDoubloonsEarned(milestoneReward);
-                String currencyName = plugin.getLanguageManager().getCurrencyName();
-                player.sendMessage(Component.text(plugin.getLanguageManager().getString(
-                                "skillmanager.milestone_reward",
-                                "  \uD83C\uDFC6 Milestone Reward: %amount% %currency%!",
-                                "amount", com.fishrework.util.FormatUtil.format("%.0f", milestoneReward),
-                                "currency", currencyName))
-                        .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
-                        .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
+                EconomyResult economyResult = plugin.getEconomyManager().deposit(player, milestoneReward);
+                if (!economyResult.success()) {
+                    player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(economyResult))
+                            .color(NamedTextColor.RED));
+                } else {
+                    pd.getSession().addDoubloonsEarned(milestoneReward);
+                    String currencyName = plugin.getLanguageManager().getCurrencyName();
+                    player.sendMessage(Component.text(plugin.getLanguageManager().getString(
+                                    "skillmanager.milestone_reward",
+                                    "  \uD83C\uDFC6 Milestone Reward: %amount% %currency%!",
+                                    "amount", com.fishrework.util.FormatUtil.format("%.0f", milestoneReward),
+                                    "currency", currencyName))
+                            .color(net.kyori.adventure.text.format.NamedTextColor.GOLD)
+                            .decoration(net.kyori.adventure.text.format.TextDecoration.BOLD, true));
+                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.5f);
+                }
             }
         }
 

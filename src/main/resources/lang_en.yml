@@ -24,6 +24,7 @@ buyshopgui.click_to_buy: Click to buy!
 buyshopgui.click_to_buy_1: Click to buy 1
 buyshopgui.shiftclick_to_buy_4: Shift-click to buy 4
 collectiongui.locked_item_name: ???
+collectiongui.locked_treasure_hint: Find this treasure chest to unlock details.
 collectiongui.biome_specific: Biome Specific
 collectiongui.chance: 'Chance: '
 collectiongui.click_to_change_biome_filter: Click to change biome filter
@@ -424,6 +425,11 @@ sellconfirmgui.cancel: ✖ Cancel
 sellconfirmgui.confirm_sale: ✔ Confirm Sale
 sellconfirmgui.nothing_to_sell: Nothing to sell!
 sellconfirmgui.sale_summary: Sale Summary
+sellallconfirmgui.title: "Sell All – Confirm?"
+sellallconfirmgui.confirm: "Confirm – Sell All"
+sellallconfirmgui.cancel: "Cancel"
+sellallconfirmgui.click_to_confirm: "Click to sell everything!"
+sellallconfirmgui.click_to_cancel: "Click to go back"
 sellotherconfirmgui.cancel: Cancel
 sellotherconfirmgui.confirm: Confirm
 sellotherconfirmgui.return_to_fish_vendor: Return to Fish Vendor
@@ -1141,6 +1147,7 @@ gui.title.leaderboardgui.title_prefix: "Leaderboard: "
 common.on: "ON"
 common.off: "OFF"
 common.disabled: "DISABLED"
+economy.transaction_failed: "Economy transaction failed: %reason%"
 fishingtip.prefix: "[Fishing Tip] "
 fishingtip.click_to_open: "Click to open"
 fishingtip.tip_1: "Use /fish or /fishing to open your fishing progression GUI."

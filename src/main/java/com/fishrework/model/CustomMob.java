@@ -80,6 +80,11 @@ public class CustomMob {
     public boolean isHostile() { return category == MobCategory.HOSTILE; }
     public boolean isTreasure() { return category == MobCategory.TREASURE; }
     public MobCategory getCategory() { return category; }
+    public String getIcon() {
+        if (isTreasure()) return "✦";
+        if (isHostile()) return "☠";
+        return "☺";
+    }
     public int getRequiredLevel() { return requiredLevel; }
     public boolean isBoostByRareCreature() { return boostByRareCreature; }
     public List<MobDrop> getDrops() { return drops; }

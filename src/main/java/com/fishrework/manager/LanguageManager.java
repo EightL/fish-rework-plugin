@@ -223,19 +223,13 @@ public class LanguageManager {
     }
 
     public String getCurrencyName() {
-        String override = getConfiguredCurrencyOverride();
-        if (override != null) {
-            return override;
-        }
-        return getString("common.currency_name", DEFAULT_CURRENCY_NAME);
+        String override = getActiveCurrencyOverride();
+        return override != null ? override : getString("common.currency_name", DEFAULT_CURRENCY_NAME);
     }
 
     public String getCurrencyName(Player player) {
-        String override = getConfiguredCurrencyOverride();
-        if (override != null) {
-            return override;
-        }
-        return getString(player, "common.currency_name", DEFAULT_CURRENCY_NAME);
+        String override = getActiveCurrencyOverride();
+        return override != null ? override : getString(player, "common.currency_name", DEFAULT_CURRENCY_NAME);
     }
 
     public String applyCurrencyNameOverride(String text) {
@@ -246,7 +240,7 @@ public class LanguageManager {
         if (text == null) {
             return null;
         }
-        String override = getConfiguredCurrencyOverride();
+        String override = getActiveCurrencyOverride();
         if (text.contains("%currency%")) {
             String currencyName = override != null ? override : getRawLocalizedCurrencyName(currencyConfig);
             text = text.replace("%currency%", currencyName);
@@ -289,6 +283,20 @@ public class LanguageManager {
             return null;
         }
         return configured;
+    }
+
+    private String getActiveCurrencyOverride() {
+        String configured = getConfiguredCurrencyOverride();
+        if (configured != null) {
+            return configured;
+        }
+        if (plugin.getEconomyManager() != null && plugin.getEconomyManager().isExternal()) {
+            String externalName = plugin.getEconomyManager().getCurrencyName();
+            if (externalName != null && !externalName.isBlank()) {
+                return externalName;
+            }
+        }
+        return null;
     }
 
     public List<String> getAvailableLocales() {

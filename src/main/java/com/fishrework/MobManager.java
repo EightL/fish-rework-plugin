@@ -1,5 +1,6 @@
 package com.fishrework;
 
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.gui.LavaBagGUI;
 import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.ArtifactPassiveStat;
@@ -17,6 +18,7 @@ import com.fishrework.registry.MobRegistry;
 import com.fishrework.util.AutoSellUtil;
 import com.fishrework.util.BagUtils;
 import com.fishrework.util.FeatureKeys;
+import com.fishrework.util.InventoryTransactionUtil;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Material;
@@ -39,6 +41,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -121,7 +124,7 @@ public class MobManager {
 
     public void applyEntityName(LivingEntity entity,
                                 String displayName,
-                                net.kyori.adventure.text.format.NamedTextColor color,
+                                net.kyori.adventure.text.format.TextColor color,
                                 boolean visible,
                                 CustomMob def) {
         if (!visible || !shouldNameEntity(def) || displayName == null || displayName.isBlank()) {
@@ -130,10 +133,21 @@ public class MobManager {
             return;
         }
 
-        net.kyori.adventure.text.Component name = net.kyori.adventure.text.Component.text(displayName);
-        if (color != null) {
-            name = name.color(color);
-        }
+        // Pick icon based on mob type
+        String icon = def != null ? def.getIcon() : "❋";
+
+        net.kyori.adventure.text.format.TextColor iconColor =
+                (def != null && def.isHostile() && !def.isTreasure())
+                ? net.kyori.adventure.text.format.NamedTextColor.RED
+                : net.kyori.adventure.text.format.NamedTextColor.WHITE;
+
+        Rarity rarity = (def != null && def.getRarity() != null) ? def.getRarity() : Rarity.COMMON;
+        net.kyori.adventure.text.format.TextColor nameColor = color != null ? color : rarity.getColor();
+
+        net.kyori.adventure.text.Component name = net.kyori.adventure.text.Component.text(icon + " ")
+                .color(iconColor)
+                .append(net.kyori.adventure.text.Component.text(displayName).color(nameColor));
+
         entity.customName(name);
         entity.setCustomNameVisible(true);
     }
@@ -273,7 +287,7 @@ public class MobManager {
         LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, def.getEntityType());
 
         // Name with optional color
-        net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
+        net.kyori.adventure.text.format.TextColor nameColor = resolveNameColor(config, def);
         String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         applyEntityName(entity, localizedName, nameColor, true, def);
 
@@ -417,7 +431,7 @@ public class MobManager {
                 ? config.getRiderEntityType() : def.getEntityType();
         LivingEntity rider = (LivingEntity) location.getWorld().spawnEntity(location, riderType);
 
-        net.kyori.adventure.text.format.NamedTextColor riderColor = resolveNameColor(config, def);
+        net.kyori.adventure.text.format.TextColor riderColor = resolveNameColor(config, def);
         String localizedRiderName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         applyEntityName(rider, localizedRiderName, riderColor, true, def);
         tagEntity(rider, mobId, catchXpMultiplierPercent);
@@ -472,7 +486,7 @@ public class MobManager {
                                     SeaCreatureWeightProfile weightProfile) {
         double spread = config.getSpread();
         boolean killAll = config.isGroupKillAll();
-        net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
+        net.kyori.adventure.text.format.TextColor nameColor = resolveNameColor(config, def);
         LivingEntity firstEntity = null;
 
         // Unique UUID for this spawn group — used for reward dedup
@@ -560,7 +574,7 @@ public class MobManager {
         }
 
         // Name with color
-        net.kyori.adventure.text.format.NamedTextColor nameColor = resolveNameColor(config, def);
+        net.kyori.adventure.text.format.TextColor nameColor = resolveNameColor(config, def);
         String localizedName = def.getLocalizedDisplayName(plugin.getLanguageManager());
         applyEntityName(entity, localizedName, nameColor, true, def);
         applyGlowColor(entity, config);
@@ -850,12 +864,12 @@ public class MobManager {
 
     // ── Name Color Resolution ─────────────────────────────────
 
-    /** Resolves a name color from SpawnConfig, defaulting to RED for hostiles. */
-    private net.kyori.adventure.text.format.NamedTextColor resolveNameColor(SpawnConfig config, CustomMob def) {
+    private net.kyori.adventure.text.format.TextColor resolveNameColor(SpawnConfig config, CustomMob def) {
         if (config != null && config.getNameColor() != null) {
             return resolveColor(config.getNameColor());
         }
-        return def.isHostile() ? net.kyori.adventure.text.format.NamedTextColor.RED : null;
+        Rarity rarity = def.getRarity() != null ? def.getRarity() : Rarity.COMMON;
+        return rarity.getColor();
     }
 
     /** Parses a named text color string. */
@@ -1639,61 +1653,77 @@ public class MobManager {
             && plugin.isFeatureEnabled(FeatureKeys.AUTO_SELL_ENABLED)
             && autoSellMode != AutoSellMode.OFF;
         double autoSellTotal = 0.0;
+        List<ItemStack> autoSoldItems = new ArrayList<>();
         boolean lavaBagChanged = false;
         boolean fishBagChanged = false;
 
+        boolean guaranteeOneDrop = !shouldSpawnLiveCatch(def) && !def.getDrops().isEmpty();
+        java.util.List<ItemStack> allDroppedItems = new java.util.ArrayList<>();
+
         for (MobDrop drop : def.getDrops()) {
-            java.util.List<ItemStack> items = drop.roll(dropRollMultiplier);
-            for (ItemStack item : items) {
-                if (autoSellEnabled) {
-                    double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), item, autoSellMode);
-                    if (sellPrice > 0) {
-                        autoSellTotal += sellPrice * item.getAmount();
-                        continue;
+            allDroppedItems.addAll(drop.roll(dropRollMultiplier));
+        }
+
+        // Guarantee at least one drop for common (non-live-catch) creatures
+        if (guaranteeOneDrop && allDroppedItems.isEmpty()) {
+            MobDrop bestDrop = def.getDrops().stream()
+                    .max(java.util.Comparator.comparingDouble(MobDrop::getChance))
+                    .orElse(null);
+            if (bestDrop != null) {
+                allDroppedItems.addAll(bestDrop.roll(1.0 / Math.max(0.001, bestDrop.getChance())));
+            }
+        }
+
+        for (ItemStack item : allDroppedItems) {
+            if (autoSellEnabled) {
+                double sellPrice = AutoSellUtil.getAutoSellPrice(plugin.getItemManager(), item, autoSellMode);
+                if (sellPrice > 0) {
+                    autoSellTotal += sellPrice * item.getAmount();
+                    autoSoldItems.add(item.clone());
+                    continue;
+                }
+            }
+
+            ItemStack toHandle = item;
+
+            if (data != null) {
+                ItemStack overflow = item;
+
+                if (collectToLavaBag) {
+                    overflow = LavaBagGUI.addToBag(plugin, data, overflow);
+                    if (overflow == null || overflow != item) {
+                        lavaBagChanged = true;
                     }
                 }
 
-                ItemStack toHandle = item;
-
-                if (data != null) {
-                    ItemStack overflow = item;
-
-                    if (collectToLavaBag) {
-                        overflow = LavaBagGUI.addToBag(plugin, data, overflow);
-                        if (overflow == null || overflow != item) {
-                            lavaBagChanged = true;
-                        }
+                if (overflow != null && collectToFishBag && BagUtils.isAllowedInFishBag(plugin, overflow)) {
+                    ItemStack fishOverflow = FishBagGUI.addToBag(data, overflow);
+                    if (fishOverflow == null || fishOverflow != overflow) {
+                        fishBagChanged = true;
                     }
-
-                    if (overflow != null && collectToFishBag && BagUtils.isAllowedInFishBag(plugin, overflow)) {
-                        ItemStack fishOverflow = FishBagGUI.addToBag(data, overflow);
-                        if (fishOverflow == null || fishOverflow != overflow) {
-                            fishBagChanged = true;
-                        }
-                        overflow = fishOverflow;
-                    }
-
-                    if (overflow == null) {
-                        continue;
-                    }
-                    toHandle = overflow;
+                    overflow = fishOverflow;
                 }
 
-                if (directToInventory || pullDropsToPlayer) {
-                    HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(toHandle);
-                    for (ItemStack remaining : leftover.values()) {
-                        Item itemEntity = location.getWorld().dropItemNaturally(location, remaining);
-                        itemEntity.setInvulnerable(true);
-                        if (pullDropsToPlayer) {
-                            applyVanillaCatchItemVelocity(itemEntity, player);
-                        }
-                    }
-                } else {
-                    Item itemEntity = location.getWorld().dropItemNaturally(location, toHandle);
+                if (overflow == null) {
+                    continue;
+                }
+                toHandle = overflow;
+            }
+
+            if (directToInventory || pullDropsToPlayer) {
+                HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(toHandle);
+                for (ItemStack remaining : leftover.values()) {
+                    Item itemEntity = location.getWorld().dropItemNaturally(location, remaining);
                     itemEntity.setInvulnerable(true);
                     if (pullDropsToPlayer) {
                         applyVanillaCatchItemVelocity(itemEntity, player);
                     }
+                }
+            } else {
+                Item itemEntity = location.getWorld().dropItemNaturally(location, toHandle);
+                itemEntity.setInvulnerable(true);
+                if (pullDropsToPlayer) {
+                    applyVanillaCatchItemVelocity(itemEntity, player);
                 }
             }
         }
@@ -1705,16 +1735,22 @@ public class MobManager {
             plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
         }
         if (autoSellTotal > 0 && data != null) {
-            data.addBalance(autoSellTotal);
-            data.getSession().addDoubloonsEarned(autoSellTotal);
-            String currencyName = plugin.getLanguageManager().getCurrencyName();
-            player.sendActionBar(net.kyori.adventure.text.Component.text(
-                    plugin.getLanguageManager().getString(
-                            "fishinglistener.auto_sold_for",
-                            "Auto-sold for %total% %currency%",
-                            "total", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
-                            "currency", currencyName))
-                    .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
+            EconomyResult result = plugin.getEconomyManager().deposit(player, autoSellTotal);
+            if (result.success()) {
+                data.getSession().addDoubloonsEarned(autoSellTotal);
+                String currencyName = plugin.getLanguageManager().getCurrencyName();
+                player.sendActionBar(net.kyori.adventure.text.Component.text(
+                        plugin.getLanguageManager().getString(
+                                "fishinglistener.auto_sold_for",
+                                "Auto-sold for %total% %currency%",
+                                "total", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
+                                "currency", currencyName))
+                        .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
+            } else {
+                InventoryTransactionUtil.restoreOrDrop(player, autoSoldItems);
+                player.sendActionBar(net.kyori.adventure.text.Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                        .color(net.kyori.adventure.text.format.NamedTextColor.RED));
+            }
         }
     }
 

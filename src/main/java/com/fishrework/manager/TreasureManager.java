@@ -116,23 +116,23 @@ public class TreasureManager {
 
     /** Plays rarity-specific treasure opening sounds. */
     private void playTreasureOpenSound(Player player, Rarity rarity) {
-        switch (rarity) {
-            case COMMON    -> player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-            case UNCOMMON  -> player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 0.7f);
-            case RARE      -> player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-            case EPIC      -> player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-            case LEGENDARY -> {
-                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-                player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.5f, 1.5f);
-            }
-            case MYTHIC -> {
-                player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
-                player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.9f, 0.7f);
-            }
-            case SPECIAL -> {
-                player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.2f);
-                player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.4f);
-            }
+        if (rarity == Rarity.COMMON) {
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+        } else if (rarity == Rarity.UNCOMMON) {
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 0.7f);
+        } else if (rarity == Rarity.RARE) {
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+        } else if (rarity == Rarity.EPIC) {
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+        } else if (rarity == Rarity.LEGENDARY) {
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+            player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.5f, 1.5f);
+        } else if (rarity == Rarity.MYTHIC) {
+            player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
+            player.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.9f, 0.7f);
+        } else if (rarity == Rarity.SPECIAL) {
+            player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 1.0f, 1.2f);
+            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.4f);
         }
     }
 
@@ -274,25 +274,19 @@ public class TreasureManager {
 
     private List<LootEntry> getLootPool(Rarity rarity, boolean isNether) {
         if (isNether) {
-            return switch (rarity) {
-                case COMMON     -> getNetherCommonPool();
-                case UNCOMMON   -> getNetherUncommonPool();
-                case RARE       -> getNetherRarePool();
-                case EPIC       -> getNetherEpicPool();
-                case LEGENDARY  -> getNetherLegendaryPool();
-                case MYTHIC     -> getNetherMythicPool();
-                case SPECIAL    -> getNetherMythicPool();
-            };
+            if (rarity == Rarity.COMMON) return getNetherCommonPool();
+            if (rarity == Rarity.UNCOMMON) return getNetherUncommonPool();
+            if (rarity == Rarity.RARE) return getNetherRarePool();
+            if (rarity == Rarity.EPIC) return getNetherEpicPool();
+            if (rarity == Rarity.LEGENDARY) return getNetherLegendaryPool();
+            return getNetherMythicPool();
         }
-        return switch (rarity) {
-            case COMMON     -> getCommonPool();
-            case UNCOMMON   -> getUncommonPool();
-            case RARE       -> getRarePool();
-            case EPIC       -> getEpicPool();
-            case LEGENDARY  -> getLegendaryPool();
-            case MYTHIC     -> getMythicPool();
-            case SPECIAL    -> getMythicPool();
-        };
+        if (rarity == Rarity.COMMON) return getCommonPool();
+        if (rarity == Rarity.UNCOMMON) return getUncommonPool();
+        if (rarity == Rarity.RARE) return getRarePool();
+        if (rarity == Rarity.EPIC) return getEpicPool();
+        if (rarity == Rarity.LEGENDARY) return getLegendaryPool();
+        return getMythicPool();
     }
 
     // ── Common Chest Pool ────────────────────────────────────────
@@ -675,119 +669,119 @@ public class TreasureManager {
         lore.add(plugin.getLanguageManager().getMessage("treasuremanager.possible_loot", "Possible Loot:").color(NamedTextColor.GOLD));
 
         if (isNether) {
-            switch (rarity) {
-                case COMMON:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.rotten_flesh_bone_gold_nugget", "- Rotten Flesh, Bone, Gold Nugget").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.quartz_magma_cream_soul_sand", "- Quartz, Magma Cream, Soul Sand").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.blackstone_netherrack", "- Blackstone, Netherrack").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.corrupted_flesh_residue", "- Corrupted Flesh, Residue").color(NamedTextColor.GREEN));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case UNCOMMON:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.gold_ingot_crimson_fungus", "- Gold Ingot, Crimson Fungus").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.warped_fungus_blaze_powder", "- Warped Fungus, Blaze Powder").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.magma_block_ghast_tear", "- Magma Block, Ghast Tear").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.spider_silk_hyena_fur_battle", "- Spider Silk, Hyena Fur, Battle Scrap").color(NamedTextColor.GREEN));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case RARE:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.blaze_rod_ghast_tear_magma", "- Blaze Rod, Ghast Tear, Magma Cream").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.gold_block_wither_skeleton_skull", "- Gold Block, Wither Skeleton Skull").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_scrap", "- Netherite Scrap").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.slimy_chunk_ravager_scales_battle", "- Slimy Chunk, Ravager Scales, Battle Scrap").color(NamedTextColor.BLUE));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case EPIC:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_scrap_ancient_debris", "- Netherite Scrap, Ancient Debris").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.wither_skeleton_skull_blaze_rod", "- Wither Skeleton Skull, Blaze Rod").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ghast_tear", "- Ghast Tear").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ice_wing_dread_soul_battle", "- Ice Wing, Dread Soul, Battle Scrap").color(NamedTextColor.DARK_PURPLE));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case LEGENDARY:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_ingot_ancient_debris", "- Netherite Ingot, Ancient Debris").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_scrap_wither_skeleton_skull", "- Netherite Scrap, Wither Skeleton Skull").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.beast_scale_dread_soul", "- Beast Scale, Dread Soul").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_corrupted_flesh", "- Enchanted Corrupted Flesh").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case MYTHIC:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ancient_debris_netherite_ingot", "- Ancient Debris, Netherite Ingot").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.wither_skeleton_skull_beast_scale", "- Wither Skeleton Skull, Beast Scale").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_corrupted_flesh_dread_soul", "- Enchanted Corrupted Flesh, Dread Soul").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-                case SPECIAL:
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ancient_debris_netherite_ingot", "- Ancient Debris, Netherite Ingot").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.volcanic_core_cinder_sigil", "- Volcanic Core, Cinder Sigil").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_soul_essence_ghast_membrane", "- Enchanted Soul Essence, Ghast Membrane").color(NamedTextColor.GOLD));
-                    lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                    break;
-            }
+            addNetherLootTable(lore, rarity);
             return lore;
         }
 
-        switch (rarity) {
-            case COMMON:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.feather_cod_potato_beetroot", "- Feather, Cod, Potato, Beetroot").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.dried_kelp_apple_wheat_stick", "- Dried Kelp, Apple, Wheat, Stick").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.salmon_gunpowder_copper_ingot", "- Salmon, Gunpowder, Copper Ingot").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.copper_nautilus_armor_candle", "- Copper Nautilus Armor, Candle").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.corrupted_flesh_residue_wet_bone", "- Corrupted Flesh, Residue, Wet Bone").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case UNCOMMON:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.apple_copperiron_ingot_bread", "- Apple, Copper/Iron Ingot, Bread").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.melon_gunpowder_nautilus_shell", "- Melon, Gunpowder, Nautilus Shell").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.cod_pufferfish_salmon_arrow", "- Cod, Pufferfish, Salmon, Arrow").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.iron_nautilus_armor_pottery_sherd", "- Iron Nautilus Armor, Pottery Sherd").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.guardian_scale_spider_silk_battle", "- Guardian Scale, Spider Silk, Battle Scrap").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case RARE:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.golden_carrot_gold_ingot_arrow", "- Golden Carrot, Gold Ingot, Arrow").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.redstone_lapis_lazuli_gunpowder", "- Redstone, Lapis Lazuli, Gunpowder").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.golden_nautilus_armor_enchanted_book", "- Golden Nautilus Armor, Enchanted Book").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.tide_armor_trim_ominous_bottle", "- Tide Armor Trim, Ominous Bottle").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.slimy_chunk_polar_fur_ravager", "- Slimy Chunk, Polar Fur, Ravager Scales").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case EPIC:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.diamond_emerald_golden_apple", "- Diamond, Emerald, Golden Apple").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.heart_of_the_sea_sniffer", "- Heart of the Sea, Sniffer Egg").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.diamond_nautilus_armor_enchanted_book", "- Diamond Nautilus Armor, Enchanted Book").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ice_wing_shark_tooth_dread", "- Ice Wing, Shark Tooth, Dread Soul").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.ironclad_plate_battle_scrap", "- Ironclad Plate, Battle Scrap").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case LEGENDARY:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_nautilus_armor_trident", "- Netherite Nautilus Armor, Trident").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_golden_apple_diamond", "- Enchanted Golden Apple, Diamond").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.emerald_block_gold_block_netherite", "- Emerald Block, Gold Block, Netherite Scrap").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_book_golden_apple", "- Enchanted Book, Golden Apple").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.beast_scale_ironclad_plate_ice", "- Beast Scale, Ironclad Plate, Ice Wing").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case MYTHIC:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.nether_star_netherite_ingot", "- Nether Star, Netherite Ingot").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_golden_apple_diamond_block", "- Enchanted Golden Apple, Diamond Block").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_corrupted_flesh_enchanted_wet", "- Enchanted Corrupted Flesh, Enchanted Wet Bone").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.beast_scale_dread_soul", "- Beast Scale, Dread Soul").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-            case SPECIAL:
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.nether_star_netherite_ingot", "- Nether Star, Netherite Ingot").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_golden_apple_diamond_block", "- Enchanted Golden Apple, Diamond Block").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template").color(NamedTextColor.GRAY));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.volcanic_core_cinder_sigil", "- Volcanic Core, Cinder Sigil").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.enchanted_soul_essence_beast_scale", "- Enchanted Soul Essence, Beast Scale").color(NamedTextColor.GREEN));
-                lore.add(plugin.getLanguageManager().getMessage("treasuremanager.artifact", "- ⭐ Artifact").color(NamedTextColor.LIGHT_PURPLE));
-                break;
-        }
+        addOverworldLootTable(lore, rarity);
         return lore;
+    }
+
+    private void addNetherLootTable(List<Component> lore, Rarity rarity) {
+        if (rarity == Rarity.COMMON) {
+            addLootLine(lore, "treasuremanager.rotten_flesh_bone_gold_nugget", "- Rotten Flesh, Bone, Gold Nugget", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.quartz_magma_cream_soul_sand", "- Quartz, Magma Cream, Soul Sand", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.blackstone_netherrack", "- Blackstone, Netherrack", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.corrupted_flesh_residue", "- Corrupted Flesh, Residue", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.UNCOMMON) {
+            addLootLine(lore, "treasuremanager.gold_ingot_crimson_fungus", "- Gold Ingot, Crimson Fungus", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.warped_fungus_blaze_powder", "- Warped Fungus, Blaze Powder", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.magma_block_ghast_tear", "- Magma Block, Ghast Tear", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.spider_silk_hyena_fur_battle", "- Spider Silk, Hyena Fur, Battle Scrap", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.RARE) {
+            addLootLine(lore, "treasuremanager.blaze_rod_ghast_tear_magma", "- Blaze Rod, Ghast Tear, Magma Cream", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.gold_block_wither_skeleton_skull", "- Gold Block, Wither Skeleton Skull", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_scrap", "- Netherite Scrap", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.slimy_chunk_ravager_scales_battle", "- Slimy Chunk, Ravager Scales, Battle Scrap", NamedTextColor.BLUE);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.EPIC) {
+            addLootLine(lore, "treasuremanager.netherite_scrap_ancient_debris", "- Netherite Scrap, Ancient Debris", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.wither_skeleton_skull_blaze_rod", "- Wither Skeleton Skull, Blaze Rod", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.ghast_tear", "- Ghast Tear", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.ice_wing_dread_soul_battle", "- Ice Wing, Dread Soul, Battle Scrap", NamedTextColor.DARK_PURPLE);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.LEGENDARY) {
+            addLootLine(lore, "treasuremanager.netherite_ingot_ancient_debris", "- Netherite Ingot, Ancient Debris", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_scrap_wither_skeleton_skull", "- Netherite Scrap, Wither Skeleton Skull", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.beast_scale_dread_soul", "- Beast Scale, Dread Soul", NamedTextColor.GOLD);
+            addLootLine(lore, "treasuremanager.enchanted_corrupted_flesh", "- Enchanted Corrupted Flesh", NamedTextColor.GOLD);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.MYTHIC) {
+            addLootLine(lore, "treasuremanager.ancient_debris_netherite_ingot", "- Ancient Debris, Netherite Ingot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.wither_skeleton_skull_beast_scale", "- Wither Skeleton Skull, Beast Scale", NamedTextColor.GOLD);
+            addLootLine(lore, "treasuremanager.enchanted_corrupted_flesh_dread_soul", "- Enchanted Corrupted Flesh, Dread Soul", NamedTextColor.GOLD);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.SPECIAL) {
+            addLootLine(lore, "treasuremanager.ancient_debris_netherite_ingot", "- Ancient Debris, Netherite Ingot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.volcanic_core_cinder_sigil", "- Volcanic Core, Cinder Sigil", NamedTextColor.GOLD);
+            addLootLine(lore, "treasuremanager.enchanted_soul_essence_ghast_membrane", "- Enchanted Soul Essence, Ghast Membrane", NamedTextColor.GOLD);
+            addArtifactLine(lore);
+        }
+    }
+
+    private void addOverworldLootTable(List<Component> lore, Rarity rarity) {
+        if (rarity == Rarity.COMMON) {
+            addLootLine(lore, "treasuremanager.feather_cod_potato_beetroot", "- Feather, Cod, Potato, Beetroot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.dried_kelp_apple_wheat_stick", "- Dried Kelp, Apple, Wheat, Stick", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.salmon_gunpowder_copper_ingot", "- Salmon, Gunpowder, Copper Ingot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.copper_nautilus_armor_candle", "- Copper Nautilus Armor, Candle", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.corrupted_flesh_residue_wet_bone", "- Corrupted Flesh, Residue, Wet Bone", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.UNCOMMON) {
+            addLootLine(lore, "treasuremanager.apple_copperiron_ingot_bread", "- Apple, Copper/Iron Ingot, Bread", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.melon_gunpowder_nautilus_shell", "- Melon, Gunpowder, Nautilus Shell", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.cod_pufferfish_salmon_arrow", "- Cod, Pufferfish, Salmon, Arrow", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.iron_nautilus_armor_pottery_sherd", "- Iron Nautilus Armor, Pottery Sherd", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.guardian_scale_spider_silk_battle", "- Guardian Scale, Spider Silk, Battle Scrap", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.RARE) {
+            addLootLine(lore, "treasuremanager.golden_carrot_gold_ingot_arrow", "- Golden Carrot, Gold Ingot, Arrow", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.redstone_lapis_lazuli_gunpowder", "- Redstone, Lapis Lazuli, Gunpowder", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.golden_nautilus_armor_enchanted_book", "- Golden Nautilus Armor, Enchanted Book", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.tide_armor_trim_ominous_bottle", "- Tide Armor Trim, Ominous Bottle", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.slimy_chunk_polar_fur_ravager", "- Slimy Chunk, Polar Fur, Ravager Scales", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.EPIC) {
+            addLootLine(lore, "treasuremanager.diamond_emerald_golden_apple", "- Diamond, Emerald, Golden Apple", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.heart_of_the_sea_sniffer", "- Heart of the Sea, Sniffer Egg", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.diamond_nautilus_armor_enchanted_book", "- Diamond Nautilus Armor, Enchanted Book", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.ice_wing_shark_tooth_dread", "- Ice Wing, Shark Tooth, Dread Soul", NamedTextColor.GREEN);
+            addLootLine(lore, "treasuremanager.ironclad_plate_battle_scrap", "- Ironclad Plate, Battle Scrap", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.LEGENDARY) {
+            addLootLine(lore, "treasuremanager.netherite_nautilus_armor_trident", "- Netherite Nautilus Armor, Trident", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.enchanted_golden_apple_diamond", "- Enchanted Golden Apple, Diamond", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.emerald_block_gold_block_netherite", "- Emerald Block, Gold Block, Netherite Scrap", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.enchanted_book_golden_apple", "- Enchanted Book, Golden Apple", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.beast_scale_ironclad_plate_ice", "- Beast Scale, Ironclad Plate, Ice Wing", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.MYTHIC) {
+            addLootLine(lore, "treasuremanager.nether_star_netherite_ingot", "- Nether Star, Netherite Ingot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.enchanted_golden_apple_diamond_block", "- Enchanted Golden Apple, Diamond Block", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.enchanted_corrupted_flesh_enchanted_wet", "- Enchanted Corrupted Flesh, Enchanted Wet Bone", NamedTextColor.GREEN);
+            addLootLine(lore, "treasuremanager.beast_scale_dread_soul", "- Beast Scale, Dread Soul", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        } else if (rarity == Rarity.SPECIAL) {
+            addLootLine(lore, "treasuremanager.nether_star_netherite_ingot", "- Nether Star, Netherite Ingot", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.enchanted_golden_apple_diamond_block", "- Enchanted Golden Apple, Diamond Block", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.netherite_upgrade_smithing_template", "- Netherite Upgrade Smithing Template", NamedTextColor.GRAY);
+            addLootLine(lore, "treasuremanager.volcanic_core_cinder_sigil", "- Volcanic Core, Cinder Sigil", NamedTextColor.GREEN);
+            addLootLine(lore, "treasuremanager.enchanted_soul_essence_beast_scale", "- Enchanted Soul Essence, Beast Scale", NamedTextColor.GREEN);
+            addArtifactLine(lore);
+        }
+    }
+
+    private void addArtifactLine(List<Component> lore) {
+        addLootLine(lore, "treasuremanager.artifact", "- ⭐ Artifact", NamedTextColor.LIGHT_PURPLE);
+    }
+
+    private void addLootLine(List<Component> lore, String key, String fallback, NamedTextColor color) {
+        lore.add(plugin.getLanguageManager().getMessage(key, fallback).color(color));
     }
 }

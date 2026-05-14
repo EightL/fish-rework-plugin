@@ -1,6 +1,7 @@
 package com.fishrework;
 
 import com.fishrework.command.FishingCommand;
+import com.fishrework.economy.EconomyManager;
 import com.fishrework.gui.GuiListener;
 import com.fishrework.leveling.LevelManager;
 import com.fishrework.listener.*;
@@ -66,6 +67,7 @@ public class FishRework extends JavaPlugin {
     // Core systems
     private LanguageManager languageManager;
     private DatabaseManager databaseManager;
+    private EconomyManager economyManager;
     private LevelManager levelManager;
     private SkillManager skillManager;
     private MobManager mobManager;
@@ -121,6 +123,8 @@ public class FishRework extends JavaPlugin {
         languageManager = new LanguageManager(this);
         languageManager.initialize();
         databaseManager = new DatabaseManager(this);
+        economyManager = new EconomyManager(this);
+        economyManager.initialize();
         levelManager = new LevelManager(this);
         bossBarManager = new BossBarManager(this);
         itemManager = new ItemManager(this);
@@ -527,6 +531,9 @@ public class FishRework extends JavaPlugin {
         if (languageManager != null) {
             languageManager.reload();
         }
+        if (economyManager != null) {
+            economyManager.reload();
+        }
         loadFishingTipsFromLang();
         getLogger().info("[Fish Rework] Configuration reloaded.");
     }
@@ -539,6 +546,7 @@ public class FishRework extends JavaPlugin {
     public UpdateChecker getUpdateChecker() { return updateChecker; }
     public LanguageManager getLanguageManager() { return languageManager; }
     public DatabaseManager getDatabaseManager() { return databaseManager; }
+    public EconomyManager getEconomyManager() { return economyManager; }
     public LevelManager getLevelManager() { return levelManager; }
     public SkillManager getSkillManager() { return skillManager; }
     public MobManager getMobManager() { return mobManager; }
@@ -560,7 +568,10 @@ public class FishRework extends JavaPlugin {
     public Map<UUID, PlayerData> getPlayerDataMap() { return playerDataMap; }
 
     public PlayerData getPlayerData(UUID uuid) {
-        return playerDataMap.get(uuid);
+        if (uuid == null) {
+            return null;
+        }
+        return playerDataMap.computeIfAbsent(uuid, id -> databaseManager.loadPlayer(id));
     }
 
     public com.fishrework.manager.NetheriteRelicManager getNetheriteRelicManager() {

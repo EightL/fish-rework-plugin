@@ -1,6 +1,7 @@
 package com.fishrework.gui;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.model.PlayerData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -124,9 +125,20 @@ public class SellConfirmGUI extends BaseGUI {
         if (slot == 11) {
             // Confirm — process sale
             if (totalItems > 0 && totalValue > 0) {
+                EconomyResult result = plugin.getEconomyManager().deposit(player, totalValue);
+                if (!result.success()) {
+                    player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                            .color(NamedTextColor.RED));
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+                    if (bagType == BagType.LAVA_BAG) {
+                        new LavaBagGUI(plugin, player).open(player);
+                    } else {
+                        new FishBagGUI(plugin, player).open(player);
+                    }
+                    return;
+                }
                 PlayerData data = plugin.getPlayerData(player.getUniqueId());
                 if (data != null) {
-                    data.addBalance(totalValue);
                     data.getSession().addDoubloonsEarned(totalValue);
                     if (bagType == BagType.LAVA_BAG) {
                         data.setLavaBagContents(remainingContents);
@@ -135,7 +147,6 @@ public class SellConfirmGUI extends BaseGUI {
                         data.setFishBagContents(remainingContents);
                         plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), remainingContents);
                     }
-                    plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
                 }
 
                 player.sendMessage(plugin.getLanguageManager().getMessage(

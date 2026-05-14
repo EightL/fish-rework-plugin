@@ -79,7 +79,7 @@ public class LavaBagGUI extends BaseGUI {
         sellAll.setItemMeta(saMeta);
         inventory.setItem(49, sellAll);
 
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);
         ItemMeta balMeta = balanceItem.getItemMeta();
         balMeta.displayName(Component.text(plugin.getLanguageManager().getString(

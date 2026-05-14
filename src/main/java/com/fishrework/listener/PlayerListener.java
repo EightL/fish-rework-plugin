@@ -21,11 +21,12 @@ public class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         // Load player data fully async (loadPlayer includes settings, bags, balance, etc.)
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            PlayerData data = plugin.getDatabaseManager().loadPlayer(event.getPlayer().getUniqueId());
+            PlayerData loadedData = plugin.getDatabaseManager().loadPlayer(event.getPlayer().getUniqueId());
 
             // Back to main thread to cache it and sync advancements
             plugin.getServer().getScheduler().runTask(plugin, () -> {
-                plugin.getPlayerDataMap().put(event.getPlayer().getUniqueId(), data);
+                PlayerData cachedData = plugin.getPlayerDataMap().putIfAbsent(event.getPlayer().getUniqueId(), loadedData);
+                PlayerData data = cachedData != null ? cachedData : loadedData;
 
                 // Reset transient session state on join (preserves persisted settings already loaded above)
                 data.resetSession();

@@ -9,6 +9,7 @@ import com.fishrework.model.Skill;
 import com.fishrework.MobManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -181,8 +182,10 @@ public class CollectionGui extends BaseGUI {
 
                 ItemStack item = new ItemStack(mob.getCollectionIcon());
                 ItemMeta meta = item.getItemMeta();
-                NamedTextColor nameColor = mob.isHostile() ? NamedTextColor.RED : NamedTextColor.AQUA;
-                Component displayName = Component.text(mob.getLocalizedCollectionName(plugin.getLanguageManager())).color(nameColor)
+                TextColor nameColor = mob.getRarity() != null ? mob.getRarity().getColor() : TextColor.color(NamedTextColor.WHITE);
+                TextColor iconColor = mob.isHostile() ? NamedTextColor.RED : NamedTextColor.WHITE;
+                Component displayName = Component.text(mob.getIcon() + " ").color(iconColor)
+                        .append(Component.text(mob.getLocalizedCollectionName(plugin.getLanguageManager())).color(nameColor))
                         .decoration(TextDecoration.ITALIC, false);
                 if (isNew) {
                     displayName = plugin.getLanguageManager().getMessage("collectiongui.u2b50_new", "\u2B50 NEW! ").color(NamedTextColor.GREEN)
@@ -313,14 +316,26 @@ public class CollectionGui extends BaseGUI {
                 meta.lore(lore);
                 item.setItemMeta(meta);
                 inventory.setItem(MOB_SLOTS[slotIdx], item);
-            } else { // Locked text logic (remains the same)               // Locked
-                ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            } else {
+                ItemStack item = new ItemStack(mob.isTreasure() ? mob.getCollectionIcon() : Material.RED_STAINED_GLASS_PANE);
                 ItemMeta meta = item.getItemMeta();
-                meta.displayName(plugin.getLanguageManager().getMessage("collectiongui.locked_item_name", "???").color(NamedTextColor.RED)
-                        .decoration(TextDecoration.ITALIC, false));
-                String hint = mob.isHostile() ? "Kill this creature to unlock!" : "Catch this fish to unlock!";
-                meta.lore(List.of(Component.text(hint).color(NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, false)));
+                if (mob.isTreasure()) {
+                    TextColor nameColor = mob.getRarity() != null ? mob.getRarity().getColor() : TextColor.color(NamedTextColor.GOLD);
+                    meta.displayName(Component.text(mob.getIcon() + " ").color(NamedTextColor.GOLD)
+                            .append(Component.text(mob.getLocalizedCollectionName(plugin.getLanguageManager())).color(nameColor))
+                            .decoration(TextDecoration.ITALIC, false));
+                    meta.lore(List.of(
+                            plugin.getLanguageManager().getMessage("collectiongui.locked_treasure_hint", "Find this treasure chest to unlock details.")
+                                    .color(NamedTextColor.GRAY)
+                                    .decoration(TextDecoration.ITALIC, false)
+                    ));
+                } else {
+                    meta.displayName(plugin.getLanguageManager().getMessage("collectiongui.locked_item_name", "???").color(NamedTextColor.RED)
+                            .decoration(TextDecoration.ITALIC, false));
+                    String hint = mob.isHostile() ? "Kill this creature to unlock!" : "Catch this fish to unlock!";
+                    meta.lore(List.of(Component.text(hint).color(NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, false)));
+                }
                 item.setItemMeta(meta);
                 inventory.setItem(MOB_SLOTS[slotIdx], item);
             }

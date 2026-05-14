@@ -1,6 +1,7 @@
 package com.fishrework.gui;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.model.Bait;
 import com.fishrework.model.BiomeFishingProfile;
 import com.fishrework.model.BiomeGroup;
@@ -249,8 +250,7 @@ public class BuyShopGUI extends BaseGUI {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
         specialEntriesBySlot.clear();
 
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Place bait items in rows 0-4 (slots 0-44)
@@ -383,23 +383,20 @@ public class BuyShopGUI extends BaseGUI {
 
         int outputQuantity = 1;
 
-        if (data.getBalance() < totalCost) {
+        double balance = plugin.getEconomyManager().getBalance(player);
+        if (balance < totalCost) {
             player.sendMessage(plugin.getLanguageManager().getMessage(
                             "buyshopgui.not_enough_currency",
                             "Not enough %currency%! Need %required% but have %current%",
                             "currency", currencyName,
                             "required", com.fishrework.util.FormatUtil.format("%.0f", totalCost),
-                            "current", com.fishrework.util.FormatUtil.format("%.0f", data.getBalance()))
+                            "current", com.fishrework.util.FormatUtil.format("%.0f", balance))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
             return;
         }
 
-        // Deduct balance
-        data.deductBalance(totalCost);
-        plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
-
-        // Give item(s)
+        // Prepare item(s) before charging.
         int totalBaits = bundles * outputQuantity;
         ItemStack giveItem;
         if (clickedEntry.isBait) {
@@ -407,6 +404,14 @@ public class BuyShopGUI extends BaseGUI {
         } else {
             giveItem = plugin.getItemManager().getItem(clickedEntry.id);
             if (giveItem == null) return;
+        }
+
+        EconomyResult result = plugin.getEconomyManager().withdraw(player, totalCost);
+        if (!result.success()) {
+            player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                    .color(NamedTextColor.RED));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+            return;
         }
 
         giveItem.setAmount(totalBaits);

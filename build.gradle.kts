@@ -24,6 +24,7 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.codemc.io/repository/creatorfromhell/")
     // JitPack allows us to build directly from GitHub
     maven("https://jitpack.io") 
 }
@@ -31,6 +32,10 @@ repositories {
 dependencies {
     // Switch target with -PtargetMinecraftVersion=<version>
     compileOnly("io.papermc.paper:paper-api:${paperBuildTarget.apiVersion}")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude(group = "org.bukkit", module = "bukkit")
+    }
+    compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.19")
 
     // Loaded by Paper through plugin.yml libraries at runtime.
     compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")

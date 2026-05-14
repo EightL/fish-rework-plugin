@@ -494,11 +494,11 @@ mob_balance:
     lighter_shape: 1.60              # Higher values pull sub-1.0x rolls back toward normal size.
     heavier_shape: 3.50              # Higher values make giant outliers rarer.
     weight_exponent: 1.50            # Displayed kg grows non-linearly with visual size.
-    drop_roll_multiplier_at_min_size: 0.22
-    drop_roll_multiplier_at_normal_size: 0.40 # 1.0x creatures average 60% fewer drop rolls than before.
-    drop_roll_multiplier_at_max_size: 4.00    # Ultra-large outliers still overperform, but with a tighter loot ceiling.
-    drop_underweight_curve: 0.80
-    drop_overweight_curve: 2.00
+    drop_roll_multiplier_at_min_size: 0.80    # Tiny creatures still keep base drops readable instead of feeling empty.
+    drop_roll_multiplier_at_normal_size: 1.00 # 1.0x creatures use the configured drop chance directly.
+    drop_roll_multiplier_at_max_size: 4.00    # Mythic-size creatures cap around 4 rolls for 100% base drops.
+    drop_underweight_curve: 1.20
+    drop_overweight_curve: 2.50
     uncommon_weight_min_size: 1.10
     rare_weight_min_size: 1.25
     epic_weight_min_size: 1.50
@@ -601,9 +601,29 @@ totems:
 #  Economy — Custom Currency
 # ═══════════════════════════════════════════════════════
 economy:
+  # Economy provider for balances, shop purchases, selling, and fish rewards.
+  # internal: Fish Rework's built-in Doubloons balance
+  # vault: legacy Vault economy service
+  # vault_unlocked: VaultUnlocked v2 economy service with optional multi-currency
+  # auto: VaultUnlocked if available, then Vault, otherwise internal
+  provider: internal
+  fallback_to_internal: true
+
+  # Internal provider display values. Leave currency_name as "Doubloons" to let
+  # external providers show their own configured currency name.
   currency_name: "Doubloons"
   currency_symbol: "⛁"
   max_balance: 10000000
+
+  vault:
+    currency_name: ""          # Blank uses the Vault provider's plural currency name.
+    use_world_accounts: false  # True calls Vault world-specific balance APIs.
+
+  vault_unlocked:
+    currency: ""               # Blank uses the provider's default currency.
+    currency_name: ""          # Optional display name override for the selected currency.
+    use_world_accounts: false  # True uses world-specific VaultUnlocked balances.
+
   # Sell prices for vanilla items
   sell_prices:
     # Fish
@@ -655,7 +675,7 @@ economy:
     residue: 30
     shark_tooth: 500
     beast_scale: 1000
-    poseidons_crown: 200
+    poseidons_crown: 2000
     poseidons_tear: 2000
     wardens_echo: 2400
     dread_soul: 50

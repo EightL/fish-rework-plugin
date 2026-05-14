@@ -1,10 +1,12 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.PlayerData;
 import com.fishrework.util.AutoSellUtil;
 import com.fishrework.util.FeatureKeys;
+import com.fishrework.util.InventoryTransactionUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -18,6 +20,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class TreasureListener implements Listener {
@@ -104,6 +108,7 @@ public class TreasureListener implements Listener {
                 && autoSellMode != AutoSellMode.OFF;
         double autoSellTotal = 0.0;
         int autoSellCount = 0;
+        List<ItemStack> autoSoldItems = new ArrayList<>();
 
         for (ItemStack item : inv.getContents()) {
             if (item == null || item.getType() == Material.AIR) continue;
@@ -113,6 +118,7 @@ public class TreasureListener implements Listener {
                 if (sellPrice > 0) {
                     autoSellTotal += sellPrice * item.getAmount();
                     autoSellCount += item.getAmount();
+                    autoSoldItems.add(item.clone());
                     continue;
                 }
             }
@@ -127,15 +133,21 @@ public class TreasureListener implements Listener {
         }
 
         if (autoSellTotal > 0 && data != null) {
-            data.addBalance(autoSellTotal);
-            data.getSession().addDoubloonsEarned(autoSellTotal);
-            player.sendMessage(plugin.getLanguageManager().getMessage(
-                            "fishingcommand.sold_items_for_currency",
-                            "Sold %count% items for %amount% %currency%!",
-                            "count", String.valueOf(autoSellCount),
-                            "amount", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
-                            "currency", plugin.getLanguageManager().getCurrencyName())
-                    .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
+            EconomyResult result = plugin.getEconomyManager().deposit(player, autoSellTotal);
+            if (result.success()) {
+                data.getSession().addDoubloonsEarned(autoSellTotal);
+                player.sendMessage(plugin.getLanguageManager().getMessage(
+                                "fishingcommand.sold_items_for_currency",
+                                "Sold %count% items for %amount% %currency%!",
+                                "count", String.valueOf(autoSellCount),
+                                "amount", com.fishrework.util.FormatUtil.format("%.0f", autoSellTotal),
+                                "currency", plugin.getLanguageManager().getCurrencyName())
+                        .color(net.kyori.adventure.text.format.NamedTextColor.GREEN));
+            } else {
+                InventoryTransactionUtil.restoreOrDrop(player, autoSoldItems);
+                player.sendMessage(net.kyori.adventure.text.Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                        .color(net.kyori.adventure.text.format.NamedTextColor.RED));
+            }
         }
         
         // Clear inventory to be safe (though it will be destroyed)

@@ -9,8 +9,6 @@ biome_profiles:
     passive_weights:
       cod: 30.0
       salmon: 12.0
-      sailfish: 2.0
-
       squid: 8.0
       pufferfish: 2.0
       tropical_fish: 2.0
@@ -28,8 +26,6 @@ biome_profiles:
     passive_weights:
       cod: 8.0
       salmon: 28.0
-      sailfish: 1.0
-
       squid: 8.0
       pufferfish: 1.0
       tropical_fish: 1.0
@@ -51,8 +47,6 @@ biome_profiles:
     passive_weights:
       cod: 22.0
       salmon: 12.0
-      sailfish: 6.0
-
       squid: 12.0
       pufferfish: 6.0
       tropical_fish: 5.0
@@ -71,8 +65,6 @@ biome_profiles:
     passive_weights:
       cod: 8.0
       salmon: 5.0
-      sailfish: 8.0
-
       squid: 6.0
       pufferfish: 12.0
       tropical_fish: 18.0
@@ -91,8 +83,6 @@ biome_profiles:
     passive_weights:
       cod: 3.0
       salmon: 1.0
-      sailfish: 10.0
-
       squid: 5.0
       pufferfish: 12.0
       tropical_fish: 22.0
@@ -159,8 +149,6 @@ biome_profiles:
     passive_weights:
       cod: 18.0
       salmon: 10.0
-      sailfish: 4.0
-
       squid: 8.0
       pufferfish: 6.0
       turtle: 8.0

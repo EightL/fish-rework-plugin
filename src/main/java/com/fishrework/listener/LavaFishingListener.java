@@ -426,7 +426,7 @@ public class LavaFishingListener implements Listener {
                 && (mobDef.getRarity() == null || mobDef.getRarity().ordinal() < Rarity.RARE.ordinal())) {
             return;
         }
-        String mobName = mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
+        String mobName = mobDef.getIcon() + " " + mobDef.getLocalizedDisplayName(plugin.getLanguageManager());
         TextColor rarityColor = mobDef.getRarity() != null ? mobDef.getRarity().getColor() : NamedTextColor.GOLD;
         double weightKg = weightProfile != null ? weightProfile.getWeightKg() : 0.0;
         Rarity weightRarity = plugin.getMobManager().getWeightRarity(weightProfile);

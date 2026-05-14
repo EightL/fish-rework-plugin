@@ -24,6 +24,7 @@ buyshopgui.click_to_buy: ¡Haz clic para comprar!
 buyshopgui.click_to_buy_1: Haz clic para comprar 1
 buyshopgui.shiftclick_to_buy_4: Shift-clic para comprar 4
 collectiongui.locked_item_name: ???
+collectiongui.locked_treasure_hint: Encuentra este cofre del tesoro para desbloquear los detalles.
 collectiongui.biome_specific: Específico del bioma
 collectiongui.chance: 'Probabilidad: '
 collectiongui.click_to_change_biome_filter: Haz clic para cambiar el filtro de bioma
@@ -453,6 +454,11 @@ sellconfirmgui.cancel: ✖ Cancelar
 sellconfirmgui.confirm_sale: ✔ Confirmar venta
 sellconfirmgui.nothing_to_sell: ¡Nada que vender!
 sellconfirmgui.sale_summary: Resumen de venta
+sellallconfirmgui.title: "Vender Todo – ¿Confirmar?"
+sellallconfirmgui.confirm: "Confirmar – Vender Todo"
+sellallconfirmgui.cancel: "Cancelar"
+sellallconfirmgui.click_to_confirm: "¡Haz clic para vender todo!"
+sellallconfirmgui.click_to_cancel: "Haz clic para volver"
 sellotherconfirmgui.cancel: Cancelar
 sellotherconfirmgui.confirm: Confirmar
 sellotherconfirmgui.return_to_fish_vendor: Volver al vendedor de pescado
@@ -1161,6 +1167,7 @@ gui.title.leaderboardgui.title_prefix: "Tabla de Líderes: "
 common.on: "ACTIVADO"
 common.off: "DESACTIVADO"
 common.disabled: "DESHABILITADO"
+economy.transaction_failed: "Transacción de economía fallida: %reason%"
 fishingtip.prefix: "[Consejo de Pesca] "
 fishingtip.click_to_open: "Haz clic para abrir"
 fishingtip.tip_1: "Usa /fish o /fishing para abrir tu GUI de progreso de pesca."

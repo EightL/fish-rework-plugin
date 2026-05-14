@@ -1,7 +1,9 @@
 package com.fishrework.gui;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.model.PlayerData;
+import com.fishrework.util.InventoryTransactionUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -12,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SellOtherConfirmGUI extends BaseGUI {
@@ -109,12 +112,14 @@ public class SellOtherConfirmGUI extends BaseGUI {
         double unitPrice = plugin.getConfig().getDouble("economy.other_vendor_price", 1.0);
 
         int soldItems = 0;
+        List<ItemStack> removedItems = new ArrayList<>();
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
             ItemStack item = contents[i];
             if (item == null) continue;
             if (!plugin.getItemManager().isOtherVendorSellMaterial(item)) continue;
             soldItems += item.getAmount();
+            removedItems.add(item.clone());
             player.getInventory().setItem(i, null);
         }
 
@@ -126,11 +131,18 @@ public class SellOtherConfirmGUI extends BaseGUI {
         }
 
         double earnings = soldItems * unitPrice;
+        EconomyResult result = plugin.getEconomyManager().deposit(player, earnings);
+        if (!result.success()) {
+            InventoryTransactionUtil.restoreOrDrop(player, removedItems);
+            player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                    .color(NamedTextColor.RED));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+            return;
+        }
+
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data != null) {
-            data.addBalance(earnings);
             data.getSession().addDoubloonsEarned(earnings);
-            plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
         }
 
         player.sendMessage(plugin.getLanguageManager().getMessage(

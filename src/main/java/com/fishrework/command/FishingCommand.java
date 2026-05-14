@@ -1,6 +1,7 @@
  package com.fishrework.command;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.manager.FishStallManager;
 import com.fishrework.gui.LeaderboardGUI;
 import com.fishrework.gui.FishingSettingsGUI;
@@ -14,6 +15,7 @@ import com.fishrework.model.Skill;
 import com.fishrework.storage.DatabaseManager.LeaderboardCategory;
 import com.fishrework.util.FeatureKeys;
 import com.fishrework.util.FishingChanceSnapshotHelper;
+import com.fishrework.util.InventoryTransactionUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -246,8 +248,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 "The economy system is disabled on this server.")) {
             return true;
         }
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
         player.sendMessage(plugin.getLanguageManager().getMessage(
                 "fishingcommand.status_balance",
@@ -784,6 +785,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         String currencyName = plugin.getLanguageManager().getCurrencyName();
         double totalEarnings = 0;
         int totalItems = 0;
+        List<org.bukkit.inventory.ItemStack> removedItems = new ArrayList<>();
 
         org.bukkit.inventory.ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
@@ -793,16 +795,23 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             if (price > 0) {
                 totalEarnings += price * item.getAmount();
                 totalItems += item.getAmount();
+                removedItems.add(item.clone());
                 player.getInventory().setItem(i, null);
             }
         }
 
         if (totalItems > 0) {
+            EconomyResult result = plugin.getEconomyManager().deposit(player, totalEarnings);
+            if (!result.success()) {
+                InventoryTransactionUtil.restoreOrDrop(player, removedItems);
+                player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                        .color(NamedTextColor.RED));
+                player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+                return;
+            }
             PlayerData data = plugin.getPlayerData(player.getUniqueId());
             if (data != null) {
-                data.addBalance(totalEarnings);
                 data.getSession().addDoubloonsEarned(totalEarnings);
-                plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
             }
             player.sendMessage(plugin.getLanguageManager().getMessage(
                     "fishingcommand.sold_items_for_currency",
@@ -1358,8 +1367,12 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return;
         }
 
-        data.setBalance(amount);
-        plugin.getDatabaseManager().saveBalance(target.getUniqueId(), amount);
+        EconomyResult result = plugin.getEconomyManager().setBalance(target, amount);
+        if (!result.success()) {
+            player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                    .color(NamedTextColor.RED));
+            return;
+        }
 
         String currencyName = plugin.getLanguageManager().getCurrencyName();
         player.sendMessage(plugin.getLanguageManager().getMessage(

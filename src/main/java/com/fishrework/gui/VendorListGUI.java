@@ -101,8 +101,7 @@ public class VendorListGUI extends BaseGUI {
     }
 
     private void setBalanceDisplay(int slot) {
-        com.fishrework.model.PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);

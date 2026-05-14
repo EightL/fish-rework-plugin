@@ -1,6 +1,7 @@
 package com.fishrework.gui;
 
 import com.fishrework.FishRework;
+import com.fishrework.economy.EconomyResult;
 import com.fishrework.model.PlayerData;
 import com.fishrework.util.FormatUtil;
 import net.kyori.adventure.text.Component;
@@ -227,17 +228,15 @@ public class ConfigVendorGUI extends BaseGUI {
             return;
         }
 
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        if (data == null) return;
-
         String currencyName = plugin.getLanguageManager().getCurrencyName();
-        if (data.getBalance() < entry.price()) {
+        double balance = plugin.getEconomyManager().getBalance(player);
+        if (balance < entry.price()) {
             player.sendMessage(plugin.getLanguageManager().getMessage(
                             "configvendorgui.not_enough_currency",
                             "Not enough %currency%! Need %required% but have %current%.",
                             "currency", currencyName,
                             "required", FormatUtil.format("%.0f", entry.price()),
-                            "current", FormatUtil.format("%.0f", data.getBalance()))
+                            "current", FormatUtil.format("%.0f", balance))
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
@@ -259,8 +258,13 @@ public class ConfigVendorGUI extends BaseGUI {
             }
         }
 
-        data.deductBalance(entry.price());
-        plugin.getDatabaseManager().saveBalance(player.getUniqueId(), data.getBalance());
+        EconomyResult result = plugin.getEconomyManager().withdraw(player, entry.price());
+        if (!result.success()) {
+            player.sendMessage(Component.text(plugin.getEconomyManager().transactionFailedMessage(result))
+                    .color(NamedTextColor.RED));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
 
         if (entry.type() == RewardType.COMMAND) {
             dispatchCommands(entry);
@@ -339,8 +343,7 @@ public class ConfigVendorGUI extends BaseGUI {
     }
 
     private void setBalanceDisplay(int slot) {
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         ItemStack balanceItem = new ItemStack(Material.SUNFLOWER);

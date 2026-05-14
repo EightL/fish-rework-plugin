@@ -36,8 +36,7 @@ public class ShopMenuGUI extends BaseGUI {
     private void initializeItems() {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
 
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-        double balance = data != null ? data.getBalance() : 0;
+        double balance = plugin.getEconomyManager().getBalance(player);
         String currencyName = plugin.getLanguageManager().getCurrencyName();
 
         // Slot 11: Fish Vendor

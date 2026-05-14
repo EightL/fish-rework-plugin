@@ -69,27 +69,6 @@ mobs:
       min: 1
       max: 1
 
-  sailfish:
-    entity_type: SALMON
-    display_name: "Sailfish"
-    xp: 20.0
-    base_weight: 8.0
-    default_chance: 8.0
-    category: PASSIVE
-    required_level: 0
-    boost_by_rare_creature: false
-    collection_icon: SALMON_SPAWN_EGG
-    collection_name: "Swift Sailfish"
-    rarity: UNCOMMON
-    display_model: sailfish
-    drops:
-    - vanilla: COD
-      chance: 1.0
-      min: 1
-      max: 1
-    spawn:
-      scale: 2
-
   squid:
     entity_type: SQUID
     display_name: "Squid"
@@ -106,7 +85,7 @@ mobs:
     - vanilla: INK_SAC
       chance: 1.0
       min: 1
-      max: 3
+      max: 1
 
   pufferfish:
     entity_type: PUFFERFISH
@@ -146,7 +125,7 @@ mobs:
     - item: corrupted_flesh
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 1.0
       damage_multiplier: 0.7
@@ -191,7 +170,7 @@ mobs:
     - item: guardian_scale
       chance: 1.0
       min: 2
-      max: 4
+      max: 2
     spawn:
       health_multiplier: 0.84
       damage_multiplier: 2.2
@@ -302,7 +281,7 @@ mobs:
     - item: battle_scrap
       chance: 1.0
       min: 1
-      max: 3
+      max: 1
     spawn:
       type: GROUP
       group_kill_all: true
@@ -333,7 +312,7 @@ mobs:
     - item: battle_scrap
       chance: 1.0
       min: 2
-      max: 5
+      max: 2
     spawn:
       type: GROUP
       group_kill_all: true
@@ -368,7 +347,7 @@ mobs:
     - item: battle_scrap
       chance: 1.0
       min: 4
-      max: 8
+      max: 4
     spawn:
       type: GROUP
       group_kill_all: true
@@ -416,7 +395,7 @@ mobs:
     - item: corrupted_flesh
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       damage_multiplier: 1.5
 
@@ -436,7 +415,7 @@ mobs:
     - item: wet_bone
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 2.0
       damage_multiplier: 2.1
@@ -459,7 +438,7 @@ mobs:
     - item: dune_spice
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       type: MOUNTED
       mount:
@@ -496,7 +475,7 @@ mobs:
     - item: wet_bone
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
   slime:
     entity_type: SLIME
@@ -514,7 +493,7 @@ mobs:
     - item: slimy_chunk
       chance: 1.0
       min: 1
-      max: 3
+      max: 1
     spawn:
       type: SCALED
       slime_size: 4
@@ -592,7 +571,7 @@ mobs:
     - item: hyena_fur
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     - item: hyena_pants_leggings
       chance: 0.005
       min: 1
@@ -617,7 +596,7 @@ mobs:
     - item: ravager_scales
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 1.3
       damage_multiplier: 1.65
@@ -669,7 +648,7 @@ mobs:
     - item: spider_silk
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       particle: venom_purple
 
@@ -689,7 +668,7 @@ mobs:
     - item: mossy_vine
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       abilities:
       - id: MINI_BLAST
@@ -777,7 +756,7 @@ mobs:
     - item: shark_tooth
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       scale: 2.5
       health: 60.0
@@ -900,7 +879,7 @@ mobs:
     - item: wet_bone
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       damage_multiplier: 2.0
 
@@ -920,7 +899,7 @@ mobs:
     - item: polar_fur
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 1.5
       damage_multiplier: 2.1
@@ -973,7 +952,7 @@ mobs:
     - item: residue
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health: 40.0
       aggro:
@@ -1019,7 +998,7 @@ mobs:
     - item: spider_silk
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 2.0
       damage_multiplier: 1.5
@@ -1041,7 +1020,7 @@ mobs:
     - item: spider_silk
       chance: 1.0
       min: 2
-      max: 4
+      max: 2
     spawn:
       type: MOUNTED
       mount:
@@ -1115,7 +1094,7 @@ mobs:
     - item: wardens_echo
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     spawn:
       health_multiplier: 0.5
       damage_multiplier: 0.56
@@ -1180,7 +1159,7 @@ mobs:
     - item: dread_soul
       chance: 1.0
       min: 2
-      max: 4
+      max: 2
     spawn:
       type: GROUP
       spread: 4.0
@@ -1336,7 +1315,7 @@ mobs:
     - vanilla: GLOW_INK_SAC
       chance: 1.0
       min: 1
-      max: 3
+      max: 1
 
   dolphin:
     entity_type: DOLPHIN
@@ -1354,7 +1333,7 @@ mobs:
     - vanilla: COD
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
   frog:
     entity_type: FROG
@@ -1426,7 +1405,7 @@ mobs:
     - vanilla: NAUTILUS_SHELL
       chance: 0.75
       min: 1
-      max: 2
+      max: 1
 
   # ===========================================================================
   # Biome-Specific Land Mobs (Passive)
@@ -1452,7 +1431,7 @@ mobs:
     - vanilla: FEATHER
       chance: 0.5
       min: 1
-      max: 2
+      max: 1
 
   cow:
     entity_type: COW
@@ -1470,7 +1449,7 @@ mobs:
     - vanilla: BEEF
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     - vanilla: LEATHER
       chance: 0.5
       min: 1
@@ -1492,7 +1471,7 @@ mobs:
     - vanilla: PORKCHOP
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
   sheep:
     entity_type: SHEEP
@@ -1510,7 +1489,7 @@ mobs:
     - vanilla: MUTTON
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     - vanilla: WHITE_WOOL
       chance: 0.5
       min: 1
@@ -1580,7 +1559,7 @@ mobs:
     - vanilla: COD
       chance: 0.75
       min: 1
-      max: 2
+      max: 1
 
   ocelot:
     entity_type: OCELOT
@@ -1624,7 +1603,7 @@ mobs:
     - vanilla: LEATHER
       chance: 0.75
       min: 1
-      max: 2
+      max: 1
 
   panda:
     entity_type: PANDA
@@ -1642,7 +1621,7 @@ mobs:
     - vanilla: BAMBOO
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
   parrot:
     entity_type: PARROT
@@ -1660,7 +1639,7 @@ mobs:
     - vanilla: FEATHER
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
   mooshroom:
     entity_type: MOOSHROOM
@@ -1678,7 +1657,7 @@ mobs:
     - vanilla: RED_MUSHROOM
       chance: 1.0
       min: 1
-      max: 3
+      max: 1
 
   armadillo:
     entity_type: ARMADILLO
@@ -1798,7 +1777,7 @@ mobs:
     - item: magma_residue
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
     - item: molten_fin
       chance: 0.01
       min: 1
@@ -1866,7 +1845,7 @@ mobs:
     - item: corrupted_gold
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
     spawn:
       health_multiplier: 2.5
@@ -1914,7 +1893,7 @@ mobs:
     - item: ghast_membrane
       chance: 1.0
       min: 3
-      max: 5
+      max: 3
     spawn:
       scale: 2.0
       health: 600.0
@@ -1981,7 +1960,7 @@ mobs:
     - item: strider_hide
       chance: 1.0
       min: 1
-      max: 2
+      max: 1
 
     spawn:
       health_multiplier: 2.5
@@ -2037,7 +2016,7 @@ mobs:
     - item: corrupted_gold
       chance: 1.0
       min: 3
-      max: 5
+      max: 3
     - item: piglin_crown_helmet
       chance: 0.005
       min: 1
@@ -2177,7 +2156,7 @@ mobs:
     - item: warped_tendril
       chance: 1.0
       min: 2
-      max: 3
+      max: 2
     spawn:
       health_multiplier: 3.0
       damage_multiplier: 1.19
@@ -2211,7 +2190,7 @@ mobs:
     - item: ender_fragment
       chance: 1.0
       min: 4
-      max: 7
+      max: 4
     spawn:
       health: 700.0
       damage_multiplier: 0.7084
@@ -2320,7 +2299,7 @@ mobs:
     - item: ghast_membrane
       chance: 1.0
       min: 4
-      max: 6
+      max: 4
     spawn:
       type: GROUP
       group_kill_all: true
@@ -2386,7 +2365,7 @@ mobs:
     - item: basalt_shell
       chance: 1.0
       min: 2
-      max: 3
+      max: 2
     spawn:
       health_multiplier: 2.0
       damage_multiplier: 0.7
