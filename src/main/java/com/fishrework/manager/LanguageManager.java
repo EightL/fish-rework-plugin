@@ -24,6 +24,8 @@ import java.util.function.Supplier;
 
 public class LanguageManager {
 
+    private static final String DEFAULT_CURRENCY_NAME = "Doubloons";
+
     private final FishRework plugin;
     private final Map<String, FileConfiguration> localeConfigs = new ConcurrentHashMap<>();
     private final Map<String, String> normalizedLocaleCache = new ConcurrentHashMap<>();
@@ -104,11 +106,12 @@ public class LanguageManager {
     }
 
     public Component getMessage(Player player, String key) {
-        String text = getConfig(player).getString(key);
+        FileConfiguration config = getConfig(player);
+        String text = config.getString(key);
         if (text == null) {
             return Component.text(key);
         }
-        return parseString(text);
+        return parseString(text, config);
     }
     
     public Component getMessage(String key, String fallback) {
@@ -117,7 +120,8 @@ public class LanguageManager {
     }
 
     public Component getMessage(Player player, String key, String fallback) {
-        return parseString(getConfig(player).getString(key, fallback));
+        FileConfiguration config = getConfig(player);
+        return parseString(config.getString(key, fallback), config);
     }
 
     public Component getMessage(String key, String fallback, Map<String, String> placeholders) {
@@ -131,13 +135,14 @@ public class LanguageManager {
     }
 
     public Component getMessage(Player player, String key, String fallback, Map<String, String> placeholders) {
-        String text = getConfig(player).getString(key, fallback);
+        FileConfiguration config = getConfig(player);
+        String text = config.getString(key, fallback);
         if (placeholders != null) {
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 text = text.replace("%" + entry.getKey() + "%", entry.getValue());
             }
         }
-        return parseString(text);
+        return parseString(text, config);
     }
 
     public Component getMessage(String key, String fallback, String... placeholders) {
@@ -152,23 +157,25 @@ public class LanguageManager {
     }
 
     public Component getMessage(Player player, String key, String fallback, String... placeholders) {
-        String text = getConfig(player).getString(key, fallback);
+        FileConfiguration config = getConfig(player);
+        String text = config.getString(key, fallback);
         if (placeholders != null) {
             int pairCount = placeholders.length - (placeholders.length % 2);
             for (int i = 0; i < pairCount; i += 2) {
                 text = text.replace("%" + placeholders[i] + "%", placeholders[i + 1]);
             }
         }
-        return parseString(text);
+        return parseString(text, config);
     }
 
     public String getString(String key, String fallback) {
         String text = getContextConfig().getString(key, fallback);
-        return text.replace('&', '§');
+        return applyCurrencyNameOverride(text).replace('&', '§');
     }
 
     public String getString(Player player, String key, String fallback) {
-        return getConfig(player).getString(key, fallback).replace('&', '§');
+        FileConfiguration config = getConfig(player);
+        return applyCurrencyNameOverride(config.getString(key, fallback), config).replace('&', '§');
     }
 
     public String getString(String key, String fallback, Map<String, String> placeholders) {
@@ -178,17 +185,18 @@ public class LanguageManager {
                 text = text.replace("%" + entry.getKey() + "%", entry.getValue());
             }
         }
-        return text.replace('&', '§');
+        return applyCurrencyNameOverride(text).replace('&', '§');
     }
 
     public String getString(Player player, String key, String fallback, Map<String, String> placeholders) {
-        String text = getConfig(player).getString(key, fallback);
+        FileConfiguration config = getConfig(player);
+        String text = config.getString(key, fallback);
         if (placeholders != null) {
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 text = text.replace("%" + entry.getKey() + "%", entry.getValue());
             }
         }
-        return text.replace('&', '§');
+        return applyCurrencyNameOverride(text, config).replace('&', '§');
     }
 
     public String getString(String key, String fallback, String... placeholders) {
@@ -199,28 +207,88 @@ public class LanguageManager {
                 text = text.replace("%" + placeholders[i] + "%", placeholders[i + 1]);
             }
         }
-        return text.replace('&', '§');
+        return applyCurrencyNameOverride(text).replace('&', '§');
     }
 
     public String getString(Player player, String key, String fallback, String... placeholders) {
-        String text = getConfig(player).getString(key, fallback);
+        FileConfiguration config = getConfig(player);
+        String text = config.getString(key, fallback);
         if (placeholders != null) {
             int pairCount = placeholders.length - (placeholders.length % 2);
             for (int i = 0; i < pairCount; i += 2) {
                 text = text.replace("%" + placeholders[i] + "%", placeholders[i + 1]);
             }
         }
-        return text.replace('&', '§');
+        return applyCurrencyNameOverride(text, config).replace('&', '§');
     }
 
     public String getCurrencyName() {
-        String fallback = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        return getString("common.currency_name", fallback);
+        String override = getConfiguredCurrencyOverride();
+        if (override != null) {
+            return override;
+        }
+        return getString("common.currency_name", DEFAULT_CURRENCY_NAME);
     }
 
     public String getCurrencyName(Player player) {
-        String fallback = plugin.getConfig().getString("economy.currency_name", "Doubloons");
-        return getString(player, "common.currency_name", fallback);
+        String override = getConfiguredCurrencyOverride();
+        if (override != null) {
+            return override;
+        }
+        return getString(player, "common.currency_name", DEFAULT_CURRENCY_NAME);
+    }
+
+    public String applyCurrencyNameOverride(String text) {
+        return applyCurrencyNameOverride(text, getContextConfig());
+    }
+
+    private String applyCurrencyNameOverride(String text, FileConfiguration currencyConfig) {
+        if (text == null) {
+            return null;
+        }
+        String override = getConfiguredCurrencyOverride();
+        if (text.contains("%currency%")) {
+            String currencyName = override != null ? override : getRawLocalizedCurrencyName(currencyConfig);
+            text = text.replace("%currency%", currencyName);
+        }
+        if (override == null) {
+            return text;
+        }
+        String localizedCurrencyName = getRawLocalizedCurrencyName(currencyConfig);
+        if (!localizedCurrencyName.equals(override)) {
+            text = text
+                    .replace(localizedCurrencyName, override)
+                    .replace(localizedCurrencyName.toLowerCase(java.util.Locale.ROOT), override);
+        }
+        return text
+                .replace("Doubloons", override)
+                .replace("Doubloon", override)
+                .replace("doubloons", override)
+                .replace("doubloon", override);
+    }
+
+    private String getRawLocalizedCurrencyName() {
+        return getRawLocalizedCurrencyName(getContextConfig());
+    }
+
+    private String getRawLocalizedCurrencyName(FileConfiguration config) {
+        if (config == null) {
+            return DEFAULT_CURRENCY_NAME;
+        }
+        String currencyName = config.getString("common.currency_name", DEFAULT_CURRENCY_NAME);
+        return currencyName == null || currencyName.isBlank() ? DEFAULT_CURRENCY_NAME : currencyName;
+    }
+
+    private String getConfiguredCurrencyOverride() {
+        String configured = plugin.getConfig().getString("economy.currency_name", DEFAULT_CURRENCY_NAME);
+        if (configured == null) {
+            return null;
+        }
+        configured = configured.trim();
+        if (configured.isBlank() || configured.equalsIgnoreCase(DEFAULT_CURRENCY_NAME)) {
+            return null;
+        }
+        return configured;
     }
 
     public List<String> getAvailableLocales() {
@@ -427,6 +495,11 @@ public class LanguageManager {
     }
 
     private Component parseString(String text) {
+        return parseString(text, getContextConfig());
+    }
+
+    private Component parseString(String text, FileConfiguration currencyConfig) {
+        text = applyCurrencyNameOverride(text, currencyConfig);
         if (text.contains("<") && text.contains(">")) {
             try {
                 return MiniMessage.miniMessage().deserialize(text);

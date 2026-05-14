@@ -19,7 +19,7 @@ import java.util.List;
  * Main shop hub GUI (3 rows).
  * Slot 11: Fish Vendor (sell fish & materials)
  * Slot 13: Fishing Shop (buy baits & fish bag)
- * Slot 15: Configured Doubloon Vendors (if enabled)
+ * Slot 15: Configured currency vendors (if enabled)
  * Slot 22: Back button
  * Bottom row: balance display (bottom-right)
  */
@@ -79,7 +79,7 @@ public class ShopMenuGUI extends BaseGUI {
         if (plugin.getConfig().getBoolean("vendors.enabled", false)) {
             ItemStack vendors = new ItemStack(Material.VILLAGER_SPAWN_EGG);
             ItemMeta vendorsMeta = vendors.getItemMeta();
-            vendorsMeta.displayName(plugin.getLanguageManager().getMessage("shopmenugui.doubloon_vendors", "Doubloon Vendors").color(NamedTextColor.AQUA)
+            vendorsMeta.displayName(plugin.getLanguageManager().getMessage("shopmenugui.doubloon_vendors", "%currency% Vendors").color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
             vendorsMeta.lore(List.of(
                     Component.empty(),

@@ -47,46 +47,48 @@ public class FishingUtils {
         }
     }
 
-    /**
-     * Broadcasts rare catches (Epic+) to the whole server if the feature is enabled.
-     */
-    public static void broadcastRareCatch(FishRework plugin, Player player, String mobName, Rarity rarity, boolean isLava) {
+    public static void broadcastLegendaryTreasureCatch(FishRework plugin, Player player, String treasureName, Rarity rarity, boolean isLava) {
         if (!plugin.isFeatureEnabled(FeatureKeys.CATCH_BROADCAST_ENABLED)) return;
-        if (rarity == null || rarity.ordinal() < Rarity.EPIC.ordinal()) return;
+        if (rarity == null || rarity.ordinal() < Rarity.LEGENDARY.ordinal()) return;
 
         TextColor color = rarity.getColor();
-        Component message;
-        
         String actionText = isLava
-            ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_a", " lava-fished a ")
-            : plugin.getLanguageManager().getString("fishingutils.action_caught_a", " caught a ");
-        String actionAnText = isLava
-            ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_an", " lava-fished an ")
-            : plugin.getLanguageManager().getString("fishingutils.action_caught_an", " caught an ");
-        
-        if (rarity == Rarity.LEGENDARY || rarity == Rarity.SPECIAL) {
-                String rarityLabel = rarity == Rarity.SPECIAL
-                    ? plugin.getLanguageManager().getString("fishingutils.special_label", "SPECIAL ")
-                    : plugin.getLanguageManager().getString("fishingutils.legendary_label", "LEGENDARY ");
-            message = plugin.getLanguageManager().getMessage("fishingutils.u2728", "\u2728 ").color(NamedTextColor.GOLD)
-                    .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
-                    .append(Component.text(actionText).color(NamedTextColor.GRAY))
-                .append(Component.text(rarityLabel).color(color).decoration(TextDecoration.BOLD, true))
-                    .append(Component.text(mobName).color(color))
-                    .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY))
-                    .append(plugin.getLanguageManager().getMessage("fishingutils.u2728", " \u2728").color(NamedTextColor.GOLD));
-        } else {
-            message = Component.text(player.getName()).color(NamedTextColor.WHITE)
-                    .append(Component.text(actionAnText).color(NamedTextColor.GRAY))
-                    .append(Component.text(rarity.getLocalizedName(plugin.getLanguageManager()) + " ").color(color))
-                    .append(Component.text(mobName).color(color))
-                    .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY));
-        }
+                ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_a", " lava-fished a ")
+                : plugin.getLanguageManager().getString("fishingutils.action_caught_a", " caught a ");
+
+        Component message = plugin.getLanguageManager().getMessage("fishingutils.u2728", "\u2728 ").color(NamedTextColor.GOLD)
+                .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
+                .append(Component.text(actionText).color(NamedTextColor.GRAY))
+                .append(Component.text(treasureName).color(color).decoration(TextDecoration.BOLD, true))
+                .append(plugin.getLanguageManager().getMessage("fishingutils.exclamation", "!").color(NamedTextColor.GRAY))
+                .append(plugin.getLanguageManager().getMessage("fishingutils.u2728", " \u2728").color(NamedTextColor.GOLD));
 
         for (Player online : plugin.getServer().getOnlinePlayers()) {
-            if (online != player) {
-                online.sendMessage(message);
-            }
+            online.sendMessage(message);
+        }
+    }
+
+    public static void broadcastMythicWeightCatch(FishRework plugin, Player player, String mobName, Rarity mobRarity,
+                                                  double weightKg, boolean isLava) {
+        if (!plugin.isFeatureEnabled(FeatureKeys.CATCH_BROADCAST_ENABLED)) return;
+
+        TextColor mobColor = mobRarity != null ? mobRarity.getColor() : NamedTextColor.WHITE;
+        String actionText = isLava
+                ? plugin.getLanguageManager().getString("fishingutils.action_lava_fished_a_mythic_weight", " lava-fished a mythic-weight ")
+                : plugin.getLanguageManager().getString("fishingutils.action_caught_a_mythic_weight", " caught a mythic-weight ");
+        String weight = FormatUtil.format("%.2fkg", weightKg);
+
+        Component message = plugin.getLanguageManager().getMessage("fishingutils.u2728", "\u2728 ").color(NamedTextColor.GOLD)
+                .append(Component.text(player.getName()).color(NamedTextColor.WHITE))
+                .append(Component.text(actionText).color(NamedTextColor.GRAY))
+                .append(Component.text(mobName).color(mobColor))
+                .append(Component.text(" (").color(NamedTextColor.GRAY))
+                .append(Component.text(weight).color(Rarity.MYTHIC.getColor()).decoration(TextDecoration.BOLD, true))
+                .append(Component.text(")!").color(NamedTextColor.GRAY))
+                .append(plugin.getLanguageManager().getMessage("fishingutils.u2728", " \u2728").color(NamedTextColor.GOLD));
+
+        for (Player online : plugin.getServer().getOnlinePlayers()) {
+            online.sendMessage(message);
         }
     }
 

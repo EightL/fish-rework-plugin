@@ -272,9 +272,13 @@ fishingcommand.sold_items_for_currency: '¡Se vendieron %count% objetos por %amo
 fishingcommand.spawned_mob: 'Se hizo aparecer %mob%'
 fishingcommand.status_autosell_now: '¡El modo de auto-venta ahora es %state%!'
 fishingcommand.autosell_scope: La auto-venta aplica a capturas, muertes de mobs y cofres del tesoro.
+fishingcommand.autosell_scope_other: La auto-venta OTHER vende solo botín seguro de otros/basura en capturas, muertes de mobs y cofres del tesoro.
+fishingcommand.autosell_scope_all: La auto-venta ALL vende todo el botín vendible en capturas, muertes de mobs y cofres del tesoro.
 fishingcommand.autosell_mode_off: 'OFF'
 fishingcommand.autosell_mode_other: 'OTHER'
 fishingcommand.autosell_mode_all: 'ALL'
+fishingutils.action_caught_a_mythic_weight: " capturó una criatura de peso mítico "
+fishingutils.action_lava_fished_a_mythic_weight: " pescó en lava una criatura de peso mítico "
 fishingcommand.status_balance: 'Saldo: %balance% %currency%'
 fishingcommand.status_damage_indicators_now: 'Los indicadores de daño ahora están %state%.'
 fishingcommand.status_notifications_now: 'Las notificaciones de consejos de pesca ahora

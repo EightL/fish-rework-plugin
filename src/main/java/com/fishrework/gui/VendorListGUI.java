@@ -28,9 +28,14 @@ public class VendorListGUI extends BaseGUI {
     private record MenuEntry(String id, String title, Material icon, int slot) {}
 
     public VendorListGUI(FishRework plugin, Player player) {
-        super(plugin, 3, plugin.getConfig().getString("vendors.list_title", "Doubloon Vendors"));
+        super(plugin, 3, resolveTitle(plugin));
         this.player = player;
         initializeItems();
+    }
+
+    private static String resolveTitle(FishRework plugin) {
+        return plugin.getLanguageManager().applyCurrencyNameOverride(
+                plugin.getConfig().getString("vendors.list_title", "%currency% Vendors"));
     }
 
     private void initializeItems() {
@@ -77,7 +82,8 @@ public class VendorListGUI extends BaseGUI {
             if (permission != null && !permission.isBlank() && !player.hasPermission(permission)) continue;
 
             Material icon = parseMaterial(plugin.getConfig().getString(path + ".icon", "EMERALD"), Material.EMERALD);
-            String title = plugin.getConfig().getString(path + ".title", id);
+            String title = plugin.getLanguageManager().applyCurrencyNameOverride(
+                    plugin.getConfig().getString(path + ".title", id));
             int slot = plugin.getConfig().getInt(path + ".slot", -1);
             menus.add(new MenuEntry(id, title, icon, slot));
         }

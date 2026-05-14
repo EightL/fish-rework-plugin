@@ -371,7 +371,7 @@ public class LavaFishingListener implements Listener {
             session.recordCatch();
             session.recordTreasure();
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
+            FishingUtils.broadcastLegendaryTreasureCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
             return;
         }
 
@@ -393,7 +393,10 @@ public class LavaFishingListener implements Listener {
             maybeSendLavaSeaCreatureMessage(player, data, mobDef, weightProfile);
             if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
                 FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-                FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
+            }
+            if (plugin.getMobManager().getWeightRarity(weightProfile) == Rarity.MYTHIC) {
+                FishingUtils.broadcastMythicWeightCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()),
+                        mobDef.getRarity(), weightProfile.getWeightKg(), true);
             }
             return;
         }
@@ -406,7 +409,10 @@ public class LavaFishingListener implements Listener {
 
         if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), hookLoc);
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), true);
+        }
+        if (plugin.getMobManager().getWeightRarity(weightProfile) == Rarity.MYTHIC) {
+            FishingUtils.broadcastMythicWeightCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()),
+                    mobDef.getRarity(), weightProfile.getWeightKg(), true);
         }
     }
 

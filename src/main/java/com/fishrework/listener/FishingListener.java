@@ -244,7 +244,7 @@ public class FishingListener implements Listener {
             session.recordCatch();
             session.recordTreasure();
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), caughtItem.getLocation());
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
+            FishingUtils.broadcastLegendaryTreasureCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
 
             return new MobCatchResult(false, resultingItemStack);
         }
@@ -267,7 +267,10 @@ public class FishingListener implements Listener {
             grantWaterCreatureCatchProgress(player);
             if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
                 FishingUtils.playCatchEffects(player, mobDef.getRarity(), rewardLocation);
-                FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
+            }
+            if (plugin.getMobManager().getWeightRarity(weightProfile) == Rarity.MYTHIC) {
+                FishingUtils.broadcastMythicWeightCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()),
+                        mobDef.getRarity(), weightProfile.getWeightKg(), false);
             }
             return new MobCatchResult(true, currentItemStack);
         }
@@ -296,7 +299,10 @@ public class FishingListener implements Listener {
         session.recordCatch();
         if (mobDef.getRarity() != null && mobDef.getRarity().ordinal() >= Rarity.RARE.ordinal()) {
             FishingUtils.playCatchEffects(player, mobDef.getRarity(), spawnLocation);
-            FishingUtils.broadcastRareCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()), mobDef.getRarity(), false);
+        }
+        if (plugin.getMobManager().getWeightRarity(weightProfile) == Rarity.MYTHIC) {
+            FishingUtils.broadcastMythicWeightCatch(plugin, player, mobDef.getLocalizedDisplayName(plugin.getLanguageManager()),
+                    mobDef.getRarity(), weightProfile.getWeightKg(), false);
         }
 
         return new MobCatchResult(true, currentItemStack);

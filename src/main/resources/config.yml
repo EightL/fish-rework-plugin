@@ -598,7 +598,7 @@ totems:
   bob_amplitude: 0.15               # Vertical bobbing amplitude (blocks)
 
 # ═══════════════════════════════════════════════════════
-#  Economy — Custom Currency (Doubloons)
+#  Economy — Custom Currency
 # ═══════════════════════════════════════════════════════
 economy:
   currency_name: "Doubloons"
@@ -707,12 +707,12 @@ economy:
     enchanted_basalt_shell: 324
   # Unified fish-vendor fallback bucket for misc treasure junk.
   other_vendor_price: 1
-  # Bait buy prices (doubloons per bundle)
+  # Bait buy prices (custom currency per bundle)
   bait_prices:
     treasure_bait: 25
     xp_bait: 20
 
-  # Biome bait buy prices (doubloons per bundle)
+  # Biome bait buy prices (custom currency per bundle)
   biome_bait_prices:
     wild_tropics: 25
     frozen_peaks: 25
@@ -756,12 +756,12 @@ economy:
   # Lava bag buy price
   lava_bag_price: 2500
 
-# Configurable Doubloon vendors.
+# Configurable currency vendors.
 # Use VANILLA for normal Minecraft materials, FISHREWORK_ITEM for this plugin's item IDs,
 # COMMAND for external plugin/mod items, and INFO for non-purchase tutorial entries.
 vendors:
   enabled: true
-  list_title: "Doubloon Vendors"
+  list_title: "%currency% Vendors"
   menus:
     example_shop:
       enabled: true
@@ -776,7 +776,7 @@ vendors:
           slot: 10
           type: INFO
           icon: BOOK
-          name: "Custom Doubloon Shops"
+          name: "Custom %currency% Shops"
           lore:
             - "Add shops in plugins/FishRework/config.yml"
             - "under the vendors section."
@@ -917,7 +917,7 @@ baits:
 # ════════════════════════════════════════════════════════════
 features:
   # Economy & Shop
-  economy_enabled: true          # Doubloon balance tracking. Disabling also disables shop.
+  economy_enabled: true          # Custom currency balance tracking. Disabling also disables shop.
   shop_enabled: true             # /fish shop buy/sell GUI
   auto_sell_enabled: true        # /fish autosell command
 

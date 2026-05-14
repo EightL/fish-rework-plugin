@@ -10,10 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Lava Bag GUI (6 rows).
@@ -92,9 +94,16 @@ public class LavaBagGUI extends BaseGUI {
 
     @Override
     public void onClick(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null && event.getSlot() >= 45) return;
-
+        boolean clickedTopInventory = event.getClickedInventory() != null
+                && event.getClickedInventory().equals(inventory);
         int slot = event.getSlot();
+
+        if (!clickedTopInventory) {
+            handlePlayerInventoryClick(event);
+            return;
+        }
+
+        if (event.getCurrentItem() == null && slot >= 45) return;
 
         if (slot >= 45) {
             if (slot == 45) {
@@ -133,6 +142,67 @@ public class LavaBagGUI extends BaseGUI {
         }
     }
 
+    private void handlePlayerInventoryClick(InventoryClickEvent event) {
+        if (event.isShiftClick()) {
+            ItemStack clickedItem = event.getCurrentItem();
+            if (clickedItem != null && !clickedItem.getType().isAir()
+                    && !isAllowedInBag(plugin, clickedItem)) {
+                rejectInvalidItem(event);
+                return;
+            }
+        }
+
+        // Allow normal cursor pickup/placement in the player's own inventory.
+        event.setCancelled(false);
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent event) {
+        boolean touchesBag = false;
+        for (int rawSlot : event.getRawSlots()) {
+            if (rawSlot >= inventory.getSize()) {
+                continue;
+            }
+            touchesBag = true;
+            if (rawSlot >= 45) {
+                rejectInvalidDrag(event);
+                return;
+            }
+        }
+
+        if (!touchesBag) {
+            return;
+        }
+
+        for (Map.Entry<Integer, ItemStack> entry : event.getNewItems().entrySet()) {
+            int rawSlot = entry.getKey();
+            if (rawSlot >= inventory.getSize()) {
+                continue;
+            }
+            ItemStack item = entry.getValue();
+            if (item != null && !item.getType().isAir() && !isAllowedInBag(plugin, item)) {
+                rejectInvalidDrag(event);
+                return;
+            }
+        }
+    }
+
+    private void rejectInvalidItem(InventoryClickEvent event) {
+        event.setCancelled(true);
+        sendInvalidItemFeedback();
+    }
+
+    private void rejectInvalidDrag(InventoryDragEvent event) {
+        event.setCancelled(true);
+        sendInvalidItemFeedback();
+    }
+
+    private void sendInvalidItemFeedback() {
+        player.sendMessage(plugin.getLanguageManager().getMessage("lavabaggui.only_registered_custom_creature_drops", "Only registered custom creature drops can go in the Magma Satchel!")
+                .color(NamedTextColor.RED));
+        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+    }
+
     private void saveBagContents() {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return;
@@ -142,6 +212,7 @@ public class LavaBagGUI extends BaseGUI {
             contents[i] = inventory.getItem(i);
         }
         data.setLavaBagContents(contents);
+        plugin.getDatabaseManager().saveLavaBag(player.getUniqueId(), data.getLavaBagContents());
     }
 
     @Override

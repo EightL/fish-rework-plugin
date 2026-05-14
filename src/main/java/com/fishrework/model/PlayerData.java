@@ -18,7 +18,7 @@ public class PlayerData {
     private String languageLocale = null;
     private ParticleDetailMode particleDetailMode = ParticleDetailMode.HIGH;
     private SeaCreatureMessageMode seaCreatureMessageMode = SeaCreatureMessageMode.ALL;
-    /** Maximum doubloon balance a player can hold. Configurable in config.yml under economy.max_balance. */
+    /** Maximum custom-currency balance a player can hold. Configurable in config.yml under economy.max_balance. */
     public static final double DEFAULT_MAX_BALANCE = 10_000_000.0;
     private volatile double balance = 0.0;
     private volatile long lifetimeDoubloons = 0L;

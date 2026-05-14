@@ -165,7 +165,7 @@ public class SkillManager {
         // Ensure recipes are fully synced (advancements + levels)
         plugin.getRecipeRegistry().syncRecipes(player);
 
-        // ── QOL: Level Milestone Doubloon Rewards ──
+            // ── QOL: Level milestone currency rewards ──
         if (skill == Skill.FISHING && newLevel % 10 == 0 && newLevel <= 50) {
             double milestoneReward = newLevel * 50.0; // 500 at 10, 1000 at 20, etc.
             PlayerData pd = plugin.getPlayerData(player.getUniqueId());

@@ -191,7 +191,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
         if (!plugin.getConfig().getBoolean("vendors.enabled", false)) {
-            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.vendors_disabled", "Doubloon vendors are disabled on this server.").color(NamedTextColor.RED));
+            player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.vendors_disabled", "%currency% vendors are disabled on this server.").color(NamedTextColor.RED));
             return true;
         }
 
@@ -317,9 +317,15 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
                 "state", modeLabel
         ).color(newMode == AutoSellMode.OFF ? NamedTextColor.RED : NamedTextColor.GREEN));
         if (newMode != AutoSellMode.OFF) {
+            String scopeKey = newMode == AutoSellMode.OTHER
+                    ? "fishingcommand.autosell_scope_other"
+                    : "fishingcommand.autosell_scope_all";
+            String scopeFallback = newMode == AutoSellMode.OTHER
+                    ? "Auto-sell OTHER sells only safe other/junk loot from catches, mob kills, and treasure chests."
+                    : "Auto-sell ALL sells all sellable loot from catches, mob kills, and treasure chests.";
             player.sendMessage(plugin.getLanguageManager().getMessage(
-                    "fishingcommand.autosell_scope",
-                    "Auto-sell applies to catches, mob kills, and treasure chests.")
+                    scopeKey,
+                    scopeFallback)
                     .color(NamedTextColor.GRAY));
         }
         return true;
@@ -609,11 +615,11 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_shop", "/fishing shop").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.open_the_fishing_shop", " - Open the fishing shop").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_vendor", "/fishing vendor [id]").color(NamedTextColor.YELLOW)
-                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_doubloon_vendors", " - Open configured Doubloon vendors").color(NamedTextColor.GRAY)));
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.open_doubloon_vendors", " - Open configured %currency% vendors").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_bag", "/fishing bag").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.open_your_fish_bag", " - Open your fish bag").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_balance", "/fishing balance").color(NamedTextColor.YELLOW)
-                .append(plugin.getLanguageManager().getMessage("fishingcommand.check_your_doubloons_balance", " - Check your Doubloons balance").color(NamedTextColor.GRAY)));
+                .append(plugin.getLanguageManager().getMessage("fishingcommand.check_your_doubloons_balance", " - Check your %currency% balance").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_stats", "/fishing stats").color(NamedTextColor.YELLOW)
                 .append(plugin.getLanguageManager().getMessage("fishingcommand.view_session_statistics", " - View session statistics").color(NamedTextColor.GRAY)));
         player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_sell", "/fishing sell").color(NamedTextColor.YELLOW)
@@ -664,7 +670,7 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setheat_player_amount", "/fishing setheat <player> <amount>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_heat_clamped_to_0100", " - Set heat (clamped to 0-100)").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_setcoins_player_amount", "/fishing setcoins <player> <amount>").color(NamedTextColor.YELLOW)
-                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_doubloons_balance", " - Set doubloons balance").color(NamedTextColor.GRAY)));
+                    .append(plugin.getLanguageManager().getMessage("fishingcommand.set_doubloons_balance", " - Set %currency% balance").color(NamedTextColor.GRAY)));
             player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_xpmultiplier_value", "/fishing xpmultiplier <value>").color(NamedTextColor.YELLOW)
                     .append(plugin.getLanguageManager().getMessage("fishingcommand.set_global_xp_multiplier", " - Set global XP multiplier").color(NamedTextColor.GRAY)));
                 player.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fishing_language_code", "/fs language <code>").color(NamedTextColor.YELLOW)

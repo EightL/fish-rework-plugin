@@ -154,7 +154,9 @@ public class LeaderboardGUI extends BaseGUI {
         String formatted = String.format("%,d", score);
         return switch (cat) {
             case BALANCE -> plugin.getLanguageManager().getString(
-                    "leaderboardgui.doubloons_format", "%amount% Doubloons", "amount", formatted);
+                    "leaderboardgui.doubloons_format", "%amount% %currency%",
+                    "amount", formatted,
+                    "currency", plugin.getLanguageManager().getCurrencyName());
             case FISHING_XP -> plugin.getLanguageManager().getString(
                     "leaderboardgui.xp_format", "%amount% XP", "amount", formatted);
             case TOTAL_FISH -> plugin.getLanguageManager().getString(

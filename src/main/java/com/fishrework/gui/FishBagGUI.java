@@ -10,10 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Fish Bag GUI (6 rows).
@@ -112,9 +114,16 @@ public class FishBagGUI extends BaseGUI {
 
     @Override
     public void onClick(InventoryClickEvent event) {
-        if (event.getCurrentItem() == null && event.getSlot() >= CONTROL_ROW_START) return;
-
+        boolean clickedTopInventory = event.getClickedInventory() != null
+                && event.getClickedInventory().equals(inventory);
         int slot = event.getSlot();
+
+        if (!clickedTopInventory) {
+            handlePlayerInventoryClick(event);
+            return;
+        }
+
+        if (event.getCurrentItem() == null && slot >= CONTROL_ROW_START) return;
 
         // Control bar row — always cancel clicks
         if (slot >= CONTROL_ROW_START) {
@@ -162,6 +171,67 @@ public class FishBagGUI extends BaseGUI {
         }
     }
 
+    private void handlePlayerInventoryClick(InventoryClickEvent event) {
+        if (event.isShiftClick()) {
+            ItemStack clickedItem = event.getCurrentItem();
+            if (clickedItem != null && !clickedItem.getType().isAir()
+                    && !BagUtils.isAllowedInFishBag(plugin, clickedItem)) {
+                rejectInvalidItem(event);
+                return;
+            }
+        }
+
+        // Allow normal cursor pickup/placement in the player's own inventory.
+        event.setCancelled(false);
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent event) {
+        boolean touchesBag = false;
+        for (int rawSlot : event.getRawSlots()) {
+            if (rawSlot >= inventory.getSize()) {
+                continue;
+            }
+            touchesBag = true;
+            if (rawSlot >= CONTROL_ROW_START) {
+                rejectInvalidDrag(event);
+                return;
+            }
+        }
+
+        if (!touchesBag) {
+            return;
+        }
+
+        for (Map.Entry<Integer, ItemStack> entry : event.getNewItems().entrySet()) {
+            int rawSlot = entry.getKey();
+            if (rawSlot >= inventory.getSize()) {
+                continue;
+            }
+            ItemStack item = entry.getValue();
+            if (item != null && !item.getType().isAir() && !BagUtils.isAllowedInFishBag(plugin, item)) {
+                rejectInvalidDrag(event);
+                return;
+            }
+        }
+    }
+
+    private void rejectInvalidItem(InventoryClickEvent event) {
+        event.setCancelled(true);
+        sendInvalidItemFeedback();
+    }
+
+    private void rejectInvalidDrag(InventoryDragEvent event) {
+        event.setCancelled(true);
+        sendInvalidItemFeedback();
+    }
+
+    private void sendInvalidItemFeedback() {
+        player.sendMessage(plugin.getLanguageManager().getMessage("fishbaggui.only_fish_and_custom_materials", "Only fish and custom materials can go in the Fish Bag!")
+                .color(NamedTextColor.RED));
+        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1);
+    }
+
     private void saveBagContents() {
         PlayerData data = plugin.getPlayerData(player.getUniqueId());
         if (data == null) return;
@@ -171,6 +241,7 @@ public class FishBagGUI extends BaseGUI {
             contents[i] = inventory.getItem(i);
         }
         data.setFishBagContents(contents);
+        plugin.getDatabaseManager().saveFishBag(player.getUniqueId(), data.getFishBagContents());
     }
 
     /**

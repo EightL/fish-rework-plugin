@@ -52,12 +52,17 @@ public class ConfigVendorGUI extends BaseGUI {
     ) {}
 
     public ConfigVendorGUI(FishRework plugin, Player player, String menuId) {
-        super(plugin, getRows(plugin, menuId), plugin.getConfig().getString("vendors.menus." + menuId + ".title", menuId));
+        super(plugin, getRows(plugin, menuId), resolveTitle(plugin, menuId));
         this.player = player;
         this.menuId = menuId;
         this.backSlot = inventory.getSize() - 9;
         this.balanceSlot = inventory.getSize() - 1;
         initializeItems();
+    }
+
+    private static String resolveTitle(FishRework plugin, String menuId) {
+        return plugin.getLanguageManager().applyCurrencyNameOverride(
+                plugin.getConfig().getString("vendors.menus." + menuId + ".title", menuId));
     }
 
     private static int getRows(FishRework plugin, String menuId) {
@@ -146,7 +151,7 @@ public class ConfigVendorGUI extends BaseGUI {
 
         String configuredName = plugin.getConfig().getString(entryPath(entry) + ".name", "");
         if (configuredName != null && !configuredName.isBlank()) {
-            meta.displayName(Component.text(configuredName).color(NamedTextColor.GOLD)
+            meta.displayName(Component.text(plugin.getLanguageManager().applyCurrencyNameOverride(configuredName)).color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
 
@@ -155,7 +160,7 @@ public class ConfigVendorGUI extends BaseGUI {
         if (!configuredLore.isEmpty()) {
             lore.add(Component.empty());
             for (String line : configuredLore) {
-                lore.add(Component.text(line).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
+                lore.add(Component.text(plugin.getLanguageManager().applyCurrencyNameOverride(line)).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
             }
         }
 
@@ -189,7 +194,7 @@ public class ConfigVendorGUI extends BaseGUI {
 
     private String getConfiguredDisplayName(String path, ItemStack item, String fallback) {
         String configured = plugin.getConfig().getString(path + ".name", "");
-        if (configured != null && !configured.isBlank()) return configured;
+        if (configured != null && !configured.isBlank()) return plugin.getLanguageManager().applyCurrencyNameOverride(configured);
         if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
             return PlainTextComponentSerializer.plainText().serialize(item.getItemMeta().displayName());
         }
