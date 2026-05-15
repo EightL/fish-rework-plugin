@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -269,6 +270,11 @@ public class LoreUpdateListener implements Listener {
         }
         if (oldMeta instanceof Damageable oldDamageable && freshMeta instanceof Damageable freshDamageable) {
             freshDamageable.setDamage(oldDamageable.getDamage());
+        }
+        if (oldMeta instanceof CrossbowMeta oldCrossbowMeta
+                && freshMeta instanceof CrossbowMeta freshCrossbowMeta
+                && oldCrossbowMeta.hasChargedProjectiles()) {
+            freshCrossbowMeta.setChargedProjectiles(oldCrossbowMeta.getChargedProjectiles());
         }
         if (freshMeta != null) {
             fresh.setItemMeta(freshMeta);

@@ -155,6 +155,24 @@ materials:
     rarity: UNCOMMON
     description: "A tough scale from a guardian."
 
+  arcane_formula:
+    material: MEDIUM_AMETHYST_BUD
+    display_name: "Arcane Formula"
+    rarity: UNCOMMON
+    description: "A crystallized magical formula. Required to fuse level III → IV enchantment books."
+
+  enchanted_arcane_formula:
+    material: LARGE_AMETHYST_BUD
+    display_name: "Enchanted Arcane Formula"
+    rarity: RARE
+    description: "An empowered arcane formula. Required to fuse level IV → V enchantment books."
+
+  super_enchanted_arcane_formula:
+    material: AMETHYST_CLUSTER
+    display_name: "Super Enchanted Arcane Formula"
+    rarity: EPIC
+    description: "A masterwork arcane formula humming with raw magic. Required to fuse level V → VI enchantment books."
+
   # ── Nether Drop Materials ────────────────────────────────
   magma_residue:
     material: MAGMA_CREAM
@@ -1035,8 +1053,8 @@ weapons:
     enchantments:
       QUICK_CHARGE: 3
     pdc:
-      sea_creature_attack: 4.0
-      projectile_damage: 2.0
+      sea_creature_attack: 10.0
+      projectile_damage: 8.0
     upgrade_tier: 1
 
   quickcharge_repeater_2:
@@ -1050,8 +1068,8 @@ weapons:
     enchantments:
       QUICK_CHARGE: 3
     pdc:
-      sea_creature_attack: 7.5
-      projectile_damage: 3.5
+      sea_creature_attack: 20.0
+      projectile_damage: 8.0
     upgrade_tier: 2
 
   quickcharge_repeater_3:
@@ -1065,8 +1083,8 @@ weapons:
     enchantments:
       QUICK_CHARGE: 4
     pdc:
-      sea_creature_attack: 9.5
-      projectile_damage: 5.0
+      sea_creature_attack: 30.0
+      projectile_damage: 8.0
     upgrade_tier: 3
 
   quickcharge_repeater_4:
@@ -1080,8 +1098,8 @@ weapons:
     enchantments:
       QUICK_CHARGE: 4
     pdc:
-      sea_creature_attack: 13.0
-      projectile_damage: 7.0
+      sea_creature_attack: 40.0
+      projectile_damage: 8.0
     upgrade_tier: 4
 
   quickcharge_repeater_5:
@@ -1095,8 +1113,8 @@ weapons:
     enchantments:
       QUICK_CHARGE: 5
     pdc:
-      sea_creature_attack: 15.0
-      projectile_damage: 9.0
+      sea_creature_attack: 50.0
+      projectile_damage: 8.0
     upgrade_tier: 5
 
   multishot_volley_1:
@@ -1110,8 +1128,8 @@ weapons:
     enchantments:
       "fishrework:shotgun_volley": 1
     pdc:
-      sea_creature_attack: 2.0
-      projectile_damage: 3.0
+      sea_creature_attack: 10.0
+      projectile_damage: 7.5
     upgrade_tier: 1
 
   multishot_volley_2:
@@ -1125,8 +1143,8 @@ weapons:
     enchantments:
       "fishrework:shotgun_volley": 1
     pdc:
-      sea_creature_attack: 8.0
-      projectile_damage: 4.5
+      sea_creature_attack: 20.0
+      projectile_damage: 7.5
     upgrade_tier: 2
 
   multishot_volley_3:
@@ -1140,8 +1158,8 @@ weapons:
     enchantments:
       "fishrework:shotgun_volley": 2
     pdc:
-      sea_creature_attack: 12.0
-      projectile_damage: 6.0
+      sea_creature_attack: 30.0
+      projectile_damage: 7.5
     upgrade_tier: 3
 
   multishot_volley_4:
@@ -1155,8 +1173,8 @@ weapons:
     enchantments:
       "fishrework:shotgun_volley": 2
     pdc:
-      sea_creature_attack: 20.0
-      projectile_damage: 8.0
+      sea_creature_attack: 40.0
+      projectile_damage: 7.5
     upgrade_tier: 4
 
   multishot_volley_5:
@@ -1170,8 +1188,8 @@ weapons:
     enchantments:
       "fishrework:shotgun_volley": 3
     pdc:
-      sea_creature_attack: 25.0
-      projectile_damage: 10.0
+      sea_creature_attack: 50.0
+      projectile_damage: 7.5
     upgrade_tier: 5
 
   megalodon_tooth:

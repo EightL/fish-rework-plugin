@@ -27,6 +27,7 @@ public class EnchantmentListener implements Listener {
     private final FishRework plugin;
     private final NamespacedKey SEA_CREATURE_CHANCE_KEY;
     private final NamespacedKey REQUIRED_ADVANCEMENT_KEY;
+    private final NamespacedKey SHOTGUN_VOLLEY_KEY;
 
     private final int fishingEnchantMaxLevel;
     private final int tableEnchantCap;
@@ -38,6 +39,7 @@ public class EnchantmentListener implements Listener {
         this.REQUIRED_ADVANCEMENT_KEY = new NamespacedKey(plugin, "fishing/level_20");
         this.fishingEnchantMaxLevel = plugin.getConfig().getInt("enchantments.sea_creature_chance_max_level", 6);
         this.tableEnchantCap = plugin.getConfig().getInt("enchantments.table_max_level", 3);
+        this.SHOTGUN_VOLLEY_KEY = new NamespacedKey("fishrework", "shotgun_volley");
     }
 
     @EventHandler
@@ -52,6 +54,12 @@ public class EnchantmentListener implements Listener {
                     offers[i] = null;
                 } else {
                     offer.setEnchantmentLevel(Math.min(tableEnchantCap, Math.min(fishingEnchantMaxLevel, offer.getEnchantmentLevel())));
+                }
+                continue;
+            }
+            if (offer.getEnchantment().getKey().equals(SHOTGUN_VOLLEY_KEY)) {
+                if (!isCustomCrossbow(event.getItem())) {
+                    offers[i] = null;
                 }
                 continue;
             }
@@ -80,6 +88,29 @@ public class EnchantmentListener implements Listener {
         ItemStack sanitizedResult = sanitizeRestrictedFishingFusion(base, addition, result);
         if (sanitizedResult != result) {
             result = sanitizedResult;
+            changed = true;
+        }
+
+        if (result != null && !result.getType().isAir()
+                && hasShotgunVolley(result)
+                && !plugin.getItemManager().isCustomItem(result)) {
+            ItemStack stripped = result.clone();
+            removeShotgunVolley(stripped);
+            result = isSameItem(base, stripped) ? null : stripped;
+            changed = true;
+        }
+
+        // Block shotgun_volley + quick_charge from being combined on the same item via anvil
+        if (result != null && !result.getType().isAir() && hasShotgunVolleyQuickChargeCombo(result)) {
+            // Strip whichever enchant came from the addition slot
+            ItemStack stripped = result.clone();
+            if (addition != null && getEnchantLevel(addition, Enchantment.QUICK_CHARGE) > 0) {
+                stripped.removeEnchantment(Enchantment.QUICK_CHARGE);
+            } else {
+                Enchantment volley = Registry.ENCHANTMENT.get(SHOTGUN_VOLLEY_KEY);
+                if (volley != null) stripped.removeEnchantment(volley);
+            }
+            result = stripped;
             changed = true;
         }
 
@@ -156,6 +187,12 @@ public class EnchantmentListener implements Listener {
     private boolean isCustomTrident(ItemStack item) {
         return item != null
                 && item.getType() == Material.TRIDENT
+                && plugin.getItemManager().isCustomItem(item);
+    }
+
+    private boolean isCustomCrossbow(ItemStack item) {
+        return item != null
+                && item.getType() == Material.CROSSBOW
                 && plugin.getItemManager().isCustomItem(item);
     }
 
@@ -311,8 +348,46 @@ public class EnchantmentListener implements Listener {
             if (enchantment.conflictsWith(requested) || requested.conflictsWith(enchantment)) {
                 return true;
             }
+            // shotgun_volley <-> quick_charge are mutually exclusive
+            if (isShotgunVolleyQuickChargeConflict(enchantment, requested)) {
+                return true;
+            }
         }
         return false;
+    }
+
+    private boolean isShotgunVolleyQuickChargeConflict(Enchantment a, Enchantment b) {
+        boolean aIsVolley = a.getKey().equals(SHOTGUN_VOLLEY_KEY);
+        boolean bIsVolley = b.getKey().equals(SHOTGUN_VOLLEY_KEY);
+        boolean aIsQuickCharge = a.equals(Enchantment.QUICK_CHARGE);
+        boolean bIsQuickCharge = b.equals(Enchantment.QUICK_CHARGE);
+        return (aIsVolley && bIsQuickCharge) || (aIsQuickCharge && bIsVolley);
+    }
+
+    private boolean hasShotgunVolleyQuickChargeCombo(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        boolean hasVolley = hasShotgunVolley(item);
+        boolean hasQuickCharge = false;
+        for (Enchantment e : item.getEnchantments().keySet()) {
+            if (e.equals(Enchantment.QUICK_CHARGE)) hasQuickCharge = true;
+        }
+        return hasVolley && hasQuickCharge;
+    }
+
+    private boolean hasShotgunVolley(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        for (Enchantment e : item.getEnchantments().keySet()) {
+            if (e.getKey().equals(SHOTGUN_VOLLEY_KEY)) return true;
+        }
+        return false;
+    }
+
+    private void removeShotgunVolley(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return;
+        Enchantment volley = Registry.ENCHANTMENT.get(SHOTGUN_VOLLEY_KEY);
+        if (volley != null) {
+            item.removeEnchantment(volley);
+        }
     }
 
     private boolean isSelfEnchantTarget(Player player, String targetArg) {

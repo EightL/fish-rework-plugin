@@ -1,7 +1,16 @@
 {
   "anvil_cost": 6,
   "description": {"text": "Shotgun Volley"},
-  "effects": {},
+  "effects": {
+    "minecraft:crossbow_charge_time": {
+      "type": "minecraft:add",
+      "value": {
+        "type": "minecraft:linear",
+        "base": 0.625,
+        "per_level_above_first": 0.0
+      }
+    }
+  },
   "max_cost": {"base": 55, "per_level_above_first": 8},
   "max_level": 5,
   "min_cost": {"base": 20, "per_level_above_first": 8},

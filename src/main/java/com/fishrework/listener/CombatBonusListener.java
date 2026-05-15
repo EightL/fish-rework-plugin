@@ -127,6 +127,21 @@ public class CombatBonusListener implements Listener {
             }
         }
 
+        // ── Vanilla Mob Nerf: Custom crossbow deals reduced damage to non-fished mobs ──
+        if (event.getEntity() instanceof LivingEntity victim
+                && !plugin.getMobManager().isFishedMob(victim)
+                && event.getDamager() instanceof org.bukkit.entity.Projectile proj
+                && proj.getShooter() instanceof Player shooter) {
+            org.bukkit.inventory.ItemStack heldItem = shooter.getInventory().getItemInMainHand();
+            if (heldItem.getType() == Material.CROSSBOW && heldItem.hasItemMeta()) {
+                org.bukkit.persistence.PersistentDataContainer pdc = heldItem.getItemMeta().getPersistentDataContainer();
+                if (pdc.has(projectileDamageKey, org.bukkit.persistence.PersistentDataType.DOUBLE)) {
+                    double vanillaDamageMultiplier = plugin.getConfig().getDouble("combat.crossbow_vanilla_mob_multiplier", 0.45);
+                    event.setDamage(event.getDamage() * vanillaDamageMultiplier);
+                }
+            }
+        }
+
         // ── SCA: Player (or player's projectile) attacks fished mob → increase damage ──
         if (event.getEntity() instanceof LivingEntity victim
                 && plugin.getMobManager().isFishedMob(victim)) {
@@ -164,7 +179,8 @@ public class CombatBonusListener implements Listener {
                 }
 
                 double originalDamage = event.getDamage() + projectileBonusDamage;
-                double newDamage = (originalDamage + flatAtk) * (1.0 + scaPercent / 100.0);
+                double scaAmplifier = plugin.getConfig().getDouble("combat.sea_creature_attack_amplifier", 1.5);
+                double newDamage = (originalDamage + flatAtk) * (1.0 + (scaPercent * scaAmplifier) / 100.0);
                 
                 event.setDamage(newDamage);
             }

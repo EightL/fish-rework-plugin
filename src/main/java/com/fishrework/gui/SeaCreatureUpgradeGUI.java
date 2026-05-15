@@ -46,7 +46,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
     private static final int RESULT_SLOT = 16;
     private static final int COMBINE_LEFT_SLOT = 28;
     private static final int COMBINE_RIGHT_SLOT = 29;
-    private static final int COMBINE_MIDDLE_SLOT = 30;
+    private static final int COMBINE_CATALYST_SLOT = 30;
     private static final int COMBINE_ARROW_SLOT = 32;
     private static final int COMBINE_RESULT_SLOT = 34;
 
@@ -59,6 +59,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
     private ItemStack placedTier  = null;
     private ItemStack placedCombineLeft = null;
     private ItemStack placedCombineRight = null;
+    private ItemStack placedCombineCatalyst = null;
     private int combineLevelCost = 0;
     private long lastResultClick = 0;
 
@@ -107,8 +108,8 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                 "Fusion Input", "Place an enchanted book", "or item with a III-V enchant."));
         inventory.setItem(COMBINE_RIGHT_SLOT, createPlaceholder(Material.ORANGE_STAINED_GLASS_PANE,
                 "Matching Input", "Place the same item type", "with matching enchant + level."));
-        inventory.setItem(COMBINE_MIDDLE_SLOT, createPlaceholder(Material.LIME_STAINED_GLASS_PANE,
-                "Fusion Rule", "Matching III-V enchants", "combine into the next level."));
+        inventory.setItem(COMBINE_CATALYST_SLOT, createPlaceholder(Material.LIME_STAINED_GLASS_PANE,
+                "Catalyst Slot", "Place Arcane Formula here.", "Required for III→IV fusion."));
         ItemStack combineArrow = new ItemStack(Material.ARROW);
         ItemMeta cam = combineArrow.getItemMeta();
         cam.displayName(plugin.getLanguageManager().getMessage("seacreatureupgradegui.arrow_indicator", "→").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
@@ -176,7 +177,8 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
 
         // Input slot clicks
         if (slot == STONE_SLOT || slot == GEAR_SLOT || slot == TIER_SLOT
-            || slot == COMBINE_LEFT_SLOT || slot == COMBINE_RIGHT_SLOT) {
+            || slot == COMBINE_LEFT_SLOT || slot == COMBINE_RIGHT_SLOT
+            || slot == COMBINE_CATALYST_SLOT) {
             handleInputSlotClick(slot, event);
             return;
         }
@@ -249,6 +251,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         if (isValidForSlot(TIER_SLOT, item) && placedTier == null) return TIER_SLOT;
         if (isValidForSlot(COMBINE_LEFT_SLOT, item) && placedCombineLeft == null) return COMBINE_LEFT_SLOT;
         if (isValidForSlot(COMBINE_RIGHT_SLOT, item) && placedCombineRight == null) return COMBINE_RIGHT_SLOT;
+        if (isValidForSlot(COMBINE_CATALYST_SLOT, item) && placedCombineCatalyst == null) return COMBINE_CATALYST_SLOT;
         return -1;
     }
 
@@ -264,6 +267,9 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             case GEAR_SLOT  -> isUpgradeableGear(item);
             case TIER_SLOT  -> getTierLevel(item.getType()) > 0;
             case COMBINE_LEFT_SLOT, COMBINE_RIGHT_SLOT -> isFusionItem(item);
+            case COMBINE_CATALYST_SLOT -> im.isCustomItem(item, "arcane_formula")
+                    || im.isCustomItem(item, "enchanted_arcane_formula")
+                    || im.isCustomItem(item, "super_enchanted_arcane_formula");
             default -> false;
         };
     }
@@ -361,6 +367,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             case TIER_SLOT  -> { placedTier = item; inventory.setItem(slot, item); }
             case COMBINE_LEFT_SLOT -> { placedCombineLeft = item; inventory.setItem(slot, item); }
             case COMBINE_RIGHT_SLOT -> { placedCombineRight = item; inventory.setItem(slot, item); }
+            case COMBINE_CATALYST_SLOT -> { placedCombineCatalyst = item; inventory.setItem(slot, item); }
         }
     }
 
@@ -371,6 +378,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             case TIER_SLOT  -> placedTier;
             case COMBINE_LEFT_SLOT -> placedCombineLeft;
             case COMBINE_RIGHT_SLOT -> placedCombineRight;
+            case COMBINE_CATALYST_SLOT -> placedCombineCatalyst;
             default -> null;
         };
     }
@@ -401,6 +409,11 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
                 placedCombineRight = null;
                 inventory.setItem(slot, createPlaceholder(Material.ORANGE_STAINED_GLASS_PANE,
                         "Matching Input", "Place the same item type", "with matching enchant + level."));
+            }
+            case COMBINE_CATALYST_SLOT -> {
+                placedCombineCatalyst = null;
+                inventory.setItem(slot, createPlaceholder(Material.LIME_STAINED_GLASS_PANE,
+                        "Catalyst Slot", "Place Arcane Formula here.", "Required for III→IV fusion."));
             }
         }
     }
@@ -590,6 +603,28 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
             return;
         }
 
+        String requiredCatalyst = switch (highestTarget) {
+            case 4 -> "arcane_formula";
+            case 5 -> "enchanted_arcane_formula";
+            case 6 -> "super_enchanted_arcane_formula";
+            default -> null;
+        };
+        if (requiredCatalyst != null) {
+            if (placedCombineCatalyst == null) {
+                setCombineError("Missing Catalyst",
+                        "An arcane formula is required",
+                        "for this fusion.");
+                return;
+            }
+            if (!plugin.getItemManager().isCustomItem(placedCombineCatalyst, requiredCatalyst)) {
+                String displayName = requiredCatalyst.replace("_", " ");
+                setCombineError("Wrong Catalyst",
+                        "Need " + displayName + " for",
+                        toRoman(highestTarget) + " fusion.");
+                return;
+            }
+        }
+
         combineLevelCost = requiredEnchantLevels;
 
         ItemStack result = placedCombineLeft.clone();
@@ -722,6 +757,7 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
 
         consumeOne(COMBINE_LEFT_SLOT);
         consumeOne(COMBINE_RIGHT_SLOT);
+        consumeOne(COMBINE_CATALYST_SLOT);
         updateAllResults();
 
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.1f);
@@ -752,11 +788,13 @@ public class SeaCreatureUpgradeGUI extends BaseGUI {
         returnToPlayer(p, placedTier);
         returnToPlayer(p, placedCombineLeft);
         returnToPlayer(p, placedCombineRight);
+        returnToPlayer(p, placedCombineCatalyst);
         placedStone = null;
         placedGear = null;
         placedTier = null;
         placedCombineLeft = null;
         placedCombineRight = null;
+        placedCombineCatalyst = null;
     }
 
     private void returnToPlayer(Player p, ItemStack item) {

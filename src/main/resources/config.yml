@@ -160,6 +160,12 @@ combat:
   default_flat_defense: 1.0         # Baseline SC Defense when player has no upgrades
   default_flat_attack: 1.0          # Baseline SC Attack when player has no upgrades
   bobber_damage_radius: 10.0        # Block radius around player to search for fished mobs on reel-in
+  # Damage multiplier for custom crossbows hitting vanilla (non-fished) mobs.
+  # 0.75 = 25% reduction. Tune between 0.3-0.6.
+  crossbow_vanilla_mob_multiplier: 0.75
+  # Makes SCA % count more when hitting fished mobs.
+  # 1.5 = each 1% SCA acts like 1.5% vs sea creatures.
+  sea_creature_attack_amplifier: 1.0
   gehenna_aoe:
     enabled: true                   # If true, Gehenna splashes nearby mobs on hit
     radius: 4.0                     # Block radius around the struck mob

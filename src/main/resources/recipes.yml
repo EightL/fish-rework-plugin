@@ -487,6 +487,16 @@ enchanted_material:
     base: basalt_shell
     level: 32
 
+  enchanted_arcane_formula_recipe:
+    result: enchanted_arcane_formula
+    base: arcane_formula
+    level: 22
+
+  super_enchanted_arcane_formula_recipe:
+    result: super_enchanted_arcane_formula
+    base: enchanted_arcane_formula
+    level: 32
+
 
 # ── Upgrade Recipes ─────────────────────────────────────
 # Shorthand for shapeless "upgrade" recipes
