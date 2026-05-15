@@ -15,6 +15,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 
+import net.kyori.adventure.text.Component;
+
 import java.util.*;
 import java.util.logging.Filter;
 import java.util.logging.Logger;
@@ -113,6 +115,34 @@ public class FishStallManager implements Runnable {
             });
         }
         activeInstances.put(instanceId + "_hitbox", hitbox.getUniqueId());
+        return instanceId;
+    }
+
+    public String spawnLiteStall(Location loc, Map<NamespacedKey, String> hitboxData) {
+        if (loc.getWorld() == null) return null;
+
+        String instanceId = "fish_stall_lite_" + System.currentTimeMillis();
+
+        org.bukkit.entity.Villager villager = (org.bukkit.entity.Villager)
+                loc.getWorld().spawnEntity(loc.clone().add(0.5, 0, 0.5), org.bukkit.entity.EntityType.VILLAGER);
+        villager.customName(Component.text("Fish Market"));
+        villager.setCustomNameVisible(true);
+        villager.setProfession(org.bukkit.entity.Villager.Profession.FISHERMAN);
+        villager.setAI(false);
+        villager.setInvulnerable(true);
+        villager.setPersistent(true);
+        villager.setCollidable(false);
+        villager.getPersistentDataContainer().set(stallKey, PersistentDataType.STRING, instanceId);
+        villager.getPersistentDataContainer().set(interactKey, PersistentDataType.STRING, instanceId);
+        if (hitboxData != null) {
+            hitboxData.forEach((key, value) -> {
+                if (key != null && value != null) {
+                    villager.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
+                }
+            });
+        }
+
+        activeInstances.put(instanceId, villager.getUniqueId());
         return instanceId;
     }
 
@@ -269,10 +299,9 @@ public class FishStallManager implements Runnable {
         }
         PersistentDataType<String, String> stringType = PersistentDataType.STRING;
         for (Entity entity : world.getEntities()) {
-            if (!(entity instanceof Interaction interaction)) continue;
-            String foundShopId = interaction.getPersistentDataContainer().get(shopIdKey, stringType);
+            String foundShopId = entity.getPersistentDataContainer().get(shopIdKey, stringType);
             if (!shopId.equals(foundShopId)) continue;
-            String instanceId = interaction.getPersistentDataContainer().get(interactKey, stringType);
+            String instanceId = getStandaloneInstanceId(entity, stringType);
             if (instanceId != null && !instanceId.isBlank()) {
                 return instanceId;
             }
@@ -288,15 +317,22 @@ public class FishStallManager implements Runnable {
         PersistentDataType<String, String> stringType = PersistentDataType.STRING;
         Set<String> instanceIds = new LinkedHashSet<>();
         for (Entity entity : world.getEntities()) {
-            if (!(entity instanceof Interaction interaction)) continue;
-            String foundShopId = interaction.getPersistentDataContainer().get(shopIdKey, stringType);
+            String foundShopId = entity.getPersistentDataContainer().get(shopIdKey, stringType);
             if (!shopId.equals(foundShopId)) continue;
-            String instanceId = interaction.getPersistentDataContainer().get(interactKey, stringType);
+            String instanceId = getStandaloneInstanceId(entity, stringType);
             if (instanceId != null && !instanceId.isBlank()) {
                 instanceIds.add(instanceId);
             }
         }
         return new ArrayList<>(instanceIds);
+    }
+
+    private String getStandaloneInstanceId(Entity entity, PersistentDataType<String, String> stringType) {
+        String instanceId = entity.getPersistentDataContainer().get(interactKey, stringType);
+        if (instanceId != null && !instanceId.isBlank()) {
+            return instanceId;
+        }
+        return entity.getPersistentDataContainer().get(stallKey, stringType);
     }
 
     public int destroyAll(World world) {

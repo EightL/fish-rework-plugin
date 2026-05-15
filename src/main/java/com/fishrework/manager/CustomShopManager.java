@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CustomShopManager {
@@ -115,10 +116,11 @@ public class CustomShopManager {
     }
 
     private String spawnShopModel(String shopId, Location location, float yaw) {
-        return plugin.getFishStallManager().spawnModel(
-                "fish_stall",
-                location.clone(),
-                Map.of(shopIdKey, shopId));
+        FishStallManager mgr = plugin.getFishStallManager();
+        boolean villagerModel = plugin.getConfig().getBoolean("features.custom_shops_villager_model", false);
+        return villagerModel
+                ? mgr.spawnLiteStall(location.clone(), Map.of(shopIdKey, shopId))
+                : mgr.spawnModel("fish_stall", location.clone(), Map.of(shopIdKey, shopId));
     }
 
     public CustomShop getShop(String shopId) {
@@ -214,7 +216,19 @@ public class CustomShopManager {
     }
 
     public void startPriceInput(Player player, String shopId, int slotIndex, ItemStack item) {
-        pendingPrices.put(player.getUniqueId(), new PendingPrice(shopId, slotIndex, item.clone()));
+        PendingPrice next = new PendingPrice(shopId, slotIndex, item.clone());
+        PendingPrice previous = pendingPrices.put(player.getUniqueId(), next);
+        if (previous != null && !samePending(previous, next)) {
+            giveBackItem(player, previous.item());
+        }
+        sendPriceInputMessage(player);
+    }
+
+    public void remindPriceInput(Player player) {
+        sendPriceInputMessage(player);
+    }
+
+    private void sendPriceInputMessage(Player player) {
         player.sendMessage(Component.text("Set your listing price with ")
                 .color(NamedTextColor.GOLD)
                 .append(Component.text("/fs fish_stall setprice <price>")
@@ -222,6 +236,22 @@ public class CustomShopManager {
                         .decorate(TextDecoration.BOLD))
                 .append(Component.text(".")
                         .color(NamedTextColor.GOLD)));
+    }
+
+    public PendingPrice getPendingPrice(UUID uuid) {
+        return pendingPrices.get(uuid);
+    }
+
+    public PendingPrice getPendingPriceForShop(UUID uuid, String shopId) {
+        PendingPrice pending = getPendingPrice(uuid);
+        if (pending == null || !Objects.equals(pending.shopId(), shopId)) {
+            return null;
+        }
+        return pending;
+    }
+
+    public PendingPrice clearPendingPrice(UUID uuid) {
+        return pendingPrices.remove(uuid);
     }
 
     public PendingPrice consumePendingPrice(UUID uuid) {
@@ -234,6 +264,20 @@ public class CustomShopManager {
 
     private Object lockForListing(String shopId, int slotIndex) {
         return listingLocks.computeIfAbsent(shopId + ":" + slotIndex, ignored -> new Object());
+    }
+
+    private boolean samePending(PendingPrice first, PendingPrice second) {
+        return first.slotIndex() == second.slotIndex()
+                && Objects.equals(first.shopId(), second.shopId())
+                && first.item().equals(second.item());
+    }
+
+    private void giveBackItem(Player player, ItemStack item) {
+        if (player == null || item == null || item.getType().isAir()) return;
+        Map<Integer, ItemStack> leftover = player.getInventory().addItem(item.clone());
+        for (ItemStack drop : leftover.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), drop);
+        }
     }
 
     private String chooseCanonicalInstanceId(List<String> instanceIds, String preferred) {

@@ -940,6 +940,7 @@ features:
   economy_enabled: true          # Custom currency balance tracking. Disabling also disables shop.
   shop_enabled: true             # /fish shop buy/sell GUI
   custom_shops_enabled: true     # Player-owned fish stall shops and craftable stall item
+  custom_shops_villager_model: true # Use a stationary villager instead of the display-entity stall model
   auto_sell_enabled: true        # /fish autosell command
 
   # GUIs & Menus

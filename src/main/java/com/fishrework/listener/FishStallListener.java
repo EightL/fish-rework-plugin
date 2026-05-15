@@ -1,13 +1,16 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
+import com.fishrework.gui.CustomShopAddItemGUI;
 import com.fishrework.gui.CustomShopGUI;
+import com.fishrework.manager.CustomShopManager;
 import com.fishrework.gui.ShopMenuGUI;
 import com.fishrework.model.CustomShop;
 import com.fishrework.util.FeatureKeys;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -31,27 +35,45 @@ public class FishStallListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractAtEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Interaction interaction)) return;
+        handleStallInteract(event);
+    }
 
-        if (!interaction.getPersistentDataContainer().has(stallInteractKey, PersistentDataType.STRING)) return;
+    @EventHandler
+    public void onEntityInteract(PlayerInteractEntityEvent event) {
+        if (event instanceof PlayerInteractAtEntityEvent || event.getRightClicked() instanceof Interaction) return;
+        handleStallInteract(event);
+    }
+
+    private void handleStallInteract(PlayerInteractEntityEvent event) {
+        Entity entity = event.getRightClicked();
+        boolean stallInteraction = entity.getPersistentDataContainer().has(stallInteractKey, PersistentDataType.STRING);
+        boolean customShopInteraction = plugin.getCustomShopManager() != null
+                && plugin.getCustomShopManager().isCustomShopInteraction(entity);
+        if (!stallInteraction && !customShopInteraction) return;
 
         event.setCancelled(true);
 
         Player player = event.getPlayer();
 
-        if (plugin.getCustomShopManager() != null && plugin.getCustomShopManager().isCustomShopInteraction(interaction)) {
+        if (customShopInteraction) {
             if (!plugin.isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED)) {
                 player.sendMessage(plugin.getLanguageManager()
                         .getMessage("fishstalllistener.custom_shops_disabled", "Custom shops are disabled on this server.")
                         .color(NamedTextColor.RED));
                 return;
             }
-            String shopId = plugin.getCustomShopManager().getShopId(interaction);
+            String shopId = plugin.getCustomShopManager().getShopId(entity);
             CustomShop shop = plugin.getCustomShopManager().getShop(shopId);
             if (shop == null) {
                 player.sendMessage(plugin.getLanguageManager()
                         .getMessage("fishstalllistener.shop_not_found", "This shop no longer exists.")
                         .color(NamedTextColor.RED));
+                return;
+            }
+            CustomShopManager.PendingPrice pending = plugin.getCustomShopManager()
+                    .getPendingPriceForShop(player.getUniqueId(), shop.id());
+            if (pending != null && player.getUniqueId().equals(shop.ownerUuid())) {
+                new CustomShopAddItemGUI(plugin, player, shop, pending.slotIndex(), pending.item()).open(player);
                 return;
             }
             new CustomShopGUI(plugin, player, shop).open(player);

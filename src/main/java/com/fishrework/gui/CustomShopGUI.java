@@ -2,6 +2,7 @@ package com.fishrework.gui;
 
 import com.fishrework.FishRework;
 import com.fishrework.economy.EconomyResult;
+import com.fishrework.manager.CustomShopManager;
 import com.fishrework.model.CustomShop;
 import com.fishrework.model.CustomShopListing;
 import net.kyori.adventure.text.Component;
@@ -130,6 +131,13 @@ public class CustomShopGUI extends BaseGUI {
         CustomShopListing listing = listingsByIndex.get(shopIndex);
         if (listing == null) {
             if (ownerView) {
+                CustomShopManager.PendingPrice pending = plugin.getCustomShopManager()
+                        .getPendingPriceForShop(viewer.getUniqueId(), shop.id());
+                if (pending != null) {
+                    new CustomShopAddItemGUI(plugin, viewer, shop, pending.slotIndex(), pending.item()).open(viewer);
+                    viewer.playSound(viewer.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+                    return;
+                }
                 new CustomShopAddItemGUI(plugin, viewer, shop, shopIndex).open(viewer);
                 viewer.playSound(viewer.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
             }

@@ -27,19 +27,29 @@ public class CustomShopAddItemGUI extends BaseGUI {
     private final CustomShop shop;
     private final int shopSlotIndex;
     private ItemStack selected;
+    private boolean selectedIsPending;
     private boolean confirmed;
 
     public CustomShopAddItemGUI(FishRework plugin, Player player, CustomShop shop, int shopSlotIndex) {
+        this(plugin, player, shop, shopSlotIndex, null);
+    }
+
+    public CustomShopAddItemGUI(FishRework plugin, Player player, CustomShop shop, int shopSlotIndex, ItemStack pendingItem) {
         super(plugin, 3, "Add Shop Item");
         this.player = player;
         this.shop = shop;
         this.shopSlotIndex = shopSlotIndex;
+        this.selected = pendingItem == null || pendingItem.getType().isAir() ? null : pendingItem.clone();
+        if (this.selected != null) {
+            this.selected.setAmount(1);
+        }
+        this.selectedIsPending = this.selected != null;
         initializeItems();
     }
 
     private void initializeItems() {
         fillBackground(Material.GRAY_STAINED_GLASS_PANE);
-        inventory.setItem(ITEM_SLOT, null);
+        inventory.setItem(ITEM_SLOT, selected == null ? null : selected.clone());
         ItemStack bottom = named(Material.BLACK_STAINED_GLASS_PANE, Component.empty(), List.of());
         for (int slot = 18; slot < 27; slot++) {
             inventory.setItem(slot, bottom);
@@ -83,11 +93,19 @@ public class CustomShopAddItemGUI extends BaseGUI {
             }
             confirmed = true;
             player.closeInventory();
-            plugin.getCustomShopManager().startPriceInput(player, shop.id(), shopSlotIndex, selected);
+            if (selectedIsPending) {
+                plugin.getCustomShopManager().remindPriceInput(player);
+            } else {
+                plugin.getCustomShopManager().startPriceInput(player, shop.id(), shopSlotIndex, selected);
+            }
             return;
         }
         if (top && event.getSlot() == ITEM_SLOT) {
             if (selected != null) {
+                if (selectedIsPending) {
+                    plugin.getCustomShopManager().clearPendingPrice(player.getUniqueId());
+                    selectedIsPending = false;
+                }
                 giveBack(selected);
                 selected = null;
                 inventory.setItem(ITEM_SLOT, null);
@@ -116,10 +134,15 @@ public class CustomShopAddItemGUI extends BaseGUI {
 
     private void setSelected(ItemStack item) {
         if (selected != null) {
+            if (selectedIsPending) {
+                plugin.getCustomShopManager().clearPendingPrice(player.getUniqueId());
+                selectedIsPending = false;
+            }
             giveBack(selected);
         }
         selected = item.clone();
         selected.setAmount(1);
+        selectedIsPending = false;
         inventory.setItem(ITEM_SLOT, selected.clone());
     }
 
@@ -132,7 +155,7 @@ public class CustomShopAddItemGUI extends BaseGUI {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        if (!confirmed && selected != null) {
+        if (!confirmed && selected != null && !selectedIsPending) {
             giveBack(selected);
         }
     }
