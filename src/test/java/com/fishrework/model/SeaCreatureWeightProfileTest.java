@@ -26,7 +26,7 @@ class SeaCreatureWeightProfileTest {
         SeaCreatureWeightProfile giant = SeaCreatureWeightProfile.fromSizeMultiplier(100.0, 4.00, TUNING);
 
         assertEquals(0.70, light.getSizeMultiplier(), 0.000001);
-        assertEquals(2.00, giant.getSizeMultiplier(), 0.000001);
+        assertEquals(1.60, giant.getSizeMultiplier(), 0.000001);
         assertTrue(light.getWeightKg() < 100.0);
         assertTrue(giant.getWeightKg() > 100.0);
         assertEquals(0.22, light.getDropRollMultiplier(), 0.000001);
@@ -44,7 +44,7 @@ class SeaCreatureWeightProfileTest {
         for (int i = 0; i < sampleCount; i++) {
             SeaCreatureWeightProfile profile = SeaCreatureWeightProfile.roll(100.0, TUNING, random);
             dropRollSum += profile.getDropRollMultiplier();
-            if (profile.getSizeMultiplier() >= 1.95) {
+            if (profile.getSizeMultiplier() >= 1.57) {
                 nearMaximumSize++;
             }
             if (profile.getSizeMultiplier() <= 0.72) {
@@ -56,8 +56,8 @@ class SeaCreatureWeightProfileTest {
         assertTrue(averageDropRollMultiplier > 0.56 && averageDropRollMultiplier < 0.59,
                 "Expected total drop roll volume to land near a 41-44% nerf, got " + averageDropRollMultiplier);
         assertTrue(nearMaximumSize < sampleCount * 0.01,
-                "2.0x-scale creatures should stay exceptional");
+                "1.6x-scale creatures should stay exceptional");
         assertTrue(lightOutliers > nearMaximumSize,
-                "0.7x-scale outliers should be more common than 2.0x-scale outliers");
+                "0.7x-scale outliers should be more common than 1.6x-scale outliers");
     }
 }

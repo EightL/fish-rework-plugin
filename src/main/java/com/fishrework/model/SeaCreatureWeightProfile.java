@@ -155,7 +155,7 @@ public final class SeaCreatureWeightProfile {
         public static Tuning defaults() {
             return new Tuning(
                     0.70,
-                    2.00,
+                    1.60,
                     0.54,
                     1.60,
                     3.50,
@@ -165,11 +165,11 @@ public final class SeaCreatureWeightProfile {
                     4.00,
                     0.80,
                     2.00,
-                    1.10,
-                    1.25,
-                    1.50,
-                    1.80,
-                    1.95
+                    1.06,
+                    1.15,
+                    1.30,
+                    1.48,
+                    1.57
             );
         }
     }
