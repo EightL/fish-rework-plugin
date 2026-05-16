@@ -81,18 +81,35 @@ public class YamlItemLoader {
             Material material = resolveMaterial(entry.getString("material", "STONE"), Material.STONE);
             String displayName = entry.getString("display_name", id);
             Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.COMMON, "materials." + id + ".rarity");
-            String description = entry.getString("description", "");
+            List<String> description;
+            if (entry.isList("description")) {
+                description = entry.getStringList("description");
+            } else {
+                String single = entry.getString("description", "");
+                description = single.isEmpty() ? List.of() : List.of(single);
+            }
+
+            // Localize per-line: single-line items use item.<id>.desc (backward compat),
+            // multi-line items use item.<id>.desc.0, item.<id>.desc.1, ...
+            List<String> localizedDesc = new ArrayList<>();
+            if (description.size() == 1) {
+                localizedDesc.add(plugin.getLanguageManager().getString("item." + id + ".desc", description.get(0)));
+            } else {
+                for (int i = 0; i < description.size(); i++) {
+                    localizedDesc.add(plugin.getLanguageManager().getString("item." + id + ".desc." + i, description.get(i)));
+                }
+            }
 
             final String fId = id;
             final Material fMat = material;
             final String fName = displayName;
             final Rarity fRarity = rarity;
-            final String fDesc = description;
+            final List<String> fDesc = localizedDesc;
 
             registry.put(id, () -> itemManager.createMaterial(fId, fMat,
                     plugin.getLanguageManager().getString("item." + fId + ".name", fName),
                     fRarity,
-                    plugin.getLanguageManager().getString("item." + fId + ".desc", fDesc)));
+                    fDesc));
             count++;
         }
         return count;
@@ -114,18 +131,33 @@ public class YamlItemLoader {
             String displayName = entry.getString("display_name", id);
             Rarity rarity = parseRarity(entry.getString("rarity"), Rarity.UNCOMMON,
                     "enchanted_materials." + id + ".rarity");
-            String description = entry.getString("description", "");
+            List<String> description;
+            if (entry.isList("description")) {
+                description = entry.getStringList("description");
+            } else {
+                String single = entry.getString("description", "");
+                description = single.isEmpty() ? List.of() : List.of(single);
+            }
+
+            List<String> localizedDesc = new ArrayList<>();
+            if (description.size() == 1) {
+                localizedDesc.add(plugin.getLanguageManager().getString("item." + id + ".desc", description.get(0)));
+            } else {
+                for (int i = 0; i < description.size(); i++) {
+                    localizedDesc.add(plugin.getLanguageManager().getString("item." + id + ".desc." + i, description.get(i)));
+                }
+            }
 
             final String fId = id;
             final Material fMat = material;
             final String fName = displayName;
             final Rarity fRarity = rarity;
-            final String fDesc = description;
+            final List<String> fDesc = localizedDesc;
 
             registry.put(id, () -> itemManager.createEnchantedMaterial(fId, fMat,
                     plugin.getLanguageManager().getString("item." + fId + ".name", fName),
                     fRarity,
-                    plugin.getLanguageManager().getString("item." + fId + ".desc", fDesc)));
+                    fDesc));
             count++;
         }
         return count;

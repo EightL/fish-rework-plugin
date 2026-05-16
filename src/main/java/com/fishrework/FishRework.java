@@ -78,6 +78,7 @@ public class FishRework extends JavaPlugin {
     private com.fishrework.manager.TreasureManager treasureManager;
     private TotemManager totemManager;
     private com.fishrework.manager.DisplayCaseManager displayCaseManager;
+    private com.fishrework.manager.UpgradeBenchManager upgradeBenchManager;
 
     private com.fishrework.manager.NetheriteRelicManager netheriteRelicManager;
     private com.fishrework.manager.HeatManager heatManager;
@@ -134,6 +135,7 @@ public class FishRework extends JavaPlugin {
         treasureManager = new com.fishrework.manager.TreasureManager(this);
         totemManager = new TotemManager(this);
         displayCaseManager = new com.fishrework.manager.DisplayCaseManager(this);
+        upgradeBenchManager = new com.fishrework.manager.UpgradeBenchManager(this);
 
         netheriteRelicManager = new com.fishrework.manager.NetheriteRelicManager(this);
         lavaCreatureManager = new LavaCreatureManager(this);
@@ -198,6 +200,9 @@ public class FishRework extends JavaPlugin {
         }
         if (isFeatureEnabled(FeatureKeys.DISPLAY_CASE_ENABLED)) {
             getServer().getPluginManager().registerEvents(new com.fishrework.listener.DisplayCaseListener(this), this);
+        }
+        if (isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED)) {
+            getServer().getPluginManager().registerEvents(new com.fishrework.listener.UpgradeBenchListener(this), this);
         }
         getServer().getPluginManager().registerEvents(new com.fishrework.listener.NetheriteRelicListener(this), this);
         getServer().getPluginManager().registerEvents(new FishingJournalListener(this), this);
@@ -566,6 +571,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.manager.TreasureManager getTreasureManager() { return treasureManager; }
     public TotemManager getTotemManager() { return totemManager; }
     public com.fishrework.manager.DisplayCaseManager getDisplayCaseManager() { return displayCaseManager; }
+    public com.fishrework.manager.UpgradeBenchManager getUpgradeBenchManager() { return upgradeBenchManager; }
     public com.fishrework.task.BroodmotherCosmetics getBroodmotherCosmetics() { return broodmotherCosmetics; }
     public com.fishrework.task.AttachedBlockCosmetics getAttachedBlockCosmetics() { return attachedBlockCosmetics; }
     public FishStallManager getFishStallManager() { return fishStallManager; }

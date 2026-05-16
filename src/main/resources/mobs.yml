@@ -169,8 +169,8 @@ mobs:
     drops:
     - item: guardian_scale
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       health_multiplier: 0.84
       damage_multiplier: 2.2
@@ -311,8 +311,8 @@ mobs:
     drops:
     - item: battle_scrap
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       type: GROUP
       group_kill_all: true
@@ -346,8 +346,8 @@ mobs:
     drops:
     - item: battle_scrap
       chance: 1.0
-      min: 4
-      max: 4
+      min: 1
+      max: 1
     spawn:
       type: GROUP
       group_kill_all: true
@@ -1024,8 +1024,8 @@ mobs:
     drops:
     - item: spider_silk
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       type: MOUNTED
       mount:
@@ -1163,8 +1163,8 @@ mobs:
     drops:
     - item: dread_soul
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       type: GROUP
       spread: 4.0
@@ -1897,8 +1897,8 @@ mobs:
     drops:
     - item: ghast_membrane
       chance: 1.0
-      min: 3
-      max: 3
+      min: 1
+      max: 1
     spawn:
       scale: 2.0
       health: 600.0
@@ -2020,8 +2020,8 @@ mobs:
     drops:
     - item: corrupted_gold
       chance: 1.0
-      min: 3
-      max: 3
+      min: 1
+      max: 1
     - item: piglin_crown_helmet
       chance: 0.005
       min: 1
@@ -2160,8 +2160,8 @@ mobs:
     drops:
     - item: warped_tendril
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       health_multiplier: 3.0
       damage_multiplier: 1.19
@@ -2194,8 +2194,8 @@ mobs:
     drops:
     - item: ender_fragment
       chance: 1.0
-      min: 4
-      max: 4
+      min: 1
+      max: 1
     spawn:
       health: 700.0
       damage_multiplier: 0.7084
@@ -2303,8 +2303,8 @@ mobs:
     drops:
     - item: ghast_membrane
       chance: 1.0
-      min: 4
-      max: 4
+      min: 1
+      max: 1
     spawn:
       type: GROUP
       group_kill_all: true
@@ -2369,8 +2369,8 @@ mobs:
     drops:
     - item: basalt_shell
       chance: 1.0
-      min: 2
-      max: 2
+      min: 1
+      max: 1
     spawn:
       health_multiplier: 2.0
       damage_multiplier: 0.7

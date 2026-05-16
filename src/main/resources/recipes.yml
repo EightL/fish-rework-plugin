@@ -157,6 +157,21 @@ shaped:
         - POLISHED_GRANITE_SLAB
         - GRANITE_SLAB
 
+  # Upgrade Bench — Level 20
+  upgrade_bench_recipe:
+    result: upgrade_bench
+    level: 20
+    pattern:
+      - "III"
+      - "EAE"
+      - "WFW"
+    ingredients:
+      I: ironclad_plate
+      E: enchanted_battle_scrap
+      A: ANVIL
+      W: wet_bone
+      F: CRAFTER
+
   # Netherite Relic — Level 40
   netherite_relic_recipe:
     result: netherite_relic
@@ -176,15 +191,16 @@ shaped:
     result: lava_ring
     level: 30
     pattern:
-      - " G "
+      - "WGW"
       - "MRC"
-      - " S "
+      - "WSW"
     ingredients:
       G: ghast_membrane
       M: magma_residue
       R: smoldering_rod
       C: corrupted_gold
       S: crimson_scale
+      W: warped_tendril
 
   # Trident Tier 1: Prismarine Harpoon — Level 8
   trident_1_recipe:
@@ -462,6 +478,16 @@ enchanted_material:
     base: crimson_scale
     level: 32
 
+  enchanted_strider_hide_recipe:
+    result: enchanted_strider_hide
+    base: strider_hide
+    level: 32
+
+  enchanted_warped_tendril_recipe:
+    result: enchanted_warped_tendril
+    base: warped_tendril
+    level: 32
+
   enchanted_hoglin_tusk_recipe:
     result: enchanted_hoglin_tusk
     base: hoglin_tusk
@@ -675,13 +701,14 @@ upgrade:
     result: infernal_plate_helmet
     level: 34
     pattern:
-      - "EGE"
+      - "SGS"
       - "EHE"
       - "   "
     ingredients:
       H: magma_scale_helmet
       E: enchanted_smoldering_rod
       G: enchanted_corrupted_gold
+      S: enchanted_strider_hide
 
   infernal_plate_chestplate_recipe:
     result: infernal_plate_chestplate
@@ -689,35 +716,38 @@ upgrade:
     pattern:
       - "E E"
       - "EHE"
-      - "EGE"
+      - "SGS"
     ingredients:
       H: magma_scale_chestplate
       E: enchanted_smoldering_rod
       G: enchanted_corrupted_gold
+      S: enchanted_strider_hide
 
   infernal_plate_leggings_recipe:
     result: infernal_plate_leggings
     level: 34
     pattern:
-      - "EGE"
+      - "SGS"
       - "EHE"
       - "E E"
     ingredients:
       H: magma_scale_leggings
       E: enchanted_smoldering_rod
       G: enchanted_corrupted_gold
+      S: enchanted_strider_hide
 
   infernal_plate_boots_recipe:
     result: infernal_plate_boots
     level: 34
     pattern:
       - "EHE"
-      - "EGE"
+      - "SGS"
       - "   "
     ingredients:
       H: magma_scale_boots
       E: enchanted_smoldering_rod
       G: enchanted_corrupted_gold
+      S: enchanted_strider_hide
 
   # ── Nether Armor — Volcanic Dreadplate (Upgrade from Infernal, Level 42) ──
   volcanic_dreadplate_helmet_recipe:
@@ -965,13 +995,13 @@ upgrade:
     result: magma_filter
     level: 32
     pattern:
-      - "BSB"
-      - "SFS"
-      - "BSB"
+      - "FSF"
+      - "WWW"
+      - "FSF"
     ingredients:
-      B: BLAZE_ROD
+      W: enchanted_warped_tendril
       S: frost_salve
-      F: BREWING_STAND
+      F: lava_fish
 
   eruption_ring_recipe:
     result: eruption_ring

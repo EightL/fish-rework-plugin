@@ -159,19 +159,25 @@ materials:
     material: MEDIUM_AMETHYST_BUD
     display_name: "Arcane Formula"
     rarity: UNCOMMON
-    description: "A crystallized magical formula. Required to fuse level III → IV enchantment books."
+    description: 
+      - "A crystallized magical formula."
+      - "Required to fuse level III → IV enchantment books."
 
   enchanted_arcane_formula:
     material: LARGE_AMETHYST_BUD
     display_name: "Enchanted Arcane Formula"
     rarity: RARE
-    description: "An empowered arcane formula. Required to fuse level IV → V enchantment books."
+    description: 
+      - "An empowered arcane formula."
+      - "Required to fuse level IV → V enchantment books."
 
   super_enchanted_arcane_formula:
     material: AMETHYST_CLUSTER
     display_name: "Super Enchanted Arcane Formula"
     rarity: EPIC
-    description: "A masterwork arcane formula humming with raw magic. Required to fuse level V → VI enchantment books."
+    description: 
+      - "A masterwork arcane formula humming with raw magic."
+      - "Required to fuse level V → VI enchantment books."
 
   # ── Nether Drop Materials ────────────────────────────────
   magma_residue:
@@ -400,6 +406,18 @@ enchanted_materials:
     display_name: "Enchanted Crimson Scale"
     rarity: RARE
     description: "A scale infused with crimson power."
+
+  enchanted_strider_hide:
+    material: LEATHER
+    display_name: "Enchanted Strider Hide"
+    rarity: RARE
+    description: "Strider hide reinforced with heatproof enchantment."
+
+  enchanted_warped_tendril:
+    material: CYAN_DYE
+    display_name: "Enchanted Warped Tendril"
+    rarity: RARE
+    description: "A warped tendril saturated with unstable magic."
 
   enchanted_hoglin_tusk:
     material: BONE
@@ -1301,6 +1319,17 @@ utility_items:
       - text: "Right-click again to swap."
         color: DARK_GRAY
 
+  upgrade_bench:
+    material: CRAFTER
+    display_name: "Upgrade Bench"
+    rarity: EPIC
+    pdc_key: upgrade_bench
+    lore:
+      - text: "Place to open the Upgrade Gear menu."
+        color: YELLOW
+      - text: "Requires Fishing Level 20 to use."
+        color: DARK_GRAY
+
   netherite_relic:
     material: NETHERITE_BLOCK
     display_name: "Netherite Gladiator Statue"
@@ -1343,5 +1372,7 @@ utility_items:
     lore:
       - text: "Right-click to reduce heat by 50."
         color: YELLOW
+      - text: "Grants heat resistance for 300s."
+        color: GREEN
       - text: "Consumed on use."
         color: DARK_GRAY

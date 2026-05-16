@@ -27,6 +27,8 @@ public class SellAllConfirmGUI extends BaseGUI {
     private static final int CANCEL_SLOT  = 15;
     private static final int MAX_BREAKDOWN_LINES = 8;
 
+    private record SellAllBreakdown(String name, int count, double priceEach) {}
+
     public SellAllConfirmGUI(FishRework plugin, Player player) {
         super(plugin, 3, localizedTitle(plugin, "sellallconfirmgui.title", "Sell All – Confirm?"));
         this.player = player;
@@ -88,14 +90,18 @@ public class SellAllConfirmGUI extends BaseGUI {
         return total;
     }
 
-    private Map<String, Integer> getSellableItemsGrouped() {
-        Map<String, Integer> grouped = new LinkedHashMap<>();
+    private Map<String, SellAllBreakdown> getSellableItemsGrouped() {
+        Map<String, SellAllBreakdown> grouped = new LinkedHashMap<>();
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) continue;
             if (plugin.getItemManager().isOtherVendorSellMaterial(item)) continue;
             double price = plugin.getItemManager().getSellPrice(item);
             if (price <= 0) continue;
-            grouped.merge(getItemDisplayName(item), item.getAmount(), Integer::sum);
+            String name = getItemDisplayName(item);
+            String key = name + "|" + price;
+            SellAllBreakdown existing = grouped.get(key);
+            int updatedCount = (existing == null ? 0 : existing.count()) + item.getAmount();
+            grouped.put(key, new SellAllBreakdown(name, updatedCount, price));
         }
         return grouped;
     }
@@ -126,15 +132,21 @@ public class SellAllConfirmGUI extends BaseGUI {
                 .color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         lore.add(Component.empty());
 
-        Map<String, Integer> grouped = getSellableItemsGrouped();
+        Map<String, SellAllBreakdown> grouped = getSellableItemsGrouped();
         if (grouped.isEmpty()) {
             lore.add(plugin.getLanguageManager().getMessage("sellshopgui.you_dont_have_anything_to", "You don't have anything to sell!")
                     .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         } else {
             int shown = 0;
-            for (Map.Entry<String, Integer> e : grouped.entrySet()) {
+            for (SellAllBreakdown entry : grouped.values()) {
                 if (shown >= MAX_BREAKDOWN_LINES) break;
-                lore.add(Component.text("- " + e.getKey() + " x" + e.getValue())
+                lore.add(Component.text(plugin.getLanguageManager().getString(
+                                "sellshopgui.sell_all_entry",
+                                "- %item% x%count% (%price% %currency% each)",
+                                "item", entry.name(),
+                                "count", String.valueOf(entry.count()),
+                                "price", com.fishrework.util.FormatUtil.format("%.0f", entry.priceEach()),
+                                "currency", currencyName))
                         .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
                 shown++;
             }

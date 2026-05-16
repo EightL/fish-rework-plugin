@@ -492,6 +492,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                         || resultId.contains("bucket")
                         || resultId.contains("relic")
                         || resultId.contains("display_case")
+                        || resultId.contains("upgrade_bench")
                         || resultId.contains("ring");
             };
         }

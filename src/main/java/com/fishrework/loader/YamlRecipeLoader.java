@@ -344,8 +344,10 @@ public class YamlRecipeLoader {
     }
 
     private boolean isFeatureDisabledResult(String resultId) {
-        return "fish_stall".equalsIgnoreCase(resultId)
-                && !plugin.isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED);
+        return ("fish_stall".equalsIgnoreCase(resultId)
+                && !plugin.isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED))
+                || ("upgrade_bench".equalsIgnoreCase(resultId)
+                && !plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED));
     }
 
     private List<RecipeDefinition.Ingredient> buildShapedGrid(List<String> pattern,

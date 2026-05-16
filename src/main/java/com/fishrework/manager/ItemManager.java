@@ -70,6 +70,7 @@ public class ItemManager {
     public final NamespacedKey HARMONY_ROD_KEY;
     public final NamespacedKey TREASURE_TOTEM_KEY;
     public final NamespacedKey DISPLAY_CASE_KEY;
+    public final NamespacedKey UPGRADE_BENCH_KEY;
     public final NamespacedKey FISH_STALL_KEY;
     public final NamespacedKey FISHING_JOURNAL_KEY;
     public final NamespacedKey ARTIFACT_KEY;
@@ -144,6 +145,7 @@ public class ItemManager {
         this.HARMONY_ROD_KEY = new NamespacedKey(plugin, "harmony_rod");
         this.TREASURE_TOTEM_KEY = new NamespacedKey(plugin, "treasure_totem");
         this.DISPLAY_CASE_KEY = new NamespacedKey(plugin, "display_case");
+        this.UPGRADE_BENCH_KEY = new NamespacedKey(plugin, "upgrade_bench");
         this.FISH_STALL_KEY = new NamespacedKey(plugin, "fish_stall");
         this.FISHING_JOURNAL_KEY = new NamespacedKey(plugin, "fishing_journal");
         this.ARTIFACT_KEY = new NamespacedKey(plugin, "artifact");
@@ -179,13 +181,17 @@ public class ItemManager {
 
     // ── Item Factories (Materials) ───────────────────────────
 
-    public ItemStack createMaterial(String id, Material material, String name, Rarity rarity, String description) {
+    public ItemStack createMaterial(String id, Material material, String name, Rarity rarity, List<String> description) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text(name).color(rarity.getColor()).decoration(TextDecoration.ITALIC, false));
-        meta.lore(Collections.singletonList(
-            Component.text(description).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false)
-        ));
+        if (!description.isEmpty()) {
+            List<Component> loreLines = new ArrayList<>();
+            for (String line : description) {
+                loreLines.add(Component.text(line).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            }
+            meta.lore(loreLines);
+        }
         meta.getPersistentDataContainer().set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, id);
         meta.getPersistentDataContainer().set(RARITY_KEY, PersistentDataType.STRING, rarity.name());
         item.setItemMeta(meta);
@@ -193,7 +199,7 @@ public class ItemManager {
         return item;
     }
 
-    public ItemStack createEnchantedMaterial(String id, Material material, String name, Rarity rarity, String description) {
+    public ItemStack createEnchantedMaterial(String id, Material material, String name, Rarity rarity, List<String> description) {
         ItemStack item = createMaterial(id, material, name, rarity, description);
         item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
         return item;
@@ -327,6 +333,12 @@ public class ItemManager {
         if (item == null || item.getType() != Material.GLASS) return false;
         if (!item.hasItemMeta()) return false;
         return item.getItemMeta().getPersistentDataContainer().has(DISPLAY_CASE_KEY, PersistentDataType.BYTE);
+    }
+
+    public boolean isUpgradeBench(ItemStack item) {
+        if (item == null || item.getType() != Material.CRAFTER) return false;
+        if (!item.hasItemMeta()) return false;
+        return item.getItemMeta().getPersistentDataContainer().has(UPGRADE_BENCH_KEY, PersistentDataType.BYTE);
     }
 
     // ── Netherite Relic ──

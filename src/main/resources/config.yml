@@ -697,6 +697,7 @@ economy:
     temple_slab: 100
     weird_material: 80
     guardian_scale: 40
+    arcane_formula: 40
     enchanted_corrupted_flesh: 180
     enchanted_wet_bone: 144
     enchanted_polar_fur: 216
@@ -728,6 +729,8 @@ economy:
     enchanted_corrupted_gold: 270
     enchanted_ghast_membrane: 360
     enchanted_crimson_scale: 144
+    enchanted_strider_hide: 270
+    enchanted_warped_tendril: 270
     enchanted_hoglin_tusk: 540
     enchanted_soul_essence: 540
     enchanted_basalt_shell: 324

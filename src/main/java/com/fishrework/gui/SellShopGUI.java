@@ -33,6 +33,7 @@ public class SellShopGUI extends BaseGUI {
     private VendorFilter activeFilter = VendorFilter.ALL;
 
     private record SellEntry(String displayName, Material material, String customId, double price, EntryCategory category) {}
+    private record SellAllBreakdown(String name, int count, double priceEach) {}
     private enum EntryCategory {
         VANILLA,
         SEA_CREATURE_DROPS
@@ -296,8 +297,8 @@ public class SellShopGUI extends BaseGUI {
         double totalValue = calculateTotalSellValue(player);
 
         // Build item breakdown (same style as Sell Other)
-	        PlayerData sellAllData = plugin.getPlayerData(player.getUniqueId());
-        Map<String, Double> sellAllGrouped = new LinkedHashMap<>();
+        PlayerData sellAllData = plugin.getPlayerData(player.getUniqueId());
+        Map<String, SellAllBreakdown> sellAllGrouped = new LinkedHashMap<>();
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) continue;
             String customId = getCustomId(item);
@@ -310,7 +311,10 @@ public class SellShopGUI extends BaseGUI {
             double price = plugin.getItemManager().getSellPrice(item);
             if (price <= 0) continue;
             String name = getDisplayName(item);
-            sellAllGrouped.merge(name, (double) item.getAmount(), Double::sum);
+            String key = name + "|" + price;
+            SellAllBreakdown existing = sellAllGrouped.get(key);
+            int updatedCount = (existing == null ? 0 : existing.count()) + item.getAmount();
+            sellAllGrouped.put(key, new SellAllBreakdown(name, updatedCount, price));
         }
 
         List<Component> sellAllLore = new ArrayList<>();
@@ -327,9 +331,15 @@ public class SellShopGUI extends BaseGUI {
                     .color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
         } else {
             int shown = 0;
-            for (Map.Entry<String, Double> e : sellAllGrouped.entrySet()) {
+            for (SellAllBreakdown entry : sellAllGrouped.values()) {
                 if (shown >= MAX_OTHER_TOOLTIP_LINES) break;
-                sellAllLore.add(Component.text("- " + e.getKey() + " x" + e.getValue().intValue())
+                sellAllLore.add(Component.text(plugin.getLanguageManager().getString(
+                                "sellshopgui.sell_all_entry",
+                                "- %item% x%count% (%price% %currency% each)",
+                                "item", entry.name(),
+                                "count", String.valueOf(entry.count()),
+                                "price", com.fishrework.util.FormatUtil.format("%.0f", entry.priceEach()),
+                                "currency", currencyName))
                         .color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
                 shown++;
             }
