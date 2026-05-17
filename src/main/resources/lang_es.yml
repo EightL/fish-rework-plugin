@@ -443,6 +443,7 @@ recipeguidegui.use_the_recipe_browser_in: Usa el Explorador de recetas en el men
   Pesca para navegar todas las recetas.
 seacreatureupgradegui.arrow_indicator: →
 seacreatureupgradegui.back: Atrás
+seacreatureupgradegui.close: Cerrar
 seacreatureupgradegui.cannot_downgrade: ¡No se puede degradar!
 seacreatureupgradegui.enchants_fused: ¡Encantamientos fusionados!
 seacreatureupgradegui.gear_upgraded: ¡Equipo mejorado!
@@ -450,6 +451,10 @@ seacreatureupgradegui.not_enough_enchant_levels: No hay suficientes niveles de e
 seacreatureupgradegui.that_item_doesnt_go_in: ¡Ese objeto no va en esta ranura!
 seacreatureupgradegui.use_a_higher_tier_material: Usa un material de mayor nivel para
   mejorar.
+bookmerginggui.title: "Fusión de Libros"
+bookmerginggui.close: "Cerrar"
+bookmerginggui.enchants_fused: "¡Encantamientos fusionados!"
+upgradebenchlistener.need_fishing_level_14: "Necesitas nivel 14 de Pesca para usar esto."
 sellconfirmgui.cancel: ✖ Cancelar
 sellconfirmgui.confirm_sale: ✔ Confirmar venta
 sellconfirmgui.nothing_to_sell: ¡Nada que vender!
@@ -1114,6 +1119,7 @@ item.battle_totem_2.name: "Tótem de Batalla II"
 item.battle_totem_3.name: "Tótem de Batalla III"
 item.display_case.name: "Vitrina"
 item.upgrade_bench.name: "Banco de Mejoras"
+item.book_merger.name: "Fusionador de Libros"
 item.netherite_relic.name: "Estatua de Gladiador de Netherita"
 item.fishing_journal.name: "Diario de Pesca"
 item.frost_salve.name: "Pomada de Escarcha"
@@ -1510,6 +1516,8 @@ item.display_case.lore.1: "Haz clic derecho con un objeto para colocarlo."
 item.display_case.lore.2: "Haz clic derecho otra vez para cambiarlo."
 item.upgrade_bench.lore.0: "Colócalo para abrir el menú de mejora de equipo."
 item.upgrade_bench.lore.1: "Requiere nivel 20 de Pesca para usarlo."
+item.book_merger.lore.0: "Colócalo para abrir el menú de fusión de libros."
+item.book_merger.lore.1: "Requiere nivel 14 de Pesca para usarlo."
 item.netherite_relic.lore.0: "Una majestuosa estatua que representa a un gladiador legendario."
 item.netherite_relic.lore.1: "Colócala para exhibir este imponente monumento."
 item.fishing_journal.lore.0: "Un registro de tus descubrimientos de pesca."

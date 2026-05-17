@@ -120,7 +120,8 @@ public class BlockPlaceListener implements Listener {
         if (plugin.getTotemManager().getTotemType(item) != null
                 || plugin.getItemManager().isDisplayCase(item)
                 || (plugin.isFeatureEnabled(com.fishrework.util.FeatureKeys.UPGRADE_GUI_ENABLED)
-                        && plugin.getItemManager().isUpgradeBench(item))
+                        && (plugin.getItemManager().isUpgradeBench(item)
+                        || plugin.getItemManager().isBookMerger(item)))
                 || plugin.getItemManager().isFishStall(item)
                 || plugin.getItemManager().isNetheriteRelic(item)) {
             return true;

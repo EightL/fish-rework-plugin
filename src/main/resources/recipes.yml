@@ -157,6 +157,22 @@ shaped:
         - POLISHED_GRANITE_SLAB
         - GRANITE_SLAB
 
+  # Book Merger — Level 14
+  book_merger_recipe:
+    result: book_merger
+    level: 14
+    pattern:
+      - "ISI"
+      - "DAD"
+      - "CEC"
+    ingredients:
+      I: ice_wing
+      S: enchanted_spider_silk
+      D: DIAMOND
+      A: arcane_formula
+      C: COBBLED_DEEPSLATE
+      E: ENCHANTING_TABLE
+
   # Upgrade Bench — Level 20
   upgrade_bench_recipe:
     result: upgrade_bench

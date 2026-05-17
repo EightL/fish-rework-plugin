@@ -493,6 +493,7 @@ public class RecipeBrowserGUI extends BaseGUI {
                         || resultId.contains("relic")
                         || resultId.contains("display_case")
                         || resultId.contains("upgrade_bench")
+                        || resultId.contains("book_merger")
                         || resultId.contains("ring");
             };
         }

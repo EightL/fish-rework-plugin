@@ -1330,6 +1330,17 @@ utility_items:
       - text: "Requires Fishing Level 20 to use."
         color: DARK_GRAY
 
+  book_merger:
+    material: ENCHANTING_TABLE
+    display_name: "Book Merger"
+    rarity: RARE
+    pdc_key: book_merger
+    lore:
+      - text: "Place to open the Book Merging menu."
+        color: YELLOW
+      - text: "Requires Fishing Level 14 to use."
+        color: DARK_GRAY
+
   netherite_relic:
     material: NETHERITE_BLOCK
     display_name: "Netherite Gladiator Statue"

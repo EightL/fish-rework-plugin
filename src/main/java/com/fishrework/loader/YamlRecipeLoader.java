@@ -347,6 +347,8 @@ public class YamlRecipeLoader {
         return ("fish_stall".equalsIgnoreCase(resultId)
                 && !plugin.isFeatureEnabled(FeatureKeys.CUSTOM_SHOPS_ENABLED))
                 || ("upgrade_bench".equalsIgnoreCase(resultId)
+                && !plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED))
+                || ("book_merger".equalsIgnoreCase(resultId)
                 && !plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED));
     }
 

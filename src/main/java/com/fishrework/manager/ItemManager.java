@@ -71,6 +71,7 @@ public class ItemManager {
     public final NamespacedKey TREASURE_TOTEM_KEY;
     public final NamespacedKey DISPLAY_CASE_KEY;
     public final NamespacedKey UPGRADE_BENCH_KEY;
+    public final NamespacedKey BOOK_MERGER_KEY;
     public final NamespacedKey FISH_STALL_KEY;
     public final NamespacedKey FISHING_JOURNAL_KEY;
     public final NamespacedKey ARTIFACT_KEY;
@@ -146,6 +147,7 @@ public class ItemManager {
         this.TREASURE_TOTEM_KEY = new NamespacedKey(plugin, "treasure_totem");
         this.DISPLAY_CASE_KEY = new NamespacedKey(plugin, "display_case");
         this.UPGRADE_BENCH_KEY = new NamespacedKey(plugin, "upgrade_bench");
+        this.BOOK_MERGER_KEY = new NamespacedKey(plugin, "book_merger");
         this.FISH_STALL_KEY = new NamespacedKey(plugin, "fish_stall");
         this.FISHING_JOURNAL_KEY = new NamespacedKey(plugin, "fishing_journal");
         this.ARTIFACT_KEY = new NamespacedKey(plugin, "artifact");
@@ -339,6 +341,12 @@ public class ItemManager {
         if (item == null || item.getType() != Material.CRAFTER) return false;
         if (!item.hasItemMeta()) return false;
         return item.getItemMeta().getPersistentDataContainer().has(UPGRADE_BENCH_KEY, PersistentDataType.BYTE);
+    }
+
+    public boolean isBookMerger(ItemStack item) {
+        if (item == null || item.getType() != Material.ENCHANTING_TABLE) return false;
+        if (!item.hasItemMeta()) return false;
+        return item.getItemMeta().getPersistentDataContainer().has(BOOK_MERGER_KEY, PersistentDataType.BYTE);
     }
 
     // ── Netherite Relic ──

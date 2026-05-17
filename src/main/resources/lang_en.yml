@@ -415,12 +415,17 @@ recipeguidegui.use_the_recipe_browser_in: Use the Recipe Browser in the Fishing 
   to browse all recipes.
 seacreatureupgradegui.arrow_indicator: →
 seacreatureupgradegui.back: Back
+seacreatureupgradegui.close: Close
 seacreatureupgradegui.cannot_downgrade: Cannot Downgrade!
 seacreatureupgradegui.enchants_fused: Enchants fused!
 seacreatureupgradegui.gear_upgraded: Gear upgraded!
 seacreatureupgradegui.not_enough_enchant_levels: Not enough enchant levels.
 seacreatureupgradegui.that_item_doesnt_go_in: That item doesn't go in this slot!
 seacreatureupgradegui.use_a_higher_tier_material: Use a higher tier material to upgrade.
+bookmerginggui.title: "Book Merging"
+bookmerginggui.close: "Close"
+bookmerginggui.enchants_fused: "Enchants fused!"
+upgradebenchlistener.need_fishing_level_14: "You need Fishing Level 14 to use this!"
 sellconfirmgui.cancel: ✖ Cancel
 sellconfirmgui.confirm_sale: ✔ Confirm Sale
 sellconfirmgui.nothing_to_sell: Nothing to sell!
@@ -1068,6 +1073,7 @@ item.battle_totem_2.name: "Battle Totem II"
 item.battle_totem_3.name: "Battle Totem III"
 item.display_case.name: "Display Case"
 item.upgrade_bench.name: "Upgrade Bench"
+item.book_merger.name: "Book Merger"
 item.netherite_relic.name: "Netherite Gladiator Statue"
 item.fishing_journal.name: "Fishing Journal"
 item.frost_salve.name: "Frost Salve"
@@ -1467,6 +1473,8 @@ item.display_case.lore.1: "Right-click with an item to place it."
 item.display_case.lore.2: "Right-click again to swap."
 item.upgrade_bench.lore.0: "Place to open the Upgrade Gear menu."
 item.upgrade_bench.lore.1: "Requires Fishing Level 20 to use."
+item.book_merger.lore.0: "Place to open the Book Merging menu."
+item.book_merger.lore.1: "Requires Fishing Level 14 to use."
 item.netherite_relic.lore.0: "A majestic statue depicting a legendary gladiator."
 item.netherite_relic.lore.1: "Place to display this imposing monument."
 item.fishing_journal.lore.0: "A record of your fishing discoveries."

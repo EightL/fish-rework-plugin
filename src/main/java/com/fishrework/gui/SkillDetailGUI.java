@@ -400,50 +400,7 @@ public class SkillDetailGUI extends BaseGUI {
             inventory.setItem(6, headerFill);
         }
 
-        // Slot 2: Sea Creature Upgrade (locked behind Level 20, also hidden if feature disabled)
-        if (skill == Skill.FISHING) {
-            boolean upgradeEnabled = plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED);
-            boolean unlocked = currentLevel >= 20;
-            ItemStack upgradeBtn;
-            ItemMeta upgMeta;
-            if (!upgradeEnabled) {
-                upgradeBtn = new ItemStack(Material.BARRIER);
-                upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, false));
-                upgMeta.lore(List.of(
-                        Component.text(""),
-                        plugin.getLanguageManager().getMessage("skilldetailgui.u2716_disabled_by_server_admin", "\u2716 Disabled by server admin").color(NamedTextColor.RED)
-                                .decoration(TextDecoration.ITALIC, false)
-                ));
-            } else if (unlocked) {
-                upgradeBtn = new ItemStack(Material.SMITHING_TABLE);
-                upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.GREEN)
-                        .decoration(TextDecoration.ITALIC, false));
-                upgMeta.lore(List.of(
-                        Component.text(""),
-                        plugin.getLanguageManager().getMessage("skilldetailgui.upgrade_weapons__armor_with", "Upgrade weapons & armor with").color(NamedTextColor.GRAY)
-                                .decoration(TextDecoration.ITALIC, false),
-                        plugin.getLanguageManager().getMessage("skilldetailgui.sea_creature_attack__defense", "sea creature attack & defense!").color(NamedTextColor.GRAY)
-                                .decoration(TextDecoration.ITALIC, false)
-                ));
-            } else {
-                upgradeBtn = new ItemStack(Material.BARRIER);
-                upgMeta = upgradeBtn.getItemMeta();
-                upgMeta.displayName(plugin.getLanguageManager().getMessage("skilldetailgui.u2694_upgrade_gear", "\u2694 Upgrade Gear").color(NamedTextColor.RED)
-                        .decoration(TextDecoration.ITALIC, false));
-                upgMeta.lore(List.of(
-                        Component.text(""),
-                        plugin.getLanguageManager().getMessage("skilldetailgui.u2716_requires_fishing_level_20", "\u2716 Requires Fishing Level 20").color(NamedTextColor.RED)
-                                .decoration(TextDecoration.ITALIC, false)
-                ));
-            }
-            upgradeBtn.setItemMeta(upgMeta);
-            inventory.setItem(2, upgradeBtn);
-        } else {
-            inventory.setItem(2, headerFill);
-        }
+        inventory.setItem(2, headerFill);
 
         // ── Roadmap: Zig-Zag Path ──
         // Lime glass = completed levels, nether star = current progress level,
@@ -670,22 +627,6 @@ public class SkillDetailGUI extends BaseGUI {
             }
             new LeaderboardGUI(plugin, player, LeaderboardCategory.BALANCE).open(player);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-        } else if (event.getSlot() == 2 && skill == Skill.FISHING) {
-            if (!plugin.isFeatureEnabled(FeatureKeys.UPGRADE_GUI_ENABLED)) {
-                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.the_upgrade_gear_menu_is", "The Upgrade Gear menu is disabled on this server.")
-                        .color(net.kyori.adventure.text.format.NamedTextColor.RED));
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
-                return;
-            }
-            PlayerData data = plugin.getPlayerData(player.getUniqueId());
-            if (data != null && data.getLevel(skill) >= 20) {
-                new SeaCreatureUpgradeGUI(plugin, player).open(player);
-                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-            } else {
-                player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.you_need_fishing_level_20", "You need Fishing Level 20 to unlock this!")
-                        .color(net.kyori.adventure.text.format.NamedTextColor.RED));
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1.0f);
-            }
         } else if (event.getSlot() == 4 && skill == Skill.FISHING) {
             if (!plugin.isFeatureEnabled(FeatureKeys.ENCYCLOPEDIA_ENABLED)) {
                 player.sendMessage(plugin.getLanguageManager().getMessage("skilldetailgui.the_fishing_encyclopedia_is_disabled", "The Fishing Encyclopedia is disabled on this server.")
