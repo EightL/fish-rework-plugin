@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.fish-rework"
-version = "1.4.1"
+version = "1.4.2"
 
 data class PaperBuildTarget(
     val apiVersion: String,
