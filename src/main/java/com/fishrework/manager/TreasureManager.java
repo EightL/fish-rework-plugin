@@ -209,6 +209,13 @@ public class TreasureManager {
         return pickedAny;
     }
 
+    private void addMaterialLoot(List<LootEntry> pool, String materialName, Material fallback,
+                                 int maxQuantity, ChanceTier chanceTier) {
+        Material material = Material.getMaterial(materialName);
+        Material resolved = material != null ? material : fallback;
+        pool.add(new LootEntry(() -> new ItemStack(resolved), maxQuantity, chanceTier));
+    }
+
     /** Rolls a ChanceTier: 40% common, 30% uncommon, 20% rare, 10% epic. */
     private ChanceTier rollChanceTier() {
         double r = random.nextDouble() * 100.0;
@@ -302,7 +309,7 @@ public class TreasureManager {
         pool.add(new LootEntry(() -> new ItemStack(Material.BEETROOT),               4, ChanceTier.COMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.DRIED_KELP),             4, ChanceTier.COMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.APPLE),                  3, ChanceTier.UNCOMMON));
-        pool.add(new LootEntry(() -> new ItemStack(Material.COPPER_NAUTILUS_ARMOR),  1, ChanceTier.RARE));
+        addMaterialLoot(pool, "COPPER_NAUTILUS_ARMOR", Material.LEATHER_HORSE_ARMOR, 1, ChanceTier.RARE);
         pool.add(new LootEntry(this::getSuspiciousStew,                              1, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.CANDLE),                 1, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.SALMON),                 2, ChanceTier.COMMON));
@@ -335,8 +342,8 @@ public class TreasureManager {
         pool.add(new LootEntry(this::getRandomPotterySherd,                          1, ChanceTier.RARE));
         pool.add(new LootEntry(() -> new ItemStack(Material.GUNPOWDER),              3, ChanceTier.COMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.NAUTILUS_SHELL),         1, ChanceTier.UNCOMMON));
-        pool.add(new LootEntry(() -> new ItemStack(Material.COPPER_HORSE_ARMOR),     1, ChanceTier.UNCOMMON));
-        pool.add(new LootEntry(() -> new ItemStack(Material.IRON_NAUTILUS_ARMOR),    1, ChanceTier.UNCOMMON));
+        addMaterialLoot(pool, "COPPER_HORSE_ARMOR", Material.LEATHER_HORSE_ARMOR,    1, ChanceTier.UNCOMMON);
+        addMaterialLoot(pool, "IRON_NAUTILUS_ARMOR", Material.IRON_HORSE_ARMOR,      1, ChanceTier.UNCOMMON);
         pool.add(new LootEntry(() -> new ItemStack(Material.ARROW),                  2, ChanceTier.COMMON));
         pool.add(new LootEntry(this::getSuspiciousStew,                              1, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.COD),                    4, ChanceTier.COMMON));
@@ -364,7 +371,7 @@ public class TreasureManager {
         ItemManager im = plugin.getItemManager();
         List<LootEntry> pool = new ArrayList<>();
         pool.add(new LootEntry(() -> new ItemStack(Material.TURTLE_SCUTE),           1, ChanceTier.UNCOMMON));
-        pool.add(new LootEntry(() -> new ItemStack(Material.GOLDEN_NAUTILUS_ARMOR),  1, ChanceTier.RARE));
+        addMaterialLoot(pool, "GOLDEN_NAUTILUS_ARMOR", Material.GOLDEN_HORSE_ARMOR, 1, ChanceTier.RARE);
         pool.add(new LootEntry(() -> getEnchantedBook(1, 10),                        1, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.GOLDEN_CARROT),          3, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(this::getOminousBottle,                               1, ChanceTier.RARE));
@@ -397,7 +404,7 @@ public class TreasureManager {
     private List<LootEntry> getEpicPool() {
         ItemManager im = plugin.getItemManager();
         List<LootEntry> pool = new ArrayList<>();
-        pool.add(new LootEntry(() -> new ItemStack(Material.DIAMOND_NAUTILUS_ARMOR), 1, ChanceTier.RARE));
+        addMaterialLoot(pool, "DIAMOND_NAUTILUS_ARMOR", Material.DIAMOND_HORSE_ARMOR, 1, ChanceTier.RARE);
         pool.add(new LootEntry(() -> new ItemStack(Material.DIAMOND_HORSE_ARMOR),    1, ChanceTier.RARE));
         pool.add(new LootEntry(() -> new ItemStack(Material.GOLDEN_APPLE),           3, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.SNIFFER_EGG),            1, ChanceTier.RARE));
@@ -430,8 +437,8 @@ public class TreasureManager {
     private List<LootEntry> getLegendaryPool() {
         ItemManager im = plugin.getItemManager();
         List<LootEntry> pool = new ArrayList<>();
-        pool.add(new LootEntry(() -> new ItemStack(Material.NETHERITE_NAUTILUS_ARMOR), 1, ChanceTier.RARE));
-        pool.add(new LootEntry(() -> new ItemStack(Material.NETHERITE_HORSE_ARMOR),    1, ChanceTier.RARE));
+        addMaterialLoot(pool, "NETHERITE_NAUTILUS_ARMOR", Material.DIAMOND_HORSE_ARMOR, 1, ChanceTier.RARE);
+        addMaterialLoot(pool, "NETHERITE_HORSE_ARMOR", Material.DIAMOND_HORSE_ARMOR,    1, ChanceTier.RARE);
         pool.add(new LootEntry(() -> new ItemStack(Material.ENCHANTED_GOLDEN_APPLE),   1, ChanceTier.UNCOMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.EMERALD_BLOCK),            2, ChanceTier.COMMON));
         pool.add(new LootEntry(() -> new ItemStack(Material.GOLD_BLOCK),               2, ChanceTier.COMMON));

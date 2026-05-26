@@ -53,9 +53,15 @@ public class YamlMobLoader {
         for (String id : section.getKeys(false)) {
             ConfigurationSection entry = section.getConfigurationSection(id);
             if (entry == null) continue;
+            if (!entry.getBoolean("enabled", true)) {
+                continue;
+            }
 
             try {
                 CustomMob mob = parseMob(id, entry, itemManager, treasureManager);
+                if (mob == null) {
+                    continue;
+                }
                 registry.register(mob);
                 count++;
             } catch (Exception e) {
@@ -70,13 +76,16 @@ public class YamlMobLoader {
     private CustomMob parseMob(String id, ConfigurationSection entry,
                                ItemManager itemManager, TreasureManager treasureManager) {
 
-        EntityType entityType = YamlParseSupport.parseEnum(
+        EntityType entityType = YamlParseSupport.parseEnumOrNull(
             plugin,
             EntityType.class,
             entry.getString("entity_type"),
-            EntityType.COD,
             "mobs." + id + ".entity_type"
         );
+        if (entityType == null) {
+            plugin.getLogger().warning("Skipping mob '" + id + "' because its entity_type is unavailable on this server.");
+            return null;
+        }
         String displayName = entry.getString("display_name", id);
         double xp = entry.getDouble("xp", 0.0);
         double baseWeight = entry.getDouble("base_weight", 1.0);

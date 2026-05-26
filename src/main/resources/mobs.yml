@@ -4,6 +4,7 @@
 # This file contains all mob definitions used by the fishing system.
 #
 # Structure:
+#   enabled:            Optional; false skips this mob entirely
 #   entity_type:        The Bukkit EntityType to spawn
 #   display_name:       The custom display name shown to players
 #   xp:                 Experience awarded when caught/killed
@@ -720,6 +721,7 @@ mobs:
   # ===========================================================================
 
   zombie_nautilus:
+    enabled: true
     entity_type: ZOMBIE_NAUTILUS
     display_name: "Zombie Nautilus"
     xp: 100.0
@@ -1395,6 +1397,7 @@ mobs:
       max: 1
 
   nautilus:
+    enabled: true
     entity_type: NAUTILUS
     display_name: "Nautilus"
     xp: 35.0
