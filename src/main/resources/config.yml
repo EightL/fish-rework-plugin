@@ -20,8 +20,9 @@ integrations:
       upgrade_material_amount: 1
       discover_automatically: true
 
-# Language file to load (lang_<locale>.yml)
-locale: "en"
+# Language files to load (lang_<id>.yml). First entry is the default language.
+# To add a custom language, create lang_<id>.yml and add <id> to this list.
+languages: [en, es, zh_CN]
 
 # Update checker — pings Modrinth on startup and notifies admins on join
 update_checker:

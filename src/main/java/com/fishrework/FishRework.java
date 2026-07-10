@@ -2,6 +2,7 @@ package com.fishrework;
 
 import com.fishrework.command.FishingCommand;
 import com.fishrework.economy.EconomyManager;
+import com.fishrework.gui.BaseGUI;
 import com.fishrework.gui.GuiListener;
 import com.fishrework.integration.EvenMoreFishIntegration;
 import com.fishrework.integration.FishReworkPlaceholderExpansion;
@@ -360,6 +361,7 @@ public class FishRework extends JavaPlugin {
     private void ensureConfigDefaults() {
         int version = getConfig().getInt("config_version", 0);
         boolean migrated = version < CURRENT_CONFIG_VERSION;
+        boolean languageListMigrated = migrateLegacyLocaleSetting();
 
         // ── Incremental migration steps ──
         // Each block runs only for configs that haven't seen that version yet.
@@ -376,7 +378,7 @@ public class FishRework extends JavaPlugin {
             getConfig().set("config_version", CURRENT_CONFIG_VERSION);
         }
 
-        if (migrated || addedDefaults) {
+        if (migrated || addedDefaults || languageListMigrated) {
             saveConfig();
             reloadConfig();
         }
@@ -384,6 +386,27 @@ public class FishRework extends JavaPlugin {
         if (migrated) {
             getLogger().info("[Fish Rework] Config migrated to v" + CURRENT_CONFIG_VERSION + ".");
         }
+    }
+
+    private boolean migrateLegacyLocaleSetting() {
+        if (getConfig().isSet("languages")) {
+            return false;
+        }
+
+        String legacyLocale = getConfig().getString("locale", "en");
+        if (legacyLocale == null || legacyLocale.isBlank()) {
+            legacyLocale = "en";
+        }
+
+        List<String> languages = new ArrayList<>();
+        languages.add(legacyLocale.trim());
+        for (String bundledLocale : List.of("en", "es", "zh_CN")) {
+            if (languages.stream().noneMatch(existing -> existing.equalsIgnoreCase(bundledLocale))) {
+                languages.add(bundledLocale);
+            }
+        }
+        getConfig().set("languages", languages);
+        return true;
     }
 
     private boolean copyMissingConfigDefaults() {
@@ -558,10 +581,11 @@ public class FishRework extends JavaPlugin {
     /**
      * Reloads the plugin configuration without a full server restart.
      * Reloads config.yml values; does not reinitialize managers or registries.
+     * Default migration is intentionally startup-only so deleted price entries
+     * stay deleted when admins use reload to tune shops.
      */
     public void reload() {
         reloadConfig();
-        ensureConfigDefaults();
         if (languageManager != null) {
             languageManager.reload();
         }
@@ -572,7 +596,16 @@ public class FishRework extends JavaPlugin {
             evenMoreFishIntegration.reload();
         }
         loadFishingTipsFromLang();
+        closeOpenPluginGuis();
         getLogger().info("[Fish Rework] Configuration reloaded.");
+    }
+
+    private void closeOpenPluginGuis() {
+        for (org.bukkit.entity.Player player : getServer().getOnlinePlayers()) {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof BaseGUI) {
+                player.closeInventory();
+            }
+        }
     }
 
     // ══════════════════════════════════════════════════════════

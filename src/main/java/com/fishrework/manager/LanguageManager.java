@@ -42,19 +42,27 @@ public class LanguageManager {
     public void initialize() {
         localeConfigs.clear();
         normalizedLocaleCache.clear();
-        String configuredDefaultLocale = plugin.getConfig().getString("locale", "en");
 
-        Set<String> locales = new LinkedHashSet<>(List.of("en", "es", "zh_CN"));
-        File[] files = plugin.getDataFolder().listFiles((dir, name) -> name.startsWith("lang_") && name.endsWith(".yml"));
-        if (files != null) {
-            for (File file : files) {
-                String name = file.getName();
-                locales.add(name.substring("lang_".length(), name.length() - ".yml".length()));
+        List<String> configuredLocales = plugin.getConfig().getStringList("languages");
+        if (configuredLocales.isEmpty()) {
+            String legacyLocale = plugin.getConfig().getString("locale", "en");
+            configuredLocales = legacyLocale == null || legacyLocale.isBlank()
+                    ? List.of("en")
+                    : List.of(legacyLocale);
+        }
+
+        Set<String> locales = new LinkedHashSet<>();
+        for (String locale : configuredLocales) {
+            if (locale != null && !locale.isBlank()) {
+                locales.add(normalizeLocaleAlias(locale.trim()));
             }
+        }
+        if (locales.isEmpty()) {
+            locales.add("en");
         }
         knownLocales = Set.copyOf(locales);
 
-        defaultLocale = normalizeLocale(configuredDefaultLocale);
+        defaultLocale = normalizeLocale(locales.iterator().next());
         if (defaultLocale == null) {
             defaultLocale = "en";
         }
@@ -310,9 +318,7 @@ public class LanguageManager {
         if (normalized == null) {
             return false;
         }
-        return localeConfigs.containsKey(normalized)
-                || new File(plugin.getDataFolder(), "lang_" + normalized + ".yml").exists()
-                || plugin.getResource("lang_" + normalized + ".yml") != null;
+        return localeConfigs.containsKey(normalized);
     }
 
     public String normalizeLocale(String input) {
@@ -320,13 +326,7 @@ public class LanguageManager {
             return null;
         }
         String requested = input.trim();
-        if (requested.equalsIgnoreCase("chinese") || requested.equalsIgnoreCase("zh") || requested.equalsIgnoreCase("zh_cn")) {
-            requested = "zh_CN";
-        } else if (requested.equalsIgnoreCase("spanish")) {
-            requested = "es";
-        } else if (requested.equalsIgnoreCase("english")) {
-            requested = "en";
-        }
+        requested = normalizeLocaleAlias(requested);
         String cacheKey = requested.toLowerCase();
         String cached = normalizedLocaleCache.get(cacheKey);
         if (cached != null) {
@@ -342,6 +342,19 @@ public class LanguageManager {
             }
         }
         return null;
+    }
+
+    private String normalizeLocaleAlias(String requested) {
+        if (requested.equalsIgnoreCase("chinese") || requested.equalsIgnoreCase("zh") || requested.equalsIgnoreCase("zh_cn")) {
+            return "zh_CN";
+        }
+        if (requested.equalsIgnoreCase("spanish")) {
+            return "es";
+        }
+        if (requested.equalsIgnoreCase("english")) {
+            return "en";
+        }
+        return requested;
     }
 
     public String getPlayerLocale(Player player) {

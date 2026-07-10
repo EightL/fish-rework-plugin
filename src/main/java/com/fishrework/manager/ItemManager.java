@@ -738,6 +738,7 @@ public class ItemManager {
         if (item.getType() == Material.TRIDENT) return 0;
 
         // Check vanilla fish sell prices
+        if (isVendorItemDisabled(item.getType().name())) return 0;
         double vanillaPrice = plugin.getConfig().getDouble(
                 "economy.sell_prices." + item.getType().name(), 0);
         if (vanillaPrice <= 0) {
@@ -748,6 +749,7 @@ public class ItemManager {
 
         // Wildcard support: apply POTTERY_SHERD price to all *_POTTERY_SHERD materials.
         if (item.getType().name().endsWith("_POTTERY_SHERD")) {
+            if (isVendorItemDisabled("POTTERY_SHERD")) return 0;
             double sherdPrice = plugin.getConfig().getDouble("economy.sell_prices.POTTERY_SHERD", 0);
             if (sherdPrice <= 0) {
                 sherdPrice = plugin.getConfig().getDouble("sell_prices.POTTERY_SHERD", 0);
@@ -765,6 +767,7 @@ public class ItemManager {
             String customId = item.getItemMeta().getPersistentDataContainer()
                     .get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
             if (customId != null) {
+                if (isVendorItemDisabled(customId)) return 0;
                 double customPrice = plugin.getConfig().getDouble(
                         "economy.custom_sell_prices." + customId, 0);
                 if (customPrice <= 0) {
@@ -776,6 +779,13 @@ public class ItemManager {
         }
 
         return 0;
+    }
+
+    private boolean isVendorItemDisabled(String key) {
+        if (key == null || key.isBlank()) return false;
+        java.util.List<String> disabled = plugin.getConfig().getStringList("economy.disabled_vendor_items");
+        if (disabled.isEmpty()) return false;
+        return disabled.stream().anyMatch(d -> d.equalsIgnoreCase(key));
     }
 
     public boolean isOtherVendorSellMaterial(ItemStack item) {

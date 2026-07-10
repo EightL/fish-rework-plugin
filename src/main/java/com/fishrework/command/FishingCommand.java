@@ -108,6 +108,9 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
+            if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+                return handleConsoleReload(sender);
+            }
             sender.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.only_players_can_use_this", "Only players can use this command.").color(NamedTextColor.RED));
             return true;
         }
@@ -118,6 +121,16 @@ public class FishingCommand implements CommandExecutor, TabExecutor {
         }
 
         return plugin.getLanguageManager().withPlayer(player, () -> handlePlayerCommand(player, args));
+    }
+
+    private boolean handleConsoleReload(CommandSender sender) {
+        if (!sender.hasPermission("fishrework.reload") && !sender.hasPermission("fishrework.admin")) {
+            sender.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.you_dont_have_permission_to", "You don't have permission to reload the config.").color(NamedTextColor.RED));
+            return true;
+        }
+        plugin.reload();
+        sender.sendMessage(plugin.getLanguageManager().getMessage("fishingcommand.fish_rework_config_reloaded_successfully", "[Fish Rework] Config reloaded successfully!").color(NamedTextColor.GREEN));
+        return true;
     }
 
     private boolean handlePlayerCommand(Player player, String[] args) {
