@@ -592,8 +592,9 @@ public class AdvancementManager {
                     List.of(com.fishrework.model.BiomeGroup.SWAMP, com.fishrework.model.BiomeGroup.JUNGLE,
                             com.fishrework.model.BiomeGroup.SAVANNA)),
 
-            new BiomeAdvancementGroup("hidden_realms", "Hidden Realms", "Lush Caves, Deep Dark, Pale Garden, and Mushroom Fields", "minecraft:spore_blossom",
-                    List.of(com.fishrework.model.BiomeGroup.LUSH_CAVES, com.fishrework.model.BiomeGroup.MUSHROOM,
+            new BiomeAdvancementGroup("hidden_realms", "Hidden Realms", "Lush Caves, Sulfur Caves, Deep Dark, Pale Garden, and Mushroom Fields", "minecraft:spore_blossom",
+                    List.of(com.fishrework.model.BiomeGroup.LUSH_CAVES, com.fishrework.model.BiomeGroup.SULFUR_CAVES,
+                            com.fishrework.model.BiomeGroup.MUSHROOM,
                             com.fishrework.model.BiomeGroup.DEEP_DARK, com.fishrework.model.BiomeGroup.PALE_GARDEN))
     );
 

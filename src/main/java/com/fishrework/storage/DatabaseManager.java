@@ -6,6 +6,7 @@ import com.fishrework.model.AutoSellMode;
 import com.fishrework.model.CustomShop;
 import com.fishrework.model.CustomShopListing;
 import com.fishrework.model.PlayerData;
+import com.fishrework.model.PlayerPlaceholderSnapshot;
 import com.fishrework.model.SeaCreatureMessageMode;
 import com.fishrework.model.Skill;
 import org.bukkit.inventory.ItemStack;
@@ -343,6 +344,63 @@ public class DatabaseManager {
         loadLavaBagInternal(uuid, data);
         return data;
         } // end synchronized
+    }
+
+    /**
+     * Loads only the persisted fields exposed by offline placeholders. This is
+     * called asynchronously by the PlaceholderAPI integration and avoids the
+     * much heavier full player-data load (collections, settings, and bags).
+     */
+    public PlayerPlaceholderSnapshot loadPlaceholderSnapshot(UUID uuid) {
+        synchronized (dbLock) {
+            if (!isConnected() || uuid == null) return PlayerPlaceholderSnapshot.EMPTY;
+
+            String sql = "SELECT " +
+                    "COALESCE(skills.xp, 0) AS fishing_xp, " +
+                    "COALESCE(skills.level, 0) AS fishing_level, " +
+                    "COALESCE(economy.balance, 0) AS balance, " +
+                    "COALESCE(economy.lifetime_doubloons, 0) AS lifetime_doubloons, " +
+                    "COALESCE(economy.total_fish_caught, 0) AS total_fish_caught, " +
+                    "COALESCE(economy.total_treasures_caught, 0) AS total_treasures_caught, " +
+                    "(SELECT COUNT(*) FROM fish_collection collection WHERE collection.uuid = player.uuid) " +
+                    "AS encyclopedia_caught, " +
+                    "(SELECT COUNT(*) FROM artifact_collection artifacts WHERE artifacts.uuid = player.uuid) " +
+                    "AS artifacts_found, " +
+                    "COALESCE(" +
+                    "(SELECT setting_value FROM player_settings settings " +
+                    " WHERE settings.uuid = player.uuid AND settings.setting_key = 'auto_sell_mode'), " +
+                    "(SELECT CASE WHEN setting_value = 'true' THEN 'other' ELSE 'off' END " +
+                    " FROM player_settings legacy " +
+                    " WHERE legacy.uuid = player.uuid AND legacy.setting_key = 'auto_sell'), " +
+                    "'off') AS auto_sell_mode " +
+                    "FROM (SELECT ? AS uuid) player " +
+                    "LEFT JOIN player_skills skills ON skills.uuid = player.uuid AND skills.skill = 'FISHING' " +
+                    "LEFT JOIN player_economy economy ON economy.uuid = player.uuid";
+
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setString(1, uuid.toString());
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new PlayerPlaceholderSnapshot(
+                                rs.getDouble("fishing_xp"),
+                                rs.getInt("fishing_level"),
+                                rs.getDouble("balance"),
+                                rs.getLong("lifetime_doubloons"),
+                                rs.getLong("total_fish_caught"),
+                                rs.getLong("total_treasures_caught"),
+                                rs.getInt("encyclopedia_caught"),
+                                rs.getInt("artifacts_found"),
+                                java.util.Objects.requireNonNullElse(
+                                        AutoSellMode.fromInput(rs.getString("auto_sell_mode")), AutoSellMode.OFF)
+                        );
+                    }
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE,
+                        "[Fish Rework] Failed to load offline placeholder data for " + uuid, e);
+            }
+            return PlayerPlaceholderSnapshot.EMPTY;
+        }
     }
 
     public java.util.LinkedHashMap<UUID, Integer> getTopPlayers(Skill skill, int limit) {

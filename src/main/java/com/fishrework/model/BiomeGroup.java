@@ -24,6 +24,7 @@ public enum BiomeGroup {
     SWAMP,
     BEACH,
     LUSH_CAVES,
+    SULFUR_CAVES,
     FOREST,
     TAIGA,
     SNOWY,
@@ -83,6 +84,10 @@ public enum BiomeGroup {
 
         // ── Lush Caves ──
         map(Biome.LUSH_CAVES, LUSH_CAVES);
+
+        // Sulfur Caves were added in 26.2. Use the namespaced key rather
+        // than Biome.SULFUR_CAVES so older supported API targets still build.
+        mapKey("minecraft:sulfur_caves", SULFUR_CAVES);
 
         // ── Forests ──
         map(Biome.FOREST, FOREST);

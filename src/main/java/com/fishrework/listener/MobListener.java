@@ -204,7 +204,11 @@ public class MobListener implements Listener {
      */
     @EventHandler
     public void onSlimeSplit(SlimeSplitEvent event) {
-        org.bukkit.entity.Slime slime = event.getEntity();
+        // Since 26.2 this event also covers other cube mobs (such as sulfur
+        // cubes), while older APIs returned Slime directly. Keep this handler
+        // scoped to the slime mobs Fish Rework currently creates.
+        org.bukkit.entity.Entity splittingEntity = event.getEntity();
+        if (!(splittingEntity instanceof org.bukkit.entity.Slime slime)) return;
         if (!plugin.getMobManager().isFishedMob(slime)) return;
 
         String mobId = plugin.getMobManager().getMobId(slime);

@@ -58,7 +58,8 @@ Config keys:
 - Includes custom-biome fallback mapping for Terralith, Tectonic, and Incendium.
 - AuraSkills users must disable AuraSkills Fishing skill:
   `plugins/AuraSkills/skills.yml` -> `fishing` -> `enabled: false`
-- Experimental incompatibility with other fishing plugins. Use at your own risk.
+- Optional EvenMoreFish integration automatically routes tagged EMF rods to EMF and keeps other rods on Fish Rework. A configurable fishing rod + nautilus shell recipe provides the default EMF rod.
+- Other fishing plugins remain experimentally incompatible. Use at your own risk.
 
 ## Commands and Permissions
 
@@ -115,6 +116,7 @@ Compatibility notes:
 
 - Terralith/Tectonic/Incendium biome keys are mapped to fishing fallback groups.
 - AuraSkills requires Fishing skill disabled to avoid overlap.
+- EvenMoreFish catches can be separated automatically using craftable EMF rods.
 - Any other fishing plugin combination is experimental and unsupported.
 
 Legal notes:
@@ -150,6 +152,7 @@ Compatibility:
 
 - Terralith, Tectonic, and Incendium custom biome fallbacks included.
 - AuraSkills: disable AuraSkills Fishing skill before use.
+- EvenMoreFish: optional automatic rod-based integration with a craftable default EMF rod.
 - Mixing with other fishing plugins is experimental and may break behavior.
 
 Commands and permissions:
@@ -169,7 +172,7 @@ Legal and attribution:
 
 - "Not affiliated with or endorsed by Hypixel or Hypixel SkyBlock."
 - "AuraSkills requires its Fishing skill to be disabled when used with Fish Rework."
-- "Using Fish Rework with other fishing plugins is experimental and unsupported."
+- "Fish Rework includes optional rod-based compatibility with EvenMoreFish; other fishing plugins remain experimental and unsupported."
 - "Fish Rework writes a server-side datapack for custom enchantments into world datapacks on startup."
 - "Some custom head textures are third-party/community sourced and may require attribution based on source terms."
 

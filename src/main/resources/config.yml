@@ -4,6 +4,22 @@
 # Increment this only when making backwards-incompatible config changes.
 config_version: 2
 
+# Optional integrations are detected automatically. Fish Rework remains fully
+# functional when the listed plugin is not installed.
+integrations:
+  even_more_fish:
+    enabled: true
+    # Safely changes EMF's fishing.require-custom-rod to true on first detection.
+    # EMF's original config is backed up as config.yml.fishrework-backup.
+    auto_configure: true
+    default_rod_recipe:
+      enabled: true
+      rod_id: default
+      # Shapeless recipe: one normal fishing rod plus this material.
+      upgrade_material: NAUTILUS_SHELL
+      upgrade_material_amount: 1
+      discover_automatically: true
+
 # Language file to load (lang_<locale>.yml)
 locale: "en"
 

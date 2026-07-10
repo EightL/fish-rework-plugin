@@ -57,7 +57,27 @@ Use the wiki for full player-facing guides, progression routing, and YAML exampl
 - Biome key fallback mapping includes Terralith, Tectonic, and Incendium custom biomes.
 - AuraSkills is incompatible unless its Fishing skill is disabled:
   `plugins/AuraSkills/skills.yml` -> `fishing` -> `enabled: false`
-- Running alongside other fishing plugins is experimental and unsupported. Use at your own risk.
+- EvenMoreFish is detected automatically. By default, Fish Rework:
+  - backs up `plugins/EvenMoreFish/config.yml` as `config.yml.fishrework-backup`;
+  - enables EMF's `fishing.require-custom-rod` setting and reloads EMF;
+  - routes tagged EMF rods to EvenMoreFish while all other rods stay on Fish Rework; and
+  - registers a shapeless recipe for EMF's `default` rod using a normal fishing rod and a nautilus shell.
+- Configure this behavior under `integrations.even_more_fish` in Fish Rework's `config.yml`. Set
+  `enabled: false` to opt out, or `auto_configure: false` to manage EMF's setting yourself.
+- Disabling the integration does not rewrite EMF again. To restore EMF's original configuration,
+  restore `config.yml.fishrework-backup` or set `fishing.require-custom-rod: false` in EMF manually.
+- Running alongside fishing plugins other than EvenMoreFish remains experimental and unsupported.
+
+### EvenMoreFish rod recipe
+
+With the default integration settings, players craft the standard tagged EMF rod from:
+
+- 1 Fishing Rod
+- 1 Nautilus Shell
+
+The result is created by EvenMoreFish itself, so it is recognized by EMF without an admin giving it.
+Change `default_rod_recipe.upgrade_material` or `upgrade_material_amount` to rebalance the recipe.
+The recipe is automatically discovered by players unless `discover_automatically` is disabled.
 
 ## Third-Party Assets
 

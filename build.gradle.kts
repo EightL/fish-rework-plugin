@@ -10,13 +10,14 @@ data class PaperBuildTarget(
     val javaVersion: Int,
 )
 
-val targetMinecraftVersion = providers.gradleProperty("targetMinecraftVersion").orElse("26.1.2").get()
+val targetMinecraftVersion = providers.gradleProperty("targetMinecraftVersion").orElse("26.2").get()
 val paperBuildTarget = when (targetMinecraftVersion) {
+    "26.2" -> PaperBuildTarget(apiVersion = "26.2.build.56-alpha", javaVersion = 25)
     "26.1.2" -> PaperBuildTarget(apiVersion = "26.1.2.build.63-stable", javaVersion = 25)
     "26.1.1" -> PaperBuildTarget(apiVersion = "26.1.1.build.29-alpha", javaVersion = 25)
     "1.21.11" -> PaperBuildTarget(apiVersion = "1.21.11-R0.1-SNAPSHOT", javaVersion = 21)
     else -> throw GradleException(
-        "Unsupported targetMinecraftVersion '$targetMinecraftVersion'. Supported values: 26.1.2, 26.1.1, 1.21.11"
+        "Unsupported targetMinecraftVersion '$targetMinecraftVersion'. Supported values: 26.2, 26.1.2, 26.1.1, 1.21.11"
     )
 }
 
@@ -25,6 +26,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.codemc.io/repository/creatorfromhell/")
+    maven("https://repo.helpch.at/releases")
     // JitPack allows us to build directly from GitHub
     maven("https://jitpack.io") 
 }
@@ -36,6 +38,7 @@ dependencies {
         exclude(group = "org.bukkit", module = "bukkit")
     }
     compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.19")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 
     // Loaded by Paper through plugin.yml libraries at runtime.
     compileOnly("org.xerial:sqlite-jdbc:3.46.0.0")

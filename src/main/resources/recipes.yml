@@ -972,14 +972,14 @@ upgrade:
     pattern:
       - "ECE"
       - "BWB"
-      - "GCG"
+      - "GHG"
     ingredients:
       C: multishot_volley_3
       E: enchanted_ice_wing
       W: wardens_echo
       B: enchanted_basalt_shell
       G: ghast_membrane
-      C: crimson_heart
+      H: crimson_heart
 
   multishot_volley_5_recipe:
     result: multishot_volley_5

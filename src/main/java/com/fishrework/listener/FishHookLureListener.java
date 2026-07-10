@@ -33,6 +33,10 @@ public class FishHookLureListener implements Listener {
     @EventHandler
     public void onFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.FISHING) return;
+        if (plugin.getEvenMoreFishIntegration() != null
+                && plugin.getEvenMoreFishIntegration().shouldBypassFishRework(event)) {
+            return;
+        }
         FishHook hook = event.getHook();
         Player player = event.getPlayer();
 

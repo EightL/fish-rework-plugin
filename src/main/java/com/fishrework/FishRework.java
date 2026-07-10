@@ -3,6 +3,8 @@ package com.fishrework;
 import com.fishrework.command.FishingCommand;
 import com.fishrework.economy.EconomyManager;
 import com.fishrework.gui.GuiListener;
+import com.fishrework.integration.EvenMoreFishIntegration;
+import com.fishrework.integration.FishReworkPlaceholderExpansion;
 import com.fishrework.leveling.LevelManager;
 import com.fishrework.listener.*;
 import com.fishrework.loader.YamlArtifactLoader;
@@ -92,6 +94,7 @@ public class FishRework extends JavaPlugin {
     private com.fishrework.task.AttachedBlockCosmetics attachedBlockCosmetics;
     private FishStallManager fishStallManager;
     private CustomShopManager customShopManager;
+    private EvenMoreFishIntegration evenMoreFishIntegration;
 
     // Registries
     private MobRegistry mobRegistry;
@@ -174,6 +177,16 @@ public class FishRework extends JavaPlugin {
         mobManager = new MobManager(this);
         skillManager = new SkillManager(this);
         recipeCraftingManager = new RecipeCraftingManager(this);
+
+        // Optional fishing-plugin integrations are initialized before listeners
+        // so catch ownership is settled before the first player cast.
+        evenMoreFishIntegration = new EvenMoreFishIntegration(this);
+        evenMoreFishIntegration.initialize();
+
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new FishReworkPlaceholderExpansion(this).register();
+            getLogger().info("[Fish Rework] Registered PlaceholderAPI expansion: fishrework");
+        }
 
         // ── 5. Listeners ──
         getServer().getPluginManager().registerEvents(new FishingListener(this), this);
@@ -335,6 +348,7 @@ public class FishRework extends JavaPlugin {
         if (lavaRingManager != null) lavaRingManager.shutdown();
         if (artifactPassiveManager != null) artifactPassiveManager.shutdown();
         if (lavaCreatureManager != null) lavaCreatureManager.shutdown();
+        if (evenMoreFishIntegration != null) evenMoreFishIntegration.shutdown();
         for (PlayerData data : playerDataMap.values()) {
             databaseManager.savePlayer(data);
         }
@@ -405,6 +419,11 @@ public class FishRework extends JavaPlugin {
             if (pluginName.equalsIgnoreCase(getName())) continue;
 
             String normalized = pluginName.toLowerCase();
+            if (normalized.equals("evenmorefish")
+                    && evenMoreFishIntegration != null
+                    && evenMoreFishIntegration.isActive()) {
+                continue;
+            }
             if (KNOWN_FISHING_PLUGIN_NAMES.contains(normalized) || normalized.contains("fishing")) {
                 detected.add(pluginName);
             }
@@ -549,6 +568,9 @@ public class FishRework extends JavaPlugin {
         if (economyManager != null) {
             economyManager.reload();
         }
+        if (evenMoreFishIntegration != null) {
+            evenMoreFishIntegration.reload();
+        }
         loadFishingTipsFromLang();
         getLogger().info("[Fish Rework] Configuration reloaded.");
     }
@@ -576,6 +598,7 @@ public class FishRework extends JavaPlugin {
     public com.fishrework.task.AttachedBlockCosmetics getAttachedBlockCosmetics() { return attachedBlockCosmetics; }
     public FishStallManager getFishStallManager() { return fishStallManager; }
     public CustomShopManager getCustomShopManager() { return customShopManager; }
+    public EvenMoreFishIntegration getEvenMoreFishIntegration() { return evenMoreFishIntegration; }
 
     public MobRegistry getMobRegistry() { return mobRegistry; }
     public RecipeRegistry getRecipeRegistry() { return recipeRegistry; }

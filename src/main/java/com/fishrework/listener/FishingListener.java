@@ -52,6 +52,11 @@ public class FishingListener implements Listener {
     }
 
     private void handleFish(PlayerFishEvent event) {
+        if (plugin.getEvenMoreFishIntegration() != null
+                && plugin.getEvenMoreFishIntegration().shouldBypassFishRework(event)) {
+            return;
+        }
+
         PlayerFishEvent.State state = event.getState();
         if (state == PlayerFishEvent.State.FISHING
                 || state == PlayerFishEvent.State.CAUGHT_FISH

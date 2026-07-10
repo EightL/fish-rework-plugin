@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added automatic EvenMoreFish detection and optional one-time configuration with an EMF config backup.
+- Added rod-based catch ownership so tagged EMF rods bypass Fish Rework while regular rods remain unchanged.
+- Added a configurable, automatically discovered crafting recipe for EvenMoreFish's default custom rod.
+
 ## 1.0.0
 
 - Initial public release.

@@ -471,7 +471,8 @@ public class BuyShopGUI extends BaseGUI {
                 List.of(BiomeGroup.COLD_OCEAN, BiomeGroup.FROZEN_OCEAN, BiomeGroup.NORMAL_OCEAN,
                         BiomeGroup.LUKEWARM_OCEAN, BiomeGroup.WARM_OCEAN, BiomeGroup.BEACH)));
         out.add(new BiomeBaitDefinition("hidden_realms", "Hidden Realms Bait", Material.FROGSPAWN,
-                List.of(BiomeGroup.LUSH_CAVES, BiomeGroup.MUSHROOM, BiomeGroup.DEEP_DARK, BiomeGroup.PALE_GARDEN)));
+                List.of(BiomeGroup.LUSH_CAVES, BiomeGroup.SULFUR_CAVES, BiomeGroup.MUSHROOM,
+                        BiomeGroup.DEEP_DARK, BiomeGroup.PALE_GARDEN)));
 
         // Nether groups.
         out.add(new BiomeBaitDefinition("crimson_forest", "Crimson Forest Bait", Material.CRIMSON_ROOTS,

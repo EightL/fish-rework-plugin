@@ -173,7 +173,8 @@ COMPATIBILITY
 - Compatible with Terralith, Tectonic, and Incendium biome setups
 - AuraSkills requires Fishing skill disabled:
   plugins/AuraSkills/skills.yml -> fishing -> enabled: false
-- Running with other fishing plugins is experimental and unsupported
+- Optional EvenMoreFish integration automatically separates catches by rod. Players can craft the tagged EMF rod from a normal fishing rod and nautilus shell; all other rods remain on Fish Rework.
+- Running with fishing plugins other than EvenMoreFish is experimental and unsupported
 
 
 BALANCE DISCLAIMER

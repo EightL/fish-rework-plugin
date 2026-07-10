@@ -157,7 +157,8 @@ Config guide: **[eightl-projects.vercel.app/config](https://eightl-projects.verc
 
 - Compatible with **Terralith**, **Tectonic**, **Incendium** custom biomes
 - **AuraSkills** is incompatible unless its **Fishing skill is disabled: `plugins/AuraSkills/skills.yml` → `fishing` → `enabled: false`**
-- Running alongside other fishing plugins is experimental and unsupported
+- Optional **EvenMoreFish integration** automatically separates catches by rod: craft the tagged EMF rod from a normal fishing rod and nautilus shell; all other rods remain on Fish Rework
+- Running alongside fishing plugins other than EvenMoreFish is experimental and unsupported
 
 ---
 

@@ -184,6 +184,25 @@ biome_profiles:
       cave_spider: 5.0
       spider_jockey: 1.6
 
+  # Minecraft 26.2 Sulfur Caves currently use the standard cave fishing pool.
+  SULFUR_CAVES:
+    passive_weights:
+      cod: 8.0
+      salmon: 5.0
+      squid: 5.0
+      pufferfish: 2.0
+      axolotl: 15.0
+      glow_squid: 10.0
+      tropical_fish: 5.0
+    hostile_weights:
+      drowned: 6.0
+      guardian: 2.0
+      elder_guardian: 0.6
+      glow_squid_of_death: 7.0
+      silverfish: 8.0
+      cave_spider: 5.0
+      spider_jockey: 1.6
+
   FOREST:
     hostile_weights:
       drowned: 7.0

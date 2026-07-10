@@ -30,6 +30,7 @@ public class BiomeSelectionGui extends BaseGUI {
             BiomeGroup.SWAMP,
             BiomeGroup.BEACH,
             BiomeGroup.LUSH_CAVES,
+            BiomeGroup.SULFUR_CAVES,
             BiomeGroup.FOREST,
             BiomeGroup.TAIGA,
             BiomeGroup.SNOWY,
@@ -184,6 +185,7 @@ public class BiomeSelectionGui extends BaseGUI {
             case SWAMP: return Material.LILY_PAD;
             case BEACH: return Material.SAND;
             case LUSH_CAVES: return Material.MOSS_BLOCK;
+            case SULFUR_CAVES: return Material.YELLOW_CONCRETE;
             case FOREST: return Material.OAK_SAPLING;
             case TAIGA: return Material.SPRUCE_SAPLING;
             case SNOWY: return Material.SNOWBALL;

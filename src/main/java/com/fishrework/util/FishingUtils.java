@@ -16,7 +16,7 @@ import java.util.List;
 public class FishingUtils {
 
     private static final Particle EPIC_CATCH_PARTICLE = resolveParticle("ENCHANT", "ENCHANTED_HIT");
-    private static final Sound LAVA_EXTINGUISH_SOUND = resolveSound("BLOCK_LAVA_EXTINGUISH", "BLOCKLAVAEXTINGUISH");
+    private static final Sound LAVA_EXTINGUISH_SOUND = Sound.BLOCK_LAVA_EXTINGUISH;
 
     /**
      * Plays sound effects and particles based on catch rarity.
@@ -155,14 +155,4 @@ public class FishingUtils {
         return null;
     }
 
-    private static Sound resolveSound(String... candidates) {
-        for (String candidate : candidates) {
-            try {
-                return Sound.valueOf(candidate);
-            } catch (IllegalArgumentException ignored) {
-                // Try next candidate for cross-version enum compatibility.
-            }
-        }
-        return null;
-    }
 }

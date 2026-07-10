@@ -75,7 +75,7 @@ public class EnchantmentListener implements Listener {
         ItemStack base = event.getInventory().getItem(0);
         ItemStack addition = event.getInventory().getItem(1);
         ItemStack result = event.getResult();
-        int repairCost = event.getInventory().getRepairCost();
+        int repairCost = event.getView().getRepairCost();
         boolean changed = false;
 
         AnvilResult customTridentResult = extendCustomTridentResult(base, addition, result, repairCost);
@@ -125,7 +125,7 @@ public class EnchantmentListener implements Listener {
         if (result == null || result.getType().isAir()) {
             return;
         }
-        event.getInventory().setRepairCost(repairCost);
+        event.getView().setRepairCost(repairCost);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
