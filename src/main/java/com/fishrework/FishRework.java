@@ -103,6 +103,7 @@ public class FishRework extends JavaPlugin {
     private BiomeFishingRegistry biomeFishingRegistry;
     private ArtifactRegistry artifactRegistry;
     private com.fishrework.manager.LoreManager loreManager;
+    private com.fishrework.manager.SulfurCubeController sulfurCubeController;
     private com.fishrework.registry.BaitRegistry baitRegistry;
 
     // Player cache
@@ -176,6 +177,7 @@ public class FishRework extends JavaPlugin {
         // ── 4. Systems that depend on registries ──
         heatManager = new com.fishrework.manager.HeatManager(this);
         mobManager = new MobManager(this);
+        sulfurCubeController = new com.fishrework.manager.SulfurCubeController(this);
         skillManager = new SkillManager(this);
         recipeCraftingManager = new RecipeCraftingManager(this);
 
@@ -194,6 +196,7 @@ public class FishRework extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GuiListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new MobListener(this), this);
+        getServer().getPluginManager().registerEvents(sulfurCubeController, this);
         getServer().getPluginManager().registerEvents(new MobFireListener(this), this);
         getServer().getPluginManager().registerEvents(new FishBucketListener(this), this);
         if (isFeatureEnabled(FeatureKeys.CUSTOM_RECIPES_ENABLED)) {
@@ -258,6 +261,7 @@ public class FishRework extends JavaPlugin {
         // ── 5d. Start AggroTask — re-targets hostile fished mobs 4x per second ──
         if (isFeatureEnabled(FeatureKeys.CUSTOM_MOBS_ENABLED)) {
             getServer().getScheduler().runTaskTimer(this, new com.fishrework.task.AggroTask(this), 5L, 5L);
+            getServer().getScheduler().runTaskTimer(this, sulfurCubeController, 5L, 5L);
         }
 
         // ── 5e. Start BossAbilityTask — executes YAML-defined mob abilities every second ──
@@ -620,6 +624,7 @@ public class FishRework extends JavaPlugin {
     public LevelManager getLevelManager() { return levelManager; }
     public SkillManager getSkillManager() { return skillManager; }
     public MobManager getMobManager() { return mobManager; }
+    public com.fishrework.manager.SulfurCubeController getSulfurCubeController() { return sulfurCubeController; }
     public BossBarManager getBossBarManager() { return bossBarManager; }
     public ItemManager getItemManager() { return itemManager; }
     public AdvancementManager getAdvancementManager() { return advancementManager; }

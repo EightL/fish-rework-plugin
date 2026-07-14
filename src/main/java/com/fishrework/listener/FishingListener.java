@@ -492,7 +492,12 @@ public class FishingListener implements Listener {
         double damage = pdc.get(plugin.getItemManager().BOBBER_DAMAGE_KEY, PersistentDataType.DOUBLE);
         double reducedDamage = Math.max(0.0, Math.round(damage * 0.25));
         if (reducedDamage <= 0.0) return;
-        target.damage(reducedDamage, player);
+        if ("sulfur_cube".equals(plugin.getMobManager().getMobId(target))
+                && plugin.getSulfurCubeController() != null) {
+            plugin.getSulfurCubeController().applyDirectDamage(target, player, reducedDamage);
+        } else {
+            target.damage(reducedDamage, player);
+        }
     }
 
     private ItemStack getFishingRodInHands(Player player) {

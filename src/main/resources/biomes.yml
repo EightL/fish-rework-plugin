@@ -16,6 +16,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 3.5
       elder_guardian: 0.8
       zombie_nautilus: 6.0
       great_white: 3.0
@@ -33,6 +34,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 3.5
       elder_guardian: 0.8
       zombie_nautilus: 5.0
       great_white: 3.0
@@ -55,6 +57,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 4.0
       elder_guardian: 0.8
       zombie_nautilus: 7.0
       great_white: 4.0
@@ -73,6 +76,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 4.5
       elder_guardian: 0.8
       zombie_nautilus: 7.0
       great_white: 4.0
@@ -92,6 +96,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 5.0
       elder_guardian: 0.8
       zombie_nautilus: 8.0
       great_white: 5.0
@@ -155,6 +160,7 @@ biome_profiles:
     hostile_weights:
       drowned: 8.0
       guardian: 3.0
+      sulfur_cube: 3.5
       elder_guardian: 0.8
       zombie_nautilus: 6.0
       great_white: 3.0
@@ -197,6 +203,7 @@ biome_profiles:
     hostile_weights:
       drowned: 6.0
       guardian: 2.0
+      sulfur_cube: 8.0
       elder_guardian: 0.6
       glow_squid_of_death: 7.0
       silverfish: 8.0

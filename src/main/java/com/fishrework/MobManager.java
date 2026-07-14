@@ -348,6 +348,10 @@ public class MobManager {
 
         markLavaCreatureIfNeeded(entity, location);
 
+        if ("sulfur_cube".equals(mobId) && plugin.getSulfurCubeController() != null) {
+            plugin.getSulfurCubeController().configure(entity);
+        }
+
         // Decorative netherrack tentacles for bosses
         if ("ghast_broodmother".equals(mobId) && plugin.getBroodmotherCosmetics() != null) {
             plugin.getBroodmotherCosmetics().attach(entity);

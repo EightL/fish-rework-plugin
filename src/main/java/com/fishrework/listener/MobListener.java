@@ -157,6 +157,9 @@ public class MobListener implements Listener {
         event.setDroppedExp(isGroupedReward ? 0 : plugin.getMobManager().getMobExperienceDrop(def));
 
         Player killer = entity.getKiller();
+        if (killer == null && "sulfur_cube".equals(mobId) && plugin.getSulfurCubeController() != null) {
+            killer = plugin.getSulfurCubeController().getRecentAttacker(entity);
+        }
         if (killer == null) return;
 
         // ── QOL: Track mob kill in session ──
