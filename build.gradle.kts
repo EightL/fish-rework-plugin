@@ -24,9 +24,12 @@ val paperBuildTarget = when (targetMinecraftVersion) {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.extendedclip.com/releases/") {
+        content {
+            includeGroup("me.clip")
+        }
+    }
     maven("https://repo.codemc.io/repository/creatorfromhell/")
-    maven("https://repo.helpch.at/releases")
     // JitPack allows us to build directly from GitHub
     maven("https://jitpack.io") 
 }
