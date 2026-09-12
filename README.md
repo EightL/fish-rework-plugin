@@ -12,18 +12,25 @@ It is not affiliated with, endorsed by, or connected to Hypixel or Hypixel SkyBl
 
 ## Requirements
 
-- Paper `26.1.1`
-- Java `25`
+- Paper `1.21–1.21.11` or current `26.x` releases (one JAR)
+- Java `21` for 1.21.x servers; Java `25` for 26.x servers
 - Internet access on first startup (Paper downloads declared runtime libraries)
 
 ## Install
 
-1. Build or download `FishRework-<version>.jar`.
+1. Run `./gradlew build` or download `fish-rework-<version>.jar`; the same file supports both version families.
 2. Put it into `plugins/`.
 3. Back up your world folder.
 4. Start the server once.
 5. Configure files in `plugins/FishRework/`.
 6. Restart or run `/fishing reload` for config-only changes.
+
+## Compatibility
+
+The build uses the Paper 1.21 API and Java 21 bytecode. Keep `api-version: '1.21'` in
+`plugin.yml` so older servers can load it. On publishing platforms, select all supported
+Minecraft versions for the same uploaded file. New vanilla mobs and biomes only appear on
+servers that provide them; newer bait materials use older-material fallbacks when needed.
 
 ## Datapack Extraction
 

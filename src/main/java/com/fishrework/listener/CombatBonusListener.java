@@ -112,7 +112,7 @@ public class CombatBonusListener implements Listener {
 
                 double finalReduction;
                 double armor = 0.0;
-                org.bukkit.attribute.AttributeInstance armorAttr = player.getAttribute(org.bukkit.attribute.Attribute.ARMOR);
+                org.bukkit.attribute.AttributeInstance armorAttr = player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ARMOR);
                 if (armorAttr != null) armor = armorAttr.getValue();
 
                 // Formula: (Armor + Flat) * SC_Defence%

@@ -132,8 +132,8 @@ public final class SulfurCubeController implements Listener, Runnable {
         playerAttackCooldowns.put(player.getUniqueId(), now);
 
         double attackDamage = 1.0;
-        if (player.getAttribute(Attribute.ATTACK_DAMAGE) != null) {
-            attackDamage = player.getAttribute(Attribute.ATTACK_DAMAGE).getValue();
+        if (player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) != null) {
+            attackDamage = player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue();
         }
         double cooldown = Math.max(0.0, Math.min(1.0, player.getAttackCooldown()));
         double damage = attackDamage * (0.2 + cooldown * cooldown * 0.8);

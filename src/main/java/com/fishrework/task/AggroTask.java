@@ -188,7 +188,7 @@ public class AggroTask implements Runnable {
     }
 
     private boolean isBelowHalfHealth(LivingEntity entity) {
-        org.bukkit.attribute.AttributeInstance maxHealth = entity.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
+        org.bukkit.attribute.AttributeInstance maxHealth = entity.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH);
         if (maxHealth == null) return false;
         double max = maxHealth.getValue();
         if (max <= 0.0) return false;

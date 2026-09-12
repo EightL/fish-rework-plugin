@@ -641,19 +641,19 @@ public class MobManager {
         try {
             // Scale
             if (scale > 0) {
-                org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.SCALE);
+                org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.GENERIC_SCALE);
                 if (scaleAttr != null) scaleAttr.setBaseValue(scale);
             }
 
             // Health
             if (absHealth > 0) {
-                org.bukkit.attribute.AttributeInstance absHp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance absHp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (absHp != null) {
                     absHp.setBaseValue(absHealth);
                     entity.setHealth(absHealth);
                 }
             } else if (healthMult > 0 && healthMult != 1.0) {
-                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (hp != null) {
                     double newHp = hp.getBaseValue() * healthMult;
                     hp.setBaseValue(newHp);
@@ -663,10 +663,10 @@ public class MobManager {
 
             // Damage
             if (absDamage > 0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(absDamage);
             } else if (damageMult > 0 && damageMult != 1.0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(dmg.getBaseValue() * damageMult);
             }
         } catch (Exception ignored) {}
@@ -676,17 +676,17 @@ public class MobManager {
     private void applyMountStats(LivingEntity entity, SpawnConfig.EntityConfig mc) {
         try {
             if (mc.getScale() > 0) {
-                org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.SCALE);
+                org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.GENERIC_SCALE);
                 if (scaleAttr != null) scaleAttr.setBaseValue(mc.getScale());
             }
             if (mc.getHealth() > 0) {
-                org.bukkit.attribute.AttributeInstance mhp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance mhp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (mhp != null) {
                     mhp.setBaseValue(mc.getHealth());
                     entity.setHealth(mc.getHealth());
                 }
             } else if (mc.getHealthMultiplier() > 0 && mc.getHealthMultiplier() != 1.0) {
-                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (hp != null) {
                     double newHp = hp.getBaseValue() * mc.getHealthMultiplier();
                     hp.setBaseValue(newHp);
@@ -694,10 +694,10 @@ public class MobManager {
                 }
             }
             if (mc.getDamage() > 0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(mc.getDamage());
             } else if (mc.getDamageMultiplier() > 0 && mc.getDamageMultiplier() != 1.0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(dmg.getBaseValue() * mc.getDamageMultiplier());
             }
         } catch (Exception ignored) {}
@@ -707,13 +707,13 @@ public class MobManager {
     private void applyGroupMemberStats(LivingEntity entity, SpawnConfig.GroupMemberConfig mc) {
         try {
             if (mc.getHealth() > 0) {
-                org.bukkit.attribute.AttributeInstance ghp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance ghp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (ghp != null) {
                     ghp.setBaseValue(mc.getHealth());
                     entity.setHealth(mc.getHealth());
                 }
             } else if (mc.getHealthMultiplier() > 0 && mc.getHealthMultiplier() != 1.0) {
-                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.MAX_HEALTH);
+                org.bukkit.attribute.AttributeInstance hp = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (hp != null) {
                     double newHp = hp.getBaseValue() * mc.getHealthMultiplier();
                     hp.setBaseValue(newHp);
@@ -721,10 +721,10 @@ public class MobManager {
                 }
             }
             if (mc.getDamage() > 0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(mc.getDamage());
             } else if (mc.getDamageMultiplier() > 0 && mc.getDamageMultiplier() != 1.0) {
-                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.ATTACK_DAMAGE);
+                org.bukkit.attribute.AttributeInstance dmg = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
                 if (dmg != null) dmg.setBaseValue(dmg.getBaseValue() * mc.getDamageMultiplier());
             }
         } catch (Exception ignored) {}
@@ -1040,14 +1040,14 @@ public class MobManager {
 
         double effectiveScaleMultiplier = profile.getSizeMultiplier();
         try {
-            org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.SCALE);
+            org.bukkit.attribute.AttributeInstance scaleAttr = entity.getAttribute(Attribute.GENERIC_SCALE);
             if (scaleAttr != null) {
                 effectiveScaleMultiplier = scaleAttr.getBaseValue() * profile.getSizeMultiplier();
                 scaleAttr.setBaseValue(effectiveScaleMultiplier);
             }
 
             // Preserve the previous size->health relationship while extending it to every spawn form.
-            org.bukkit.attribute.AttributeInstance healthAttr = entity.getAttribute(Attribute.MAX_HEALTH);
+            org.bukkit.attribute.AttributeInstance healthAttr = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
             if (healthAttr != null) {
                 double newMaxHealth = healthAttr.getBaseValue() * profile.getSizeMultiplier();
                 healthAttr.setBaseValue(newMaxHealth);
@@ -1191,8 +1191,8 @@ public class MobManager {
     }
 
     private void applySharedMountedHealthPool(LivingEntity mount, LivingEntity rider) {
-        org.bukkit.attribute.AttributeInstance mountHp = mount.getAttribute(Attribute.MAX_HEALTH);
-        org.bukkit.attribute.AttributeInstance riderHp = rider.getAttribute(Attribute.MAX_HEALTH);
+        org.bukkit.attribute.AttributeInstance mountHp = mount.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        org.bukkit.attribute.AttributeInstance riderHp = rider.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (mountHp == null || riderHp == null) return;
 
         // Shared HP uses rider as the single source of truth.

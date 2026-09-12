@@ -1,7 +1,6 @@
 package com.fishrework.listener;
 
 import com.fishrework.FishRework;
-import com.fishrework.model.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -90,7 +89,7 @@ public class LoreUpdateListener implements Listener {
         Player player = event.getPlayer();
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             ItemStack held = player.getInventory().getItemInMainHand();
-            if (held != null && !held.getType().isAir() && held.hasItemMeta()) {
+            if (plugin.getLoreManager().managesLore(held)) {
                 plugin.getLanguageManager().withPlayer(player, () -> {
                     plugin.getLoreManager().updateLore(held);
                     player.getInventory().setItemInMainHand(held);
@@ -112,8 +111,6 @@ public class LoreUpdateListener implements Listener {
     }
 
     private void refreshPlayerCustomItemsLocalized(Player player) {
-        PlayerData data = plugin.getPlayerData(player.getUniqueId());
-
         ItemStack[] storage = player.getInventory().getStorageContents();
         boolean storageChanged = false;
         for (int i = 0; i < storage.length; i++) {
@@ -144,7 +141,7 @@ public class LoreUpdateListener implements Listener {
         ItemStack current = player.getEquipment().getItem(slot);
         ItemStack refreshed = refreshFromRegistry(current);
         if (refreshed == null) {
-            if (current != null && !current.getType().isAir() && current.hasItemMeta()) {
+            if (plugin.getLoreManager().managesLore(current)) {
                 plugin.getLoreManager().updateLore(current);
                 player.getEquipment().setItem(slot, current);
             }

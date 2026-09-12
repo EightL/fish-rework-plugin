@@ -362,13 +362,13 @@ public class YamlItemLoader {
         String key = registryId.toLowerCase().replace(" ", "_").replace("'", "");
 
         // Armor attribute
-        meta.addAttributeModifier(Attribute.ARMOR, new AttributeModifier(
+        meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(
                 new NamespacedKey(plugin, key + "_armor"), armor,
                 AttributeModifier.Operation.ADD_NUMBER, slotGroup));
 
         // Toughness attribute
         if (toughness > 0) {
-            meta.addAttributeModifier(Attribute.ARMOR_TOUGHNESS, new AttributeModifier(
+            meta.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(
                     new NamespacedKey(plugin, key + "_tough"), toughness,
                     AttributeModifier.Operation.ADD_NUMBER, slotGroup));
         }
@@ -696,7 +696,7 @@ public class YamlItemLoader {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
         if (attackSpeed != null) {
-            meta.addAttributeModifier(Attribute.ATTACK_SPEED, new AttributeModifier(
+            meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(
                     new NamespacedKey(plugin, id + "_attack_speed"),
                     attackSpeed - 4.0,
                     AttributeModifier.Operation.ADD_NUMBER,
@@ -704,7 +704,7 @@ public class YamlItemLoader {
             ));
         }
         if (attackDamage != null) {
-            meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(
+            meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, new AttributeModifier(
                     new NamespacedKey(plugin, id + "_attack_damage"),
                     attackDamage - 1.0,
                     AttributeModifier.Operation.ADD_NUMBER,
@@ -890,6 +890,9 @@ public class YamlItemLoader {
         String normalizedTrimMaterial = normalizeTrimMaterial(trimMaterialKey);
         String normalizedTrimPattern = normalizeTrimPattern(trimPatternKey);
         TrimMaterial trimMaterial = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(normalizedTrimMaterial.toLowerCase(Locale.ROOT)));
+        if (trimMaterial == null && "resin".equals(normalizedTrimMaterial)) {
+            trimMaterial = TrimMaterial.COPPER;
+        }
         TrimPattern trimPattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(normalizedTrimPattern.toLowerCase(Locale.ROOT)));
         if (trimMaterial == null || trimPattern == null) {
             plugin.getLogger().warning("Unknown armor trim for " + registryId + ": material="
@@ -958,14 +961,14 @@ public class YamlItemLoader {
     /** Resolves an attribute name like "water_movement_efficiency" to its Bukkit Attribute. */
     private Attribute resolveAttribute(String name) {
         return switch (name.toLowerCase()) {
-            case "water_movement_efficiency" -> Attribute.WATER_MOVEMENT_EFFICIENCY;
-            case "movement_speed" -> Attribute.MOVEMENT_SPEED;
-            case "armor" -> Attribute.ARMOR;
-            case "armor_toughness" -> Attribute.ARMOR_TOUGHNESS;
-            case "max_health" -> Attribute.MAX_HEALTH;
-            case "attack_damage" -> Attribute.ATTACK_DAMAGE;
-            case "attack_speed" -> Attribute.ATTACK_SPEED;
-            case "knockback_resistance" -> Attribute.KNOCKBACK_RESISTANCE;
+            case "water_movement_efficiency" -> Attribute.GENERIC_WATER_MOVEMENT_EFFICIENCY;
+            case "movement_speed" -> Attribute.GENERIC_MOVEMENT_SPEED;
+            case "armor" -> Attribute.GENERIC_ARMOR;
+            case "armor_toughness" -> Attribute.GENERIC_ARMOR_TOUGHNESS;
+            case "max_health" -> Attribute.GENERIC_MAX_HEALTH;
+            case "attack_damage" -> Attribute.GENERIC_ATTACK_DAMAGE;
+            case "attack_speed" -> Attribute.GENERIC_ATTACK_SPEED;
+            case "knockback_resistance" -> Attribute.GENERIC_KNOCKBACK_RESISTANCE;
             default -> {
                 plugin.getLogger().warning("Unknown attribute: " + name);
                 yield null;

@@ -148,7 +148,7 @@ public enum BiomeGroup {
         map(Biome.DEEP_DARK, DEEP_DARK);
 
         // ── Pale Garden ──
-        map(Biome.PALE_GARDEN, PALE_GARDEN);
+        mapKey("minecraft:pale_garden", PALE_GARDEN);
 
         // ── Nether ──
         map(Biome.NETHER_WASTES, NETHER_WASTES);
@@ -332,7 +332,9 @@ public enum BiomeGroup {
      * Returns {@link #OTHER} for unmapped biomes.
      */
     public static BiomeGroup fromBiome(Biome biome) {
-        return MAPPING.getOrDefault(biome, OTHER);
+        BiomeGroup mapped = MAPPING.get(biome);
+        if (mapped != null) return mapped;
+        return biome == null ? OTHER : fromBiomeKey(biome.getKey().toString());
     }
 
     /**

@@ -37,6 +37,11 @@ import java.util.Set;
  */
 public class BuyShopGUI extends BaseGUI {
 
+    private static Material materialOr(String name, Material fallback) {
+        Material material = Material.matchMaterial(name);
+        return material != null ? material : fallback;
+    }
+
     private static final String SHOP_BOOK_LURE_1_ID = "shop_book_lure_1";
     private static final String SHOP_BOOK_LUCK_1_ID = "shop_book_luck_of_the_sea_1";
     private static final String SHOP_BOOK_SEA_CREATURE_1_ID = "shop_book_sea_creature_chance_1";
@@ -463,7 +468,7 @@ public class BuyShopGUI extends BaseGUI {
                 List.of(BiomeGroup.SWAMP, BiomeGroup.JUNGLE, BiomeGroup.SAVANNA)));
         out.add(new BiomeBaitDefinition("frozen_peaks", "Frozen Peaks Bait", Material.MELON_SEEDS,
                 List.of(BiomeGroup.MOUNTAINS, BiomeGroup.SNOWY, BiomeGroup.TAIGA)));
-        out.add(new BiomeBaitDefinition("scorched_earth", "Scorched Earth Bait", Material.LEAF_LITTER,
+        out.add(new BiomeBaitDefinition("scorched_earth", "Scorched Earth Bait", materialOr("LEAF_LITTER", Material.DEAD_BUSH),
                 List.of(BiomeGroup.DESERT, BiomeGroup.BADLANDS)));
         out.add(new BiomeBaitDefinition("heartlands", "Heartlands Bait", Material.WHEAT_SEEDS,
                 List.of(BiomeGroup.RIVER, BiomeGroup.PLAINS, BiomeGroup.FOREST, BiomeGroup.MEADOW)));
@@ -481,7 +486,7 @@ public class BuyShopGUI extends BaseGUI {
                 List.of(BiomeGroup.WARPED_FOREST)));
         out.add(new BiomeBaitDefinition("soul_sand_valley", "Soul Sand Valley Bait", Material.PITCHER_POD,
                 List.of(BiomeGroup.SOUL_SAND_VALLEY)));
-        out.add(new BiomeBaitDefinition("basalt_deltas", "Basalt Deltas Bait", Material.OPEN_EYEBLOSSOM,
+        out.add(new BiomeBaitDefinition("basalt_deltas", "Basalt Deltas Bait", materialOr("OPEN_EYEBLOSSOM", Material.ORANGE_TULIP),
                 List.of(BiomeGroup.BASALT_DELTAS)));
         out.add(new BiomeBaitDefinition("nether_wastes", "Nether Wastes Bait", Material.WITHER_ROSE,
                 List.of(BiomeGroup.NETHER_WASTES)));

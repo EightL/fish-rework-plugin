@@ -83,7 +83,7 @@ public class YamlMobLoader {
             "mobs." + id + ".entity_type"
         );
         if (entityType == null) {
-            plugin.getLogger().warning("Skipping mob '" + id + "' because its entity_type is unavailable on this server.");
+            plugin.getLogger().info("Skipping mob '" + id + "' because its entity_type is unavailable on this server.");
             return null;
         }
         String displayName = entry.getString("display_name", id);

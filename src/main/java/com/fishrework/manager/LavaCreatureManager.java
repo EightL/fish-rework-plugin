@@ -40,8 +40,8 @@ public class LavaCreatureManager implements Listener {
         entity.setCustomName("§c§l" + name);
         entity.setCustomNameVisible(true);
 
-        if (entity.getAttribute(Attribute.MAX_HEALTH) != null) {
-            entity.getAttribute(Attribute.MAX_HEALTH).setBaseValue(hp);
+        if (entity.getAttribute(Attribute.GENERIC_MAX_HEALTH) != null) {
+            entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(hp);
             entity.setHealth(hp);
         }
 

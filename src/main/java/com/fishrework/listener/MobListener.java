@@ -114,8 +114,8 @@ public class MobListener implements Listener {
         double projected = entity.getHealth() - event.getFinalDamage();
         if (projected <= 0.0) return;
 
-        double siblingMax = sibling.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH) != null
-                ? sibling.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getBaseValue()
+        double siblingMax = sibling.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH) != null
+                ? sibling.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH).getBaseValue()
                 : sibling.getMaxHealth();
         sibling.setHealth(Math.max(1.0, Math.min(siblingMax, projected)));
     }

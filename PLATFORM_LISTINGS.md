@@ -87,8 +87,8 @@ Main wiki: **[eightl-projects.vercel.app](https://eightl-projects.vercel.app)**
 
 |                   |                |
 |-------------------|----------------|
-| Server software   | Paper 26.1.1+  |
-| Java              | 25             |
+| Server software   | Paper 1.21–1.21.11 and current 26.x (one JAR) |
+| Java              | 21 on 1.21.x; 25 on 26.x |
 | Hard dependencies | None           |
 
 ---

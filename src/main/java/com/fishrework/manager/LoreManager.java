@@ -31,12 +31,69 @@ public class LoreManager {
     private final NamespacedKey MAGMA_SCALE_ARMOR_KEY;
     private final NamespacedKey INFERNAL_PLATE_ARMOR_KEY;
     private final NamespacedKey VOLCANIC_DREADPLATE_ARMOR_KEY;
+    private final NamespacedKey WEAPON_ATTACK_DAMAGE_KEY;
+    private final NamespacedKey WEAPON_ATTACK_SPEED_KEY;
+    private final NamespacedKey MANAGED_LORE_KEY;
 
     public LoreManager(FishRework plugin) {
         this.plugin = plugin;
         this.MAGMA_SCALE_ARMOR_KEY = new NamespacedKey(plugin, "magma_scale_armor");
         this.INFERNAL_PLATE_ARMOR_KEY = new NamespacedKey(plugin, "infernal_plate_armor");
         this.VOLCANIC_DREADPLATE_ARMOR_KEY = new NamespacedKey(plugin, "volcanic_dreadplate_armor");
+        this.WEAPON_ATTACK_DAMAGE_KEY = new NamespacedKey(plugin, "weapon_attack_damage");
+        this.WEAPON_ATTACK_SPEED_KEY = new NamespacedKey(plugin, "weapon_attack_speed");
+        this.MANAGED_LORE_KEY = new NamespacedKey(plugin, "managed_lore");
+    }
+
+    /**
+     * Returns whether this item's lore belongs to FishRework. Event listeners use this
+     * before writing an equipped item back so unrelated custom metadata remains untouched.
+     */
+    public boolean managesLore(ItemStack item) {
+        if (item == null || item.getType().isAir() || !item.hasItemMeta()) return false;
+
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        ItemManager itemManager = plugin.getItemManager();
+
+        if (itemManager.isCustomItem(item)
+                || pdc.has(MANAGED_LORE_KEY, PersistentDataType.BYTE)) {
+            return true;
+        }
+
+        if (hasDoubleStat(pdc, itemManager.RARE_CREATURE_CHANCE_KEY)
+                || hasDoubleStat(pdc, itemManager.FISHING_XP_BONUS_KEY)
+                || hasDoubleStat(pdc, itemManager.TREASURE_CHANCE_BONUS_KEY)
+                || hasDoubleStat(pdc, itemManager.SEA_CREATURE_DEFENSE_KEY)
+                || hasDoubleStat(pdc, itemManager.SEA_CREATURE_ATTACK_KEY)
+                || hasDoubleStat(pdc, itemManager.DOUBLE_CATCH_BONUS_KEY)
+                || hasDoubleStat(pdc, itemManager.BOBBER_DAMAGE_KEY)
+                || hasDoubleStat(pdc, itemManager.HEAT_RESISTANCE_KEY)
+                || hasDoubleStat(pdc, itemManager.SC_FLAT_ATTACK_KEY)
+                || hasDoubleStat(pdc, itemManager.SC_FLAT_DEFENSE_KEY)
+                || hasDoubleStat(pdc, itemManager.FISHING_SPEED_KEY)
+                || hasDoubleStat(pdc, WEAPON_ATTACK_DAMAGE_KEY)
+                || hasDoubleStat(pdc, WEAPON_ATTACK_SPEED_KEY)) {
+            return true;
+        }
+
+        if (pdc.has(itemManager.SCALE_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(itemManager.IRONCLAD_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(itemManager.DREADPLATE_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(itemManager.DEADMAN_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(MAGMA_SCALE_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(INFERNAL_PLATE_ARMOR_KEY, PersistentDataType.BYTE)
+                || pdc.has(VOLCANIC_DREADPLATE_ARMOR_KEY, PersistentDataType.BYTE)) {
+            return true;
+        }
+
+        if (meta.hasEnchant(Enchantment.LURE) || meta.hasEnchant(Enchantment.LUCK_OF_THE_SEA)) {
+            return true;
+        }
+
+        Enchantment seaCreatureEnchant = org.bukkit.Registry.ENCHANTMENT.get(
+                new NamespacedKey("fishrework", "sea_creature_chance"));
+        return seaCreatureEnchant != null && meta.hasEnchant(seaCreatureEnchant);
     }
 
     /**
@@ -44,7 +101,7 @@ public class LoreManager {
      * Preserves original "flavor text" (top lines) if possible.
      */
     public void updateLore(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return;
+        if (!managesLore(item)) return;
         ItemMeta meta = item.getItemMeta();
         String artifactId = meta.getPersistentDataContainer().get(plugin.getItemManager().ARTIFACT_KEY, PersistentDataType.STRING);
         boolean isArtifactItem = artifactId != null;
@@ -84,8 +141,8 @@ public class LoreManager {
         double scFlatAttack = getStat(meta, plugin.getItemManager().SC_FLAT_ATTACK_KEY);
         double scFlatDefense = getStat(meta, plugin.getItemManager().SC_FLAT_DEFENSE_KEY);
         double baseSpeed = getStat(meta, plugin.getItemManager().FISHING_SPEED_KEY);
-        Double weaponAttackDamage = getOptionalStat(meta, new NamespacedKey(plugin, "weapon_attack_damage"));
-        Double weaponAttackSpeed = getOptionalStat(meta, new NamespacedKey(plugin, "weapon_attack_speed"));
+        Double weaponAttackDamage = getOptionalStat(meta, WEAPON_ATTACK_DAMAGE_KEY);
+        Double weaponAttackSpeed = getOptionalStat(meta, WEAPON_ATTACK_SPEED_KEY);
         List<Component> artifactPotionLore = new ArrayList<>();
         boolean isNetherArmorPiece = isNetherArmorPiece(meta);
         NamedTextColor heatResistanceColor = isNetherArmorPiece ? NamedTextColor.GREEN : NamedTextColor.GOLD;
@@ -238,6 +295,7 @@ public class LoreManager {
         }
 
         meta.lore(newLore);
+        meta.getPersistentDataContainer().set(MANAGED_LORE_KEY, PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
     }
 
@@ -264,6 +322,10 @@ public class LoreManager {
             return meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
         }
         return 0.0;
+    }
+
+    private boolean hasDoubleStat(PersistentDataContainer pdc, NamespacedKey key) {
+        return pdc.has(key, PersistentDataType.DOUBLE);
     }
 
     private Double getOptionalStat(ItemMeta meta, NamespacedKey key) {

@@ -237,8 +237,8 @@ public class BossAbilityTask implements Runnable {
             return true;
         }
 
-        if (mob.getAttribute(Attribute.MAX_HEALTH) == null) return false;
-        double max = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
+        if (mob.getAttribute(Attribute.GENERIC_MAX_HEALTH) == null) return false;
+        double max = mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         if (max <= 0.0) return false;
         return mob.getHealth() <= (max * 0.5);
     }
@@ -282,7 +282,7 @@ public class BossAbilityTask implements Runnable {
         if (mount == null || !mount.isValid() || mount.isDead()) return;
         if (isCrimsonPhaseTwo(mount)) return;
 
-        org.bukkit.attribute.AttributeInstance maxHealth = mount.getAttribute(Attribute.MAX_HEALTH);
+        org.bukkit.attribute.AttributeInstance maxHealth = mount.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (maxHealth == null) return;
         double max = maxHealth.getValue();
         if (max <= 0.0 || mount.getHealth() > (max * 0.5)) return;

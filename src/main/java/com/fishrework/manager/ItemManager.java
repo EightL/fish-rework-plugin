@@ -1019,7 +1019,7 @@ public class ItemManager {
             .color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
-        meta.addAttributeModifier(Attribute.ATTACK_SPEED, new AttributeModifier(
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(
             new NamespacedKey(plugin, "gehenna_speed"),
             -2.8,
             AttributeModifier.Operation.ADD_NUMBER,
@@ -1027,7 +1027,7 @@ public class ItemManager {
 
         // Any explicit attribute modifier set replaces vanilla weapon modifiers,
         // so we must add back mace damage explicitly (base 1 + 11 = 12 shown).
-        meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, new AttributeModifier(
             new NamespacedKey(plugin, "gehenna_damage"),
             11.0,
             AttributeModifier.Operation.ADD_NUMBER,
@@ -1072,14 +1072,14 @@ public class ItemManager {
             .color(rarity.getColor())
             .decoration(TextDecoration.ITALIC, false));
 
-        meta.addAttributeModifier(Attribute.ATTACK_SPEED, new AttributeModifier(
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(
             new NamespacedKey(plugin, "megalodon_tooth_speed"),
             -0.8,
             AttributeModifier.Operation.ADD_NUMBER,
             EquipmentSlotGroup.MAINHAND));
 
         // Netherite sword damage profile on an iron sword base.
-        meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, new AttributeModifier(
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, new AttributeModifier(
             new NamespacedKey(plugin, "megalodon_tooth_damage"),
             7.0,
             AttributeModifier.Operation.ADD_NUMBER,

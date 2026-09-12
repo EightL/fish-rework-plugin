@@ -212,7 +212,7 @@ public class BossBarManager {
     }
 
     private double resolveMaxHealth(LivingEntity entity) {
-        var attribute = entity.getAttribute(Attribute.MAX_HEALTH);
+        var attribute = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (attribute != null) {
             return attribute.getValue();
         }
