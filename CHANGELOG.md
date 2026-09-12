@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.5.1
+
 - One Java 21 JAR now targets Paper 1.21.x and current 26.x, with compatible attribute names and fallbacks for newer bait materials and biomes.
 - Fixed inventory close rewriting names and appending blank lore lines to non-FishRework items.
 - Added automatic EvenMoreFish detection and optional one-time configuration with an EMF config backup.

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.fish-rework"
-version = "1.5.0"
+version = "1.5.1"
 
 // One JAR for Java 21 and newer servers. Newer optional features are resolved at runtime.
 // Compile against the oldest supported API; Paper remaps its legacy attribute/enum references.
