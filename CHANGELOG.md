@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 1.5.2
+
+- Added Minecraft 26.3 support: the new Dappled Forest uses the Forest fishing profile (this also covers Terralith 2.6.5+, which overrides the same biome), and the bundled fishing data pack now declares 26.3's data pack format.
+- Cherry Grove now uses the Meadow fishing profile instead of falling back to the default pool.
+- Fixed the Bucket Catcher advancement not being unloaded on shutdown, which logged "Couldn't load advancements" and "already exists" on every later restart.
+
 ## 1.5.1
 
 - One Java 21 JAR now targets Paper 1.21.x and current 26.x, with compatible attribute names and fallbacks for newer bait materials and biomes.
