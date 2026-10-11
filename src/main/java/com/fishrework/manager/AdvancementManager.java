@@ -103,6 +103,7 @@ public class AdvancementManager {
         safeRemove(KILL_ELDER_GUARDIAN_KEY);
         safeRemove(KILL_DEAD_RIDER_KEY);
         safeRemove(MYTHIC_WEIGHT_CENSUS_KEY);
+        safeRemove(BUCKET_CATCHER_KEY);
         safeRemove(CATCH_ALL_KEY);
         safeRemove(FISHH_KEY);
         safeRemove(ROOT_KEY);

@@ -90,6 +90,9 @@ public enum BiomeGroup {
         mapKey("minecraft:sulfur_caves", SULFUR_CAVES);
 
         // ── Forests ──
+        // Dappled Forest was added in 26.3; use the namespaced key so older API targets still build.
+        // Terralith 2.6.5+ overrides this same vanilla key, so one mapping covers both.
+        mapKey("minecraft:dappled_forest", FOREST);
         map(Biome.FOREST, FOREST);
         map(Biome.BIRCH_FOREST, FOREST);
         map(Biome.DARK_FOREST, FOREST);
@@ -143,6 +146,7 @@ public enum BiomeGroup {
 
         // ── Meadow ──
         map(Biome.MEADOW, MEADOW);
+        map(Biome.CHERRY_GROVE, MEADOW);
 
         // ── Deep Dark ──
         map(Biome.DEEP_DARK, DEEP_DARK);
